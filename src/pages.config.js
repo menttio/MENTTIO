@@ -10,6 +10,7 @@ import MyStudents from './pages/MyStudents';
 import Messages from './pages/Messages';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherWorkload from './pages/TeacherWorkload';
+import ManageSubjects from './pages/ManageSubjects';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "Messages": Messages,
     "TeacherProfile": TeacherProfile,
     "TeacherWorkload": TeacherWorkload,
+    "ManageSubjects": ManageSubjects,
 }
 
 export const pagesConfig = {

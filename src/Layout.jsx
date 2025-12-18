@@ -70,6 +70,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'TeacherDashboard' },
     { name: 'Mi Calendario', icon: Calendar, page: 'TeacherCalendar' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
+    { name: 'Mis Asignaturas', icon: BookOpen, page: 'ManageSubjects' },
     { name: 'Carga de Trabajo', icon: BookOpen, page: 'TeacherWorkload' },
     { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
