@@ -18,6 +18,7 @@ import { format, parseISO, isAfter, startOfDay, startOfMonth, endOfMonth, isWith
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
+import ManageSubjectsCard from '../components/teacher/ManageSubjectsCard';
 
 export default function TeacherDashboard() {
   const [teacher, setTeacher] = useState(null);
@@ -164,12 +165,22 @@ export default function TeacherDashboard() {
         </motion.div>
       </div>
 
+      {/* Subjects Management */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="mb-8"
+      >
+        <ManageSubjectsCard teacher={teacher} onUpdate={loadData} />
+      </motion.div>
+
       {/* Quick Actions */}
       <div className="grid md:grid-cols-3 gap-4 mb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.6 }}
         >
           <Link to={createPageUrl('TeacherCalendar')}>
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
@@ -187,7 +198,7 @@ export default function TeacherDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+          transition={{ delay: 0.7 }}
         >
           <Link to={createPageUrl('ManageAvailability')}>
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
@@ -205,7 +216,7 @@ export default function TeacherDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.8 }}
         >
           <Link to={createPageUrl('MyStudents')}>
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
@@ -225,7 +236,7 @@ export default function TeacherDashboard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.9 }}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
