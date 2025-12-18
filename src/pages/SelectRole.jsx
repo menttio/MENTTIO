@@ -101,7 +101,7 @@ export default function SelectRole() {
         {step === 'role' ? (
           <div className="text-center">
             <h1 className="text-4xl font-bold text-[#404040] mb-4">
-              ¡Bienvenido a <span className="text-[#41f2c0]">ClassBook</span>!
+              ¡Bienvenido a <span className="text-[#41f2c0]">Menπio</span>!
             </h1>
             <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
 
