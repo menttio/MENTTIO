@@ -175,7 +175,7 @@ export default function BookClass() {
     try {
       const user = await base44.auth.me();
       
-      await base44.entities.Booking.create({
+      const newBooking = await base44.entities.Booking.create({
         student_id: student.id,
         student_name: student.full_name,
         student_email: user.email,
@@ -191,6 +191,18 @@ export default function BookClass() {
         price: calculatePrice(),
         status: 'scheduled',
         files: []
+      });
+
+      // Create notification for teacher
+      const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
+      await base44.entities.Notification.create({
+        user_id: selectedTeacher.id,
+        user_email: selectedTeacher.user_email,
+        type: 'booking_new',
+        title: 'Nueva reserva de clase',
+        message: `${student.full_name} ha reservado una clase de ${subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name} para el ${bookingDate} a las ${selectedTime}`,
+        related_id: newBooking.id,
+        link_page: 'TeacherCalendar'
       });
       
       navigate(createPageUrl('MyClasses'));

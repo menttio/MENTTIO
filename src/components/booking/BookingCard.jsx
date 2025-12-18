@@ -94,6 +94,28 @@ export default function BookingCard({
     setCancelling(true);
     try {
       await base44.entities.Booking.update(booking.id, { status: 'cancelled' });
+
+      // Create notifications for both student and teacher
+      await base44.entities.Notification.create({
+        user_id: booking.student_id,
+        user_email: booking.student_email,
+        type: 'booking_cancelled',
+        title: 'Clase cancelada',
+        message: `Tu clase de ${booking.subject_name} con ${booking.teacher_name} del ${format(bookingDate, "d 'de' MMMM", { locale: es })} ha sido cancelada`,
+        related_id: booking.id,
+        link_page: 'MyClasses'
+      });
+
+      await base44.entities.Notification.create({
+        user_id: booking.teacher_id,
+        user_email: booking.teacher_email,
+        type: 'booking_cancelled',
+        title: 'Clase cancelada',
+        message: `La clase de ${booking.subject_name} con ${booking.student_name} del ${format(bookingDate, "d 'de' MMMM", { locale: es })} ha sido cancelada`,
+        related_id: booking.id,
+        link_page: 'TeacherCalendar'
+      });
+
       onRefresh?.();
     } catch (error) {
       console.error('Error cancelling booking:', error);
