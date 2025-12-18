@@ -110,11 +110,7 @@ export default function Layout({ children, currentPageName }) {
           >
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <img 
-            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694471e9c204eb0088437b85/d4bea3c05__edited.jpg" 
-            alt="Menttio" 
-            className="h-8"
-          />
+          <h1 className="text-xl font-bold text-[#404040] tracking-tight">MENTTIO</h1>
           <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
             <span className="text-white font-medium">
               {user?.full_name?.charAt(0) || 'U'}
@@ -131,11 +127,9 @@ export default function Layout({ children, currentPageName }) {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694471e9c204eb0088437b85/d4bea3c05__edited.jpg" 
-              alt="Menttio" 
-              className="h-10 mb-2"
-            />
+            <h1 className="text-3xl font-bold text-[#404040] tracking-tight">
+              MENTTIO
+            </h1>
             <p className="text-sm text-gray-500 mt-1">
               {userRole === 'teacher' ? 'Portal del Profesor' : 'Portal del Alumno'}
             </p>

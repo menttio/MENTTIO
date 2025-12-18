@@ -100,18 +100,10 @@ export default function SelectRole() {
       >
         {step === 'role' ? (
           <div className="text-center">
-            <div className="flex items-center justify-center mb-6">
-              <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694471e9c204eb0088437b85/d4bea3c05__edited.jpg" 
-                alt="Menttio" 
-                className="h-16"
-              />
-            </div>
-            <h1 className="text-4xl font-bold text-[#404040] mb-4">
-              ¡Bienvenido a Menttio!
+            <h1 className="text-5xl font-bold text-[#404040] mb-2 tracking-tight">
+              MENTTIO
             </h1>
             <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
-
             <div className="grid md:grid-cols-2 gap-6">
               <motion.button
                 whileHover={{ scale: 1.02 }}
