@@ -37,15 +37,8 @@ export default function BookingCalendar({
 
   const handleDateClick = (date) => {
     if (!isDateAvailable(date)) return;
-    setViewDate(date);
     onSelectSlot(date, null);
   };
-
-  const handleTimeSelect = (time) => {
-    onSelectSlot(viewDate, time);
-  };
-
-  const slotsForSelectedDate = viewDate ? getAvailableSlotsForDate(viewDate) : [];
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -91,10 +84,8 @@ export default function BookingCalendar({
         {/* Day cells */}
         {days.map((day) => {
           const available = isDateAvailable(day);
-          const isSelected = viewDate && isSameDay(day, viewDate);
-          const isPast = isBefore(day, startOfDay(new Date()));
-
           const isViewDate = viewDate && isSameDay(day, viewDate);
+          const isPast = isBefore(day, startOfDay(new Date()));
           
           return (
             <button
