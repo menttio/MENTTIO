@@ -1,0 +1,293 @@
+import React, { useState } from 'react';
+import { format, parseISO, isBefore, addHours, isAfter } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { 
+  Calendar, 
+  Clock, 
+  User, 
+  BookOpen, 
+  MoreVertical, 
+  Edit, 
+  Trash2, 
+  FileUp, 
+  Video,
+  FileText,
+  ExternalLink,
+  Loader2
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { base44 } from '@/api/base44Client';
+
+export default function BookingCard({ 
+  booking, 
+  userRole = 'student',
+  onEdit,
+  onCancel,
+  onUploadFile,
+  onRefresh
+}) {
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+
+  const bookingDate = parseISO(booking.date);
+  const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
+  const now = new Date();
+  const is24HoursBefore = isAfter(bookingDateTime, addHours(now, 24));
+  const isPast = isBefore(bookingDateTime, now);
+  const isCompleted = booking.status === 'completed' || isPast;
+  const isCancelled = booking.status === 'cancelled';
+
+  const canModify = is24HoursBefore && !isCompleted && !isCancelled;
+
+  const statusConfig = {
+    scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-white' },
+    completed: { label: 'Completada', color: 'bg-gray-100 text-gray-600' },
+    cancelled: { label: 'Cancelada', color: 'bg-red-100 text-red-600' }
+  };
+
+  const displayStatus = isPast && booking.status === 'scheduled' ? 'completed' : booking.status;
+  const status = statusConfig[displayStatus] || statusConfig.scheduled;
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const newFile = {
+        name: file.name,
+        url: file_url,
+        uploaded_by: userRole
+      };
+      const updatedFiles = [...(booking.files || []), newFile];
+      await base44.entities.Booking.update(booking.id, { files: updatedFiles });
+      onRefresh?.();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    } finally {
+      setUploading(false);
+      setShowUploadDialog(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    setCancelling(true);
+    try {
+      await base44.entities.Booking.update(booking.id, { status: 'cancelled' });
+      onRefresh?.();
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+    } finally {
+      setCancelling(false);
+      setShowCancelDialog(false);
+    }
+  };
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={cn(
+          "bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all",
+          isCancelled && "opacity-60"
+        )}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center">
+              <BookOpen className="text-[#41f2c0]" size={24} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-[#404040]">{booking.subject_name}</h3>
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <User size={14} />
+                <span>
+                  {userRole === 'student' ? booking.teacher_name : booking.student_name}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Badge className={status.color}>{status.label}</Badge>
+            
+            {!isCancelled && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <MoreVertical size={16} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {canModify && (
+                    <>
+                      <DropdownMenuItem onClick={() => onEdit?.(booking)}>
+                        <Edit size={14} className="mr-2" />
+                        Cambiar fecha/hora
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => setShowCancelDialog(true)}
+                        className="text-red-500 focus:text-red-500"
+                      >
+                        <Trash2 size={14} className="mr-2" />
+                        Cancelar clase
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuItem onClick={() => setShowUploadDialog(true)}>
+                    <FileUp size={14} className="mr-2" />
+                    Subir archivo
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+        </div>
+
+        {/* Date & Time */}
+        <div className="flex flex-wrap gap-4 mb-4">
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar size={16} className="text-[#41f2c0]" />
+            <span className="text-[#404040] font-medium capitalize">
+              {format(bookingDate, "EEEE, d 'de' MMMM", { locale: es })}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <Clock size={16} className="text-[#41f2c0]" />
+            <span className="text-[#404040]">
+              {booking.start_time} - {booking.end_time}
+            </span>
+          </div>
+        </div>
+
+        {/* Price */}
+        {booking.price && (
+          <div className="text-lg font-semibold text-[#41f2c0] mb-4">
+            {booking.price}€
+          </div>
+        )}
+
+        {/* Files */}
+        {booking.files && booking.files.length > 0 && (
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            <h4 className="text-sm font-medium text-gray-500 mb-2">Archivos adjuntos</h4>
+            <div className="flex flex-wrap gap-2">
+              {booking.files.map((file, idx) => (
+                <a
+                  key={idx}
+                  href={file.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-sm"
+                >
+                  <FileText size={14} className="text-[#41f2c0]" />
+                  <span className="truncate max-w-[150px]">{file.name}</span>
+                  <ExternalLink size={12} className="text-gray-400" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recording Link */}
+        {isCompleted && booking.recording_url && (
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            <a
+              href={booking.recording_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-[#41f2c0] hover:text-[#35d4a7] font-medium"
+            >
+              <Video size={18} />
+              Ver grabación de la clase
+              <ExternalLink size={14} />
+            </a>
+          </div>
+        )}
+
+        {/* Modification Warning */}
+        {!canModify && !isCompleted && !isCancelled && (
+          <div className="text-xs text-orange-500 mt-4 bg-orange-50 p-2 rounded-lg">
+            ⚠️ No se puede modificar a menos de 24h de la clase
+          </div>
+        )}
+      </motion.div>
+
+      {/* Cancel Dialog */}
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Cancelar esta clase?</DialogTitle>
+            <DialogDescription>
+              Esta acción no se puede deshacer. La clase quedará cancelada permanentemente.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCancelDialog(false)}>
+              Volver
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={handleCancel}
+              disabled={cancelling}
+            >
+              {cancelling ? <Loader2 className="animate-spin" /> : 'Cancelar clase'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Upload Dialog */}
+      <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Subir archivo</DialogTitle>
+            <DialogDescription>
+              Sube documentos o materiales para repasar en esta clase
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#41f2c0] transition-colors">
+              <input 
+                type="file" 
+                className="hidden" 
+                onChange={handleFileUpload}
+                disabled={uploading}
+              />
+              {uploading ? (
+                <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+              ) : (
+                <>
+                  <FileUp className="text-gray-400 mb-2" size={32} />
+                  <span className="text-sm text-gray-500">Haz clic para seleccionar un archivo</span>
+                </>
+              )}
+            </label>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
