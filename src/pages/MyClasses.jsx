@@ -21,14 +21,17 @@ import { parseISO, isAfter, isBefore, startOfDay } from 'date-fns';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
+import LeaveReviewDialog from '../components/student/LeaveReviewDialog';
 
 export default function MyClasses() {
   const [bookings, setBookings] = useState([]);
+  const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('date_desc');
   const [editingBooking, setEditingBooking] = useState(null);
+  const [reviewingBooking, setReviewingBooking] = useState(null);
 
   const loadBookings = async () => {
     try {
@@ -37,6 +40,11 @@ export default function MyClasses() {
         student_email: user.email 
       });
       setBookings(allBookings);
+
+      const students = await base44.entities.Student.filter({ user_email: user.email });
+      if (students.length > 0) {
+        setStudent(students[0]);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -153,6 +161,7 @@ export default function MyClasses() {
                 userRole="student"
                 onEdit={(b) => setEditingBooking(b)}
                 onRefresh={loadBookings}
+                onReview={(b) => setReviewingBooking(b)}
               />
             </motion.div>
           ))}
@@ -173,6 +182,17 @@ export default function MyClasses() {
           booking={editingBooking}
           open={!!editingBooking}
           onClose={() => setEditingBooking(null)}
+          onSave={loadBookings}
+        />
+      )}
+
+      {/* Review Dialog */}
+      {reviewingBooking && student && (
+        <LeaveReviewDialog
+          booking={reviewingBooking}
+          student={student}
+          open={!!reviewingBooking}
+          onClose={() => setReviewingBooking(null)}
           onSave={loadBookings}
         />
       )}

@@ -8,6 +8,8 @@ import TeacherCalendar from './pages/TeacherCalendar';
 import ManageAvailability from './pages/ManageAvailability';
 import MyStudents from './pages/MyStudents';
 import Messages from './pages/Messages';
+import TeacherProfile from './pages/TeacherProfile';
+import TeacherWorkload from './pages/TeacherWorkload';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +24,8 @@ export const PAGES = {
     "ManageAvailability": ManageAvailability,
     "MyStudents": MyStudents,
     "Messages": Messages,
+    "TeacherProfile": TeacherProfile,
+    "TeacherWorkload": TeacherWorkload,
 }
 
 export const pagesConfig = {

@@ -13,7 +13,8 @@ import {
   Video,
   FileText,
   ExternalLink,
-  Loader2
+  Loader2,
+  Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +42,8 @@ export default function BookingCard({
   onEdit,
   onCancel,
   onUploadFile,
-  onRefresh
+  onRefresh,
+  onReview
 }) {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -182,6 +184,12 @@ export default function BookingCard({
                     <FileUp size={14} className="mr-2" />
                     Subir archivo
                   </DropdownMenuItem>
+                  {userRole === 'student' && isCompleted && onReview && (
+                    <DropdownMenuItem onClick={() => onReview(booking)}>
+                      <Star size={14} className="mr-2" />
+                      Dejar reseña
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
