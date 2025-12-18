@@ -13,10 +13,12 @@ import {
   X,
   Home,
   User,
-  MessageCircle
+  MessageCircle,
+  Bell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -114,10 +116,13 @@ export default function Layout({ children, currentPageName }) {
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
           <h1 className="text-lg font-semibold text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</h1>
-          <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
-            <span className="text-white font-medium">
-              {user?.full_name?.charAt(0) || 'U'}
-            </span>
+          <div className="flex items-center gap-2">
+            <NotificationBell userEmail={user?.email} />
+            <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
+              <span className="text-white font-medium">
+                {user?.full_name?.charAt(0) || 'U'}
+              </span>
+            </div>
           </div>
         </div>
       </header>
@@ -172,6 +177,7 @@ export default function Layout({ children, currentPageName }) {
                 </p>
                 <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </div>
+              <NotificationBell userEmail={user?.email} />
             </div>
             <Button
               variant="ghost"
