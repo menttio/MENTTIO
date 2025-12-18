@@ -37,17 +37,11 @@ export default function BookingCalendar({
 
   const handleDateClick = (date) => {
     if (!isDateAvailable(date)) return;
-    setViewDate(date);
+    onSelectSlot(date, null);
   };
-
-  const handleTimeSelect = (time) => {
-    onSelectSlot(viewDate, time);
-  };
-
-  const slotsForSelectedDate = viewDate ? getAvailableSlotsForDate(viewDate) : [];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
       {/* Calendar Header */}
       <div className="p-4 border-b border-gray-100 flex items-center justify-between">
         <Button
@@ -100,10 +94,10 @@ export default function BookingCalendar({
               disabled={!available || isPast}
               className={cn(
                 "bg-white aspect-square flex flex-col items-center justify-center relative transition-all",
-                available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/5",
+                available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/10",
                 isPast && "text-gray-300 cursor-not-allowed",
                 isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
-                isToday(day) && !isSelected && "font-bold"
+                isToday(day) && !isSelected && "font-bold border-2 border-[#41f2c0]"
               )}
             >
               <span className={cn(
@@ -120,51 +114,6 @@ export default function BookingCalendar({
         })}
       </div>
 
-      {/* Time Slots */}
-      <AnimatePresence>
-        {viewDate && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-gray-100"
-          >
-            <div className="p-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Clock size={18} className="text-[#41f2c0]" />
-                <h4 className="font-medium text-[#404040]">
-                  Horarios disponibles - {format(viewDate, "d 'de' MMMM", { locale: es })}
-                </h4>
-              </div>
-
-              {slotsForSelectedDate.length > 0 ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                  {slotsForSelectedDate.map((slot) => (
-                    <Button
-                      key={slot}
-                      variant={selectedTime === slot && selectedDate && isSameDay(selectedDate, viewDate) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => handleTimeSelect(slot)}
-                      className={cn(
-                        "transition-all",
-                        selectedTime === slot && selectedDate && isSameDay(selectedDate, viewDate)
-                          ? "bg-[#41f2c0] hover:bg-[#35d4a7] border-[#41f2c0]"
-                          : "hover:border-[#41f2c0] hover:text-[#41f2c0]"
-                      )}
-                    >
-                      {slot}
-                    </Button>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-4">
-                  No hay horarios disponibles para este día
-                </p>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

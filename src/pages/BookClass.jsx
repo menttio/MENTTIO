@@ -105,6 +105,30 @@ export default function BookClass() {
     return teachers.filter(t => teacherIds.includes(t.id));
   }, [selectedSubject, student, teachers]);
 
+  // Helper function to generate hourly slots from time ranges
+  const generateHourlySlots = (timeSlots) => {
+    const allSlots = [];
+    
+    timeSlots.forEach(slot => {
+      const [startHour, startMin] = slot.start_time.split(':').map(Number);
+      const [endHour, endMin] = slot.end_time.split(':').map(Number);
+      
+      let currentHour = startHour;
+      let currentMin = startMin;
+      
+      while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
+        allSlots.push(`${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`);
+        currentMin += 60; // Generate hourly slots
+        if (currentMin >= 60) {
+          currentMin = 0;
+          currentHour++;
+        }
+      }
+    });
+    
+    return allSlots;
+  };
+
   // Calculate available slots for selected teacher
   const availableSlots = useMemo(() => {
     if (!selectedTeacher) return {};
@@ -126,14 +150,14 @@ export default function BookClass() {
       
       if (exception) {
         if (exception.is_unavailable) continue;
-        slots[dateStr] = exception.time_slots?.map(s => s.start_time) || [];
+        slots[dateStr] = generateHourlySlots(exception.time_slots || []);
       } else {
         // Use regular schedule
         const regular = teacherAvailability.find(
           a => a.type === 'regular' && a.day_of_week === dayOfWeek
         );
         if (regular && regular.time_slots) {
-          slots[dateStr] = regular.time_slots.map(s => s.start_time);
+          slots[dateStr] = generateHourlySlots(regular.time_slots);
         }
       }
       
@@ -423,13 +447,64 @@ export default function BookClass() {
               </CardContent>
             </Card>
 
-            <BookingCalendar
-              availableSlots={availableSlots}
-              existingBookings={existingBookings}
-              onSelectSlot={handleSlotSelect}
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-            />
+            <div className="grid lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <BookingCalendar
+                  availableSlots={availableSlots}
+                  existingBookings={existingBookings}
+                  onSelectSlot={handleSlotSelect}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                />
+              </div>
+              
+              <div>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Clock size={18} className="text-[#41f2c0]" />
+                      <h4 className="font-medium text-[#404040]">Horarios Disponibles</h4>
+                    </div>
+                    
+                    {selectedDate ? (
+                      <>
+                        <p className="text-sm text-gray-500 mb-3 capitalize">
+                          {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
+                        </p>
+                        {availableSlots[format(selectedDate, 'yyyy-MM-dd')]?.length > 0 ? (
+                          <div className="space-y-2 max-h-96 overflow-y-auto">
+                            {availableSlots[format(selectedDate, 'yyyy-MM-dd')].map((slot) => (
+                              <Button
+                                key={slot}
+                                variant={selectedTime === slot ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => handleSlotSelect(selectedDate, slot)}
+                                className={cn(
+                                  "w-full justify-center transition-all",
+                                  selectedTime === slot
+                                    ? "bg-[#41f2c0] hover:bg-[#35d4a7] border-[#41f2c0]"
+                                    : "hover:border-[#41f2c0] hover:text-[#41f2c0]"
+                                )}
+                              >
+                                {slot}
+                              </Button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-400 text-sm text-center py-8">
+                            No hay horarios disponibles
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-gray-400 text-sm text-center py-8">
+                        Selecciona una fecha en el calendario
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
 
             {selectedDate && selectedTime && (
               <motion.div
