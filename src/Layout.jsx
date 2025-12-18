@@ -12,7 +12,8 @@ import {
   Menu, 
   X,
   Home,
-  User
+  User,
+  MessageCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -59,6 +60,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
     { name: 'Reservar Clase', icon: Calendar, page: 'BookClass' },
     { name: 'Mis Clases', icon: BookOpen, page: 'MyClasses' },
+    { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
   ];
 
@@ -66,6 +68,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'TeacherDashboard' },
     { name: 'Mi Calendario', icon: Calendar, page: 'TeacherCalendar' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
+    { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mis Alumnos', icon: Users, page: 'MyStudents' },
   ];
 

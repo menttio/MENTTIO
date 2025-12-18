@@ -7,6 +7,7 @@ import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherCalendar from './pages/TeacherCalendar';
 import ManageAvailability from './pages/ManageAvailability';
 import MyStudents from './pages/MyStudents';
+import Messages from './pages/Messages';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "TeacherCalendar": TeacherCalendar,
     "ManageAvailability": ManageAvailability,
     "MyStudents": MyStudents,
+    "Messages": Messages,
 }
 
 export const pagesConfig = {
