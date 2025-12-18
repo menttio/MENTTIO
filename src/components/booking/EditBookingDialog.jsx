@@ -109,6 +109,29 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
         start_time: selectedTime,
         end_time: calculateEndTime(selectedTime, booking.duration_minutes || 60)
       });
+
+      // Create notifications for both student and teacher
+      const newDate = format(selectedDate, "d 'de' MMMM", { locale: es });
+      await base44.entities.Notification.create({
+        user_id: booking.student_id,
+        user_email: booking.student_email,
+        type: 'booking_modified',
+        title: 'Clase reprogramada',
+        message: `Tu clase de ${booking.subject_name} con ${booking.teacher_name} se ha cambiado a ${newDate} a las ${selectedTime}`,
+        related_id: booking.id,
+        link_page: 'MyClasses'
+      });
+
+      await base44.entities.Notification.create({
+        user_id: booking.teacher_id,
+        user_email: booking.teacher_email,
+        type: 'booking_modified',
+        title: 'Clase reprogramada',
+        message: `La clase de ${booking.subject_name} con ${booking.student_name} se ha cambiado a ${newDate} a las ${selectedTime}`,
+        related_id: booking.id,
+        link_page: 'TeacherCalendar'
+      });
+
       onSave?.();
       onClose();
     } catch (error) {

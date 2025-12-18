@@ -101,6 +101,20 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
         [otherUnreadField]: currentUnread + 1
       });
 
+      // Create notification for recipient
+      const recipientId = userRole === 'student' ? conversation.teacher_id : conversation.student_id;
+      const recipientEmail = userRole === 'student' ? conversation.teacher_email : conversation.student_email;
+      
+      await base44.entities.Notification.create({
+        user_id: recipientId,
+        user_email: recipientEmail,
+        type: 'message_new',
+        title: 'Nuevo mensaje',
+        message: `${userName}: ${newMessage.trim().substring(0, 50)}${newMessage.trim().length > 50 ? '...' : ''}`,
+        related_id: conversation.id,
+        link_page: 'Messages'
+      });
+
       setNewMessage('');
       await loadMessages();
       onMessageSent?.();
