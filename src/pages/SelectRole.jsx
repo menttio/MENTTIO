@@ -100,10 +100,11 @@ export default function SelectRole() {
       >
         {step === 'role' ? (
           <div className="text-center">
-            <h1 className="text-5xl font-bold text-[#404040] mb-2 tracking-tight">
-              MENTTIO
+            <h1 className="text-4xl font-bold text-[#404040] mb-4">
+              ¡Bienvenido a <span className="text-[#41f2c0]">ClassBook</span>!
             </h1>
             <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
+
             <div className="grid md:grid-cols-2 gap-6">
               <motion.button
                 whileHover={{ scale: 1.02 }}
