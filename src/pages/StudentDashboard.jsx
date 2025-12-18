@@ -10,20 +10,35 @@ import {
   ChevronRight,
   Search,
   Plus,
-  User
+  User,
+  Trash2,
+  Star,
+  DollarSign
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { format, parseISO, isAfter, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function StudentDashboard() {
   const [student, setStudent] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [removingTeacher, setRemovingTeacher] = useState(null);
+  const [removing, setRemoving] = useState(false);
 
   const loadData = async () => {
     try {
@@ -38,6 +53,13 @@ export default function StudentDashboard() {
           student_email: currentUser.email 
         });
         setBookings(allBookings);
+
+        // Load assigned teachers details
+        if (students[0].assigned_teachers?.length > 0) {
+          const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
+          const teachersData = await base44.entities.Teacher.list();
+          setTeachers(teachersData.filter(t => teacherIds.includes(t.id)));
+        }
       }
     } catch (error) {
       console.error(error);
@@ -58,6 +80,34 @@ export default function StudentDashboard() {
   const totalClasses = bookings.length;
   const completedClasses = bookings.filter(b => b.status === 'completed').length;
   const scheduledClasses = bookings.filter(b => b.status === 'scheduled').length;
+
+  const handleRemoveTeacher = async () => {
+    if (!removingTeacher) return;
+    
+    setRemoving(true);
+    try {
+      const updatedAssignments = student.assigned_teachers.filter(
+        at => at.teacher_id !== removingTeacher.id
+      );
+      
+      await base44.entities.Student.update(student.id, {
+        assigned_teachers: updatedAssignments
+      });
+      
+      await loadData();
+      setRemovingTeacher(null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setRemoving(false);
+    }
+  };
+
+  const getTeacherSubjects = (teacherId) => {
+    return student?.assigned_teachers
+      ?.filter(at => at.teacher_id === teacherId)
+      .map(at => at.subject_name) || [];
+  };
 
   if (loading) {
     return (
@@ -217,11 +267,112 @@ export default function StudentDashboard() {
         </motion.div>
       </div>
 
+      {/* My Teachers */}
+      {teachers.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-[#404040]">Mis Profesores</h2>
+            <Link 
+              to={createPageUrl('SearchTeachers')}
+              className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
+            >
+              Buscar más <ChevronRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {teachers.map((teacher, idx) => {
+              const teacherSubjects = getTeacherSubjects(teacher.id);
+              
+              return (
+                <motion.div
+                  key={teacher.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + idx * 0.1 }}
+                >
+                  <Card className="hover:shadow-md transition-all">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
+                          {teacher.profile_photo ? (
+                            <img 
+                              src={teacher.profile_photo} 
+                              alt={teacher.full_name}
+                              className="w-full h-full object-cover rounded-xl"
+                            />
+                          ) : (
+                            <User className="text-white" size={24} />
+                          )}
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-[#404040] truncate">
+                            {teacher.full_name}
+                          </h3>
+                          <div className="flex items-center gap-1 mt-1">
+                            <Star className="text-yellow-400 fill-yellow-400" size={12} />
+                            <span className="text-sm text-gray-500">
+                              {teacher.rating?.toFixed(1) || '5.0'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Subjects */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {teacherSubjects.map((subject, idx) => (
+                          <Badge 
+                            key={idx}
+                            variant="secondary"
+                            className="bg-[#41f2c0]/10 text-[#404040] text-xs"
+                          >
+                            {subject}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex gap-2">
+                        <Link 
+                          to={createPageUrl('BookClass')}
+                          className="flex-1"
+                        >
+                          <Button 
+                            size="sm" 
+                            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                          >
+                            Reservar clase
+                          </Button>
+                        </Link>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setRemovingTeacher(teacher)}
+                          className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
+
       {/* Upcoming Classes */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
@@ -260,6 +411,43 @@ export default function StudentDashboard() {
           </Card>
         )}
       </motion.div>
+
+      {/* Remove Teacher Dialog */}
+      <Dialog open={!!removingTeacher} onOpenChange={(open) => !open && setRemovingTeacher(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Eliminar profesor?</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que quieres eliminar a <strong>{removingTeacher?.full_name}</strong> de tu lista de profesores?
+              Ya no aparecerá como opción al reservar clases.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemovingTeacher(null)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveTeacher}
+              disabled={removing}
+            >
+              {removing ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
+                  <Clock size={16} />
+                </motion.div>
+              ) : (
+                <>
+                  <Trash2 size={16} className="mr-2" />
+                  Eliminar
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
