@@ -40,6 +40,10 @@ export default function Layout({ children, currentPageName }) {
             setUserRole('student');
           } else {
             setUserRole('new');
+            // Redirect new users to role selection
+            if (currentPageName !== 'SelectRole') {
+              window.location.href = createPageUrl('SelectRole');
+            }
           }
         }
       } catch (error) {
