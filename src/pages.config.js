@@ -3,6 +3,10 @@ import StudentDashboard from './pages/StudentDashboard';
 import BookClass from './pages/BookClass';
 import MyClasses from './pages/MyClasses';
 import SearchTeachers from './pages/SearchTeachers';
+import TeacherDashboard from './pages/TeacherDashboard';
+import TeacherCalendar from './pages/TeacherCalendar';
+import ManageAvailability from './pages/ManageAvailability';
+import MyStudents from './pages/MyStudents';
 import __Layout from './Layout.jsx';
 
 
@@ -12,6 +16,10 @@ export const PAGES = {
     "BookClass": BookClass,
     "MyClasses": MyClasses,
     "SearchTeachers": SearchTeachers,
+    "TeacherDashboard": TeacherDashboard,
+    "TeacherCalendar": TeacherCalendar,
+    "ManageAvailability": ManageAvailability,
+    "MyStudents": MyStudents,
 }
 
 export const pagesConfig = {
