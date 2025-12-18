@@ -37,8 +37,15 @@ export default function BookingCalendar({
 
   const handleDateClick = (date) => {
     if (!isDateAvailable(date)) return;
+    setViewDate(date);
     onSelectSlot(date, null);
   };
+
+  const handleTimeSelect = (time) => {
+    onSelectSlot(viewDate, time);
+  };
+
+  const slotsForSelectedDate = viewDate ? getAvailableSlotsForDate(viewDate) : [];
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -87,6 +94,8 @@ export default function BookingCalendar({
           const isSelected = viewDate && isSameDay(day, viewDate);
           const isPast = isBefore(day, startOfDay(new Date()));
 
+          const isViewDate = viewDate && isSameDay(day, viewDate);
+          
           return (
             <button
               key={day.toISOString()}
@@ -96,17 +105,17 @@ export default function BookingCalendar({
                 "bg-white aspect-square flex flex-col items-center justify-center relative transition-all",
                 available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/10",
                 isPast && "text-gray-300 cursor-not-allowed",
-                isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
-                isToday(day) && !isSelected && "font-bold border-2 border-[#41f2c0]"
+                isViewDate && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
+                isToday(day) && !isViewDate && "font-bold border-2 border-[#41f2c0]"
               )}
             >
               <span className={cn(
                 "text-sm",
-                isSelected && "font-semibold"
+                isViewDate && "font-semibold"
               )}>
                 {format(day, 'd')}
               </span>
-              {available && !isPast && !isSelected && (
+              {available && !isPast && !isViewDate && (
                 <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-[#41f2c0]" />
               )}
             </button>
