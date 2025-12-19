@@ -30,6 +30,8 @@ export default function ClassRecordings() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState('all');
+  const [filterTeacher, setFilterTeacher] = useState('all');
+  const [filterDate, setFilterDate] = useState('all');
 
   const loadData = async () => {
     try {
@@ -55,6 +57,7 @@ export default function ClassRecordings() {
   }, []);
 
   const uniqueSubjects = [...new Set(bookings.map(b => b.subject_name))];
+  const uniqueTeachers = [...new Set(bookings.map(b => b.teacher_name))];
 
   const filteredBookings = bookings.filter(booking => {
     const matchesSearch = searchQuery === '' || 
@@ -62,8 +65,26 @@ export default function ClassRecordings() {
       booking.teacher_name?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesSubject = filterSubject === 'all' || booking.subject_name === filterSubject;
+    const matchesTeacher = filterTeacher === 'all' || booking.teacher_name === filterTeacher;
     
-    return matchesSearch && matchesSubject;
+    let matchesDate = true;
+    if (filterDate !== 'all') {
+      const bookingDate = parseISO(booking.date);
+      const now = new Date();
+      
+      if (filterDate === 'last_week') {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        matchesDate = bookingDate >= weekAgo;
+      } else if (filterDate === 'last_month') {
+        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        matchesDate = bookingDate >= monthAgo;
+      } else if (filterDate === 'last_3_months') {
+        const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+        matchesDate = bookingDate >= threeMonthsAgo;
+      }
+    }
+    
+    return matchesSearch && matchesSubject && matchesTeacher && matchesDate;
   });
 
   if (loading) {
@@ -86,8 +107,8 @@ export default function ClassRecordings() {
 
       {/* Filters */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
+        <div className="flex flex-col gap-4">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <Input
               placeholder="Buscar por asignatura o profesor..."
@@ -97,20 +118,47 @@ export default function ClassRecordings() {
             />
           </div>
 
-          <Select value={filterSubject} onValueChange={setFilterSubject}>
-            <SelectTrigger className="w-full md:w-48">
-              <Filter className="mr-2" size={16} />
-              <SelectValue placeholder="Filtrar por asignatura" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas las asignaturas</SelectItem>
-              {uniqueSubjects.map((subject) => (
-                <SelectItem key={subject} value={subject}>
-                  {subject}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Select value={filterSubject} onValueChange={setFilterSubject}>
+              <SelectTrigger>
+                <SelectValue placeholder="Asignatura" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas las asignaturas</SelectItem>
+                {uniqueSubjects.map((subject) => (
+                  <SelectItem key={subject} value={subject}>
+                    {subject}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterTeacher} onValueChange={setFilterTeacher}>
+              <SelectTrigger>
+                <SelectValue placeholder="Profesor" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los profesores</SelectItem>
+                {uniqueTeachers.map((teacher) => (
+                  <SelectItem key={teacher} value={teacher}>
+                    {teacher}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterDate} onValueChange={setFilterDate}>
+              <SelectTrigger>
+                <SelectValue placeholder="Fecha" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas las fechas</SelectItem>
+                <SelectItem value="last_week">Última semana</SelectItem>
+                <SelectItem value="last_month">Último mes</SelectItem>
+                <SelectItem value="last_3_months">Últimos 3 meses</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
