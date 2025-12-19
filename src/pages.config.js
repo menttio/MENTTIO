@@ -11,6 +11,8 @@ import Messages from './pages/Messages';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherWorkload from './pages/TeacherWorkload';
 import ManageSubjects from './pages/ManageSubjects';
+import TeacherSignup from './pages/TeacherSignup';
+import RenewSubscription from './pages/RenewSubscription';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +30,8 @@ export const PAGES = {
     "TeacherProfile": TeacherProfile,
     "TeacherWorkload": TeacherWorkload,
     "ManageSubjects": ManageSubjects,
+    "TeacherSignup": TeacherSignup,
+    "RenewSubscription": RenewSubscription,
 }
 
 export const pagesConfig = {

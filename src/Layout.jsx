@@ -35,7 +35,25 @@ export default function Layout({ children, currentPageName }) {
         // Check if user is a teacher
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
-          setUserRole('teacher');
+          const teacher = teachers[0];
+          // Verify subscription is active
+          if (teacher.subscription_active && teacher.subscription_expires) {
+            const expirationDate = new Date(teacher.subscription_expires);
+            if (expirationDate > new Date()) {
+              setUserRole('teacher');
+            } else {
+              // Subscription expired - redirect to renewal
+              setUserRole('expired_teacher');
+              if (currentPageName !== 'RenewSubscription') {
+                window.location.href = createPageUrl('RenewSubscription');
+              }
+            }
+          } else {
+            setUserRole('expired_teacher');
+            if (currentPageName !== 'RenewSubscription') {
+              window.location.href = createPageUrl('RenewSubscription');
+            }
+          }
         } else {
           // Check if user is a student
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
