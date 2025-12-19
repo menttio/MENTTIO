@@ -132,7 +132,7 @@ export default function TeacherProfile() {
               <div className="flex flex-wrap gap-2 profile-subjects">
                 {teacher.subjects?.map((subject, idx) => (
                   <Badge key={idx} className="bg-[#41f2c0]/10 text-[#404040] hover:bg-[#41f2c0]/20">
-                    {subject.subject_name} - {subject.price_per_hour}€/h
+                    {subject.subject_name} ({subject.level}) - {subject.price_per_hour}€/h
                   </Badge>
                 ))}
               </div>
