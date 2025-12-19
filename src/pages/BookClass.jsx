@@ -218,14 +218,26 @@ export default function BookClass() {
         files: []
       });
 
-      // Create notification for teacher
+      // Create notifications for both student and teacher
       const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
+      const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
+
+      await base44.entities.Notification.create({
+        user_id: student.id,
+        user_email: user.email,
+        type: 'booking_new',
+        title: 'Clase reservada',
+        message: `Has reservado una clase de ${subjectName} con ${selectedTeacher.full_name} para el ${bookingDate} a las ${selectedTime}`,
+        related_id: newBooking.id,
+        link_page: 'MyClasses'
+      });
+
       await base44.entities.Notification.create({
         user_id: selectedTeacher.id,
         user_email: selectedTeacher.user_email,
         type: 'booking_new',
         title: 'Nueva reserva de clase',
-        message: `${student.full_name} ha reservado una clase de ${subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name} para el ${bookingDate} a las ${selectedTime}`,
+        message: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
         related_id: newBooking.id,
         link_page: 'TeacherCalendar'
       });
