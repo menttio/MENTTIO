@@ -28,6 +28,7 @@ import { format, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import AvailabilityTour from '../components/teacher/AvailabilityTour';
 
 const DAYS_OF_WEEK = [
   { value: 1, label: 'Lunes' },
@@ -51,6 +52,7 @@ export default function ManageAvailability() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('regular');
+  const [showTour, setShowTour] = useState(false);
   
   // Regular schedule state
   const [regularSchedule, setRegularSchedule] = useState({});
@@ -70,6 +72,11 @@ export default function ManageAvailability() {
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
       if (teachers.length > 0) {
         setTeacher(teachers[0]);
+        
+        // Show tour if not completed
+        if (!teachers[0].availability_tour_completed) {
+          setShowTour(true);
+        }
 
         const allAvailabilities = await base44.entities.Availability.filter({ 
           teacher_id: teachers[0].id 
@@ -215,15 +222,23 @@ export default function ManageAvailability() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Gestionar Disponibilidad</h1>
-        <p className="text-gray-500 mt-2">Configura tu horario habitual y excepciones puntuales</p>
-      </div>
+    <>
+      {showTour && teacher && (
+        <AvailabilityTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[#404040]">Gestionar Disponibilidad</h1>
+          <p className="text-gray-500 mt-2">Configura tu horario habitual y excepciones puntuales</p>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-6 tabs-list">
           <TabsTrigger value="regular" className="flex items-center gap-2">
             <Clock size={16} />
             Horario Habitual
@@ -243,7 +258,7 @@ export default function ManageAvailability() {
                 <Button
                   onClick={saveRegularSchedule}
                   disabled={saving}
-                  className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white save-schedule"
                 >
                   {saving ? (
                     <Loader2 className="animate-spin" size={18} />
@@ -256,7 +271,7 @@ export default function ManageAvailability() {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 regular-schedule">
               {DAYS_OF_WEEK.map((day) => {
                 const dayConfig = regularSchedule[day.value];
                 const isEnabled = dayConfig?.enabled;
@@ -497,7 +512,8 @@ export default function ManageAvailability() {
             </Card>
           </div>
         </TabsContent>
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </>
   );
 }
