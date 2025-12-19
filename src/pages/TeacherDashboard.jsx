@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import WelcomeTour from '../components/teacher/WelcomeTour';
+import InteractiveTour from '../components/teacher/InteractiveTour';
 import { 
   Calendar, 
   Users, 
@@ -93,7 +93,7 @@ export default function TeacherDashboard() {
   return (
     <>
       {showTour && teacher && (
-        <WelcomeTour
+        <InteractiveTour
           teacherId={teacher.id}
           teacherName={teacher.full_name}
           onComplete={() => setShowTour(false)}
@@ -122,7 +122,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white">
+          <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white stats-earnings">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <DollarSign size={24} />
@@ -138,7 +138,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card>
+          <Card className="stats-students">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <Users className="text-[#41f2c0]" size={24} />
@@ -154,7 +154,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card>
+          <Card className="stats-classes">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <BookOpen className="text-[#41f2c0]" size={24} />
@@ -170,7 +170,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card>
+          <Card className="stats-rating">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <Star className="text-yellow-400" size={24} />
@@ -189,7 +189,9 @@ export default function TeacherDashboard() {
         transition={{ delay: 0.5 }}
         className="mb-8"
       >
-        <ManageSubjectsCard teacher={teacher} onUpdate={loadData} />
+        <div className="subjects-card">
+          <ManageSubjectsCard teacher={teacher} onUpdate={loadData} />
+        </div>
       </motion.div>
 
       {/* Quick Actions */}
@@ -199,7 +201,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <Link to={createPageUrl('TeacherCalendar')}>
+          <Link to={createPageUrl('TeacherCalendar')} className="action-calendar">
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#41f2c0] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -217,7 +219,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <Link to={createPageUrl('ManageAvailability')}>
+          <Link to={createPageUrl('ManageAvailability')} className="action-availability">
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#404040] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -235,7 +237,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
         >
-          <Link to={createPageUrl('MyStudents')}>
+          <Link to={createPageUrl('MyStudents')} className="action-students">
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -254,6 +256,7 @@ export default function TeacherDashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
+        className="upcoming-classes"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
