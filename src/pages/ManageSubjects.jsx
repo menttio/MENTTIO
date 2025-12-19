@@ -21,6 +21,7 @@ import {
 import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import SubjectsTour from '../components/teacher/SubjectsTour';
 
 export default function ManageSubjects() {
   const [teacher, setTeacher] = useState(null);
@@ -31,6 +32,7 @@ export default function ManageSubjects() {
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [price, setPrice] = useState('');
   const [saving, setSaving] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -42,7 +44,13 @@ export default function ManageSubjects() {
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
       
       if (teachers.length > 0) {
-        setTeacher(teachers[0]);
+        const teacherData = teachers[0];
+        setTeacher(teacherData);
+        
+        // Show tour if not completed and has subjects
+        if (!teacherData.subjects_tour_completed && teacherData.subjects?.length > 0) {
+          setShowTour(true);
+        }
       }
 
       const subjects = await base44.entities.Subject.list();
@@ -129,21 +137,29 @@ export default function ManageSubjects() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
-          <p className="text-gray-500 mt-2">Gestiona las materias que impartes y sus precios</p>
+    <>
+      {showTour && teacher && (
+        <SubjectsTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
+            <p className="text-gray-500 mt-2">Gestiona las materias que impartes y sus precios</p>
+          </div>
+          <Button
+            onClick={handleAdd}
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
+          >
+            <Plus size={18} className="mr-2" />
+            Añadir Asignatura
+          </Button>
         </div>
-        <Button
-          onClick={handleAdd}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-        >
-          <Plus size={18} className="mr-2" />
-          Añadir Asignatura
-        </Button>
-      </div>
 
       {/* Subjects Grid */}
       {teacher?.subjects?.length > 0 ? (
@@ -155,7 +171,7 @@ export default function ManageSubjects() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <Card className="hover:shadow-lg transition-all">
+              <Card className={`hover:shadow-lg transition-all ${idx === 0 ? 'subject-card-example' : ''}`}>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -167,7 +183,7 @@ export default function ManageSubjects() {
                         <p className="text-xs text-gray-500">Asignatura</p>
                       </div>
                     </div>
-                    <div className="flex gap-1">
+                    <div className={`flex gap-1 ${idx === 0 ? 'subject-card-actions' : ''}`}>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -187,7 +203,7 @@ export default function ManageSubjects() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg">
+                  <div className={`flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg ${idx === 0 ? 'subject-card-price' : ''}`}>
                     <DollarSign className="text-[#41f2c0]" size={20} />
                     <div>
                       <p className="text-2xl font-bold text-[#41f2c0]">{subject.price_per_hour}€</p>
@@ -270,6 +286,7 @@ export default function ManageSubjects() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 }
