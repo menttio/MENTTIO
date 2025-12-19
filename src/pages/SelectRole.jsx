@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { GraduationCap, BookOpen, ArrowRight, Loader2 } from 'lucide-react';
+import { GraduationCap, BookOpen, ArrowRight, Loader2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -50,6 +50,10 @@ export default function SelectRole() {
   }, [navigate]);
 
   const handleRoleSelect = (role) => {
+    if (role === 'teacher') {
+      navigate(createPageUrl('TeacherSignup'));
+      return;
+    }
     setSelectedRole(role);
     setStep('details');
   };
@@ -130,6 +134,9 @@ export default function SelectRole() {
                 </div>
                 <h2 className="text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
                 <p className="text-gray-500">Quiero ofrecer clases particulares a alumnos</p>
+                <p className="text-xs text-[#41f2c0] mt-2 font-medium">
+                  Requiere suscripción mensual
+                </p>
               </motion.button>
             </div>
           </div>
