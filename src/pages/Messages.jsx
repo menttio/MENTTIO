@@ -27,7 +27,6 @@ import {
 import { motion } from 'framer-motion';
 import ConversationList from '../components/chat/ConversationList';
 import ChatWindow from '../components/chat/ChatWindow';
-import MessagesTour from '../components/teacher/MessagesTour';
 
 export default function Messages() {
   const [user, setUser] = useState(null);
@@ -41,7 +40,6 @@ export default function Messages() {
   const [selectedContact, setSelectedContact] = useState('');
   const [creating, setCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -57,12 +55,6 @@ export default function Messages() {
       if (teachers.length > 0) {
         setUserRole('teacher');
         setUserProfile(teachers[0]);
-        
-        // Show tour if not completed
-        if (!teachers[0].messages_tour_completed) {
-          setShowTour(true);
-        }
-        
         await loadTeacherData(teachers[0]);
       } else {
         const students = await base44.entities.Student.filter({ user_email: currentUser.email });
@@ -200,17 +192,9 @@ export default function Messages() {
   }
 
   return (
-    <>
-      {showTour && userRole === 'teacher' && userProfile && (
-        <MessagesTour
-          teacherId={userProfile.id}
-          onComplete={() => setShowTour(false)}
-        />
-      )}
-
-      <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)] messages-container">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+    <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)]">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-[#404040]">Mensajes</h1>
           <p className="text-gray-500 mt-2">
@@ -222,7 +206,7 @@ export default function Messages() {
         {availableContacts.length > 0 && (
           <Button
             onClick={() => setShowNewChat(true)}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white new-chat-btn"
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
           >
             <Plus size={18} className="mr-2" />
             Nueva conversación
@@ -234,8 +218,8 @@ export default function Messages() {
       <Card className="h-full overflow-hidden messages-list">
         <div className="flex h-full">
           {/* Conversations List */}
-          <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50 conversations-list">
-            <div className="p-4 border-b border-gray-100 bg-white search-conversations">
+          <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50">
+            <div className="p-4 border-b border-gray-100 bg-white">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <Input
@@ -269,14 +253,12 @@ export default function Messages() {
           </div>
 
           {/* Chat Window */}
-          <div className="chat-window flex-1">
-            <ChatWindow
-              conversation={selectedConversation}
-              userRole={userRole}
-              userId={userProfile?.id}
-              onMessageSent={loadData}
-            />
-          </div>
+          <ChatWindow
+            conversation={selectedConversation}
+            userRole={userRole}
+            userId={userProfile?.id}
+            onMessageSent={loadData}
+          />
         </div>
       </Card>
 
@@ -320,6 +302,5 @@ export default function Messages() {
         </DialogContent>
       </Dialog>
     </div>
-    </>
   );
 }
