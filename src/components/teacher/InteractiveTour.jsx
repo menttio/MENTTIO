@@ -322,17 +322,52 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
-      let top, left;
+      let top, left, position = step.position;
+      const tooltipWidth = 600;
+      const tooltipHeight = 300; // Approximate height
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
       
+      // Calculate best position
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
-      } else {
+        
+        // Check if tooltip fits below
+        if (rect.bottom + tooltipHeight > windowHeight) {
+          // Try above instead
+          top = rect.top + scrollTop - 20;
+          position = 'top';
+        }
+      } else if (step.position === 'top') {
         top = rect.top + scrollTop - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
+        
+        // Check if tooltip fits above
+        if (rect.top < tooltipHeight) {
+          // Try below instead
+          top = rect.bottom + scrollTop + 20;
+          position = 'bottom';
+        }
+      } else if (step.position === 'right') {
+        top = rect.top + scrollTop + (rect.height / 2);
+        left = rect.right + scrollLeft + 20;
+        position = 'right';
+      } else if (step.position === 'left') {
+        top = rect.top + scrollTop + (rect.height / 2);
+        left = rect.left + scrollLeft - 20;
+        position = 'left';
       }
       
-      setTooltipPosition({ top, left, position: step.position });
+      // Ensure tooltip doesn't go off-screen horizontally
+      const halfTooltip = tooltipWidth / 2;
+      if (left - halfTooltip < 10) {
+        left = halfTooltip + 10;
+      } else if (left + halfTooltip > windowWidth - 10) {
+        left = windowWidth - halfTooltip - 10;
+      }
+      
+      setTooltipPosition({ top, left, position });
       
       // Add highlight class
       element.classList.add('tour-highlight');
@@ -413,11 +448,15 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             left: `${tooltipPosition.left}px`,
             transform: tooltipPosition.position === 'bottom' 
               ? 'translateX(-50%)' 
-              : 'translateX(-50%) translateY(-100%)',
+              : tooltipPosition.position === 'top'
+              ? 'translateX(-50%) translateY(-100%)'
+              : tooltipPosition.position === 'right'
+              ? 'translateY(-50%)'
+              : 'translateX(-100%) translateY(-50%)',
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-[560px] max-w-[calc(100vw-2rem)]"
+          className="w-[600px] max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
@@ -496,17 +535,25 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
 
           {/* Arrow pointer */}
           <div 
-            className={`absolute left-1/2 -translate-x-1/2 ${
+            className={`absolute ${
               tooltipPosition.position === 'bottom' 
-                ? '-top-3' 
-                : '-bottom-3'
+                ? 'left-1/2 -translate-x-1/2 -top-3' 
+                : tooltipPosition.position === 'top'
+                ? 'left-1/2 -translate-x-1/2 -bottom-3'
+                : tooltipPosition.position === 'right'
+                ? 'top-1/2 -translate-y-1/2 -left-3'
+                : 'top-1/2 -translate-y-1/2 -right-3'
             }`}
           >
             <div 
-              className={`w-0 h-0 border-l-[12px] border-r-[12px] border-transparent ${
+              className={`w-0 h-0 ${
                 tooltipPosition.position === 'bottom'
-                  ? 'border-b-[12px] border-b-[#41f2c0]'
-                  : 'border-t-[12px] border-t-white'
+                  ? 'border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]'
+                  : tooltipPosition.position === 'top'
+                  ? 'border-l-[12px] border-r-[12px] border-transparent border-t-[12px] border-t-white'
+                  : tooltipPosition.position === 'right'
+                  ? 'border-t-[12px] border-b-[12px] border-transparent border-r-[12px] border-r-[#41f2c0]'
+                  : 'border-t-[12px] border-b-[12px] border-transparent border-l-[12px] border-l-white'
               }`}
             />
           </div>
