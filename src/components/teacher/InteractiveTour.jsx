@@ -16,14 +16,12 @@ import {
   MessageCircle,
   User,
   BarChart3,
-  Bell,
-  Award,
-  Search
+  Bell
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const tourSteps = [
-  // Dashboard - Inicio
+  // Dashboard inicial
   {
     target: '.stats-earnings',
     title: 'Ingresos del mes',
@@ -65,207 +63,72 @@ const tourSteps = [
     page: 'TeacherDashboard'
   },
   {
-    target: '.action-calendar',
-    title: 'Acceso rápido al calendario',
-    content: 'Haz clic aquí para ver tu calendario completo con todas las clases programadas.',
-    icon: Calendar,
-    position: 'bottom',
-    page: 'TeacherDashboard'
-  },
-  {
-    target: '.action-availability',
-    title: 'Gestión de disponibilidad',
-    content: 'Configura tu horario semanal y excepciones desde este acceso directo.',
-    icon: Clock,
-    position: 'bottom',
-    page: 'TeacherDashboard'
-  },
-  {
-    target: '.action-students',
-    title: 'Ver tus alumnos',
-    content: 'Accede al listado completo de tus alumnos y su información.',
-    icon: Users,
-    position: 'bottom',
-    page: 'TeacherDashboard'
-  },
-  {
     target: '.upcoming-classes',
     title: 'Próximas clases',
     content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
     icon: Calendar,
-    position: 'bottom',
+    position: 'top',
     page: 'TeacherDashboard'
   },
-  
-  // Mi Calendario - Detalles
-  {
-    target: '.calendar-legend',
-    title: 'Leyenda del calendario',
-    content: 'Los puntos de colores indican: verde para clases reservadas, azul para disponibilidad regular, morado para excepciones y rojo para días no disponibles.',
-    icon: Calendar,
-    position: 'bottom',
-    page: 'TeacherCalendar'
-  },
+  // Mi Calendario
   {
     target: '.calendar-view',
-    title: 'Vista de calendario mensual',
-    content: 'Navega por los meses y haz clic en cualquier día para ver los detalles de tus clases y disponibilidad.',
+    title: 'Vista de calendario',
+    content: 'Visualiza todas tus clases programadas en formato calendario mensual. Haz clic en cualquier día para ver detalles.',
     icon: Calendar,
     position: 'bottom',
     page: 'TeacherCalendar'
   },
-  {
-    target: '.day-details',
-    title: 'Detalles del día seleccionado',
-    content: 'Aquí ves información completa del día: clases programadas con hora y alumno, y tu disponibilidad configurada.',
-    icon: Clock,
-    position: 'left',
-    page: 'TeacherCalendar'
-  },
-  
-  // Disponibilidad - Detalles
+  // Disponibilidad
   {
     target: '.availability-schedule',
-    title: 'Horario semanal regular',
-    content: 'Activa los días de la semana que trabajas. Para cada día activo, define las franjas horarias en las que estás disponible.',
+    title: 'Configura tu horario',
+    content: 'Define tu disponibilidad semanal. Activa los días que trabajas y establece tus horarios disponibles.',
     icon: Clock,
     position: 'top',
     page: 'ManageAvailability'
   },
-  {
-    target: '.exceptions-tab',
-    title: 'Excepciones puntuales',
-    content: 'Añade días específicos con horarios diferentes o márcalos como no disponibles. Útil para vacaciones o eventos especiales.',
-    icon: Calendar,
-    position: 'top',
-    page: 'ManageAvailability'
-  },
-  
-  // Mis Asignaturas - Detalles
+  // Mis Asignaturas
   {
     target: '.subjects-management',
-    title: 'Tus asignaturas activas',
-    content: 'Cada tarjeta muestra una asignatura que impartes con su precio por hora. Edita el precio o elimina asignaturas desde los botones.',
+    title: 'Gestión de asignaturas',
+    content: 'Añade nuevas asignaturas, modifica precios y elimina las que ya no impartes.',
     icon: BookOpen,
     position: 'bottom',
     page: 'ManageSubjects'
   },
-  
-  // Estadísticas - Detalles
+  // Estadísticas
   {
-    target: '.stat-total-classes',
-    title: 'Total de clases',
-    content: 'Número total de clases impartidas en el periodo seleccionado (esta semana o este mes).',
-    icon: Calendar,
+    target: '.workload-stats',
+    title: 'Analiza tu actividad',
+    content: 'Consulta estadísticas detalladas sobre tus clases, ingresos y rendimiento a lo largo del tiempo.',
+    icon: BarChart3,
     position: 'bottom',
     page: 'TeacherWorkload'
   },
-  {
-    target: '.stat-hours',
-    title: 'Horas impartidas',
-    content: 'Total de horas de clase que has dado. Se calcula sumando la duración de todas tus clases del periodo.',
-    icon: Clock,
-    position: 'bottom',
-    page: 'TeacherWorkload'
-  },
-  {
-    target: '.stat-earnings',
-    title: 'Ingresos generados',
-    content: 'Total de dinero ganado en el periodo seleccionado. Se actualiza automáticamente con cada clase completada.',
-    icon: DollarSign,
-    position: 'bottom',
-    page: 'TeacherWorkload'
-  },
-  {
-    target: '.stat-students-count',
-    title: 'Alumnos distintos',
-    content: 'Número de alumnos únicos con los que has tenido clase en este periodo.',
-    icon: Users,
-    position: 'bottom',
-    page: 'TeacherWorkload'
-  },
-  {
-    target: '.subjects-breakdown',
-    title: 'Distribución por asignatura',
-    content: 'Gráfico que muestra cuántas clases has dado de cada asignatura. Te ayuda a identificar tus materias más demandadas.',
-    icon: BookOpen,
-    position: 'top',
-    page: 'TeacherWorkload'
-  },
-  {
-    target: '.top-students',
-    title: 'Principales alumnos',
-    content: 'Lista de tus alumnos más activos con el número de clases y los ingresos generados por cada uno.',
-    icon: Users,
-    position: 'top',
-    page: 'TeacherWorkload'
-  },
-  
-  // Mi Perfil - Detalles
+  // Mi Perfil
   {
     target: '.profile-info',
-    title: 'Cabecera de tu perfil',
-    content: 'Tu foto, nombre, valoración y asignaturas. Esta es la primera impresión que tendrán los alumnos al ver tu perfil.',
+    title: 'Tu perfil público',
+    content: 'Edita tu información personal, biografía y credenciales que verán tus alumnos.',
     icon: User,
     position: 'bottom',
     page: 'TeacherProfile'
   },
+  // Mensajes
   {
-    target: '.profile-tabs',
-    title: 'Pestañas de información',
-    content: 'Navega entre tu información profesional (experiencia, métodos, certificaciones) y las reseñas de tus alumnos.',
-    icon: BookOpen,
-    position: 'bottom',
-    page: 'TeacherProfile'
-  },
-  {
-    target: '.profile-experience',
-    title: 'Experiencia y formación',
-    content: 'Tus años de experiencia y estudios. Edita esta información para destacar tus credenciales ante los alumnos.',
-    icon: Award,
-    position: 'bottom',
-    page: 'TeacherProfile'
-  },
-  {
-    target: '.profile-reviews',
-    title: 'Reseñas de alumnos',
-    content: 'Valoraciones y comentarios que han dejado tus alumnos. Estas reseñas son públicas y ayudan a nuevos alumnos a decidir.',
-    icon: Star,
-    position: 'top',
-    page: 'TeacherProfile'
-  },
-  
-  // Mensajes - Detalles
-  {
-    target: '.messages-search',
-    title: 'Buscar conversaciones',
-    content: 'Filtra tus conversaciones por nombre de alumno para encontrar rápidamente con quién necesitas hablar.',
-    icon: Search,
-    position: 'bottom',
-    page: 'Messages'
-  },
-  {
-    target: '.conversations-sidebar',
-    title: 'Lista de chats',
-    content: 'Todas tus conversaciones activas ordenadas por mensaje más reciente. Haz clic en una para abrirla.',
+    target: '.messages-list',
+    title: 'Comunicación con alumnos',
+    content: 'Gestiona todas tus conversaciones con alumnos en un solo lugar.',
     icon: MessageCircle,
-    position: 'right',
+    position: 'bottom',
     page: 'Messages'
   },
-  {
-    target: '.chat-window-area',
-    title: 'Ventana de chat',
-    content: 'Aquí ves el historial completo de mensajes con el alumno seleccionado y puedes escribir nuevos mensajes.',
-    icon: MessageCircle,
-    position: 'left',
-    page: 'Messages'
-  },
-  
-  // Mis Alumnos - Detalles
+  // Mis Alumnos
   {
     target: '.students-list',
-    title: 'Tarjetas de alumnos',
-    content: 'Cada tarjeta muestra: clases totales, próximas clases, dinero gastado, asignaturas cursadas y acceso rápido a su historial.',
+    title: 'Base de datos de alumnos',
+    content: 'Consulta información detallada de cada alumno, historial de clases y progreso.',
     icon: Users,
     position: 'bottom',
     page: 'MyStudents'
@@ -278,11 +141,6 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Remove highlight from previous element
-    document.querySelectorAll('.tour-highlight').forEach(el => {
-      el.classList.remove('tour-highlight');
-    });
-
     // Navigate to the page for current step
     const step = tourSteps[currentStep];
     if (step.page && window.location.pathname !== createPageUrl(step.page)) {
@@ -292,24 +150,14 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
     // Wait for navigation and then update position
     const timer = setTimeout(() => {
       updateTooltipPosition();
-    }, 800);
-    
-    // Additional retry to ensure element is found
-    const retryTimer = setTimeout(() => {
-      updateTooltipPosition();
-    }, 1200);
+    }, 300);
 
     window.addEventListener('resize', updateTooltipPosition);
     return () => {
       clearTimeout(timer);
-      clearTimeout(retryTimer);
       window.removeEventListener('resize', updateTooltipPosition);
-      // Clean up highlights on unmount
-      document.querySelectorAll('.tour-highlight').forEach(el => {
-        el.classList.remove('tour-highlight');
-      });
     };
-  }, [currentStep, navigate]);
+  }, [currentStep]);
 
   const updateTooltipPosition = () => {
     const step = tourSteps[currentStep];
@@ -322,60 +170,17 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
-      let top, left, position = step.position;
-      const tooltipWidth = 600;
-      const tooltipHeight = 350; // Approximate height
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const viewportTop = scrollTop;
-      const viewportBottom = scrollTop + windowHeight;
+      let top, left;
       
-      // Force bottom position for first step (earnings card) - always
-      if (step.target === '.stats-earnings') {
+      if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
-        position = 'bottom';
-      } else if (step.position === 'bottom') {
-        top = rect.bottom + scrollTop + 20;
+      } else {
+        top = rect.top + scrollTop - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
-        
-        // Check if tooltip fits below in viewport
-        const tooltipBottom = rect.bottom + tooltipHeight + 40;
-        if (tooltipBottom > viewportBottom) {
-          // Try above instead
-          top = rect.top + scrollTop - tooltipHeight - 20;
-          position = 'top';
-        }
-      } else if (step.position === 'top') {
-        top = rect.top + scrollTop - tooltipHeight - 20;
-        left = rect.left + scrollLeft + (rect.width / 2);
-        
-        // Check if tooltip fits above in viewport
-        const tooltipTop = rect.top - tooltipHeight - 40;
-        if (tooltipTop < viewportTop) {
-          // Try below instead
-          top = rect.bottom + scrollTop + 20;
-          position = 'bottom';
-        }
-      } else if (step.position === 'right') {
-        top = rect.top + scrollTop + (rect.height / 2);
-        left = rect.right + scrollLeft + 20;
-        position = 'right';
-      } else if (step.position === 'left') {
-        top = rect.top + scrollTop + (rect.height / 2);
-        left = rect.left + scrollLeft - 20;
-        position = 'left';
       }
       
-      // Ensure tooltip doesn't go off-screen horizontally
-      const halfTooltip = tooltipWidth / 2;
-      if (left - halfTooltip < 10) {
-        left = halfTooltip + 10;
-      } else if (left + halfTooltip > windowWidth - 10) {
-        left = windowWidth - halfTooltip - 10;
-      }
-      
-      setTooltipPosition({ top, left, position });
+      setTooltipPosition({ top, left, position: step.position });
       
       // Add highlight class
       element.classList.add('tour-highlight');
@@ -387,6 +192,12 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handleNext = () => {
+    // Remove highlight from current element
+    const currentElement = document.querySelector(tourSteps[currentStep].target);
+    if (currentElement) {
+      currentElement.classList.remove('tour-highlight');
+    }
+
     if (currentStep < tourSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -395,6 +206,12 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handlePrev = () => {
+    // Remove highlight from current element
+    const currentElement = document.querySelector(tourSteps[currentStep].target);
+    if (currentElement) {
+      currentElement.classList.remove('tour-highlight');
+    }
+
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
@@ -456,15 +273,11 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             left: `${tooltipPosition.left}px`,
             transform: tooltipPosition.position === 'bottom' 
               ? 'translateX(-50%)' 
-              : tooltipPosition.position === 'top'
-              ? 'translateX(-50%) translateY(-100%)'
-              : tooltipPosition.position === 'right'
-              ? 'translateY(-50%)'
-              : 'translateX(-100%) translateY(-50%)',
+              : 'translateX(-50%) translateY(-100%)',
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-[600px] max-w-[calc(100vw-2rem)]"
+          className="w-96 max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
@@ -543,25 +356,17 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
 
           {/* Arrow pointer */}
           <div 
-            className={`absolute ${
+            className={`absolute left-1/2 -translate-x-1/2 ${
               tooltipPosition.position === 'bottom' 
-                ? 'left-1/2 -translate-x-1/2 -top-3' 
-                : tooltipPosition.position === 'top'
-                ? 'left-1/2 -translate-x-1/2 -bottom-3'
-                : tooltipPosition.position === 'right'
-                ? 'top-1/2 -translate-y-1/2 -left-3'
-                : 'top-1/2 -translate-y-1/2 -right-3'
+                ? '-top-3' 
+                : '-bottom-3'
             }`}
           >
             <div 
-              className={`w-0 h-0 ${
+              className={`w-0 h-0 border-l-[12px] border-r-[12px] border-transparent ${
                 tooltipPosition.position === 'bottom'
-                  ? 'border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]'
-                  : tooltipPosition.position === 'top'
-                  ? 'border-l-[12px] border-r-[12px] border-transparent border-t-[12px] border-t-white'
-                  : tooltipPosition.position === 'right'
-                  ? 'border-t-[12px] border-b-[12px] border-transparent border-r-[12px] border-r-[#41f2c0]'
-                  : 'border-t-[12px] border-b-[12px] border-transparent border-l-[12px] border-l-white'
+                  ? 'border-b-[12px] border-b-[#41f2c0]'
+                  : 'border-t-[12px] border-t-white'
               }`}
             />
           </div>

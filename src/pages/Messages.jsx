@@ -218,8 +218,8 @@ export default function Messages() {
       <Card className="h-full overflow-hidden messages-list">
         <div className="flex h-full">
           {/* Conversations List */}
-          <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50 conversations-sidebar">
-            <div className="p-4 border-b border-gray-100 bg-white messages-search">
+          <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50">
+            <div className="p-4 border-b border-gray-100 bg-white">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <Input
@@ -253,14 +253,12 @@ export default function Messages() {
           </div>
 
           {/* Chat Window */}
-          <div className="chat-window-area">
-            <ChatWindow
-              conversation={selectedConversation}
-              userRole={userRole}
-              userId={userProfile?.id}
-              onMessageSent={loadData}
-            />
-          </div>
+          <ChatWindow
+            conversation={selectedConversation}
+            userRole={userRole}
+            userId={userProfile?.id}
+            onMessageSent={loadData}
+          />
         </div>
       </Card>
 

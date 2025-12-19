@@ -235,7 +235,7 @@ export default function ManageAvailability() {
         </TabsList>
 
         {/* Regular Schedule */}
-        <TabsContent value="regular" className="availability-schedule">
+        <TabsContent value="regular">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
@@ -353,10 +353,10 @@ export default function ManageAvailability() {
         </TabsContent>
 
         {/* Exceptions */}
-        <TabsContent value="exceptions" className="exceptions-tab">
+        <TabsContent value="exceptions">
           <div className="space-y-6">
             {/* Add Exception Form */}
-            <Card className="add-exception-form">
+            <Card>
               <CardHeader>
                 <CardTitle>Añadir Excepción</CardTitle>
               </CardHeader>
