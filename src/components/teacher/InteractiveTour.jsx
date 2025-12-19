@@ -93,7 +93,7 @@ const tourSteps = [
     title: 'Próximas clases',
     content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
     icon: Calendar,
-    position: 'top',
+    position: 'bottom',
     page: 'TeacherDashboard'
   },
   
@@ -324,27 +324,31 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       
       let top, left, position = step.position;
       const tooltipWidth = 600;
-      const tooltipHeight = 300; // Approximate height
+      const tooltipHeight = 350; // Approximate height
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
+      const viewportTop = scrollTop;
+      const viewportBottom = scrollTop + windowHeight;
       
       // Calculate best position
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
         
-        // Check if tooltip fits below
-        if (rect.bottom + tooltipHeight > windowHeight) {
+        // Check if tooltip fits below in viewport
+        const tooltipBottom = rect.bottom + tooltipHeight + 40;
+        if (tooltipBottom > viewportBottom) {
           // Try above instead
-          top = rect.top + scrollTop - 20;
+          top = rect.top + scrollTop - tooltipHeight - 20;
           position = 'top';
         }
       } else if (step.position === 'top') {
-        top = rect.top + scrollTop - 20;
+        top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
         
-        // Check if tooltip fits above
-        if (rect.top < tooltipHeight) {
+        // Check if tooltip fits above in viewport
+        const tooltipTop = rect.top - tooltipHeight - 40;
+        if (tooltipTop < viewportTop) {
           // Try below instead
           top = rect.bottom + scrollTop + 20;
           position = 'bottom';
