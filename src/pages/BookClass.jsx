@@ -26,6 +26,7 @@ import {
 import { format, parseISO, addDays, isSameDay, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import BookingCalendar from '../components/booking/BookingCalendar';
 import TeacherCard from '../components/student/TeacherCard';
 
