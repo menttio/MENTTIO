@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import EditTeacherProfileDialog from '../components/teacher/EditTeacherProfileDialog';
+import ProfileTour from '../components/teacher/ProfileTour';
 
 export default function TeacherProfile() {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export default function TeacherProfile() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   const loadData = async () => {
     try {
@@ -34,6 +36,11 @@ export default function TeacherProfile() {
       
       if (teachers.length > 0) {
         setTeacher(teachers[0]);
+        
+        // Show tour if not completed
+        if (!teachers[0].profile_tour_completed) {
+          setShowTour(true);
+        }
         
         const allReviews = await base44.entities.Review.filter({ teacher_id: teachers[0].id });
         setReviews(allReviews.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)));
@@ -58,9 +65,17 @@ export default function TeacherProfile() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
+    <>
+      {showTour && teacher && (
+        <ProfileTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6 profile-header">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} />
         </Button>
@@ -70,7 +85,7 @@ export default function TeacherProfile() {
         </div>
         <Button
           onClick={() => setShowEditDialog(true)}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white edit-profile-btn"
         >
           <Edit size={16} className="mr-2" />
           Editar Perfil
@@ -78,7 +93,7 @@ export default function TeacherProfile() {
       </div>
 
       {/* Profile Header */}
-      <Card className="mb-6 profile-info">
+      <Card className="mb-6 profile-info profile-rating">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
@@ -114,7 +129,7 @@ export default function TeacherProfile() {
                 <p className="text-gray-600 mb-4">{teacher.bio}</p>
               )}
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 profile-subjects">
                 {teacher.subjects?.map((subject, idx) => (
                   <Badge key={idx} className="bg-[#41f2c0]/10 text-[#404040] hover:bg-[#41f2c0]/20">
                     {subject.subject_name} - {subject.price_per_hour}€/h
@@ -127,7 +142,7 @@ export default function TeacherProfile() {
       </Card>
 
       {/* Tabs Content */}
-      <Tabs defaultValue="about">
+      <Tabs defaultValue="about" className="profile-tabs">
         <TabsList className="mb-6">
           <TabsTrigger value="about">Información</TabsTrigger>
           <TabsTrigger value="reviews">Reseñas ({reviews.length})</TabsTrigger>
@@ -296,5 +311,6 @@ export default function TeacherProfile() {
         onSave={loadData}
       />
     </div>
+    </>
   );
 }
