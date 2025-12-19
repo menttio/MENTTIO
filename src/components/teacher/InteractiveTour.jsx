@@ -411,7 +411,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-[480px] max-w-[calc(100vw-2rem)]"
+          className="w-[520px] max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
