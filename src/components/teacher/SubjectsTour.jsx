@@ -78,8 +78,10 @@ export default function SubjectsTour({ teacherId, onComplete }) {
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         // Ajustes específicos por paso
-        if (currentStep === 2) { // subject-card-price
-          left = rect.left + scrollLeft - 100;
+        if (currentStep === 1) { // subjects-management
+          left = rect.left + scrollLeft - 150;
+        } else if (currentStep === 2) { // subject-card-price
+          left = rect.left + scrollLeft - 50;
         } else if (currentStep === 3) { // subject-card-actions
           left = rect.left + scrollLeft - 250;
         } else {
@@ -87,7 +89,7 @@ export default function SubjectsTour({ teacherId, onComplete }) {
         }
       } else if (step.position === 'bottom-left') {
         top = rect.bottom + scrollTop + 20;
-        left = rect.right + scrollLeft - 300;
+        left = rect.right + scrollLeft - 450;
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
