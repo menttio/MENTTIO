@@ -77,10 +77,17 @@ export default function SubjectsTour({ teacherId, onComplete }) {
       
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
-        left = rect.left + scrollLeft + (rect.width / 2);
+        // Ajustes específicos por paso
+        if (currentStep === 2) { // subject-card-price
+          left = rect.left + scrollLeft - 100;
+        } else if (currentStep === 3) { // subject-card-actions
+          left = rect.left + scrollLeft - 250;
+        } else {
+          left = rect.left + scrollLeft + (rect.width / 2);
+        }
       } else if (step.position === 'bottom-left') {
         top = rect.bottom + scrollTop + 20;
-        left = rect.right + scrollLeft - 100;
+        left = rect.right + scrollLeft - 300;
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
