@@ -23,12 +23,14 @@ import {
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
+import WorkloadTour from '../components/teacher/WorkloadTour';
 
 export default function TeacherWorkload() {
   const [teacher, setTeacher] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('month');
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -41,6 +43,11 @@ export default function TeacherWorkload() {
       
       if (teachers.length > 0) {
         setTeacher(teachers[0]);
+        
+        // Show tour if not completed
+        if (!teachers[0].workload_tour_completed) {
+          setShowTour(true);
+        }
         
         const allBookings = await base44.entities.Booking.filter({ 
           teacher_id: teachers[0].id 
@@ -114,9 +121,17 @@ export default function TeacherWorkload() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <>
+      {showTour && teacher && (
+        <WorkloadTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-[#404040]">Estadísticas</h1>
           <p className="text-gray-500 mt-2">Analiza tu desempeño y gestiona tu tiempo</p>
@@ -246,5 +261,6 @@ export default function TeacherWorkload() {
         </Card>
       </div>
     </div>
+    </>
   );
 }
