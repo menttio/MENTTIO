@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { 
   Play, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   User, 
   BookOpen,
   Search,
   Filter,
   ExternalLink,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,8 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { format, parseISO, isAfter, startOfDay } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format, parseISO, isAfter, startOfDay, isWithinInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 export default function ClassRecordings() {
@@ -31,7 +35,8 @@ export default function ClassRecordings() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState('all');
   const [filterTeacher, setFilterTeacher] = useState('all');
-  const [filterDate, setFilterDate] = useState('all');
+  const [dateFrom, setDateFrom] = useState(null);
+  const [dateTo, setDateTo] = useState(null);
 
   const loadData = async () => {
     try {
@@ -68,19 +73,15 @@ export default function ClassRecordings() {
     const matchesTeacher = filterTeacher === 'all' || booking.teacher_name === filterTeacher;
     
     let matchesDate = true;
-    if (filterDate !== 'all') {
+    if (dateFrom || dateTo) {
       const bookingDate = parseISO(booking.date);
-      const now = new Date();
       
-      if (filterDate === 'last_week') {
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        matchesDate = bookingDate >= weekAgo;
-      } else if (filterDate === 'last_month') {
-        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        matchesDate = bookingDate >= monthAgo;
-      } else if (filterDate === 'last_3_months') {
-        const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
-        matchesDate = bookingDate >= threeMonthsAgo;
+      if (dateFrom && dateTo) {
+        matchesDate = isWithinInterval(bookingDate, { start: dateFrom, end: dateTo });
+      } else if (dateFrom) {
+        matchesDate = bookingDate >= dateFrom;
+      } else if (dateTo) {
+        matchesDate = bookingDate <= dateTo;
       }
     }
     
@@ -118,7 +119,7 @@ export default function ClassRecordings() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select value={filterSubject} onValueChange={setFilterSubject}>
               <SelectTrigger>
                 <SelectValue placeholder="Asignatura" />
@@ -146,18 +147,82 @@ export default function ClassRecordings() {
                 ))}
               </SelectContent>
             </Select>
+          </div>
 
-            <Select value={filterDate} onValueChange={setFilterDate}>
-              <SelectTrigger>
-                <SelectValue placeholder="Fecha" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas las fechas</SelectItem>
-                <SelectItem value="last_week">Última semana</SelectItem>
-                <SelectItem value="last_month">Último mes</SelectItem>
-                <SelectItem value="last_3_months">Últimos 3 meses</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !dateFrom && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateFrom ? format(dateFrom, "d 'de' MMMM, yyyy", { locale: es }) : "Fecha desde"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateFrom}
+                  onSelect={setDateFrom}
+                  locale={es}
+                  disabled={(date) => dateTo ? date > dateTo : false}
+                />
+                {dateFrom && (
+                  <div className="p-3 border-t">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDateFrom(null)}
+                      className="w-full"
+                    >
+                      <X size={16} className="mr-2" />
+                      Limpiar
+                    </Button>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !dateTo && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateTo ? format(dateTo, "d 'de' MMMM, yyyy", { locale: es }) : "Fecha hasta"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={dateTo}
+                  onSelect={setDateTo}
+                  locale={es}
+                  disabled={(date) => dateFrom ? date < dateFrom : false}
+                />
+                {dateTo && (
+                  <div className="p-3 border-t">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDateTo(null)}
+                      className="w-full"
+                    >
+                      <X size={16} className="mr-2" />
+                      Limpiar
+                    </Button>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>
@@ -238,7 +303,7 @@ export default function ClassRecordings() {
                         </h3>
                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
                           <span className="flex items-center gap-1">
-                            <Calendar size={14} />
+                            <CalendarIcon size={14} />
                             {format(parseISO(booking.date), "d 'de' MMMM, yyyy", { locale: es })}
                           </span>
                           <span className="flex items-center gap-1">
