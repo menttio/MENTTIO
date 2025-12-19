@@ -29,6 +29,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
+import CalendarTour from '../components/teacher/CalendarTour';
 
 export default function TeacherCalendar() {
   const [teacher, setTeacher] = useState(null);
@@ -39,6 +40,7 @@ export default function TeacherCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [editingBooking, setEditingBooking] = useState(null);
   const [showLegend, setShowLegend] = useState(true);
+  const [showTour, setShowTour] = useState(false);
 
   const loadData = async () => {
     try {
@@ -46,7 +48,13 @@ export default function TeacherCalendar() {
 
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
       if (teachers.length > 0) {
-        setTeacher(teachers[0]);
+        const teacherData = teachers[0];
+        setTeacher(teacherData);
+        
+        // Show tour if not completed
+        if (!teacherData.calendar_tour_completed) {
+          setShowTour(true);
+        }
 
         const allBookings = await base44.entities.Booking.filter({ 
           teacher_email: user.email 
@@ -54,7 +62,7 @@ export default function TeacherCalendar() {
         setBookings(allBookings);
 
         const allAvailabilities = await base44.entities.Availability.filter({
-          teacher_id: teachers[0].id
+          teacher_id: teacherData.id
         });
         setAvailabilities(allAvailabilities);
       }
@@ -133,15 +141,23 @@ export default function TeacherCalendar() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#404040]">Mi Calendario</h1>
-        <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
-      </div>
+    <>
+      {showTour && teacher && (
+        <CalendarTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
 
-      {/* Legend */}
-      <Card className="mb-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-[#404040]">Mi Calendario</h1>
+          <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
+        </div>
+
+        {/* Legend */}
+        <Card className="mb-6 calendar-legend">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-[#404040] text-sm">Leyenda</h3>
@@ -180,7 +196,7 @@ export default function TeacherCalendar() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Calendar */}
         <div className="lg:col-span-2">
-          <Card>
+          <Card className="calendar-grid">
             <CardContent className="p-0">
               {/* Calendar Header */}
               <div className="p-4 border-b border-gray-100 flex items-center justify-between">
@@ -276,7 +292,7 @@ export default function TeacherCalendar() {
         </div>
 
         {/* Selected Day Details */}
-        <div>
+        <div className="day-detail-panel">
           <Card>
             <CardContent className="p-4">
               <h3 className="font-semibold text-[#404040] mb-4 flex items-center gap-2">
@@ -371,7 +387,7 @@ export default function TeacherCalendar() {
       </div>
 
       {/* Full list below */}
-      <div className="mt-8">
+      <div className="mt-8 booking-list-section">
         <h2 className="text-xl font-semibold text-[#404040] mb-4">
           Clases del día seleccionado
         </h2>
@@ -406,6 +422,7 @@ export default function TeacherCalendar() {
           onSave={loadData}
         />
       )}
-    </div>
+      </div>
+    </>
   );
 }
