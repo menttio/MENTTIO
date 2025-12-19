@@ -46,6 +46,7 @@ export default function SearchTeachers() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('all');
+  const [selectedLevel, setSelectedLevel] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
   
@@ -103,6 +104,16 @@ export default function SearchTeachers() {
           if (!teacher.subjects?.some(s => s.subject_id === selectedSubject)) return false;
         }
         
+        // Level filter
+        if (selectedLevel !== 'all') {
+          if (!teacher.subjects?.some(s => s.level === selectedLevel)) return false;
+        }
+        
+        // Combined subject and level filter
+        if (selectedSubject !== 'all' && selectedLevel !== 'all') {
+          if (!teacher.subjects?.some(s => s.subject_id === selectedSubject && s.level === selectedLevel)) return false;
+        }
+        
         // Price filter
         if (priceRange !== 'all' && teacher.subjects?.length > 0) {
           const avgPrice = teacher.subjects.reduce((sum, s) => sum + (s.price_per_hour || 0), 0) / teacher.subjects.length;
@@ -141,13 +152,15 @@ export default function SearchTeachers() {
     
     setAssigning(true);
     try {
-      const subject = selectedTeacher.subjects?.find(s => s.subject_id === assignSubject);
+      const [subjectId, level] = assignSubject.split('-');
+      const subject = selectedTeacher.subjects?.find(s => s.subject_id === subjectId && s.level === level);
       
       const newAssignment = {
         teacher_id: selectedTeacher.id,
         teacher_name: selectedTeacher.full_name,
-        subject_id: assignSubject,
-        subject_name: subject?.subject_name || ''
+        subject_id: subjectId,
+        subject_name: subject?.subject_name || '',
+        level: level
       };
       
       const updatedAssignments = [...(student.assigned_teachers || []), newAssignment];
@@ -191,11 +204,12 @@ export default function SearchTeachers() {
   const clearFilters = () => {
     setSearchQuery('');
     setSelectedSubject('all');
+    setSelectedLevel('all');
     setPriceRange('all');
     setSortBy('rating');
   };
 
-  const hasActiveFilters = searchQuery || selectedSubject !== 'all' || priceRange !== 'all';
+  const hasActiveFilters = searchQuery || selectedSubject !== 'all' || selectedLevel !== 'all' || priceRange !== 'all';
 
   if (loading) {
     return (
@@ -239,6 +253,19 @@ export default function SearchTeachers() {
                   {subject.name}
                 </SelectItem>
               ))}
+            </SelectContent>
+          </Select>
+
+          {/* Level Filter */}
+          <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+            <SelectTrigger className="w-full lg:w-40">
+              <SelectValue placeholder="Nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los niveles</SelectItem>
+              <SelectItem value="ESO">ESO</SelectItem>
+              <SelectItem value="Bachillerato">Bachillerato</SelectItem>
+              <SelectItem value="Universidad">Universidad</SelectItem>
             </SelectContent>
           </Select>
 
@@ -335,17 +362,18 @@ export default function SearchTeachers() {
                 <SelectValue placeholder="Selecciona asignatura" />
               </SelectTrigger>
               <SelectContent>
-                {selectedTeacher?.subjects?.map((subject) => (
+                {selectedTeacher?.subjects?.map((subject, idx) => (
                   <SelectItem 
-                    key={subject.subject_id} 
-                    value={subject.subject_id}
+                    key={`${subject.subject_id}-${subject.level}-${idx}`} 
+                    value={`${subject.subject_id}-${subject.level}`}
                     disabled={isTeacherAssigned(selectedTeacher.id, subject.subject_id)}
                   >
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center justify-between w-full gap-2">
                       <span>{subject.subject_name}</span>
-                      <span className="text-gray-500 ml-2">{subject.price_per_hour}€/h</span>
+                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{subject.level}</span>
+                      <span className="text-gray-500">{subject.price_per_hour}€/h</span>
                       {isTeacherAssigned(selectedTeacher?.id, subject.subject_id) && (
-                        <Check className="text-green-500 ml-2" size={16} />
+                        <Check className="text-green-500" size={16} />
                       )}
                     </div>
                   </SelectItem>
