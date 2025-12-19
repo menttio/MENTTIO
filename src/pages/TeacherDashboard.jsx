@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
+import WelcomeTour from '../components/teacher/WelcomeTour';
 import { 
   Calendar, 
   Users, 
@@ -24,6 +25,7 @@ export default function TeacherDashboard() {
   const [teacher, setTeacher] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showTour, setShowTour] = useState(false);
 
   const loadData = async () => {
     try {
@@ -78,9 +80,10 @@ export default function TeacherDashboard() {
           <div className="w-16 h-16 rounded-full bg-[#41f2c0]" />
           <p className="text-[#404040]">Cargando...</p>
         </div>
-      </div>
-    );
-  }
+        </div>
+        </>
+        );
+        }
 
   return (
     <div className="max-w-6xl mx-auto">

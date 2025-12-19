@@ -13,6 +13,7 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import ManageSubjects from './pages/ManageSubjects';
 import TeacherSignup from './pages/TeacherSignup';
 import RenewSubscription from './pages/RenewSubscription';
+import Help from './pages/Help';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "ManageSubjects": ManageSubjects,
     "TeacherSignup": TeacherSignup,
     "RenewSubscription": RenewSubscription,
+    "Help": Help,
 }
 
 export const pagesConfig = {

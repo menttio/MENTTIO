@@ -93,6 +93,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mis Alumnos', icon: Users, page: 'MyStudents' },
+    { name: 'Ayuda', icon: Bell, page: 'Help' },
   ];
 
   const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;
