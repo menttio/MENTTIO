@@ -100,9 +100,9 @@ export default function TeacherDashboard() {
         />
       )}
       
-      <div className="max-w-6xl mx-auto">
-      {/* Welcome Section */}
-      <motion.div
+        <div className="max-w-6xl mx-auto">
+          {/* Welcome Section */}
+          <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
@@ -285,8 +285,8 @@ export default function TeacherDashboard() {
             </CardContent>
           </Card>
         )}
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
     </>
   );
 }
