@@ -120,7 +120,12 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
-        left = rect.left + scrollLeft + (rect.width / 2);
+        // Para los primeros 4 pasos (stats cards), desplazar más a la izquierda
+        if (currentStep >= 0 && currentStep <= 3) {
+          left = rect.left + scrollLeft + (rect.width / 2) - 100;
+        } else {
+          left = rect.left + scrollLeft + (rect.width / 2);
+        }
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);

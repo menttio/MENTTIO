@@ -391,6 +391,7 @@ export default function TeacherSignup() {
                       id="terms"
                       checked={acceptedTerms}
                       onCheckedChange={setAcceptedTerms}
+                      className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#41f2c0]"
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                       He leído y acepto los términos y condiciones, así como la política de privacidad de Menπio
