@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus } from 'lucide-react';
+import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,7 +60,7 @@ export default function TeacherSignup() {
   }, []);
 
   const addSubject = () => {
-    setTeacherSubjects([...teacherSubjects, { subject_id: '', subject_name: '', price_per_hour: 0 }]);
+    setTeacherSubjects([...teacherSubjects, { subject_id: '', subject_name: '', level: '', price_per_hour: 0 }]);
   };
 
   const removeSubject = (index) => {
@@ -124,7 +124,7 @@ export default function TeacherSignup() {
   };
 
   const canContinueStep1 = formData.full_name && formData.phone && formData.education && formData.experience_years >= 0;
-  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.price_per_hour > 0);
+  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
@@ -322,16 +322,33 @@ export default function TeacherSignup() {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-4"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-[#404040]">Asignaturas que impartes</h3>
-                    <Button
-                      onClick={addSubject}
-                      size="sm"
-                      className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-                    >
-                      <Plus size={16} className="mr-2" />
-                      Añadir
-                    </Button>
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-[#404040]">Asignaturas que impartes</h3>
+                        <div className="relative group">
+                          <Info size={16} className="text-gray-400 cursor-help" />
+                          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 hidden group-hover:block z-50">
+                            <div className="bg-[#404040] text-white text-xs rounded-lg p-3 w-72 shadow-lg">
+                              <p className="font-semibold mb-1">⚠️ Importante sobre los niveles</p>
+                              <p className="mb-2">Debes crear una asignatura separada por cada nivel que enseñes.</p>
+                              <p className="text-gray-300">Ejemplo: Si enseñas Matemáticas en ESO, Bachillerato y Universidad, crea 3 asignaturas diferentes con sus respectivos niveles y precios.</p>
+                              <div className="absolute right-full top-1/2 -translate-y-1/2 mr-[-1px]">
+                                <div className="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[6px] border-r-[#404040]"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={addSubject}
+                        size="sm"
+                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                      >
+                        <Plus size={16} className="mr-2" />
+                        Añadir
+                      </Button>
+                    </div>
                   </div>
 
                   {teacherSubjects.length === 0 ? (
@@ -356,6 +373,21 @@ export default function TeacherSignup() {
                                     {s.name}
                                   </SelectItem>
                                 ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="w-32">
+                            <Select
+                              value={ts.level}
+                              onValueChange={(value) => updateSubject(idx, 'level', value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Nivel" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="ESO">ESO</SelectItem>
+                                <SelectItem value="Bachillerato">Bachillerato</SelectItem>
+                                <SelectItem value="Universidad">Universidad</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
