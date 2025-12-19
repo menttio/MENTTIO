@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import SubjectsTour from '../components/teacher/SubjectsTour';
@@ -30,6 +30,7 @@ export default function ManageSubjects() {
   const [showDialog, setShowDialog] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState('');
   const [price, setPrice] = useState('');
   const [saving, setSaving] = useState(false);
   const [showTour, setShowTour] = useState(false);
@@ -65,6 +66,7 @@ export default function ManageSubjects() {
   const handleAdd = () => {
     setEditingSubject(null);
     setSelectedSubjectId('');
+    setSelectedLevel('');
     setPrice('');
     setShowDialog(true);
   };
@@ -72,12 +74,13 @@ export default function ManageSubjects() {
   const handleEdit = (subject) => {
     setEditingSubject(subject);
     setSelectedSubjectId(subject.subject_id);
+    setSelectedLevel(subject.level || '');
     setPrice(subject.price_per_hour.toString());
     setShowDialog(true);
   };
 
   const handleSave = async () => {
-    if (!selectedSubjectId || !price) return;
+    if (!selectedSubjectId || !selectedLevel || !price) return;
 
     setSaving(true);
     try {
@@ -88,8 +91,8 @@ export default function ManageSubjects() {
       if (editingSubject) {
         // Update existing
         updatedSubjects = currentSubjects.map(s =>
-          s.subject_id === editingSubject.subject_id
-            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, price_per_hour: parseFloat(price) }
+          s.subject_id === editingSubject.subject_id && s.level === editingSubject.level
+            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
             : s
         );
       } else {
@@ -99,6 +102,7 @@ export default function ManageSubjects() {
           {
             subject_id: selectedSubjectId,
             subject_name: selectedSubject.name,
+            level: selectedLevel,
             price_per_hour: parseFloat(price)
           }
         ];
@@ -114,9 +118,9 @@ export default function ManageSubjects() {
     }
   };
 
-  const handleDelete = async (subjectId) => {
+  const handleDelete = async (subjectId, level) => {
     try {
-      const updatedSubjects = (teacher.subjects || []).filter(s => s.subject_id !== subjectId);
+      const updatedSubjects = (teacher.subjects || []).filter(s => !(s.subject_id === subjectId && s.level === level));
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
       await loadData();
     } catch (error) {
@@ -166,7 +170,7 @@ export default function ManageSubjects() {
         <div className="grid md:grid-cols-2 gap-4 subjects-management">
           {teacher.subjects.map((subject, idx) => (
             <motion.div
-              key={subject.subject_id}
+              key={`${subject.subject_id}-${subject.level}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
@@ -180,7 +184,7 @@ export default function ManageSubjects() {
                       </div>
                       <div>
                         <h3 className="font-semibold text-[#404040]">{subject.subject_name}</h3>
-                        <p className="text-xs text-gray-500">Asignatura</p>
+                        <Badge variant="secondary" className="text-xs mt-1">{subject.level}</Badge>
                       </div>
                     </div>
                     <div className={`flex gap-1 ${idx === 0 ? 'subject-card-actions' : ''}`}>
@@ -196,7 +200,7 @@ export default function ManageSubjects() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => handleDelete(subject.subject_id)}
+                        onClick={() => handleDelete(subject.subject_id, subject.level)}
                       >
                         <Trash2 size={14} />
                       </Button>
@@ -236,9 +240,24 @@ export default function ManageSubjects() {
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {editingSubject ? 'Editar Asignatura' : 'Añadir Asignatura'}
-            </DialogTitle>
+            <div className="flex items-center gap-2">
+              <DialogTitle>
+                {editingSubject ? 'Editar Asignatura' : 'Añadir Asignatura'}
+              </DialogTitle>
+              <div className="relative group">
+                <Info size={16} className="text-gray-400 cursor-help" />
+                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 hidden group-hover:block z-50">
+                  <div className="bg-[#404040] text-white text-xs rounded-lg p-3 w-72 shadow-lg">
+                    <p className="font-semibold mb-1">⚠️ Importante sobre los niveles</p>
+                    <p className="mb-2">Debes crear una asignatura separada por cada nivel que enseñes.</p>
+                    <p className="text-gray-300">Ejemplo: Si enseñas Matemáticas en ESO, Bachillerato y Universidad, crea 3 asignaturas diferentes con sus respectivos niveles y precios.</p>
+                    <div className="absolute right-full top-1/2 -translate-y-1/2 mr-[-1px]">
+                      <div className="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[6px] border-r-[#404040]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -249,11 +268,25 @@ export default function ManageSubjects() {
                   <SelectValue placeholder="Selecciona una asignatura" />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableSubjects.map(subject => (
+                  {allSubjects.map(subject => (
                     <SelectItem key={subject.id} value={subject.id}>
                       {subject.name}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label>Nivel</Label>
+              <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+                <SelectTrigger className="mt-2">
+                  <SelectValue placeholder="Selecciona el nivel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ESO">ESO</SelectItem>
+                  <SelectItem value="Bachillerato">Bachillerato</SelectItem>
+                  <SelectItem value="Universidad">Universidad</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -278,7 +311,7 @@ export default function ManageSubjects() {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={!selectedSubjectId || !price || saving}
+              disabled={!selectedSubjectId || !selectedLevel || !price || saving}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}
