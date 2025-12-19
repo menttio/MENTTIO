@@ -21,7 +21,7 @@ import {
 import { base44 } from '@/api/base44Client';
 
 const tourSteps = [
-  // Dashboard inicial
+  // Dashboard - Inicio
   {
     target: '.stats-earnings',
     title: 'Ingresos del mes',
@@ -94,65 +94,72 @@ const tourSteps = [
     position: 'top',
     page: 'TeacherDashboard'
   },
-  // Mi Calendario
+  
+  // Mi Calendario - Detalles
   {
     target: '.calendar-view',
-    title: 'Vista de calendario',
-    content: 'Visualiza todas tus clases programadas en formato calendario mensual. Haz clic en cualquier día para ver detalles.',
+    title: 'Vista de calendario mensual',
+    content: 'Visualiza todas tus clases en formato calendario. Los puntos de colores indican clases reservadas y disponibilidad.',
     icon: Calendar,
     position: 'bottom',
     page: 'TeacherCalendar'
   },
-  // Disponibilidad
+  
+  // Disponibilidad - Detalles
   {
     target: '.availability-schedule',
-    title: 'Horario semanal',
-    content: 'Activa los días que trabajas y establece tus franjas horarias disponibles para cada día.',
+    title: 'Configura tu horario regular',
+    content: 'Activa los días que trabajas y establece tus franjas horarias. Puedes añadir múltiples bloques por día.',
     icon: Clock,
     position: 'top',
     page: 'ManageAvailability'
   },
-  // Mis Asignaturas
+  
+  // Mis Asignaturas - Detalles
   {
     target: '.subjects-management',
-    title: 'Gestión de asignaturas',
-    content: 'Añade nuevas asignaturas, modifica precios y elimina las que ya no impartes.',
+    title: 'Tus asignaturas activas',
+    content: 'Aquí ves todas las materias que impartes con sus precios. Puedes editar o eliminar cada una.',
     icon: BookOpen,
     position: 'bottom',
     page: 'ManageSubjects'
   },
-  // Estadísticas
+  
+  // Estadísticas - Detalles
   {
     target: '.workload-stats',
-    title: 'Estadísticas principales',
-    content: 'Consulta tus clases totales, horas impartidas, ingresos y número de alumnos distintos.',
+    title: 'Panel de estadísticas',
+    content: 'Visualiza tus clases totales, horas impartidas, ingresos generados y alumnos distintos del periodo seleccionado.',
     icon: BarChart3,
     position: 'bottom',
     page: 'TeacherWorkload'
   },
-  // Mi Perfil
+  
+  // Mi Perfil - Detalles
   {
     target: '.profile-info',
-    title: 'Tu perfil público',
-    content: 'Esta es la información que verán tus alumnos. Edítala para destacar tu experiencia y credenciales.',
+    title: 'Información de tu perfil',
+    content: 'Esta es tu tarjeta de presentación. Los alumnos verán tu foto, bio, valoración y asignaturas que impartes.',
     icon: User,
     position: 'bottom',
     page: 'TeacherProfile'
   },
-  // Mensajes
+  
+  // Mensajes - Detalles
   {
     target: '.messages-list',
-    title: 'Conversaciones con alumnos',
-    content: 'Gestiona todas tus conversaciones con alumnos. Mantén una comunicación fluida antes y después de las clases.',
+    title: 'Lista de conversaciones',
+    content: 'Aquí aparecen todas tus conversaciones. Haz clic en una para ver el historial completo y responder.',
     icon: MessageCircle,
     position: 'bottom',
     page: 'Messages'
   },
-  // Mis Alumnos
+  
+  // Mis Alumnos - Detalles
   {
     target: '.students-list',
-    title: 'Base de datos de alumnos',
-    content: 'Consulta información detallada de cada alumno: historial de clases, asignaturas y progreso.',
+    title: 'Listado de alumnos',
+    content: 'Consulta información de cada alumno: clases realizadas, próximas clases, asignaturas y estadísticas.',
     icon: Users,
     position: 'bottom',
     page: 'MyStudents'
@@ -298,7 +305,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-96 max-w-[calc(100vw-2rem)]"
+          className="w-[480px] max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}

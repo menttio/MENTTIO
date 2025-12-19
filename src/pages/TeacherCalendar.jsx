@@ -179,7 +179,7 @@ export default function TeacherCalendar() {
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Calendar */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 calendar-view">
           <Card>
             <CardContent className="p-0">
               {/* Calendar Header */}

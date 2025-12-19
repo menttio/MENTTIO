@@ -235,7 +235,7 @@ export default function ManageAvailability() {
         </TabsList>
 
         {/* Regular Schedule */}
-        <TabsContent value="regular">
+        <TabsContent value="regular" className="availability-schedule">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
