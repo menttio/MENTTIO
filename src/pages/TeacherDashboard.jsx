@@ -288,8 +288,8 @@ export default function TeacherDashboard() {
             </CardContent>
           </Card>
         )}
-        </motion.div>
-      </div>
+      </motion.div>
+    </div>
     </>
   );
 }
