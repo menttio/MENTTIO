@@ -239,11 +239,11 @@ export default function ManageAvailability() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6 tabs-list">
-          <TabsTrigger value="regular" className="flex items-center gap-2">
+          <TabsTrigger value="regular" className="flex items-center gap-2 tab-regular">
             <Clock size={16} />
             Horario Habitual
           </TabsTrigger>
-          <TabsTrigger value="exceptions" className="flex items-center gap-2">
+          <TabsTrigger value="exceptions" className="flex items-center gap-2 tab-exceptions">
             <Calendar size={16} />
             Excepciones
           </TabsTrigger>
