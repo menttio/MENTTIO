@@ -34,6 +34,7 @@ export default function TeacherSignup() {
   });
 
   const [teacherSubjects, setTeacherSubjects] = useState([]);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const checkUser = async () => {
@@ -75,10 +76,51 @@ export default function TeacherSignup() {
         subject_id: value, 
         subject_name: subject?.name || '' 
       };
+    } else if (field === 'price_per_hour') {
+      const price = parseFloat(value) || 0;
+      updated[index] = { ...updated[index], [field]: Math.max(0, Math.min(999, price)) };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
     setTeacherSubjects(updated);
+  };
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^(\+34|0034|34)?[6789]\d{8}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+  };
+
+  const validateName = (name) => {
+    return name.trim().length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(name);
+  };
+
+  const validateStep1 = () => {
+    const newErrors = {};
+    
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = 'El nombre es obligatorio';
+    } else if (!validateName(formData.full_name)) {
+      newErrors.full_name = 'Introduce un nombre válido (mínimo 3 caracteres, solo letras)';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'El teléfono es obligatorio';
+    } else if (!validatePhone(formData.phone)) {
+      newErrors.phone = 'Introduce un teléfono español válido (ej: +34 600 000 000)';
+    }
+    
+    if (!formData.education.trim()) {
+      newErrors.education = 'Los estudios son obligatorios';
+    } else if (formData.education.trim().length < 5) {
+      newErrors.education = 'Describe tus estudios (mínimo 5 caracteres)';
+    }
+    
+    if (formData.experience_years < 0) {
+      newErrors.experience_years = 'Los años de experiencia no pueden ser negativos';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const canContinueStep1 = formData.full_name && formData.phone && formData.education && formData.experience_years >= 0;
@@ -183,9 +225,16 @@ export default function TeacherSignup() {
                     </label>
                     <Input
                       value={formData.full_name}
-                      onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, full_name: e.target.value });
+                        if (errors.full_name) setErrors({ ...errors, full_name: undefined });
+                      }}
                       placeholder="Ej: Juan García López"
+                      className={errors.full_name ? 'border-red-500' : ''}
                     />
+                    {errors.full_name && (
+                      <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>
+                    )}
                   </div>
 
                   <div>
@@ -194,9 +243,17 @@ export default function TeacherSignup() {
                     </label>
                     <Input
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, phone: e.target.value });
+                        if (errors.phone) setErrors({ ...errors, phone: undefined });
+                      }}
                       placeholder="+34 600 000 000"
+                      className={errors.phone ? 'border-red-500' : ''}
                     />
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                    )}
+                    <p className="text-gray-400 text-xs mt-1">Formato: +34 seguido de 9 dígitos</p>
                   </div>
 
                   <div>
@@ -205,9 +262,16 @@ export default function TeacherSignup() {
                     </label>
                     <Input
                       value={formData.education}
-                      onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, education: e.target.value });
+                        if (errors.education) setErrors({ ...errors, education: undefined });
+                      }}
                       placeholder="Ej: Licenciatura en Matemáticas, Universidad Complutense"
+                      className={errors.education ? 'border-red-500' : ''}
                     />
+                    {errors.education && (
+                      <p className="text-red-500 text-xs mt-1">{errors.education}</p>
+                    )}
                   </div>
 
                   <div>
@@ -235,7 +299,11 @@ export default function TeacherSignup() {
                   </div>
 
                   <Button
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      if (validateStep1()) {
+                        setStep(2);
+                      }
+                    }}
                     disabled={!canContinueStep1}
                     className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6"
                   >
@@ -295,9 +363,10 @@ export default function TeacherSignup() {
                             <Input
                               type="number"
                               value={ts.price_per_hour}
-                              onChange={(e) => updateSubject(idx, 'price_per_hour', parseFloat(e.target.value) || 0)}
+                              onChange={(e) => updateSubject(idx, 'price_per_hour', e.target.value)}
                               placeholder="20"
                               min="0"
+                              max="999"
                               step="0.5"
                               className="w-24 text-right"
                             />
