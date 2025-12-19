@@ -292,11 +292,17 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
     // Wait for navigation and then update position
     const timer = setTimeout(() => {
       updateTooltipPosition();
-    }, 500);
+    }, 800);
+    
+    // Additional retry to ensure element is found
+    const retryTimer = setTimeout(() => {
+      updateTooltipPosition();
+    }, 1200);
 
     window.addEventListener('resize', updateTooltipPosition);
     return () => {
       clearTimeout(timer);
+      clearTimeout(retryTimer);
       window.removeEventListener('resize', updateTooltipPosition);
       // Clean up highlights on unmount
       document.querySelectorAll('.tour-highlight').forEach(el => {
@@ -411,7 +417,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-[520px] max-w-[calc(100vw-2rem)]"
+          className="w-[560px] max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
