@@ -90,7 +90,12 @@ export default function AvailabilityTour({ teacherId, onComplete }) {
       top = rect.top + scrollTop + (rect.height / 2);
       left = rect.right + scrollLeft + 20;
     } else if (step.position === 'left') {
-      top = rect.top + scrollTop + (rect.height / 2);
+      // Para el último paso (botón guardar), bajar el tooltip
+      if (currentStep === TOUR_STEPS.length - 1) {
+        top = rect.top + scrollTop + (rect.height / 2) + 80;
+      } else {
+        top = rect.top + scrollTop + (rect.height / 2);
+      }
       left = rect.left + scrollLeft - 20;
     }
 
