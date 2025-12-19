@@ -95,8 +95,8 @@ export default function BookingCalendar({
                 "bg-white aspect-square flex flex-col items-center justify-center relative transition-all",
                 available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/10",
                 isPast && "text-gray-300 cursor-not-allowed",
-                isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
-                isToday(day) && !isSelected && "font-bold border-2 border-[#41f2c0]"
+                isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0] font-bold",
+                isToday(day) && !isSelected && "border-2 border-gray-300"
               )}
             >
               <span className={cn(
