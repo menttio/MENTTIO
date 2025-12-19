@@ -83,7 +83,7 @@ export default function SubjectsTour({ teacherId, onComplete }) {
         } else if (currentStep === 2) { // subject-card-price
           left = rect.left + scrollLeft - 50;
         } else if (currentStep === 3) { // subject-card-actions
-          left = rect.left + scrollLeft - 250;
+          left = rect.left + scrollLeft - 200;
         } else {
           left = rect.left + scrollLeft + (rect.width / 2);
         }
