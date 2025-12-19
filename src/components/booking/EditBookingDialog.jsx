@@ -8,9 +8,11 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { format, addDays, getDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Loader2, Calendar, Clock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import BookingCalendar from './BookingCalendar';
 
 export default function EditBookingDialog({ booking, open, onClose, onSave }) {
@@ -48,6 +50,29 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
     }
   }, [open, booking]);
 
+  const generateHourlySlots = (timeSlots) => {
+    const allSlots = [];
+    
+    timeSlots.forEach(slot => {
+      const [startHour, startMin] = slot.start_time.split(':').map(Number);
+      const [endHour, endMin] = slot.end_time.split(':').map(Number);
+      
+      let currentHour = startHour;
+      let currentMin = startMin;
+      
+      while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
+        allSlots.push(`${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`);
+        currentMin += 60;
+        if (currentMin >= 60) {
+          currentMin = 0;
+          currentHour++;
+        }
+      }
+    });
+    
+    return allSlots;
+  };
+
   const availableSlots = useMemo(() => {
     if (!booking) return {};
     
@@ -64,13 +89,13 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
       
       if (exception) {
         if (exception.is_unavailable) continue;
-        slots[dateStr] = exception.time_slots?.map(s => s.start_time) || [];
+        slots[dateStr] = generateHourlySlots(exception.time_slots || []);
       } else {
         const regular = availabilities.find(
           a => a.type === 'regular' && a.day_of_week === dayOfWeek
         );
         if (regular && regular.time_slots) {
-          slots[dateStr] = regular.time_slots.map(s => s.start_time);
+          slots[dateStr] = generateHourlySlots(regular.time_slots);
         }
       }
       
@@ -170,13 +195,64 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
               </div>
             </div>
 
-            <BookingCalendar
-              availableSlots={availableSlots}
-              existingBookings={existingBookings}
-              onSelectSlot={handleSlotSelect}
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-            />
+            <div className="grid lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2">
+                <BookingCalendar
+                  availableSlots={availableSlots}
+                  existingBookings={existingBookings}
+                  onSelectSlot={handleSlotSelect}
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                />
+              </div>
+              
+              <div>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Clock size={18} className="text-[#41f2c0]" />
+                      <h4 className="font-medium text-[#404040]">Horarios Disponibles</h4>
+                    </div>
+                    
+                    {selectedDate ? (
+                      <>
+                        <p className="text-sm text-gray-500 mb-3 capitalize">
+                          {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
+                        </p>
+                        {availableSlots[format(selectedDate, 'yyyy-MM-dd')]?.length > 0 ? (
+                          <div className="space-y-2 max-h-96 overflow-y-auto">
+                            {availableSlots[format(selectedDate, 'yyyy-MM-dd')].map((slot) => (
+                              <Button
+                                key={slot}
+                                variant={selectedTime === slot ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => handleSlotSelect(selectedDate, slot)}
+                                className={cn(
+                                  "w-full justify-center transition-all",
+                                  selectedTime === slot
+                                    ? "bg-[#41f2c0] hover:bg-[#35d4a7] border-[#41f2c0]"
+                                    : "hover:border-[#41f2c0] hover:text-[#41f2c0]"
+                                )}
+                              >
+                                {slot}
+                              </Button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-gray-400 text-sm text-center py-8">
+                            No hay horarios disponibles
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-gray-400 text-sm text-center py-8">
+                        Selecciona una fecha en el calendario
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
 
             {selectedDate && selectedTime && (
               <div className="mt-4 p-4 bg-[#41f2c0]/10 rounded-xl">
