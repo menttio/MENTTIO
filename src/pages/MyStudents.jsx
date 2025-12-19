@@ -20,6 +20,7 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import StudentsTour from '../components/teacher/StudentsTour';
 
 export default function MyStudents() {
   const [teacher, setTeacher] = useState(null);
@@ -28,6 +29,7 @@ export default function MyStudents() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedStudent, setExpandedStudent] = useState(null);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,6 +39,11 @@ export default function MyStudents() {
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
           setTeacher(teachers[0]);
+
+          // Show tour if not completed
+          if (!teachers[0].students_tour_completed) {
+            setShowTour(true);
+          }
 
           // Get all bookings for this teacher
           const allBookings = await base44.entities.Booking.filter({ 
@@ -109,26 +116,34 @@ export default function MyStudents() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
-        <p className="text-gray-500 mt-2">Información completa de tus alumnos</p>
-      </div>
-
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-        <Input
-          placeholder="Buscar por nombre o email..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
+    <>
+      {showTour && teacher && (
+        <StudentsTour
+          teacherId={teacher.id}
+          onComplete={() => setShowTour(false)}
         />
-      </div>
+      )}
 
-      {/* Stats Summary */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
+          <p className="text-gray-500 mt-2">Información completa de tus alumnos</p>
+        </div>
+
+        {/* Search */}
+        <div className="relative mb-6 students-search">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <Input
+            placeholder="Buscar por nombre o email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        {/* Stats Summary */}
+        <div className="grid grid-cols-3 gap-4 mb-6 students-stats">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
@@ -192,7 +207,7 @@ export default function MyStudents() {
                     {/* Main Info */}
                     <button
                       onClick={() => setExpandedStudent(isExpanded ? null : student.id)}
-                      className="w-full p-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                      className="w-full p-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors student-expand"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center">
@@ -340,6 +355,7 @@ export default function MyStudents() {
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </>
   );
 }
