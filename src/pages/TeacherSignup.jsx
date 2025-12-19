@@ -214,44 +214,17 @@ export default function TeacherSignup() {
                     <label className="block text-sm font-medium text-[#404040] mb-2">
                       Años de Experiencia *
                     </label>
-                    <div className="flex items-center gap-3 max-w-xs">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setFormData({ 
-                          ...formData, 
-                          experience_years: Math.max(0, formData.experience_years - 1) 
-                        })}
-                        disabled={formData.experience_years <= 0}
-                        className="flex-shrink-0"
-                      >
-                        <Minus size={18} />
-                      </Button>
-                      <Input
-                        type="number"
-                        value={formData.experience_years}
-                        onChange={(e) => setFormData({ 
-                          ...formData, 
-                          experience_years: Math.min(99, Math.max(0, parseInt(e.target.value) || 0))
-                        })}
-                        className="text-center text-xl font-semibold w-20"
-                        min="0"
-                        max="99"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setFormData({ 
-                          ...formData, 
-                          experience_years: Math.min(99, formData.experience_years + 1)
-                        })}
-                        className="flex-shrink-0"
-                      >
-                        <Plus size={18} />
-                      </Button>
-                    </div>
+                    <Input
+                      type="number"
+                      value={formData.experience_years}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        experience_years: Math.min(99, Math.max(0, parseInt(e.target.value) || 0))
+                      })}
+                      className="text-center text-xl font-semibold w-24"
+                      min="0"
+                      max="99"
+                    />
                   </div>
 
                   <div className="bg-[#41f2c0]/10 rounded-xl p-4 mt-6">
@@ -299,17 +272,8 @@ export default function TeacherSignup() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <div className="flex gap-3 items-center px-3 pb-2">
-                        <div className="flex-1">
-                          <span className="text-sm font-semibold text-gray-600">Asignatura</span>
-                        </div>
-                        <div className="w-32">
-                          <span className="text-sm font-semibold text-gray-600">Precio por hora</span>
-                        </div>
-                        <div className="w-10" />
-                      </div>
                       {teacherSubjects.map((ts, idx) => (
-                        <div key={idx} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl">
+                        <div key={idx} className="flex gap-3 items-center p-3 bg-gray-50 rounded-xl">
                           <div className="flex-1">
                             <Select
                               value={ts.subject_id}
@@ -327,15 +291,17 @@ export default function TeacherSignup() {
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="w-32">
+                          <div className="flex items-center gap-2">
                             <Input
                               type="number"
                               value={ts.price_per_hour}
                               onChange={(e) => updateSubject(idx, 'price_per_hour', parseFloat(e.target.value) || 0)}
-                              placeholder="€/hora"
+                              placeholder="20"
                               min="0"
                               step="0.5"
+                              className="w-24 text-right"
                             />
+                            <span className="text-sm text-gray-500 font-medium whitespace-nowrap">€/h</span>
                           </div>
                           <Button
                             variant="ghost"

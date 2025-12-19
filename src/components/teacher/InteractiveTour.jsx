@@ -13,73 +13,125 @@ import {
   Users,
   DollarSign,
   Star,
-  MessageCircle
+  MessageCircle,
+  User,
+  BarChart3,
+  Bell
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const tourSteps = [
+  // Dashboard inicial
   {
     target: '.stats-earnings',
     title: 'Ingresos del mes',
     content: 'Aquí verás tus ganancias mensuales actualizadas en tiempo real con cada clase completada.',
     icon: DollarSign,
-    position: 'bottom'
+    position: 'bottom',
+    page: 'TeacherDashboard'
   },
   {
     target: '.stats-students',
     title: 'Tus alumnos',
     content: 'Número total de alumnos únicos que han reservado clases contigo.',
     icon: Users,
-    position: 'bottom'
+    position: 'bottom',
+    page: 'TeacherDashboard'
   },
   {
     target: '.stats-classes',
     title: 'Total de clases',
     content: 'Todas las clases que has impartido desde que te registraste.',
     icon: BookOpen,
-    position: 'bottom'
+    position: 'bottom',
+    page: 'TeacherDashboard'
   },
   {
     target: '.stats-rating',
     title: 'Tu valoración',
     content: 'Calificación promedio basada en las reseñas de tus alumnos.',
     icon: Star,
-    position: 'bottom'
+    position: 'bottom',
+    page: 'TeacherDashboard'
   },
   {
     target: '.subjects-card',
     title: 'Gestiona tus asignaturas',
     content: 'Añade o elimina asignaturas que impartes y ajusta tus precios por hora cuando lo necesites.',
     icon: BookOpen,
-    position: 'top'
-  },
-  {
-    target: '.action-calendar',
-    title: 'Tu calendario',
-    content: 'Visualiza todas tus clases programadas en formato calendario para una mejor organización.',
-    icon: Calendar,
-    position: 'top'
-  },
-  {
-    target: '.action-availability',
-    title: 'Configura tu disponibilidad',
-    content: 'Define tu horario semanal y excepciones específicas para que los alumnos sepan cuándo pueden reservar.',
-    icon: Clock,
-    position: 'top'
-  },
-  {
-    target: '.action-students',
-    title: 'Gestión de alumnos',
-    content: 'Consulta información detallada de tus alumnos, historial de clases y estadísticas.',
-    icon: Users,
-    position: 'top'
+    position: 'top',
+    page: 'TeacherDashboard'
   },
   {
     target: '.upcoming-classes',
     title: 'Próximas clases',
     content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
     icon: Calendar,
-    position: 'top'
+    position: 'top',
+    page: 'TeacherDashboard'
+  },
+  // Mi Calendario
+  {
+    target: '.calendar-view',
+    title: 'Vista de calendario',
+    content: 'Visualiza todas tus clases programadas en formato calendario mensual. Haz clic en cualquier día para ver detalles.',
+    icon: Calendar,
+    position: 'bottom',
+    page: 'TeacherCalendar'
+  },
+  // Disponibilidad
+  {
+    target: '.availability-schedule',
+    title: 'Configura tu horario',
+    content: 'Define tu disponibilidad semanal. Activa los días que trabajas y establece tus horarios disponibles.',
+    icon: Clock,
+    position: 'top',
+    page: 'ManageAvailability'
+  },
+  // Mis Asignaturas
+  {
+    target: '.subjects-management',
+    title: 'Gestión de asignaturas',
+    content: 'Añade nuevas asignaturas, modifica precios y elimina las que ya no impartes.',
+    icon: BookOpen,
+    position: 'bottom',
+    page: 'ManageSubjects'
+  },
+  // Estadísticas
+  {
+    target: '.workload-stats',
+    title: 'Analiza tu actividad',
+    content: 'Consulta estadísticas detalladas sobre tus clases, ingresos y rendimiento a lo largo del tiempo.',
+    icon: BarChart3,
+    position: 'bottom',
+    page: 'TeacherWorkload'
+  },
+  // Mi Perfil
+  {
+    target: '.profile-info',
+    title: 'Tu perfil público',
+    content: 'Edita tu información personal, biografía y credenciales que verán tus alumnos.',
+    icon: User,
+    position: 'bottom',
+    page: 'TeacherProfile'
+  },
+  // Mensajes
+  {
+    target: '.messages-list',
+    title: 'Comunicación con alumnos',
+    content: 'Gestiona todas tus conversaciones con alumnos en un solo lugar.',
+    icon: MessageCircle,
+    position: 'bottom',
+    page: 'Messages'
+  },
+  // Mis Alumnos
+  {
+    target: '.students-list',
+    title: 'Base de datos de alumnos',
+    content: 'Consulta información detallada de cada alumno, historial de clases y progreso.',
+    icon: Users,
+    position: 'bottom',
+    page: 'MyStudents'
   }
 ];
 
@@ -89,9 +141,22 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    updateTooltipPosition();
+    // Navigate to the page for current step
+    const step = tourSteps[currentStep];
+    if (step.page && window.location.pathname !== createPageUrl(step.page)) {
+      navigate(createPageUrl(step.page));
+    }
+    
+    // Wait for navigation and then update position
+    const timer = setTimeout(() => {
+      updateTooltipPosition();
+    }, 300);
+
     window.addEventListener('resize', updateTooltipPosition);
-    return () => window.removeEventListener('resize', updateTooltipPosition);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateTooltipPosition);
+    };
   }, [currentStep]);
 
   const updateTooltipPosition = () => {
@@ -127,6 +192,12 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handleNext = () => {
+    // Remove highlight from current element
+    const currentElement = document.querySelector(tourSteps[currentStep].target);
+    if (currentElement) {
+      currentElement.classList.remove('tour-highlight');
+    }
+
     if (currentStep < tourSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -135,6 +206,12 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handlePrev = () => {
+    // Remove highlight from current element
+    const currentElement = document.querySelector(tourSteps[currentStep].target);
+    if (currentElement) {
+      currentElement.classList.remove('tour-highlight');
+    }
+
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
@@ -165,11 +242,11 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay with blur */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="fixed inset-0 bg-black/60 z-[100] pointer-events-none"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] pointer-events-none"
       />
 
       {/* Highlight cutout - using box-shadow trick */}
@@ -177,7 +254,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
         .tour-highlight {
           position: relative;
           z-index: 101;
-          box-shadow: 0 0 0 4px rgba(65, 242, 192, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.6);
+          box-shadow: 0 0 0 4px rgba(65, 242, 192, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.4);
           border-radius: 12px;
           transition: all 0.3s ease;
         }

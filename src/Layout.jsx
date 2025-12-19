@@ -14,7 +14,8 @@ import {
   Home,
   User,
   MessageCircle,
-  Bell
+  Bell,
+  BarChart3
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -89,7 +90,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Mi Calendario', icon: Calendar, page: 'TeacherCalendar' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
     { name: 'Mis Asignaturas', icon: BookOpen, page: 'ManageSubjects' },
-    { name: 'Carga de Trabajo', icon: BookOpen, page: 'TeacherWorkload' },
+    { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
     { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mis Alumnos', icon: Users, page: 'MyStudents' },
