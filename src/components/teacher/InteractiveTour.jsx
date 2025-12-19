@@ -63,6 +63,30 @@ const tourSteps = [
     page: 'TeacherDashboard'
   },
   {
+    target: '.action-calendar',
+    title: 'Acceso rápido al calendario',
+    content: 'Haz clic aquí para ver tu calendario completo con todas las clases programadas.',
+    icon: Calendar,
+    position: 'bottom',
+    page: 'TeacherDashboard'
+  },
+  {
+    target: '.action-availability',
+    title: 'Gestión de disponibilidad',
+    content: 'Configura tu horario semanal y excepciones desde este acceso directo.',
+    icon: Clock,
+    position: 'bottom',
+    page: 'TeacherDashboard'
+  },
+  {
+    target: '.action-students',
+    title: 'Ver tus alumnos',
+    content: 'Accede al listado completo de tus alumnos y su información.',
+    icon: Users,
+    position: 'bottom',
+    page: 'TeacherDashboard'
+  },
+  {
     target: '.upcoming-classes',
     title: 'Próximas clases',
     content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
@@ -82,8 +106,8 @@ const tourSteps = [
   // Disponibilidad
   {
     target: '.availability-schedule',
-    title: 'Configura tu horario',
-    content: 'Define tu disponibilidad semanal. Activa los días que trabajas y establece tus horarios disponibles.',
+    title: 'Horario semanal',
+    content: 'Activa los días que trabajas y establece tus franjas horarias disponibles para cada día.',
     icon: Clock,
     position: 'top',
     page: 'ManageAvailability'
@@ -100,8 +124,8 @@ const tourSteps = [
   // Estadísticas
   {
     target: '.workload-stats',
-    title: 'Analiza tu actividad',
-    content: 'Consulta estadísticas detalladas sobre tus clases, ingresos y rendimiento a lo largo del tiempo.',
+    title: 'Estadísticas principales',
+    content: 'Consulta tus clases totales, horas impartidas, ingresos y número de alumnos distintos.',
     icon: BarChart3,
     position: 'bottom',
     page: 'TeacherWorkload'
@@ -110,7 +134,7 @@ const tourSteps = [
   {
     target: '.profile-info',
     title: 'Tu perfil público',
-    content: 'Edita tu información personal, biografía y credenciales que verán tus alumnos.',
+    content: 'Esta es la información que verán tus alumnos. Edítala para destacar tu experiencia y credenciales.',
     icon: User,
     position: 'bottom',
     page: 'TeacherProfile'
@@ -118,8 +142,8 @@ const tourSteps = [
   // Mensajes
   {
     target: '.messages-list',
-    title: 'Comunicación con alumnos',
-    content: 'Gestiona todas tus conversaciones con alumnos en un solo lugar.',
+    title: 'Conversaciones con alumnos',
+    content: 'Gestiona todas tus conversaciones con alumnos. Mantén una comunicación fluida antes y después de las clases.',
     icon: MessageCircle,
     position: 'bottom',
     page: 'Messages'
@@ -128,7 +152,7 @@ const tourSteps = [
   {
     target: '.students-list',
     title: 'Base de datos de alumnos',
-    content: 'Consulta información detallada de cada alumno, historial de clases y progreso.',
+    content: 'Consulta información detallada de cada alumno: historial de clases, asignaturas y progreso.',
     icon: Users,
     position: 'bottom',
     page: 'MyStudents'
