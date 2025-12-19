@@ -14,7 +14,6 @@ export default function BookingCalendar({
   selectedTime 
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [viewDate, setViewDate] = useState(null);
 
   const days = useMemo(() => {
     const start = startOfMonth(currentMonth);
@@ -84,7 +83,7 @@ export default function BookingCalendar({
         {/* Day cells */}
         {days.map((day) => {
           const available = isDateAvailable(day);
-          const isViewDate = viewDate && isSameDay(day, viewDate);
+          const isSelected = selectedDate && isSameDay(day, selectedDate);
           const isPast = isBefore(day, startOfDay(new Date()));
           
           return (
@@ -96,17 +95,17 @@ export default function BookingCalendar({
                 "bg-white aspect-square flex flex-col items-center justify-center relative transition-all",
                 available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/10",
                 isPast && "text-gray-300 cursor-not-allowed",
-                isViewDate && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
-                isToday(day) && !isViewDate && "font-bold border-2 border-[#41f2c0]"
+                isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0]",
+                isToday(day) && !isSelected && "font-bold border-2 border-[#41f2c0]"
               )}
             >
               <span className={cn(
                 "text-sm",
-                isViewDate && "font-semibold"
+                isSelected && "font-semibold"
               )}>
                 {format(day, 'd')}
               </span>
-              {available && !isPast && !isViewDate && (
+              {available && !isPast && !isSelected && (
                 <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-[#41f2c0]" />
               )}
             </button>
