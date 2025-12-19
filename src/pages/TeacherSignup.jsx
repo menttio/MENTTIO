@@ -214,7 +214,7 @@ export default function TeacherSignup() {
                     <label className="block text-sm font-medium text-[#404040] mb-2">
                       Años de Experiencia *
                     </label>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 max-w-xs">
                       <Button
                         type="button"
                         variant="outline"
@@ -224,6 +224,7 @@ export default function TeacherSignup() {
                           experience_years: Math.max(0, formData.experience_years - 1) 
                         })}
                         disabled={formData.experience_years <= 0}
+                        className="flex-shrink-0"
                       >
                         <Minus size={18} />
                       </Button>
@@ -232,10 +233,11 @@ export default function TeacherSignup() {
                         value={formData.experience_years}
                         onChange={(e) => setFormData({ 
                           ...formData, 
-                          experience_years: Math.max(0, parseInt(e.target.value) || 0) 
+                          experience_years: Math.min(99, Math.max(0, parseInt(e.target.value) || 0))
                         })}
-                        className="text-center text-xl font-semibold"
+                        className="text-center text-xl font-semibold w-20"
                         min="0"
+                        max="99"
                       />
                       <Button
                         type="button"
@@ -243,8 +245,9 @@ export default function TeacherSignup() {
                         size="icon"
                         onClick={() => setFormData({ 
                           ...formData, 
-                          experience_years: formData.experience_years + 1 
+                          experience_years: Math.min(99, formData.experience_years + 1)
                         })}
+                        className="flex-shrink-0"
                       >
                         <Plus size={18} />
                       </Button>
@@ -296,6 +299,15 @@ export default function TeacherSignup() {
                     </div>
                   ) : (
                     <div className="space-y-3">
+                      <div className="flex gap-3 items-center px-3 pb-2">
+                        <div className="flex-1">
+                          <span className="text-sm font-semibold text-gray-600">Asignatura</span>
+                        </div>
+                        <div className="w-32">
+                          <span className="text-sm font-semibold text-gray-600">Precio por hora</span>
+                        </div>
+                        <div className="w-10" />
+                      </div>
                       {teacherSubjects.map((ts, idx) => (
                         <div key={idx} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl">
                           <div className="flex-1">
