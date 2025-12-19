@@ -90,7 +90,12 @@ export default function ProfileTour({ teacherId, onComplete }) {
       top = rect.top + scrollTop + (rect.height / 2);
       left = rect.right + scrollLeft + 20;
     } else if (step.position === 'left') {
-      top = rect.top + scrollTop + (rect.height / 2);
+      // Ajuste específico para el paso 2 (botón editar)
+      if (currentStep === 1) {
+        top = rect.top + scrollTop + (rect.height / 2) + 80;
+      } else {
+        top = rect.top + scrollTop + (rect.height / 2);
+      }
       left = rect.left + scrollLeft - 20;
     }
 
