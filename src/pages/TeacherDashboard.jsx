@@ -33,7 +33,13 @@ export default function TeacherDashboard() {
 
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
       if (teachers.length > 0) {
-        setTeacher(teachers[0]);
+        const teacherData = teachers[0];
+        setTeacher(teacherData);
+        
+        // Show tour if not completed
+        if (!teacherData.tour_completed) {
+          setShowTour(true);
+        }
 
         const allBookings = await base44.entities.Booking.filter({ 
           teacher_email: user.email 
@@ -80,13 +86,21 @@ export default function TeacherDashboard() {
           <div className="w-16 h-16 rounded-full bg-[#41f2c0]" />
           <p className="text-[#404040]">Cargando...</p>
         </div>
-        </div>
-        </>
-        );
-        }
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <>
+      {showTour && teacher && (
+        <WelcomeTour
+          teacherId={teacher.id}
+          teacherName={teacher.full_name}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+      
+      <div className="max-w-6xl mx-auto">
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -273,5 +287,6 @@ export default function TeacherDashboard() {
         )}
       </motion.div>
     </div>
+    </>
   );
 }
