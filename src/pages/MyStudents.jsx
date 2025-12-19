@@ -186,6 +186,7 @@ export default function MyStudents() {
       </div>
 
       {/* Students List */}
+      <div className="students-list-container">
       {filteredStudents.length > 0 ? (
         <div className="space-y-4 students-list">
           {filteredStudents.map((student, idx) => {
@@ -355,6 +356,7 @@ export default function MyStudents() {
           </CardContent>
         </Card>
       )}
+      </div>
       </div>
     </>
   );

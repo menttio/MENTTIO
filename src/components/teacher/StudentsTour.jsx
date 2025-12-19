@@ -29,18 +29,11 @@ const TOUR_STEPS = [
     position: 'bottom'
   },
   {
-    target: '.students-list',
+    target: '.students-list-container',
     title: 'Lista de alumnos',
     content: 'Aquí aparecen todos tus alumnos con información básica. Haz clic en las flechas para ver más detalles de cada uno.',
     icon: Users,
     position: 'bottom'
-  },
-  {
-    target: '.student-expand',
-    title: 'Ver detalles',
-    content: 'Al expandir un alumno, verás estadísticas completas: clases totales, completadas, próximas, gasto total y las últimas reservas.',
-    icon: ChevronDown,
-    position: 'left'
   }
 ];
 
