@@ -376,23 +376,25 @@ export default function StudentDashboard() {
       )}
 
       {/* Completed Classes */}
-      {completedBookings.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-[#404040]">Clases Realizadas</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="mb-8"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-[#404040]">Clases Realizadas</h2>
+          {completedBookings.length > 0 && (
             <Link 
               to={createPageUrl('MyClasses')}
               className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
             >
               Ver historial completo <ChevronRight size={16} />
             </Link>
-          </div>
+          )}
+        </div>
 
+        {completedBookings.length > 0 ? (
           <div className="grid gap-3">
             {completedBookings.map((booking, idx) => (
               <motion.div
@@ -447,8 +449,16 @@ export default function StudentDashboard() {
               </motion.div>
             ))}
           </div>
-        </motion.div>
-      )}
+        ) : (
+          <Card className="bg-gray-50 border-dashed">
+            <CardContent className="p-8 text-center">
+              <Play className="mx-auto text-gray-300 mb-4" size={48} />
+              <h3 className="font-medium text-[#404040] mb-2">Aún no hay grabaciones disponibles</h3>
+              <p className="text-gray-500 text-sm">Las grabaciones de tus clases completadas aparecerán aquí</p>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
 
       {/* Upcoming Classes */}
       <motion.div
