@@ -81,6 +81,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
     { name: 'Reservar Clase', icon: Calendar, page: 'BookClass' },
     { name: 'Mis Clases', icon: BookOpen, page: 'MyClasses' },
+    { name: 'Biblioteca', icon: BookOpen, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
   ];

@@ -79,11 +79,6 @@ export default function StudentDashboard() {
     .sort((a, b) => new Date(a.date) - new Date(b.date))
     .slice(0, 3);
 
-  const completedBookings = bookings
-    .filter(b => b.status === 'completed' || (b.status === 'scheduled' && !isAfter(parseISO(b.date), startOfDay(new Date()))))
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 5);
-
   const totalClasses = bookings.length;
   const completedClasses = bookings.filter(b => b.status === 'completed').length;
   const scheduledClasses = bookings.filter(b => b.status === 'scheduled').length;
@@ -374,91 +369,6 @@ export default function StudentDashboard() {
           </div>
         </motion.div>
       )}
-
-      {/* Completed Classes */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="mb-8"
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-[#404040]">Clases Realizadas</h2>
-          {completedBookings.length > 0 && (
-            <Link 
-              to={createPageUrl('MyClasses')}
-              className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
-            >
-              Ver historial completo <ChevronRight size={16} />
-            </Link>
-          )}
-        </div>
-
-        {completedBookings.length > 0 ? (
-          <div className="grid gap-3">
-            {completedBookings.map((booking, idx) => (
-              <motion.div
-                key={booking.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + idx * 0.05 }}
-              >
-                <Card className="hover:shadow-md transition-all">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                          <BookOpen className="text-green-600" size={20} />
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-[#404040] truncate">
-                            {booking.subject_name}
-                          </h3>
-                          <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                            <span className="flex items-center gap-1">
-                              <Calendar size={14} />
-                              {format(parseISO(booking.date), "d 'de' MMMM, yyyy", { locale: es })}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <User size={14} />
-                              {booking.teacher_name}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {booking.recording_url ? (
-                        <Button
-                          size="sm"
-                          onClick={() => window.open(booking.recording_url, '_blank')}
-                          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-shrink-0"
-                        >
-                          <Play size={16} className="mr-2" />
-                          Ver clase
-                          <ExternalLink size={14} className="ml-1" />
-                        </Button>
-                      ) : (
-                        <Badge variant="secondary" className="text-gray-500 flex-shrink-0">
-                          Sin grabación
-                        </Badge>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <Card className="bg-gray-50 border-dashed">
-            <CardContent className="p-8 text-center">
-              <Play className="mx-auto text-gray-300 mb-4" size={48} />
-              <h3 className="font-medium text-[#404040] mb-2">Aún no hay grabaciones disponibles</h3>
-              <p className="text-gray-500 text-sm">Las grabaciones de tus clases completadas aparecerán aquí</p>
-            </CardContent>
-          </Card>
-        )}
-      </motion.div>
 
       {/* Upcoming Classes */}
       <motion.div

@@ -14,6 +14,7 @@ import ManageSubjects from './pages/ManageSubjects';
 import TeacherSignup from './pages/TeacherSignup';
 import RenewSubscription from './pages/RenewSubscription';
 import Help from './pages/Help';
+import ClassRecordings from './pages/ClassRecordings';
 import __Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "TeacherSignup": TeacherSignup,
     "RenewSubscription": RenewSubscription,
     "Help": Help,
+    "ClassRecordings": ClassRecordings,
 }
 
 export const pagesConfig = {
