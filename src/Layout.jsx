@@ -72,8 +72,8 @@ export default function Layout({ children, currentPageName }) {
             setUserRole('student');
           } else {
             setUserRole('new');
-            // Redirect new users to role selection
-            if (currentPageName !== 'SelectRole') {
+            // Redirect new users to role selection only if not on signup pages
+            if (currentPageName !== 'SelectRole' && currentPageName !== 'TeacherSignup') {
               window.location.href = createPageUrl('SelectRole');
             }
           }
