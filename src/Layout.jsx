@@ -85,7 +85,7 @@ export default function Layout({ children, currentPageName }) {
       }
     };
     loadUser();
-  }, []);
+    }, [currentPageName]);
 
   const studentNavItems = [
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
