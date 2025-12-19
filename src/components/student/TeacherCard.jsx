@@ -17,6 +17,14 @@ export default function TeacherCard({
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
     : teacher.subjects?.[0];
 
+  // Calculate price range
+  const prices = teacher.subjects?.map(s => s.price_per_hour) || [];
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const priceDisplay = prices.length > 1 && minPrice !== maxPrice 
+    ? `${minPrice}€ - ${maxPrice}€`
+    : `${minPrice}€`;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -87,10 +95,10 @@ export default function TeacherCard({
 
       {/* Price & Actions */}
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        {subjectInfo && (
+        {prices.length > 0 && (
           <div className="flex items-center gap-1 text-[#404040]">
             <DollarSign size={18} className="text-[#41f2c0]" />
-            <span className="font-semibold text-lg">{subjectInfo.price_per_hour}€</span>
+            <span className="font-semibold text-lg">{priceDisplay}</span>
             <span className="text-gray-500 text-sm">/hora</span>
           </div>
         )}
