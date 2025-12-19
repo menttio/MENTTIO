@@ -78,7 +78,7 @@ export default function TeacherProfile() {
       </div>
 
       {/* Profile Header */}
-      <Card className="mb-6">
+      <Card className="mb-6 profile-info">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">

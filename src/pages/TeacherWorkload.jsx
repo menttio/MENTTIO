@@ -118,7 +118,7 @@ export default function TeacherWorkload() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#404040]">Carga de Trabajo</h1>
+          <h1 className="text-3xl font-bold text-[#404040]">Estadísticas</h1>
           <p className="text-gray-500 mt-2">Analiza tu desempeño y gestiona tu tiempo</p>
         </div>
         
@@ -134,7 +134,7 @@ export default function TeacherWorkload() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 workload-stats">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Card>
             <CardContent className="p-6">

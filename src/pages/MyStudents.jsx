@@ -172,7 +172,7 @@ export default function MyStudents() {
 
       {/* Students List */}
       {filteredStudents.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-4 students-list">
           {filteredStudents.map((student, idx) => {
             const stats = getStudentStats(student.id);
             const isExpanded = expandedStudent === student.id;

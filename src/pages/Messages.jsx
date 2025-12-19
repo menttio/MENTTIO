@@ -215,7 +215,7 @@ export default function Messages() {
       </div>
 
       {/* Chat Interface */}
-      <Card className="h-full overflow-hidden">
+      <Card className="h-full overflow-hidden messages-list">
         <div className="flex h-full">
           {/* Conversations List */}
           <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50">
