@@ -122,7 +122,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
         top = rect.bottom + scrollTop + 20;
         // Para los primeros 4 pasos (stats cards), desplazar más a la izquierda
         if (currentStep >= 0 && currentStep <= 3) {
-          left = rect.left + scrollLeft + (rect.width / 2) - 100;
+          left = rect.left + scrollLeft + (rect.width / 2) - 180;
         } else {
           left = rect.left + scrollLeft + (rect.width / 2);
         }
