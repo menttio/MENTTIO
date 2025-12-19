@@ -107,7 +107,7 @@ export default function TeacherSignup() {
         tour_completed: false
       });
 
-      navigate(createPageUrl('TeacherDashboard'));
+      window.location.href = createPageUrl('TeacherDashboard');
     } catch (error) {
       console.error(error);
     } finally {
