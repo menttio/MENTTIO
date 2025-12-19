@@ -21,117 +21,68 @@ import {
 import { base44 } from '@/api/base44Client';
 
 const tourSteps = [
-  // Dashboard inicial
   {
     target: '.stats-earnings',
     title: 'Ingresos del mes',
     content: 'Aquí verás tus ganancias mensuales actualizadas en tiempo real con cada clase completada.',
     icon: DollarSign,
-    position: 'bottom',
-    page: 'TeacherDashboard'
+    position: 'bottom'
   },
   {
     target: '.stats-students',
     title: 'Tus alumnos',
     content: 'Número total de alumnos únicos que han reservado clases contigo.',
     icon: Users,
-    position: 'bottom',
-    page: 'TeacherDashboard'
+    position: 'bottom'
   },
   {
     target: '.stats-classes',
     title: 'Total de clases',
     content: 'Todas las clases que has impartido desde que te registraste.',
     icon: BookOpen,
-    position: 'bottom',
-    page: 'TeacherDashboard'
+    position: 'bottom'
   },
   {
     target: '.stats-rating',
     title: 'Tu valoración',
     content: 'Calificación promedio basada en las reseñas de tus alumnos.',
     icon: Star,
-    position: 'bottom',
-    page: 'TeacherDashboard'
+    position: 'bottom'
+  },
+  {
+    target: '.action-calendar',
+    title: 'Mi Calendario',
+    content: 'Accede a tu calendario completo donde verás todas tus clases programadas en formato mensual.',
+    icon: Calendar,
+    position: 'right'
+  },
+  {
+    target: '.action-availability',
+    title: 'Gestiona tu disponibilidad',
+    content: 'Define tu horario semanal y marca los días y horas en los que estás disponible para dar clases.',
+    icon: Clock,
+    position: 'right'
+  },
+  {
+    target: '.action-students',
+    title: 'Mis Alumnos',
+    content: 'Consulta información detallada de cada alumno, historial de clases y su progreso.',
+    icon: Users,
+    position: 'right'
   },
   {
     target: '.subjects-card',
     title: 'Gestiona tus asignaturas',
     content: 'Añade o elimina asignaturas que impartes y ajusta tus precios por hora cuando lo necesites.',
     icon: BookOpen,
-    position: 'top',
-    page: 'TeacherDashboard'
+    position: 'top'
   },
   {
     target: '.upcoming-classes',
     title: 'Próximas clases',
     content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
     icon: Calendar,
-    position: 'top',
-    page: 'TeacherDashboard'
-  },
-  // Mi Calendario
-  {
-    target: '.calendar-view',
-    title: 'Vista de calendario',
-    content: 'Visualiza todas tus clases programadas en formato calendario mensual. Haz clic en cualquier día para ver detalles.',
-    icon: Calendar,
-    position: 'bottom',
-    page: 'TeacherCalendar'
-  },
-  // Disponibilidad
-  {
-    target: '.availability-schedule',
-    title: 'Configura tu horario',
-    content: 'Define tu disponibilidad semanal. Activa los días que trabajas y establece tus horarios disponibles.',
-    icon: Clock,
-    position: 'top',
-    page: 'ManageAvailability'
-  },
-  // Mis Asignaturas
-  {
-    target: '.subjects-management',
-    title: 'Gestión de asignaturas',
-    content: 'Añade nuevas asignaturas, modifica precios y elimina las que ya no impartes.',
-    icon: BookOpen,
-    position: 'bottom',
-    page: 'ManageSubjects'
-  },
-  // Estadísticas
-  {
-    target: '.workload-stats',
-    title: 'Analiza tu actividad',
-    content: 'Consulta estadísticas detalladas sobre tus clases, ingresos y rendimiento a lo largo del tiempo.',
-    icon: BarChart3,
-    position: 'bottom',
-    page: 'TeacherWorkload'
-  },
-  // Mi Perfil
-  {
-    target: '.profile-info',
-    title: 'Tu perfil público',
-    content: 'Edita tu información personal, biografía y credenciales que verán tus alumnos.',
-    icon: User,
-    position: 'bottom',
-    page: 'TeacherProfile'
-  },
-  // Mensajes
-  {
-    target: '.messages-list',
-    title: 'Comunicación con alumnos',
-    content: 'Gestiona todas tus conversaciones con alumnos en un solo lugar.',
-    icon: MessageCircle,
-    position: 'bottom',
-    page: 'Messages'
-  },
-  // Mis Alumnos
-  {
-    target: '.students-list',
-    title: 'Base de datos de alumnos',
-    content: 'Consulta información detallada de cada alumno, historial de clases y progreso.',
-    icon: Users,
-    position: 'bottom',
-    page: 'MyStudents'
+    position: 'top'
   }
 ];
 
@@ -141,16 +92,9 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Navigate to the page for current step
-    const step = tourSteps[currentStep];
-    if (step.page && window.location.pathname !== createPageUrl(step.page)) {
-      navigate(createPageUrl(step.page));
-    }
-    
-    // Wait for navigation and then update position
     const timer = setTimeout(() => {
       updateTooltipPosition();
-    }, 300);
+    }, 100);
 
     window.addEventListener('resize', updateTooltipPosition);
     return () => {
@@ -171,13 +115,21 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
       let top, left;
+      const tooltipWidth = 500; // Ancho del tooltip
+      const tooltipHeight = 250; // Altura estimada del tooltip
       
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
-      } else {
-        top = rect.top + scrollTop - 20;
+      } else if (step.position === 'top') {
+        top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
+      } else if (step.position === 'right') {
+        top = rect.top + scrollTop + (rect.height / 2);
+        left = rect.right + scrollLeft + 20;
+      } else if (step.position === 'left') {
+        top = rect.top + scrollTop + (rect.height / 2);
+        left = rect.left + scrollLeft - tooltipWidth - 20;
       }
       
       setTooltipPosition({ top, left, position: step.position });
@@ -273,11 +225,15 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             left: `${tooltipPosition.left}px`,
             transform: tooltipPosition.position === 'bottom' 
               ? 'translateX(-50%)' 
-              : 'translateX(-50%) translateY(-100%)',
+              : tooltipPosition.position === 'top'
+              ? 'translateX(-50%)'
+              : tooltipPosition.position === 'right'
+              ? 'translateY(-50%)'
+              : 'translateX(-100%) translateY(-50%)',
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-96 max-w-[calc(100vw-2rem)]"
+          className="w-[500px] max-w-[calc(100vw-2rem)]"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
@@ -355,21 +311,26 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
           </div>
 
           {/* Arrow pointer */}
-          <div 
-            className={`absolute left-1/2 -translate-x-1/2 ${
-              tooltipPosition.position === 'bottom' 
-                ? '-top-3' 
-                : '-bottom-3'
-            }`}
-          >
-            <div 
-              className={`w-0 h-0 border-l-[12px] border-r-[12px] border-transparent ${
-                tooltipPosition.position === 'bottom'
-                  ? 'border-b-[12px] border-b-[#41f2c0]'
-                  : 'border-t-[12px] border-t-white'
-              }`}
-            />
-          </div>
+          {tooltipPosition.position === 'bottom' && (
+            <div className="absolute left-1/2 -translate-x-1/2 -top-3">
+              <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]" />
+            </div>
+          )}
+          {tooltipPosition.position === 'top' && (
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-3">
+              <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-t-[12px] border-t-white" />
+            </div>
+          )}
+          {tooltipPosition.position === 'right' && (
+            <div className="absolute top-1/2 -translate-y-1/2 -left-3">
+              <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-transparent border-r-[12px] border-r-[#41f2c0]" />
+            </div>
+          )}
+          {tooltipPosition.position === 'left' && (
+            <div className="absolute top-1/2 -translate-y-1/2 -right-3">
+              <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-transparent border-l-[12px] border-l-white" />
+            </div>
+          )}
         </motion.div>
       </AnimatePresence>
     </>
