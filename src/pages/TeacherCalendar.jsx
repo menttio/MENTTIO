@@ -141,7 +141,7 @@ export default function TeacherCalendar() {
       </div>
 
       {/* Legend */}
-      <Card className="mb-6">
+      <Card className="mb-6 calendar-legend">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-[#404040] text-sm">Leyenda</h3>
@@ -276,7 +276,7 @@ export default function TeacherCalendar() {
         </div>
 
         {/* Selected Day Details */}
-        <div>
+        <div className="day-details">
           <Card>
             <CardContent className="p-4">
               <h3 className="font-semibold text-[#404040] mb-4 flex items-center gap-2">

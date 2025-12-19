@@ -353,10 +353,10 @@ export default function ManageAvailability() {
         </TabsContent>
 
         {/* Exceptions */}
-        <TabsContent value="exceptions">
+        <TabsContent value="exceptions" className="exceptions-tab">
           <div className="space-y-6">
             {/* Add Exception Form */}
-            <Card>
+            <Card className="add-exception-form">
               <CardHeader>
                 <CardTitle>Añadir Excepción</CardTitle>
               </CardHeader>

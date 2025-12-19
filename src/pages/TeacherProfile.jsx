@@ -127,7 +127,7 @@ export default function TeacherProfile() {
       </Card>
 
       {/* Tabs Content */}
-      <Tabs defaultValue="about">
+      <Tabs defaultValue="about" className="profile-tabs">
         <TabsList className="mb-6">
           <TabsTrigger value="about">Información</TabsTrigger>
           <TabsTrigger value="reviews">Reseñas ({reviews.length})</TabsTrigger>
@@ -137,7 +137,7 @@ export default function TeacherProfile() {
         <TabsContent value="about">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Experience */}
-            <Card>
+            <Card className="profile-experience">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Briefcase className="text-[#41f2c0]" size={24} />
@@ -232,7 +232,7 @@ export default function TeacherProfile() {
         </TabsContent>
 
         {/* Reviews Tab */}
-        <TabsContent value="reviews">
+        <TabsContent value="reviews" className="profile-reviews">
           {reviews.length > 0 ? (
             <div className="space-y-4">
               {reviews.map((review, idx) => (

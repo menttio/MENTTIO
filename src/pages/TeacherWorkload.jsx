@@ -135,7 +135,7 @@ export default function TeacherWorkload() {
 
       {/* Stats Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 workload-stats">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="stat-total-classes">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -148,7 +148,7 @@ export default function TeacherWorkload() {
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="stat-hours">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -161,7 +161,7 @@ export default function TeacherWorkload() {
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="stat-earnings">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -174,7 +174,7 @@ export default function TeacherWorkload() {
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="stat-students-count">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
@@ -192,7 +192,7 @@ export default function TeacherWorkload() {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Classes by Subject */}
-        <Card>
+        <Card className="subjects-breakdown">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <BookOpen className="text-[#41f2c0]" size={24} />
@@ -220,7 +220,7 @@ export default function TeacherWorkload() {
         </Card>
 
         {/* Top Students */}
-        <Card>
+        <Card className="top-students">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
               <Users className="text-purple-500" size={24} />

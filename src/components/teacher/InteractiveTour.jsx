@@ -16,7 +16,9 @@ import {
   MessageCircle,
   User,
   BarChart3,
-  Bell
+  Bell,
+  Award,
+  Search
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -97,20 +99,44 @@ const tourSteps = [
   
   // Mi Calendario - Detalles
   {
-    target: '.calendar-view',
-    title: 'Vista de calendario mensual',
-    content: 'Visualiza todas tus clases en formato calendario. Los puntos de colores indican clases reservadas y disponibilidad.',
+    target: '.calendar-legend',
+    title: 'Leyenda del calendario',
+    content: 'Los puntos de colores indican: verde para clases reservadas, azul para disponibilidad regular, morado para excepciones y rojo para días no disponibles.',
     icon: Calendar,
     position: 'bottom',
+    page: 'TeacherCalendar'
+  },
+  {
+    target: '.calendar-view',
+    title: 'Vista de calendario mensual',
+    content: 'Navega por los meses y haz clic en cualquier día para ver los detalles de tus clases y disponibilidad.',
+    icon: Calendar,
+    position: 'bottom',
+    page: 'TeacherCalendar'
+  },
+  {
+    target: '.day-details',
+    title: 'Detalles del día seleccionado',
+    content: 'Aquí ves información completa del día: clases programadas con hora y alumno, y tu disponibilidad configurada.',
+    icon: Clock,
+    position: 'left',
     page: 'TeacherCalendar'
   },
   
   // Disponibilidad - Detalles
   {
     target: '.availability-schedule',
-    title: 'Configura tu horario regular',
-    content: 'Activa los días que trabajas y establece tus franjas horarias. Puedes añadir múltiples bloques por día.',
+    title: 'Horario semanal regular',
+    content: 'Activa los días de la semana que trabajas. Para cada día activo, define las franjas horarias en las que estás disponible.',
     icon: Clock,
+    position: 'top',
+    page: 'ManageAvailability'
+  },
+  {
+    target: '.exceptions-tab',
+    title: 'Excepciones puntuales',
+    content: 'Añade días específicos con horarios diferentes o márcalos como no disponibles. Útil para vacaciones o eventos especiales.',
+    icon: Calendar,
     position: 'top',
     page: 'ManageAvailability'
   },
@@ -119,7 +145,7 @@ const tourSteps = [
   {
     target: '.subjects-management',
     title: 'Tus asignaturas activas',
-    content: 'Aquí ves todas las materias que impartes con sus precios. Puedes editar o eliminar cada una.',
+    content: 'Cada tarjeta muestra una asignatura que impartes con su precio por hora. Edita el precio o elimina asignaturas desde los botones.',
     icon: BookOpen,
     position: 'bottom',
     page: 'ManageSubjects'
@@ -127,39 +153,119 @@ const tourSteps = [
   
   // Estadísticas - Detalles
   {
-    target: '.workload-stats',
-    title: 'Panel de estadísticas',
-    content: 'Visualiza tus clases totales, horas impartidas, ingresos generados y alumnos distintos del periodo seleccionado.',
-    icon: BarChart3,
+    target: '.stat-total-classes',
+    title: 'Total de clases',
+    content: 'Número total de clases impartidas en el periodo seleccionado (esta semana o este mes).',
+    icon: Calendar,
     position: 'bottom',
+    page: 'TeacherWorkload'
+  },
+  {
+    target: '.stat-hours',
+    title: 'Horas impartidas',
+    content: 'Total de horas de clase que has dado. Se calcula sumando la duración de todas tus clases del periodo.',
+    icon: Clock,
+    position: 'bottom',
+    page: 'TeacherWorkload'
+  },
+  {
+    target: '.stat-earnings',
+    title: 'Ingresos generados',
+    content: 'Total de dinero ganado en el periodo seleccionado. Se actualiza automáticamente con cada clase completada.',
+    icon: DollarSign,
+    position: 'bottom',
+    page: 'TeacherWorkload'
+  },
+  {
+    target: '.stat-students-count',
+    title: 'Alumnos distintos',
+    content: 'Número de alumnos únicos con los que has tenido clase en este periodo.',
+    icon: Users,
+    position: 'bottom',
+    page: 'TeacherWorkload'
+  },
+  {
+    target: '.subjects-breakdown',
+    title: 'Distribución por asignatura',
+    content: 'Gráfico que muestra cuántas clases has dado de cada asignatura. Te ayuda a identificar tus materias más demandadas.',
+    icon: BookOpen,
+    position: 'top',
+    page: 'TeacherWorkload'
+  },
+  {
+    target: '.top-students',
+    title: 'Principales alumnos',
+    content: 'Lista de tus alumnos más activos con el número de clases y los ingresos generados por cada uno.',
+    icon: Users,
+    position: 'top',
     page: 'TeacherWorkload'
   },
   
   // Mi Perfil - Detalles
   {
     target: '.profile-info',
-    title: 'Información de tu perfil',
-    content: 'Esta es tu tarjeta de presentación. Los alumnos verán tu foto, bio, valoración y asignaturas que impartes.',
+    title: 'Cabecera de tu perfil',
+    content: 'Tu foto, nombre, valoración y asignaturas. Esta es la primera impresión que tendrán los alumnos al ver tu perfil.',
     icon: User,
     position: 'bottom',
+    page: 'TeacherProfile'
+  },
+  {
+    target: '.profile-tabs',
+    title: 'Pestañas de información',
+    content: 'Navega entre tu información profesional (experiencia, métodos, certificaciones) y las reseñas de tus alumnos.',
+    icon: BookOpen,
+    position: 'bottom',
+    page: 'TeacherProfile'
+  },
+  {
+    target: '.profile-experience',
+    title: 'Experiencia y formación',
+    content: 'Tus años de experiencia y estudios. Edita esta información para destacar tus credenciales ante los alumnos.',
+    icon: Award,
+    position: 'bottom',
+    page: 'TeacherProfile'
+  },
+  {
+    target: '.profile-reviews',
+    title: 'Reseñas de alumnos',
+    content: 'Valoraciones y comentarios que han dejado tus alumnos. Estas reseñas son públicas y ayudan a nuevos alumnos a decidir.',
+    icon: Star,
+    position: 'top',
     page: 'TeacherProfile'
   },
   
   // Mensajes - Detalles
   {
-    target: '.messages-list',
-    title: 'Lista de conversaciones',
-    content: 'Aquí aparecen todas tus conversaciones. Haz clic en una para ver el historial completo y responder.',
-    icon: MessageCircle,
+    target: '.messages-search',
+    title: 'Buscar conversaciones',
+    content: 'Filtra tus conversaciones por nombre de alumno para encontrar rápidamente con quién necesitas hablar.',
+    icon: Search,
     position: 'bottom',
+    page: 'Messages'
+  },
+  {
+    target: '.conversations-sidebar',
+    title: 'Lista de chats',
+    content: 'Todas tus conversaciones activas ordenadas por mensaje más reciente. Haz clic en una para abrirla.',
+    icon: MessageCircle,
+    position: 'right',
+    page: 'Messages'
+  },
+  {
+    target: '.chat-window-area',
+    title: 'Ventana de chat',
+    content: 'Aquí ves el historial completo de mensajes con el alumno seleccionado y puedes escribir nuevos mensajes.',
+    icon: MessageCircle,
+    position: 'left',
     page: 'Messages'
   },
   
   // Mis Alumnos - Detalles
   {
     target: '.students-list',
-    title: 'Listado de alumnos',
-    content: 'Consulta información de cada alumno: clases realizadas, próximas clases, asignaturas y estadísticas.',
+    title: 'Tarjetas de alumnos',
+    content: 'Cada tarjeta muestra: clases totales, próximas clases, dinero gastado, asignaturas cursadas y acceso rápido a su historial.',
     icon: Users,
     position: 'bottom',
     page: 'MyStudents'
