@@ -335,12 +335,15 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
         
-        // Check if tooltip fits below in viewport
-        const tooltipBottom = rect.bottom + tooltipHeight + 40;
-        if (tooltipBottom > viewportBottom) {
-          // Try above instead
-          top = rect.top + scrollTop - tooltipHeight - 20;
-          position = 'top';
+        // Force bottom position for first step (earnings card)
+        if (step.target !== '.stats-earnings') {
+          // Check if tooltip fits below in viewport
+          const tooltipBottom = rect.bottom + tooltipHeight + 40;
+          if (tooltipBottom > viewportBottom) {
+            // Try above instead
+            top = rect.top + scrollTop - tooltipHeight - 20;
+            position = 'top';
+          }
         }
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
