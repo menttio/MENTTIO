@@ -14,14 +14,14 @@ const TOUR_STEPS = [
     position: 'bottom'
   },
   {
-    target: '[data-value="regular"]',
+    target: '[value="regular"]',
     title: 'Horario Habitual',
     content: 'En esta pestaña defines tu disponibilidad semanal recurrente. Por ejemplo: "Lunes y Miércoles de 16:00 a 20:00".',
     icon: Clock,
     position: 'bottom'
   },
   {
-    target: '[data-value="exceptions"]',
+    target: '[value="exceptions"]',
     title: 'Excepciones',
     content: 'Aquí puedes marcar días específicos como no disponibles o añadir horarios especiales para fechas concretas.',
     icon: Calendar,
