@@ -66,7 +66,7 @@ export default function TeacherCard({
                 variant="secondary" 
                 className="bg-[#41f2c0]/10 text-[#404040] hover:bg-[#41f2c0]/20"
               >
-                {subject.subject_name}
+                {subject.subject_name} <span className="text-xs opacity-70">({subject.level})</span>
               </Badge>
             ))}
             {teacher.subjects?.length > 3 && (

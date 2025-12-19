@@ -150,8 +150,11 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                       <BookOpen className="text-[#41f2c0]" size={18} />
                     </div>
                     <div>
-                      <p className="font-medium text-[#404040]">{subject.subject_name}</p>
-                      <Badge className="bg-[#41f2c0] text-white text-xs">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-[#404040]">{subject.subject_name}</p>
+                        <Badge variant="secondary" className="text-xs">{subject.level}</Badge>
+                      </div>
+                      <Badge className="bg-[#41f2c0] text-white text-xs mt-1">
                         {subject.price_per_hour}€/hora
                       </Badge>
                     </div>
