@@ -91,16 +91,7 @@ export default function TeacherDashboard() {
   }
 
   return (
-    <>
-      {showTour && teacher && (
-        <InteractiveTour
-          teacherId={teacher.id}
-          teacherName={teacher.full_name}
-          onComplete={() => setShowTour(false)}
-        />
-      )}
-      
-        <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto">
           {/* Welcome Section */}
           <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -289,7 +280,6 @@ export default function TeacherDashboard() {
           </Card>
         )}
         </motion.div>
-      </div>
-    </>
+    </div>
   );
 }

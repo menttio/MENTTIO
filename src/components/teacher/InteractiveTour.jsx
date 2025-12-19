@@ -141,6 +141,11 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Remove highlight from previous element
+    document.querySelectorAll('.tour-highlight').forEach(el => {
+      el.classList.remove('tour-highlight');
+    });
+
     // Navigate to the page for current step
     const step = tourSteps[currentStep];
     if (step.page && window.location.pathname !== createPageUrl(step.page)) {
@@ -150,14 +155,18 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
     // Wait for navigation and then update position
     const timer = setTimeout(() => {
       updateTooltipPosition();
-    }, 300);
+    }, 500);
 
     window.addEventListener('resize', updateTooltipPosition);
     return () => {
       clearTimeout(timer);
       window.removeEventListener('resize', updateTooltipPosition);
+      // Clean up highlights on unmount
+      document.querySelectorAll('.tour-highlight').forEach(el => {
+        el.classList.remove('tour-highlight');
+      });
     };
-  }, [currentStep]);
+  }, [currentStep, navigate]);
 
   const updateTooltipPosition = () => {
     const step = tourSteps[currentStep];
@@ -192,12 +201,6 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handleNext = () => {
-    // Remove highlight from current element
-    const currentElement = document.querySelector(tourSteps[currentStep].target);
-    if (currentElement) {
-      currentElement.classList.remove('tour-highlight');
-    }
-
     if (currentStep < tourSteps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -206,12 +209,6 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   };
 
   const handlePrev = () => {
-    // Remove highlight from current element
-    const currentElement = document.querySelector(tourSteps[currentStep].target);
-    if (currentElement) {
-      currentElement.classList.remove('tour-highlight');
-    }
-
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }

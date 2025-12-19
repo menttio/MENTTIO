@@ -20,12 +20,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import InteractiveTour from '@/components/teacher/InteractiveTour';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [teacherData, setTeacherData] = useState(null);
+  const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -37,6 +40,13 @@ export default function Layout({ children, currentPageName }) {
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
           const teacher = teachers[0];
+          setTeacherData(teacher);
+
+          // Check if tour should be shown
+          if (!teacher.tour_completed) {
+            setShowTour(true);
+          }
+
           // Verify subscription is active
           if (teacher.subscription_active && teacher.subscription_expires) {
             const expirationDate = new Date(teacher.subscription_expires);
@@ -119,7 +129,16 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#f2f2f2]">
+    <>
+      {showTour && teacherData && userRole === 'teacher' && (
+        <InteractiveTour
+          teacherId={teacherData.id}
+          teacherName={teacherData.full_name}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+
+      <div className="min-h-screen bg-[#f2f2f2]">
       <style>{`
         :root {
           --primary: #41f2c0;
@@ -227,7 +246,8 @@ export default function Layout({ children, currentPageName }) {
         <div className="p-4 lg:p-8">
           {children}
         </div>
-      </main>
-    </div>
-  );
+        </main>
+        </div>
+        </>
+        );
 }
