@@ -19,28 +19,28 @@ const TOUR_STEPS = [
     title: 'Añadir asignaturas',
     content: 'Haz clic aquí para añadir nuevas asignaturas que impartes. Podrás seleccionar la materia y establecer tu precio por hora.',
     icon: Plus,
-    position: 'bottom'
+    position: 'bottom-left'
   },
   {
     target: '.subjects-management',
     title: 'Tus asignaturas',
     content: 'Aquí verás todas las asignaturas que impartes. Cada tarjeta muestra la materia y el precio por hora que has establecido.',
     icon: Grid3x3,
-    position: 'top'
+    position: 'bottom'
   },
   {
     target: '.subject-card-price',
     title: 'Precio por hora',
     content: 'Este es el precio que cobrarás por cada hora de clase. Puedes modificarlo en cualquier momento editando la asignatura.',
     icon: DollarSign,
-    position: 'top'
+    position: 'bottom'
   },
   {
     target: '.subject-card-actions',
     title: 'Editar y eliminar',
     content: 'Utiliza estos botones para editar el precio de una asignatura o eliminarla si ya no la impartes.',
     icon: BookOpen,
-    position: 'left'
+    position: 'bottom'
   }
 ];
 
@@ -78,6 +78,9 @@ export default function SubjectsTour({ teacherId, onComplete }) {
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         left = rect.left + scrollLeft + (rect.width / 2);
+      } else if (step.position === 'bottom-left') {
+        top = rect.bottom + scrollTop + 20;
+        left = rect.right + scrollLeft - 100;
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
         left = rect.left + scrollLeft + (rect.width / 2);
@@ -184,6 +187,8 @@ export default function SubjectsTour({ teacherId, onComplete }) {
             left: `${tooltipPosition.left}px`,
             transform: tooltipPosition.position === 'bottom' 
               ? 'translateX(-50%)' 
+              : tooltipPosition.position === 'bottom-left'
+              ? 'translateX(-100%)'
               : tooltipPosition.position === 'top'
               ? 'translateX(-50%)'
               : tooltipPosition.position === 'right'
@@ -272,6 +277,11 @@ export default function SubjectsTour({ teacherId, onComplete }) {
           {/* Arrow pointer */}
           {tooltipPosition.position === 'bottom' && (
             <div className="absolute left-1/2 -translate-x-1/2 -top-3">
+              <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]" />
+            </div>
+          )}
+          {tooltipPosition.position === 'bottom-left' && (
+            <div className="absolute right-[100px] -top-3">
               <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]" />
             </div>
           )}
