@@ -17,13 +17,17 @@ export default function TeacherCard({
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
     : teacher.subjects?.[0];
 
-  // Calculate price range
-  const prices = teacher.subjects?.map(s => s.price_per_hour) || [];
-  const minPrice = Math.min(...prices);
-  const maxPrice = Math.max(...prices);
-  const priceDisplay = prices.length > 1 && minPrice !== maxPrice 
-    ? `${minPrice}€ - ${maxPrice}€`
-    : `${minPrice}€`;
+  // Calculate price display
+  const priceDisplay = selectedSubject && subjectInfo
+    ? `${subjectInfo.price_per_hour}€`
+    : (() => {
+        const prices = teacher.subjects?.map(s => s.price_per_hour) || [];
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        return prices.length > 1 && minPrice !== maxPrice 
+          ? `${minPrice}€ - ${maxPrice}€`
+          : `${minPrice}€`;
+      })();
 
   return (
     <motion.div
