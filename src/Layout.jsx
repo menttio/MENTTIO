@@ -83,24 +83,22 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
     { name: 'Reservar Clase', icon: Calendar, page: 'BookClass' },
     { name: 'Mis Clases', icon: BookOpen, page: 'MyClasses' },
+    { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
     { name: 'Biblioteca', icon: Library, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
-    { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
-    { name: 'Mi Perfil', icon: Settings, page: 'Profile' },
+    { name: 'Mi Perfil', icon: User, page: 'Profile' },
   ];
 
   const teacherNavItems = [
     { name: 'Inicio', icon: Home, page: 'TeacherDashboard' },
-    { name: 'Mi Calendario', icon: Calendar, page: 'TeacherCalendar' },
-    { name: 'Historial de Clases', icon: BookOpen, page: 'TeacherClassHistory' },
+    { name: 'Calendario', icon: Calendar, page: 'TeacherCalendar' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
-    { name: 'Mis Asignaturas', icon: Library, page: 'ManageSubjects' },
+    { name: 'Asignaturas', icon: Library, page: 'ManageSubjects' },
+    { name: 'Alumnos', icon: Users, page: 'MyStudents' },
     { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
-    { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
-    { name: 'Mis Alumnos', icon: Users, page: 'MyStudents' },
-    { name: 'Configuración', icon: Settings, page: 'Profile' },
     { name: 'Ayuda', icon: Bell, page: 'Help' },
+    { name: 'Mi Perfil', icon: User, page: 'Profile' },
   ];
 
   const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;
