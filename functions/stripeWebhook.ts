@@ -28,10 +28,20 @@ Deno.serve(async (req) => {
       const session = event.data.object;
       const metadata = session.metadata;
 
-      console.log('Payment successful, creating booking:', metadata);
+      console.log('Payment successful for booking:', metadata.bookingId);
 
-      // Create booking
-      const booking = await base44.asServiceRole.entities.Booking.create({
+      // Update existing booking or create new one
+      let booking;
+      if (metadata.bookingId) {
+        // Update existing booking
+        booking = await base44.asServiceRole.entities.Booking.update(metadata.bookingId, {
+          payment_status: 'paid',
+          payment_method: 'stripe',
+          stripe_payment_id: session.payment_intent
+        });
+      } else {
+        // Create new booking (for backward compatibility)
+        booking = await base44.asServiceRole.entities.Booking.create({
         student_id: metadata.student_id,
         student_name: metadata.student_name,
         student_email: metadata.student_email,
@@ -47,11 +57,13 @@ Deno.serve(async (req) => {
         price: parseFloat(metadata.price),
         status: 'scheduled',
         payment_status: 'paid',
+        payment_method: 'stripe',
         stripe_payment_id: session.payment_intent,
         files: []
-      });
+        });
+      }
 
-      console.log('Booking created:', booking.id);
+      console.log('Booking updated/created:', booking.id);
 
       // Create notifications
       await base44.asServiceRole.entities.Notification.create({

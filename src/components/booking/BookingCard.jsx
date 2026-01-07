@@ -14,7 +14,9 @@ import {
   FileText,
   ExternalLink,
   Loader2,
-  Star
+  Star,
+  CreditCard,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +37,7 @@ import {
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
+import PaymentDialog from './PaymentDialog';
 
 export default function BookingCard({ 
   booking, 
@@ -47,6 +50,7 @@ export default function BookingCard({
 }) {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
@@ -57,6 +61,7 @@ export default function BookingCard({
   const isPast = isBefore(bookingDateTime, now);
   const isCompleted = booking.status === 'completed' || isPast;
   const isCancelled = booking.status === 'cancelled';
+  const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
 
   const canModify = is24HoursBefore && !isCompleted && !isCancelled;
 
@@ -212,10 +217,39 @@ export default function BookingCard({
           </div>
         </div>
 
-        {/* Price */}
+        {/* Price & Payment Status */}
         {booking.price && (
-          <div className="text-lg font-semibold text-[#41f2c0] mb-4">
-            {booking.price}€
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-lg font-semibold text-[#41f2c0]">
+              {booking.price}€
+            </div>
+            {booking.payment_status === 'paid' && (
+              <Badge className="bg-green-100 text-green-700">
+                <CreditCard size={12} className="mr-1" />
+                Pagado
+              </Badge>
+            )}
+          </div>
+        )}
+
+        {/* Payment Alert for Student */}
+        {needsPayment && (
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="text-orange-500 flex-shrink-0 mt-0.5" size={18} />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-orange-800">Pago pendiente</p>
+                <p className="text-xs text-orange-600 mb-2">Esta clase está pendiente de pago</p>
+                <Button
+                  size="sm"
+                  onClick={() => setShowPaymentDialog(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  <CreditCard size={14} className="mr-1" />
+                  Pagar ahora
+                </Button>
+              </div>
+            </div>
           </div>
         )}
 
