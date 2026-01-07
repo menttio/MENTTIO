@@ -352,6 +352,14 @@ export default function BookingCard({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Payment Dialog */}
+      <PaymentDialog
+        booking={booking}
+        open={showPaymentDialog}
+        onOpenChange={setShowPaymentDialog}
+        onSuccess={onRefresh}
+      />
     </>
   );
 }
