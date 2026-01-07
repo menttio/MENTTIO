@@ -87,7 +87,15 @@ export default function SearchTeachers() {
         at => at.teacher_id === teacherId && at.subject_id === subjectId
       );
     }
-    return student.assigned_teachers.some(at => at.teacher_id === teacherId);
+    // A teacher is only fully assigned if ALL their subjects are assigned
+    const teacher = teachers.find(t => t.id === teacherId);
+    if (!teacher?.subjects?.length) return false;
+    
+    return teacher.subjects.every(subject => 
+      student.assigned_teachers.some(
+        at => at.teacher_id === teacherId && at.subject_id === subject.subject_id
+      )
+    );
   };
 
   const filteredTeachers = useMemo(() => {
@@ -143,7 +151,11 @@ export default function SearchTeachers() {
 
   const handleAssignTeacher = (teacher) => {
     setSelectedTeacher(teacher);
-    setAssignSubject(teacher.subjects?.[0]?.subject_id || '');
+    // Pre-select first unassigned subject
+    const firstUnassigned = teacher.subjects?.find(s => 
+      !isTeacherAssigned(teacher.id, s.subject_id)
+    );
+    setAssignSubject(firstUnassigned ? `${firstUnassigned.subject_id}-${firstUnassigned.level}` : '');
     setShowAssignDialog(true);
   };
 
