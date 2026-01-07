@@ -332,9 +332,9 @@ export default function StudentDashboard() {
                           <Badge 
                             key={idx}
                             variant="secondary"
-                            className="bg-[#41f2c0]/10 text-[#404040] text-xs"
+                            className="bg-[#41f2c0]/10 text-[#404040] hover:bg-[#41f2c0]/20"
                           >
-                            {subject.name} <span className="opacity-70">({subject.level})</span>
+                            {subject.name} <span className="text-xs opacity-70">({subject.level || ''})</span>
                           </Badge>
                         ))}
                       </div>
