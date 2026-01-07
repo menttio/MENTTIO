@@ -92,8 +92,9 @@ export default function Layout({ children, currentPageName }) {
   const teacherNavItems = [
     { name: 'Inicio', icon: Home, page: 'TeacherDashboard' },
     { name: 'Mi Calendario', icon: Calendar, page: 'TeacherCalendar' },
+    { name: 'Historial de Clases', icon: BookOpen, page: 'TeacherClassHistory' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
-    { name: 'Mis Asignaturas', icon: BookOpen, page: 'ManageSubjects' },
+    { name: 'Mis Asignaturas', icon: Library, page: 'ManageSubjects' },
     { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
     { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
