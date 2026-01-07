@@ -108,7 +108,7 @@ export default function StudentDashboard() {
   const getTeacherSubjects = (teacherId) => {
     return student?.assigned_teachers
       ?.filter(at => at.teacher_id === teacherId)
-      .map(at => at.subject_name) || [];
+      .map(at => ({ name: at.subject_name, level: at.level })) || [];
   };
 
   if (loading) {
