@@ -73,7 +73,7 @@ export default function MyClasses() {
     .filter(booking => {
       const bookingDate = parseISO(booking.date);
       const isPast = isBefore(bookingDate, startOfDay(now));
-      
+
       // Status filter
       if (filter === 'upcoming') {
         return booking.status === 'scheduled' && !isPast;
@@ -83,6 +83,9 @@ export default function MyClasses() {
       }
       if (filter === 'cancelled') {
         return booking.status === 'cancelled';
+      }
+      if (filter === 'unpaid') {
+        return booking.payment_status === 'pending' && booking.status !== 'cancelled';
       }
       return true;
     })
@@ -141,6 +144,7 @@ export default function MyClasses() {
               <TabsTrigger value="upcoming">Próximas</TabsTrigger>
               <TabsTrigger value="completed">Completadas</TabsTrigger>
               <TabsTrigger value="cancelled">Canceladas</TabsTrigger>
+              <TabsTrigger value="unpaid">No Pagadas</TabsTrigger>
             </TabsList>
           </Tabs>
 

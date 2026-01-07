@@ -7,11 +7,13 @@ import {
   Calendar as CalendarIcon,
   Clock,
   User,
-  BookOpen
+  BookOpen,
+  Filter
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   format, 
   addMonths, 
@@ -41,6 +43,7 @@ export default function TeacherCalendar() {
   const [editingBooking, setEditingBooking] = useState(null);
   const [showLegend, setShowLegend] = useState(true);
   const [showTour, setShowTour] = useState(false);
+  const [paymentFilter, setPaymentFilter] = useState('all');
 
   const loadData = async () => {
     try {
@@ -124,9 +127,17 @@ export default function TeacherCalendar() {
   };
 
   const selectedDateBookings = useMemo(() => {
-    return getBookingsForDate(selectedDate)
+    const dateBookings = getBookingsForDate(selectedDate)
       .sort((a, b) => a.start_time.localeCompare(b.start_time));
-  }, [selectedDate, bookings]);
+    
+    if (paymentFilter === 'unpaid') {
+      return dateBookings.filter(b => b.payment_status === 'pending' && b.status !== 'cancelled');
+    }
+    if (paymentFilter === 'paid') {
+      return dateBookings.filter(b => b.payment_status === 'paid');
+    }
+    return dateBookings;
+  }, [selectedDate, bookings, paymentFilter]);
 
   const selectedDateAvailability = useMemo(() => {
     return getAvailabilityForDate(selectedDate);
@@ -388,9 +399,18 @@ export default function TeacherCalendar() {
 
       {/* Full list below */}
       <div className="mt-8 booking-list-section">
-        <h2 className="text-xl font-semibold text-[#404040] mb-4">
-          Clases del día seleccionado
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-[#404040]">
+            Clases del día seleccionado
+          </h2>
+          <Tabs value={paymentFilter} onValueChange={setPaymentFilter}>
+            <TabsList className="bg-gray-100">
+              <TabsTrigger value="all">Todas</TabsTrigger>
+              <TabsTrigger value="unpaid">No Pagadas</TabsTrigger>
+              <TabsTrigger value="paid">Pagadas</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
         
         {selectedDateBookings.length > 0 ? (
           <div className="space-y-4">
