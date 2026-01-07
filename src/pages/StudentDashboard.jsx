@@ -340,18 +340,7 @@ export default function StudentDashboard() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-2">
-                        <Link 
-                          to={createPageUrl('BookClass')}
-                          className="flex-1"
-                        >
-                          <Button 
-                            size="sm" 
-                            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-                          >
-                            Reservar clase
-                          </Button>
-                        </Link>
+                      <div className="flex justify-end">
                         <Button
                           size="sm"
                           variant="outline"
