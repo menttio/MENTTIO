@@ -85,6 +85,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Biblioteca', icon: Library, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
+    { name: 'Mi Perfil', icon: User, page: 'Profile' },
   ];
 
   const teacherNavItems = [
