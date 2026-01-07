@@ -39,7 +39,18 @@ export default function MyClasses() {
       const allBookings = await base44.entities.Booking.filter({ 
         student_email: user.email 
       });
-      setBookings(allBookings);
+      
+      // Enrich bookings with teacher phone if missing
+      const teachers = await base44.entities.Teacher.list();
+      const enrichedBookings = allBookings.map(booking => {
+        if (!booking.teacher_phone) {
+          const teacher = teachers.find(t => t.id === booking.teacher_id);
+          return { ...booking, teacher_phone: teacher?.phone || '' };
+        }
+        return booking;
+      });
+      
+      setBookings(enrichedBookings);
 
       const students = await base44.entities.Student.filter({ user_email: user.email });
       if (students.length > 0) {
