@@ -106,24 +106,15 @@ export default function TeacherCard({
         {showActions && (
           <div className="flex gap-2">
             {isAssigned ? (
-              <>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onRemove?.(teacher)}
-                  className="text-red-500 border-red-200 hover:bg-red-50"
-                >
-                  <Trash2 size={16} className="mr-1" />
-                  Quitar
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => onSelect?.(teacher)}
-                  className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-                >
-                  Reservar
-                </Button>
-              </>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onRemove?.(teacher)}
+                className="text-red-500 border-red-200 hover:bg-red-50"
+              >
+                <Trash2 size={16} className="mr-1" />
+                Quitar
+              </Button>
             ) : (
               <Button
                 size="sm"
