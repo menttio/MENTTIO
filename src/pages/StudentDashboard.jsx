@@ -334,7 +334,7 @@ export default function StudentDashboard() {
                             variant="secondary"
                             className="bg-[#41f2c0]/10 text-[#404040] text-xs"
                           >
-                            {subject}
+                            {subject.name} <span className="opacity-70">({subject.level})</span>
                           </Badge>
                         ))}
                       </div>

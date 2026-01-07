@@ -80,9 +80,16 @@ export default function SearchTeachers() {
     loadData();
   }, []);
 
-  const isTeacherAssigned = (teacherId, subjectId = null) => {
+  const isTeacherAssigned = (teacherId, subjectId = null, level = null) => {
     if (!student?.assigned_teachers) return false;
     if (subjectId) {
+      // Check by subject_id and level combination
+      if (level) {
+        return student.assigned_teachers.some(
+          at => at.teacher_id === teacherId && at.subject_id === subjectId && at.level === level
+        );
+      }
+      // Check if ANY level of this subject is assigned
       return student.assigned_teachers.some(
         at => at.teacher_id === teacherId && at.subject_id === subjectId
       );
@@ -93,7 +100,7 @@ export default function SearchTeachers() {
     
     return teacher.subjects.every(subject => 
       student.assigned_teachers.some(
-        at => at.teacher_id === teacherId && at.subject_id === subject.subject_id
+        at => at.teacher_id === teacherId && at.subject_id === subject.subject_id && at.level === subject.level
       )
     );
   };
@@ -374,22 +381,25 @@ export default function SearchTeachers() {
                 <SelectValue placeholder="Selecciona asignatura" />
               </SelectTrigger>
               <SelectContent>
-                {selectedTeacher?.subjects?.map((subject, idx) => (
-                  <SelectItem 
-                    key={`${subject.subject_id}-${subject.level}-${idx}`} 
-                    value={`${subject.subject_id}-${subject.level}`}
-                    disabled={isTeacherAssigned(selectedTeacher.id, subject.subject_id)}
-                  >
-                    <div className="flex items-center justify-between w-full gap-2">
-                      <span>{subject.subject_name}</span>
-                      <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{subject.level}</span>
-                      <span className="text-gray-500">{subject.price_per_hour}€/h</span>
-                      {isTeacherAssigned(selectedTeacher?.id, subject.subject_id) && (
-                        <Check className="text-green-500" size={16} />
-                      )}
-                    </div>
-                  </SelectItem>
-                ))}
+                {selectedTeacher?.subjects?.map((subject, idx) => {
+                  const isAssigned = isTeacherAssigned(selectedTeacher.id, subject.subject_id, subject.level);
+                  return (
+                    <SelectItem 
+                      key={`${subject.subject_id}-${subject.level}-${idx}`} 
+                      value={`${subject.subject_id}-${subject.level}`}
+                      disabled={isAssigned}
+                    >
+                      <div className="flex items-center justify-between w-full gap-2">
+                        <span>{subject.subject_name}</span>
+                        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{subject.level}</span>
+                        <span className="text-gray-500">{subject.price_per_hour}€/h</span>
+                        {isAssigned && (
+                          <Check className="text-green-500" size={16} />
+                        )}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -400,7 +410,7 @@ export default function SearchTeachers() {
             </Button>
             <Button
               onClick={confirmAssign}
-              disabled={!assignSubject || assigning || isTeacherAssigned(selectedTeacher?.id, assignSubject)}
+              disabled={!assignSubject || assigning}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
             >
               {assigning ? (
