@@ -138,9 +138,11 @@ export default function BookClass() {
     const teacherAvailability = availabilities.filter(a => a.teacher_id === selectedTeacher.id);
     const teacherBookings = existingBookings.filter(b => b.teacher_id === selectedTeacher.id);
     
-    // Generate slots for next 30 days
+    // Generate slots for next 30 days, starting from tomorrow
+    const now = new Date();
+    const minDate = addDays(now, 1);
     for (let i = 0; i < 30; i++) {
-      const date = addDays(new Date(), i);
+      const date = addDays(minDate, i);
       const dateStr = format(date, 'yyyy-MM-dd');
       const dayOfWeek = getDay(date);
       
