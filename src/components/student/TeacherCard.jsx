@@ -99,7 +99,7 @@ export default function TeacherCard({
 
       {/* Price & Actions */}
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        {prices.length > 0 && (
+        {priceDisplay && (
           <div className="flex items-center gap-1 text-[#404040]">
             <DollarSign size={18} className="text-[#41f2c0]" />
             <span className="font-semibold text-lg">{priceDisplay}</span>
