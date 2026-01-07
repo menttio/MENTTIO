@@ -16,7 +16,8 @@ import {
   MessageCircle,
   Bell,
   BarChart3,
-  Library
+  Library,
+  Settings
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -85,7 +86,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Biblioteca', icon: Library, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
-    { name: 'Mi Perfil', icon: User, page: 'Profile' },
+    { name: 'Mi Perfil', icon: Settings, page: 'Profile' },
   ];
 
   const teacherNavItems = [
@@ -97,6 +98,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Mi Perfil', icon: User, page: 'TeacherProfile' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mis Alumnos', icon: Users, page: 'MyStudents' },
+    { name: 'Configuración', icon: Settings, page: 'Profile' },
     { name: 'Ayuda', icon: Bell, page: 'Help' },
   ];
 
