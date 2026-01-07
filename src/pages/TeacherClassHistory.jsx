@@ -71,8 +71,8 @@ export default function TeacherClassHistory() {
 
   const filteredBookings = bookings
     .filter(booking => {
-      const bookingDate = parseISO(booking.date);
-      const isPast = isBefore(bookingDate, startOfDay(now));
+      const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
+      const isPast = isBefore(bookingDateTime, now);
       
       // Status filter
       if (filter === 'upcoming') {

@@ -7,17 +7,17 @@ import Messages from './pages/Messages';
 import MyClasses from './pages/MyClasses';
 import MyStudents from './pages/MyStudents';
 import PaymentSuccess from './pages/PaymentSuccess';
+import Profile from './pages/Profile';
 import RenewSubscription from './pages/RenewSubscription';
 import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
 import TeacherCalendar from './pages/TeacherCalendar';
+import TeacherClassHistory from './pages/TeacherClassHistory';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
-import Profile from './pages/Profile';
-import TeacherClassHistory from './pages/TeacherClassHistory';
 import __Layout from './Layout.jsx';
 
 
@@ -31,17 +31,17 @@ export const PAGES = {
     "MyClasses": MyClasses,
     "MyStudents": MyStudents,
     "PaymentSuccess": PaymentSuccess,
+    "Profile": Profile,
     "RenewSubscription": RenewSubscription,
     "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
     "TeacherCalendar": TeacherCalendar,
+    "TeacherClassHistory": TeacherClassHistory,
     "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
-    "Profile": Profile,
-    "TeacherClassHistory": TeacherClassHistory,
 }
 
 export const pagesConfig = {
