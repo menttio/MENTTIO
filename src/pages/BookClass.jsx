@@ -201,7 +201,7 @@ export default function BookClass() {
       const user = await base44.auth.me();
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
       
-      // Create booking without payment
+      // Create booking with teacher phone
       const newBooking = await base44.entities.Booking.create({
         student_id: student.id,
         student_name: student.full_name,
@@ -209,7 +209,7 @@ export default function BookClass() {
         teacher_id: selectedTeacher.id,
         teacher_name: selectedTeacher.full_name,
         teacher_email: selectedTeacher.user_email,
-        teacher_phone: selectedTeacher.phone,
+        teacher_phone: selectedTeacher.phone || '',
         subject_id: selectedSubject,
         subject_name: subjectName,
         date: format(selectedDate, 'yyyy-MM-dd'),
