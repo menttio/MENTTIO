@@ -22,7 +22,8 @@ Deno.serve(async (req) => {
       startTime, 
       endTime,
       duration,
-      price 
+      price,
+      bookingId
     } = await req.json();
 
     // Get student info
@@ -53,6 +54,7 @@ Deno.serve(async (req) => {
       cancel_url: `${req.headers.get('origin')}/book-class`,
       metadata: {
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
+        bookingId: bookingId || '',
         student_id: student.id,
         student_name: student.full_name,
         student_email: user.email,

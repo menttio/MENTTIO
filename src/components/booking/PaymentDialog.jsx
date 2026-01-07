@@ -41,8 +41,10 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
         bookingId: booking.id
       });
 
-      if (response.data.url) {
+      if (response.data?.url) {
         window.location.href = response.data.url;
+      } else {
+        throw new Error('No se recibió URL de pago');
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
