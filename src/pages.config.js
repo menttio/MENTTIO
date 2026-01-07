@@ -15,6 +15,7 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import BookClass from './pages/BookClass';
 import SearchTeachers from './pages/SearchTeachers';
 import StudentDashboard from './pages/StudentDashboard';
+import PaymentSuccess from './pages/PaymentSuccess';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +37,7 @@ export const PAGES = {
     "BookClass": BookClass,
     "SearchTeachers": SearchTeachers,
     "StudentDashboard": StudentDashboard,
+    "PaymentSuccess": PaymentSuccess,
 }
 
 export const pagesConfig = {

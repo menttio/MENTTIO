@@ -198,54 +198,38 @@ export default function BookClass() {
   const handleConfirmBooking = async () => {
     setSaving(true);
     try {
-      const user = await base44.auth.me();
-      
-      const newBooking = await base44.entities.Booking.create({
-        student_id: student.id,
-        student_name: student.full_name,
-        student_email: user.email,
-        teacher_id: selectedTeacher.id,
-        teacher_name: selectedTeacher.full_name,
-        teacher_email: selectedTeacher.user_email,
-        subject_id: selectedSubject,
-        subject_name: subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name,
-        date: format(selectedDate, 'yyyy-MM-dd'),
-        start_time: selectedTime,
-        end_time: calculateEndTime(selectedTime, duration),
-        duration_minutes: duration,
-        price: calculatePrice(),
-        status: 'scheduled',
-        files: []
-      });
+      // Check if running in iframe
+      if (window.self !== window.top) {
+        alert('Los pagos solo funcionan desde la app publicada. Por favor, abre la app en una nueva pestaña.');
+        setSaving(false);
+        return;
+      }
 
-      // Create notifications for both student and teacher
-      const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
-
-      await base44.entities.Notification.create({
-        user_id: student.id,
-        user_email: user.email,
-        type: 'booking_new',
-        title: 'Clase reservada',
-        message: `Has reservado una clase de ${subjectName} con ${selectedTeacher.full_name} para el ${bookingDate} a las ${selectedTime}`,
-        related_id: newBooking.id,
-        link_page: 'MyClasses'
-      });
-
-      await base44.entities.Notification.create({
-        user_id: selectedTeacher.id,
-        user_email: selectedTeacher.user_email,
-        type: 'booking_new',
-        title: 'Nueva reserva de clase',
-        message: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
-        related_id: newBooking.id,
-        link_page: 'TeacherCalendar'
-      });
       
-      navigate(createPageUrl('MyClasses'));
+      // Create checkout session
+      const response = await base44.functions.invoke('createCheckout', {
+        teacherId: selectedTeacher.id,
+        teacherName: selectedTeacher.full_name,
+        teacherEmail: selectedTeacher.user_email,
+        subjectId: selectedSubject,
+        subjectName: subjectName,
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        startTime: selectedTime,
+        endTime: calculateEndTime(selectedTime, duration),
+        duration: duration,
+        price: calculatePrice()
+      });
+
+      // Redirect to Stripe checkout
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (error) {
-      console.error(error);
-    } finally {
+      console.error('Error creating checkout:', error);
+      alert('Error al procesar el pago. Por favor, inténtalo de nuevo.');
       setSaving(false);
     }
   };
@@ -612,10 +596,13 @@ export default function BookClass() {
                   ) : (
                     <>
                       <Check size={20} className="mr-2" />
-                      Confirmar Reserva
+                      Proceder al Pago
                     </>
                   )}
                 </Button>
+                <p className="text-xs text-gray-500 text-center mt-2">
+                  Serás redirigido a la pasarela de pago segura de Stripe
+                </p>
               </CardContent>
             </Card>
           </motion.div>
