@@ -1,41 +1,41 @@
+import BookClass from './pages/BookClass';
+import ClassRecordings from './pages/ClassRecordings';
+import Help from './pages/Help';
+import ManageAvailability from './pages/ManageAvailability';
+import ManageSubjects from './pages/ManageSubjects';
+import Messages from './pages/Messages';
+import MyClasses from './pages/MyClasses';
+import MyStudents from './pages/MyStudents';
+import RenewSubscription from './pages/RenewSubscription';
+import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
-import BookClass from './pages/BookClass';
-import MyClasses from './pages/MyClasses';
-import SearchTeachers from './pages/SearchTeachers';
-import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherCalendar from './pages/TeacherCalendar';
-import ManageAvailability from './pages/ManageAvailability';
-import MyStudents from './pages/MyStudents';
-import Messages from './pages/Messages';
+import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
-import TeacherWorkload from './pages/TeacherWorkload';
-import ManageSubjects from './pages/ManageSubjects';
 import TeacherSignup from './pages/TeacherSignup';
-import RenewSubscription from './pages/RenewSubscription';
-import Help from './pages/Help';
-import ClassRecordings from './pages/ClassRecordings';
+import TeacherWorkload from './pages/TeacherWorkload';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "BookClass": BookClass,
+    "ClassRecordings": ClassRecordings,
+    "Help": Help,
+    "ManageAvailability": ManageAvailability,
+    "ManageSubjects": ManageSubjects,
+    "Messages": Messages,
+    "MyClasses": MyClasses,
+    "MyStudents": MyStudents,
+    "RenewSubscription": RenewSubscription,
+    "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
-    "BookClass": BookClass,
-    "MyClasses": MyClasses,
-    "SearchTeachers": SearchTeachers,
-    "TeacherDashboard": TeacherDashboard,
     "TeacherCalendar": TeacherCalendar,
-    "ManageAvailability": ManageAvailability,
-    "MyStudents": MyStudents,
-    "Messages": Messages,
+    "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
-    "TeacherWorkload": TeacherWorkload,
-    "ManageSubjects": ManageSubjects,
     "TeacherSignup": TeacherSignup,
-    "RenewSubscription": RenewSubscription,
-    "Help": Help,
-    "ClassRecordings": ClassRecordings,
+    "TeacherWorkload": TeacherWorkload,
 }
 
 export const pagesConfig = {
