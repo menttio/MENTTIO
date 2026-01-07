@@ -11,10 +11,11 @@ export default function TeacherCard({
   onRemove, 
   isAssigned = false,
   showActions = true,
-  selectedSubject = null
+  selectedSubject = null,
+  selectedLevel = null
 }) {
   const subjectInfo = selectedSubject 
-    ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
+    ? teacher.subjects?.find(s => s.subject_id === selectedSubject && (!selectedLevel || s.level === selectedLevel))
     : teacher.subjects?.[0];
 
   // Calculate price range

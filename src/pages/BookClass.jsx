@@ -79,28 +79,32 @@ export default function BookClass() {
     loadData();
   }, []);
 
-  // Get unique subjects from assigned teachers
+  // Get unique subject-level combinations from assigned teachers
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
     const subjectMap = new Map();
     student.assigned_teachers.forEach(at => {
-      if (!subjectMap.has(at.subject_id)) {
-        subjectMap.set(at.subject_id, {
-          id: at.subject_id,
-          name: at.subject_name
+      const key = `${at.subject_id}-${at.level}`;
+      if (!subjectMap.has(key)) {
+        subjectMap.set(key, {
+          id: key,
+          subjectId: at.subject_id,
+          name: at.subject_name,
+          level: at.level
         });
       }
     });
     return Array.from(subjectMap.values());
   }, [student]);
 
-  // Get teachers for selected subject from assigned teachers
+  // Get teachers for selected subject-level from assigned teachers
   const teachersForSubject = useMemo(() => {
     if (!selectedSubject || !student?.assigned_teachers?.length) return [];
     
+    const [subjectId, level] = selectedSubject.split('-');
     const teacherIds = student.assigned_teachers
-      .filter(at => at.subject_id === selectedSubject)
+      .filter(at => at.subject_id === subjectId && at.level === level)
       .map(at => at.teacher_id);
     
     return teachers.filter(t => teacherIds.includes(t.id));
@@ -190,7 +194,8 @@ export default function BookClass() {
 
   const calculatePrice = () => {
     if (!selectedTeacher || !selectedSubject) return 0;
-    const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
+    const [subjectId, level] = selectedSubject.split('-');
+    const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === subjectId && s.level === level);
     if (!subjectInfo) return 0;
     return (subjectInfo.price_per_hour * duration) / 60;
   };
@@ -200,6 +205,9 @@ export default function BookClass() {
     try {
       const user = await base44.auth.me();
       
+      const [subjectId, level] = selectedSubject.split('-');
+      const selectedSubjectData = availableSubjects.find(s => s.id === selectedSubject);
+      
       const newBooking = await base44.entities.Booking.create({
         student_id: student.id,
         student_name: student.full_name,
@@ -207,8 +215,8 @@ export default function BookClass() {
         teacher_id: selectedTeacher.id,
         teacher_name: selectedTeacher.full_name,
         teacher_email: selectedTeacher.user_email,
-        subject_id: selectedSubject,
-        subject_name: subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name,
+        subject_id: subjectId,
+        subject_name: selectedSubjectData?.name,
         date: format(selectedDate, 'yyyy-MM-dd'),
         start_time: selectedTime,
         end_time: calculateEndTime(selectedTime, duration),
@@ -220,7 +228,7 @@ export default function BookClass() {
 
       // Create notifications for both student and teacher
       const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-      const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
+      const subjectName = selectedSubjectData?.name;
 
       await base44.entities.Notification.create({
         user_id: student.id,
@@ -354,7 +362,12 @@ export default function BookClass() {
                         <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
                           <BookOpen className="text-[#41f2c0]" size={20} />
                         </div>
-                        <span className="font-medium text-[#404040]">{subject.name}</span>
+                        <div>
+                          <span className="font-medium text-[#404040]">{subject.name}</span>
+                          <Badge variant="secondary" className="ml-2 bg-gray-100 text-xs">
+                            {subject.level}
+                          </Badge>
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -401,7 +414,8 @@ export default function BookClass() {
                       >
                         <TeacherCard 
                           teacher={teacher}
-                          selectedSubject={selectedSubject}
+                          selectedSubject={selectedSubject?.split('-')[0]}
+                          selectedLevel={selectedSubject?.split('-')[1]}
                           showActions={false}
                         />
                       </button>
@@ -568,6 +582,7 @@ export default function BookClass() {
                       <p className="text-sm text-gray-500">Asignatura</p>
                       <p className="font-semibold text-[#404040]">
                         {availableSubjects.find(s => s.id === selectedSubject)?.name}
+                        <span className="text-gray-500 text-sm ml-2">({availableSubjects.find(s => s.id === selectedSubject)?.level})</span>
                       </p>
                     </div>
                   </div>
