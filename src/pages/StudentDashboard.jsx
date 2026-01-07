@@ -203,7 +203,7 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <TrendingUp size={24} />
-                <span className="text-3xl font-bold">{student?.assigned_teachers?.length || 0}</span>
+                <span className="text-3xl font-bold">{teachers.length || 0}</span>
               </div>
               <h3 className="font-semibold">Profesores Asignados</h3>
               <p className="text-sm opacity-80 mt-1">En tu lista actual</p>
