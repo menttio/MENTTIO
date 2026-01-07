@@ -104,7 +104,10 @@ export default function BookClass() {
     
     const [subjectId, level] = selectedSubject.split('-');
     const teacherIds = student.assigned_teachers
-      .filter(at => at.subject_id === subjectId && at.level === level)
+      .filter(at => {
+        // Match by subject_id and level
+        return at.subject_id === subjectId && at.level === level;
+      })
       .map(at => at.teacher_id);
     
     return teachers.filter(t => teacherIds.includes(t.id));
