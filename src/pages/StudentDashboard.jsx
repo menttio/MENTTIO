@@ -108,7 +108,7 @@ export default function StudentDashboard() {
   const getTeacherSubjects = (teacherId) => {
     return student?.assigned_teachers
       ?.filter(at => at.teacher_id === teacherId)
-      .map(at => ({ name: at.subject_name, level: at.level })) || [];
+      .map(at => at.subject_name) || [];
   };
 
   if (loading) {
@@ -332,9 +332,9 @@ export default function StudentDashboard() {
                           <Badge 
                             key={idx}
                             variant="secondary"
-                            className="bg-[#41f2c0]/10 text-[#404040] hover:bg-[#41f2c0]/20"
+                            className="bg-[#41f2c0]/10 text-[#404040] text-xs"
                           >
-                            {subject.name}
+                            {subject}
                           </Badge>
                         ))}
                       </div>
