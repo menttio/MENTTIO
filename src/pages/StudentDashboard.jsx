@@ -342,7 +342,7 @@ export default function StudentDashboard() {
                       {/* Actions */}
                       <div className="flex gap-2">
                         <Link 
-                          to={`${createPageUrl('BookClass')}?teacher=${teacher.id}&subject=${teacherSubjects[0] ? student.assigned_teachers.find(at => at.teacher_id === teacher.id && at.subject_name === teacherSubjects[0])?.subject_id : ''}`}
+                          to={createPageUrl('BookClass')}
                           className="flex-1"
                         >
                           <Button 

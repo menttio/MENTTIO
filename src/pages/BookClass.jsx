@@ -70,17 +70,6 @@ export default function BookClass() {
         const allBookings = await base44.entities.Booking.filter({ status: 'scheduled' });
         setExistingBookings(allBookings);
         
-        // Check URL parameters for preselected teacher and subject
-        const urlParams = new URLSearchParams(window.location.search);
-        const teacherId = urlParams.get('teacher');
-        const subjectId = urlParams.get('subject');
-        
-        if (teacherId && subjectId) {
-          setSelectedSubject(subjectId);
-          setSelectedTeacher(allTeachers.find(t => t.id === teacherId));
-          setStep(3);
-        }
-        
       } catch (error) {
         console.error(error);
       } finally {
