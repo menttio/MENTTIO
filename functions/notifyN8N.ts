@@ -23,6 +23,14 @@ Deno.serve(async (req) => {
     const teacherFirstName = teacherNameParts[0] || '';
     const teacherLastName = teacherNameParts.slice(1).join(' ') || '';
 
+    // Construir fecha en formato ISO 8601 completo con zona horaria
+    const classDate = new Date(`${bookingData.date}T${bookingData.start_time}`);
+    const offset = -classDate.getTimezoneOffset();
+    const offsetHours = Math.floor(Math.abs(offset) / 60).toString().padStart(2, '0');
+    const offsetMinutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
+    const offsetSign = offset >= 0 ? '+' : '-';
+    const isoDateTime = `${bookingData.date}T${bookingData.start_time}:00.000${offsetSign}${offsetHours}:${offsetMinutes}`;
+
     // Preparar datos para n8n
     const n8nPayload = {
       student_id: bookingData.student_id,
@@ -36,7 +44,7 @@ Deno.serve(async (req) => {
       teacher_last_name: teacherLastName,
       teacher_email: bookingData.teacher_email,
       teacher_phone: bookingData.teacher_phone || '',
-      class_start_datetime: `${bookingData.date}T${bookingData.start_time}`,
+      class_start_datetime: isoDateTime,
       booking_id: bookingData.booking_id
     };
 
