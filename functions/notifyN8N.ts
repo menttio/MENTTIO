@@ -40,16 +40,21 @@ Deno.serve(async (req) => {
       booking_id: bookingData.booking_id
     };
 
-    // Obtener URL del webhook desde variables de entorno
-    const webhookUrl = Deno.env.get('N8N_WEBHOOK_URL');
+    // Elegir webhook según el status
+    const isCancellation = bookingData.status === 'cancelled';
+    const webhookUrl = isCancellation 
+      ? Deno.env.get('N8N_CANCEL_WEBHOOK_URL')
+      : Deno.env.get('N8N_WEBHOOK_URL');
 
     if (!webhookUrl) {
-      console.error('N8N_WEBHOOK_URL no está configurado');
+      console.error(`Webhook URL no configurado para ${isCancellation ? 'cancelación' : 'reserva'}`);
       return Response.json({ 
         error: 'Webhook URL not configured',
         success: false 
       }, { status: 500 });
     }
+
+    console.log(`🔔 Enviando a n8n (${isCancellation ? 'CANCELACIÓN' : 'RESERVA'}):`, webhookUrl);
 
     // Enviar a n8n
     const response = await fetch(webhookUrl, {
