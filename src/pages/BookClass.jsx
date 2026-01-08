@@ -252,6 +252,7 @@ export default function BookClass() {
         await base44.functions.invoke('notifyN8N', {
           bookingData: {
             booking_id: newBooking.id,
+            student_id: student.id,
             student_name: student.full_name,
             student_email: user.email,
             student_phone: student.phone || '',

@@ -23,6 +23,7 @@ Deno.serve(async (req) => {
 
     // Preparar datos para n8n
     const n8nPayload = {
+      student_id: bookingData.student_id,
       student_first_name: studentFirstName,
       student_last_name: studentLastName,
       student_phone: bookingData.student_phone || '',
