@@ -123,6 +123,29 @@ export default function BookingCard({
         link_page: 'TeacherCalendar'
       });
 
+      // Notificar a n8n sobre la cancelación
+      try {
+        await base44.functions.invoke('notifyN8N', {
+          bookingData: {
+            booking_id: booking.id,
+            student_id: booking.student_id,
+            student_name: booking.student_name,
+            student_email: booking.student_email,
+            student_phone: booking.student_phone || '',
+            teacher_name: booking.teacher_name,
+            teacher_email: booking.teacher_email,
+            teacher_phone: booking.teacher_phone || '',
+            subject_name: booking.subject_name,
+            price: booking.price,
+            date: booking.date,
+            start_time: booking.start_time,
+            status: 'cancelled'
+          }
+        });
+      } catch (webhookError) {
+        console.error('Error notificando cancelación a n8n:', webhookError);
+      }
+
       onRefresh?.();
     } catch (error) {
       console.error('Error cancelling booking:', error);
