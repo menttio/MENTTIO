@@ -262,7 +262,8 @@ export default function BookClass() {
             subject_name: subjectName,
             price: calculatePrice(),
             date: format(selectedDate, 'yyyy-MM-dd'),
-            start_time: selectedTime
+            start_time: selectedTime,
+            status: 'scheduled'
           }
         });
       } catch (webhookError) {
