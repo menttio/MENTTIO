@@ -11,6 +11,8 @@ Deno.serve(async (req) => {
 
     const { bookingData } = await req.json();
 
+    console.log('🔍 DATOS RECIBIDOS:', JSON.stringify(bookingData, null, 2));
+
     // Separar nombre y apellidos del alumno
     const studentNameParts = bookingData.student_name.split(' ');
     const studentFirstName = studentNameParts[0] || '';
