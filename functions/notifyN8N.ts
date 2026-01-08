@@ -41,27 +41,29 @@ Deno.serve(async (req) => {
     };
 
     // Elegir webhook según el status
-    const isCancellation = bookingData.status === 'cancelled';
     console.log('📊 Status de la reserva:', bookingData.status);
-    console.log('🔍 ¿Es cancelación?:', isCancellation);
     
-    const webhookUrl = isCancellation 
-      ? Deno.env.get('N8N_CANCEL_WEBHOOK_URL')
-      : Deno.env.get('N8N_WEBHOOK_URL');
+    let webhookUrl;
+    if (bookingData.status === 'cancelled') {
+      webhookUrl = Deno.env.get('N8N_CANCEL_WEBHOOK_URL');
+      console.log('🔔 Tipo: CANCELACIÓN');
+    } else if (bookingData.status === 'modified') {
+      webhookUrl = Deno.env.get('N8N_MODIFY_WEBHOOK_URL');
+      console.log('🔔 Tipo: MODIFICACIÓN');
+    } else {
+      webhookUrl = Deno.env.get('N8N_WEBHOOK_URL');
+      console.log('🔔 Tipo: NUEVA RESERVA');
+    }
 
     console.log('🌐 URL seleccionada:', webhookUrl);
-    console.log('🌐 N8N_WEBHOOK_URL:', Deno.env.get('N8N_WEBHOOK_URL'));
-    console.log('🌐 N8N_CANCEL_WEBHOOK_URL:', Deno.env.get('N8N_CANCEL_WEBHOOK_URL'));
 
     if (!webhookUrl) {
-      console.error(`❌ Webhook URL no configurado para ${isCancellation ? 'cancelación' : 'reserva'}`);
+      console.error('❌ Webhook URL no configurado para este tipo de operación');
       return Response.json({ 
         error: 'Webhook URL not configured',
         success: false 
       }, { status: 500 });
     }
-
-    console.log(`🔔 Enviando a n8n (${isCancellation ? 'CANCELACIÓN' : 'RESERVA'}):`, webhookUrl);
 
     // Enviar a n8n
     console.log('📤 Payload que se enviará:', JSON.stringify(n8nPayload, null, 2));

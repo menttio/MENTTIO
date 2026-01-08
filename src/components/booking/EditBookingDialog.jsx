@@ -129,10 +129,13 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
     
     setSaving(true);
     try {
+      const newDateStr = format(selectedDate, 'yyyy-MM-dd');
+      const newEndTime = calculateEndTime(selectedTime, booking.duration_minutes || 60);
+      
       await base44.entities.Booking.update(booking.id, {
-        date: format(selectedDate, 'yyyy-MM-dd'),
+        date: newDateStr,
         start_time: selectedTime,
-        end_time: calculateEndTime(selectedTime, booking.duration_minutes || 60)
+        end_time: newEndTime
       });
 
       // Create notifications for both student and teacher
@@ -156,6 +159,29 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
         related_id: booking.id,
         link_page: 'TeacherCalendar'
       });
+
+      // Notificar a n8n sobre la modificación
+      try {
+        await base44.functions.invoke('notifyN8N', {
+          bookingData: {
+            booking_id: booking.id,
+            student_id: booking.student_id,
+            student_name: booking.student_name,
+            student_email: booking.student_email,
+            student_phone: booking.student_phone || '',
+            teacher_name: booking.teacher_name,
+            teacher_email: booking.teacher_email,
+            teacher_phone: booking.teacher_phone || '',
+            subject_name: booking.subject_name,
+            price: booking.price,
+            date: newDateStr,
+            start_time: selectedTime,
+            status: 'modified'
+          }
+        });
+      } catch (webhookError) {
+        console.error('Error notificando modificación a n8n:', webhookError);
+      }
 
       onSave?.();
       onClose();
