@@ -202,7 +202,7 @@ export default function BookClass() {
     try {
       const user = await base44.auth.me();
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
-      
+
       // Create booking with teacher phone
       const newBooking = await base44.entities.Booking.create({
         student_id: student.id,
@@ -246,7 +246,29 @@ export default function BookClass() {
         related_id: newBooking.id,
         link_page: 'TeacherCalendar'
       });
-      
+
+      // Notificar a n8n
+      try {
+        await base44.functions.invoke('notifyN8N', {
+          bookingData: {
+            booking_id: newBooking.id,
+            student_name: student.full_name,
+            student_email: user.email,
+            student_phone: student.phone || '',
+            teacher_name: selectedTeacher.full_name,
+            teacher_email: selectedTeacher.user_email,
+            teacher_phone: selectedTeacher.phone || '',
+            subject_name: subjectName,
+            price: calculatePrice(),
+            date: format(selectedDate, 'yyyy-MM-dd'),
+            start_time: selectedTime
+          }
+        });
+      } catch (webhookError) {
+        console.error('Error notificando a n8n:', webhookError);
+        // No bloqueamos la reserva si falla el webhook
+      }
+
       navigate(createPageUrl('MyClasses'));
     } catch (error) {
       console.error('Error creating booking:', error);
