@@ -42,12 +42,19 @@ Deno.serve(async (req) => {
 
     // Elegir webhook según el status
     const isCancellation = bookingData.status === 'cancelled';
+    console.log('📊 Status de la reserva:', bookingData.status);
+    console.log('🔍 ¿Es cancelación?:', isCancellation);
+    
     const webhookUrl = isCancellation 
       ? Deno.env.get('N8N_CANCEL_WEBHOOK_URL')
       : Deno.env.get('N8N_WEBHOOK_URL');
 
+    console.log('🌐 URL seleccionada:', webhookUrl);
+    console.log('🌐 N8N_WEBHOOK_URL:', Deno.env.get('N8N_WEBHOOK_URL'));
+    console.log('🌐 N8N_CANCEL_WEBHOOK_URL:', Deno.env.get('N8N_CANCEL_WEBHOOK_URL'));
+
     if (!webhookUrl) {
-      console.error(`Webhook URL no configurado para ${isCancellation ? 'cancelación' : 'reserva'}`);
+      console.error(`❌ Webhook URL no configurado para ${isCancellation ? 'cancelación' : 'reserva'}`);
       return Response.json({ 
         error: 'Webhook URL not configured',
         success: false 
@@ -57,6 +64,8 @@ Deno.serve(async (req) => {
     console.log(`🔔 Enviando a n8n (${isCancellation ? 'CANCELACIÓN' : 'RESERVA'}):`, webhookUrl);
 
     // Enviar a n8n
+    console.log('📤 Payload que se enviará:', JSON.stringify(n8nPayload, null, 2));
+    
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
@@ -65,15 +74,21 @@ Deno.serve(async (req) => {
       body: JSON.stringify(n8nPayload)
     });
 
+    console.log('📥 Status de respuesta de n8n:', response.status);
+
     if (!response.ok) {
-      console.error('Error al enviar a n8n:', await response.text());
+      const errorText = await response.text();
+      console.error('❌ Error al enviar a n8n:', errorText);
       return Response.json({ 
         error: 'Failed to notify n8n',
-        success: false 
+        success: false,
+        details: errorText
       }, { status: 500 });
     }
 
-    console.log('Notificación enviada a n8n exitosamente:', n8nPayload);
+    const responseData = await response.text();
+    console.log('✅ Respuesta de n8n:', responseData);
+    console.log('✅ Notificación enviada a n8n exitosamente');
 
     return Response.json({ 
       success: true,
