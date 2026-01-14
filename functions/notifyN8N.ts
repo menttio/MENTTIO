@@ -23,13 +23,30 @@ Deno.serve(async (req) => {
     const teacherFirstName = teacherNameParts[0] || '';
     const teacherLastName = teacherNameParts.slice(1).join(' ') || '';
 
-    // Construir fecha en formato ISO 8601 completo con zona horaria
-    const classDate = new Date(`${bookingData.date}T${bookingData.start_time}`);
-    const offset = -classDate.getTimezoneOffset();
-    const offsetHours = Math.floor(Math.abs(offset) / 60).toString().padStart(2, '0');
-    const offsetMinutes = (Math.abs(offset) % 60).toString().padStart(2, '0');
-    const offsetSign = offset >= 0 ? '+' : '-';
-    const isoDateTime = `${bookingData.date}T${bookingData.start_time}:00.000${offsetSign}${offsetHours}:${offsetMinutes}`;
+    // Construir fecha en formato ISO 8601 con zona horaria de Madrid
+    // Europe/Madrid es +01:00 en invierno y +02:00 en verano (horario de verano)
+    const classDate = new Date(`${bookingData.date}T${bookingData.start_time}:00`);
+    
+    // Obtener el offset de Madrid para esta fecha específica
+    const madridFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Madrid',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    
+    const utcDate = new Date(classDate.toISOString());
+    const madridDate = new Date(madridFormatter.format(classDate));
+    const offsetMinutes = Math.round((classDate - utcDate + (madridDate - classDate)) / 60000);
+    const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60).toString().padStart(2, '0');
+    const offsetMins = (Math.abs(offsetMinutes) % 60).toString().padStart(2, '0');
+    const offsetSign = offsetMinutes >= 0 ? '+' : '-';
+    
+    const isoDateTime = `${bookingData.date}T${bookingData.start_time}:00.000${offsetSign}${offsetHours}:${offsetMins}`;
 
     // Preparar datos para n8n
     const n8nPayload = {
