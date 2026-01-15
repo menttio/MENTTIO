@@ -27,11 +27,6 @@ Deno.serve(async (req) => {
     const teacherFirstName = teacherNameParts[0] || '';
     const teacherLastName = teacherNameParts.slice(1).join(' ') || '';
 
-    // Format date to ISO 8601 with Madrid timezone
-    const bookingDate = new Date(bookingData.date);
-    const madridOffset = bookingDate.toLocaleString('en-US', { timeZone: 'Europe/Madrid', timeZoneName: 'short' }).includes('CEST') ? '+02:00' : '+01:00';
-    const formattedDate = `${bookingData.date}T00:00:00.000${madridOffset}`;
-
     const payload = {
       student_first_name: studentFirstName,
       student_last_name: studentLastName,
@@ -44,7 +39,7 @@ Deno.serve(async (req) => {
       booking_id: bookingData.booking_id,
       status: bookingData.status,
       subject_name: bookingData.subject_name,
-      date: formattedDate,
+      date: bookingData.date,
       files: bookingData.uploaded_files || []
     };
 
