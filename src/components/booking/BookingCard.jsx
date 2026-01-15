@@ -109,10 +109,7 @@ export default function BookingCard({
               status: booking.status,
               subject_name: booking.subject_name,
               date: booking.date,
-              uploaded_files: newFiles.map(f => ({
-                file_name: f.name,
-                file_url: f.url
-              }))
+              uploaded_files: newFiles.map(f => f.url)
             }
           });
         } catch (webhookError) {
