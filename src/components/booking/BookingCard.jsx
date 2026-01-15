@@ -75,21 +75,26 @@ export default function BookingCard({
   const status = statusConfig[displayStatus] || statusConfig.scheduled;
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      const newFile = {
-        name: file.name,
-        url: file_url,
+      const uploadPromises = files.map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
+      const results = await Promise.all(uploadPromises);
+      
+      const newFiles = results.map((result, idx) => ({
+        name: files[idx].name,
+        url: result.file_url,
         uploaded_by: userRole
-      };
-      const updatedFiles = [...(booking.files || []), newFile];
+      }));
+      
+      const updatedFiles = [...(booking.files || []), ...newFiles];
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
       
-      // Notify n8n if student uploaded the file
+      // Notify n8n if student uploaded files
       if (userRole === 'student') {
         try {
           await base44.functions.invoke('notifyFileUpload', {
@@ -114,6 +119,16 @@ export default function BookingCard({
     } finally {
       setUploading(false);
       setShowUploadDialog(false);
+    }
+  };
+
+  const handleDeleteFile = async (fileIndex) => {
+    try {
+      const updatedFiles = booking.files.filter((_, idx) => idx !== fileIndex);
+      await base44.entities.Booking.update(booking.id, { files: updatedFiles });
+      onRefresh?.();
+    } catch (error) {
+      console.error('Error deleting file:', error);
     }
   };
 
@@ -302,17 +317,27 @@ export default function BookingCard({
             <h4 className="text-sm font-medium text-gray-500 mb-2">Archivos adjuntos</h4>
             <div className="flex flex-wrap gap-2">
               {booking.files.map((file, idx) => (
-                <a
-                  key={idx}
-                  href={file.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors text-sm"
-                >
-                  <FileText size={14} className="text-[#41f2c0]" />
-                  <span className="truncate max-w-[150px]">{file.name}</span>
-                  <ExternalLink size={12} className="text-gray-400" />
-                </a>
+                <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors"
+                  >
+                    <FileText size={14} className="text-[#41f2c0]" />
+                    <span className="truncate max-w-[150px]">{file.name}</span>
+                    <ExternalLink size={12} className="text-gray-400" />
+                  </a>
+                  {file.uploaded_by === userRole && (
+                    <button
+                      onClick={() => handleDeleteFile(idx)}
+                      className="ml-1 p-1 hover:bg-red-100 rounded transition-colors"
+                      title="Eliminar archivo"
+                    >
+                      <Trash2 size={12} className="text-red-500" />
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -382,13 +407,15 @@ export default function BookingCard({
                 className="hidden" 
                 onChange={handleFileUpload}
                 disabled={uploading}
+                multiple
               />
               {uploading ? (
                 <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
               ) : (
                 <>
                   <FileUp className="text-gray-400 mb-2" size={32} />
-                  <span className="text-sm text-gray-500">Haz clic para seleccionar un archivo</span>
+                  <span className="text-sm text-gray-500">Haz clic para seleccionar archivos</span>
+                  <span className="text-xs text-gray-400 mt-1">Puedes seleccionar varios a la vez</span>
                 </>
               )}
             </label>
