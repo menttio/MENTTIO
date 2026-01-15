@@ -27,11 +27,6 @@ Deno.serve(async (req) => {
     const teacherFirstName = teacherNameParts[0] || '';
     const teacherLastName = teacherNameParts.slice(1).join(' ') || '';
 
-    // Formatear fecha en ISO 8601 con offset de Madrid
-    const madridDate = new Date(bookingData.date);
-    const madridOffset = madridDate.getMonth() >= 2 && madridDate.getMonth() <= 9 ? '+02:00' : '+01:00';
-    const formattedDate = madridDate.toISOString().slice(0, -1) + madridOffset;
-
     const payload = {
       student_first_name: studentFirstName,
       student_last_name: studentLastName,
