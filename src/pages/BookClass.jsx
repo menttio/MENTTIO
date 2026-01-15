@@ -203,11 +203,12 @@ export default function BookClass() {
       const user = await base44.auth.me();
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
 
-      // Create booking with teacher phone
+      // Create booking with teacher and student phone
       const newBooking = await base44.entities.Booking.create({
         student_id: student.id,
         student_name: student.full_name,
         student_email: user.email,
+        student_phone: student.phone || '',
         teacher_id: selectedTeacher.id,
         teacher_name: selectedTeacher.full_name,
         teacher_email: selectedTeacher.user_email,

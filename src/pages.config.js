@@ -1,4 +1,3 @@
-import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
 import Help from './pages/Help';
 import ManageAvailability from './pages/ManageAvailability';
@@ -18,11 +17,11 @@ import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
+import BookClass from './pages/BookClass';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "BookClass": BookClass,
     "ClassRecordings": ClassRecordings,
     "Help": Help,
     "ManageAvailability": ManageAvailability,
@@ -42,6 +41,7 @@ export const PAGES = {
     "TeacherProfile": TeacherProfile,
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
+    "BookClass": BookClass,
 }
 
 export const pagesConfig = {
