@@ -248,6 +248,21 @@ export default function BookClass() {
         link_page: 'TeacherCalendar'
       });
 
+      // Send push notification to teacher
+      try {
+        await base44.functions.invoke('sendPushNotification', {
+          userEmail: selectedTeacher.user_email,
+          title: 'Nueva reserva de clase',
+          body: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
+          data: {
+            booking_id: newBooking.id,
+            page: 'TeacherCalendar'
+          }
+        });
+      } catch (pushError) {
+        console.error('Error enviando push notification:', pushError);
+      }
+
       // Notificar a n8n
       try {
         await base44.functions.invoke('notifyN8N', {

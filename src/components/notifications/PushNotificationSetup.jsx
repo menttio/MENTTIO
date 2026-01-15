@@ -46,9 +46,8 @@ export default function PushNotificationSetup({ userEmail }) {
         }
 
         // Subscribe to push
-        const publicKey = await fetch('/api/vapid-public-key')
-          .then(r => r.text())
-          .catch(() => null);
+        const response = await base44.functions.invoke('getVapidPublicKey');
+        const publicKey = response.data;
 
         if (!publicKey) {
           console.error('No se pudo obtener la clave pública VAPID');
