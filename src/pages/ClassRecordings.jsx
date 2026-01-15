@@ -49,7 +49,22 @@ export default function ClassRecordings() {
         .filter(b => b.status === 'completed' || (b.status === 'scheduled' && !isAfter(parseISO(b.date), startOfDay(new Date()))))
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       
-      setBookings(completed);
+      // Obtener links de grabación desde Google Sheets
+      const bookingsWithRecordings = await Promise.all(
+        completed.map(async (booking) => {
+          try {
+            const { data } = await base44.functions.invoke('getRecordingLink', { 
+              booking_id: booking.id 
+            });
+            return { ...booking, recording_url: data.recording_url || booking.recording_url };
+          } catch (error) {
+            console.error(`Error obteniendo link para booking ${booking.id}:`, error);
+            return booking;
+          }
+        })
+      );
+      
+      setBookings(bookingsWithRecordings);
     } catch (error) {
       console.error(error);
     } finally {
