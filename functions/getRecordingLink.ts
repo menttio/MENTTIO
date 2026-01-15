@@ -48,8 +48,20 @@ Deno.serve(async (req) => {
       return Response.json({ recording_url: null });
     }
 
-    // Construir el link de visualización de Drive
-    const recordingUrl = `https://drive.google.com/file/d/${driveFileId}/view`;
+    // Limpiar y formatear el link
+    let recordingUrl = driveFileId.trim();
+    
+    // Si ya es una URL de Drive, usarla tal cual
+    if (recordingUrl.includes('drive.google.com')) {
+      // Extraer solo el ID si está en formato URL
+      const match = recordingUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match) {
+        recordingUrl = `https://drive.google.com/file/d/${match[1]}/view`;
+      }
+    } else {
+      // Si es solo el ID, construir la URL
+      recordingUrl = `https://drive.google.com/file/d/${recordingUrl}/view`;
+    }
 
     return Response.json({ recording_url: recordingUrl });
 
