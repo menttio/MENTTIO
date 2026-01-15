@@ -105,7 +105,11 @@ export default function BookingCard({
               teacher_name: booking.teacher_name,
               teacher_id: booking.teacher_id,
               teacher_email: booking.teacher_email,
-              booking_id: booking.id
+              booking_id: booking.id,
+              uploaded_files: newFiles.map(f => ({
+                file_name: f.name,
+                file_url: f.url
+              }))
             }
           });
         } catch (webhookError) {

@@ -36,7 +36,8 @@ Deno.serve(async (req) => {
       teacher_last_name: teacherLastName,
       teacher_id: bookingData.teacher_id,
       teacher_email: bookingData.teacher_email,
-      booking_id: bookingData.booking_id
+      booking_id: bookingData.booking_id,
+      files: bookingData.uploaded_files || []
     };
 
     const response = await fetch(N8N_WEBHOOK_URL, {
