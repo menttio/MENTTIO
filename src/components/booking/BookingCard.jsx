@@ -106,6 +106,7 @@ export default function BookingCard({
               teacher_id: booking.teacher_id,
               teacher_email: booking.teacher_email,
               booking_id: booking.id,
+              status: booking.status,
               uploaded_files: newFiles.map(f => ({
                 file_name: f.name,
                 file_url: f.url

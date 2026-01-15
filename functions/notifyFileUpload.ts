@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
       teacher_id: bookingData.teacher_id,
       teacher_email: bookingData.teacher_email,
       booking_id: bookingData.booking_id,
+      status: bookingData.status,
       files: bookingData.uploaded_files || []
     };
 
