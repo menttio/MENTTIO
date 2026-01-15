@@ -88,6 +88,26 @@ export default function BookingCard({
       };
       const updatedFiles = [...(booking.files || []), newFile];
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
+      
+      // Notificar a n8n sobre la subida de archivo
+      if (userRole === 'student') {
+        try {
+          await base44.functions.invoke('notifyFileUpload', {
+            bookingData: {
+              student_name: booking.student_name,
+              student_id: booking.student_id,
+              teacher_name: booking.teacher_name,
+              teacher_id: booking.teacher_id,
+              teacher_email: booking.teacher_email,
+              booking_id: booking.id
+            },
+            uploadedFiles: [newFile]
+          });
+        } catch (webhookError) {
+          console.error('Error notificando subida de archivo a n8n:', webhookError);
+        }
+      }
+      
       onRefresh?.();
     } catch (error) {
       console.error('Error uploading file:', error);
