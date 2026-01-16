@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
       `response_type=code&` +
       `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly')}&` +
       `access_type=offline&` +
+      `prompt=consent&` +
       `state=${encodeURIComponent(JSON.stringify({ userEmail: user.email, userType }))}`;
 
     return Response.json({ url: authUrl });
