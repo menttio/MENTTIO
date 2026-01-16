@@ -47,6 +47,7 @@ export default function BookClass() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [duration, setDuration] = useState(60);
+  const [googleCalendarEvents, setGoogleCalendarEvents] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,6 +70,9 @@ export default function BookClass() {
 
         const allBookings = await base44.entities.Booking.filter({ status: 'scheduled' });
         setExistingBookings(allBookings);
+
+        // Load Google Calendar events if teacher has it connected
+        setGoogleCalendarEvents([]);
         
       } catch (error) {
         console.error(error);
@@ -130,6 +134,29 @@ export default function BookClass() {
     return allSlots;
   };
 
+  // Load Google Calendar events when teacher is selected
+  useEffect(() => {
+    const loadGoogleEvents = async () => {
+      if (!selectedTeacher?.google_calendar_connected) return;
+      
+      try {
+        const now = new Date();
+        const endDate = addDays(now, 30);
+        
+        const response = await base44.functions.invoke('getGoogleCalendarEvents', {
+          startDate: format(now, 'yyyy-MM-dd'),
+          endDate: format(endDate, 'yyyy-MM-dd')
+        });
+        
+        setGoogleCalendarEvents(response.data.events || []);
+      } catch (error) {
+        console.error('Error loading Google Calendar events:', error);
+      }
+    };
+    
+    loadGoogleEvents();
+  }, [selectedTeacher]);
+
   // Calculate available slots for selected teacher
   const availableSlots = useMemo(() => {
     if (!selectedTeacher) return {};
@@ -169,13 +196,20 @@ export default function BookClass() {
         const bookedSlots = teacherBookings
           .filter(b => b.date === dateStr)
           .map(b => b.start_time);
-        
-        slots[dateStr] = slots[dateStr].filter(s => !bookedSlots.includes(s));
+
+        // Filter out Google Calendar busy slots
+        const googleBusySlots = googleCalendarEvents
+          .filter(e => e.date === dateStr && e.startTime)
+          .map(e => e.startTime);
+
+        slots[dateStr] = slots[dateStr].filter(s => 
+          !bookedSlots.includes(s) && !googleBusySlots.includes(s)
+        );
       }
     }
     
     return slots;
-  }, [selectedTeacher, availabilities, existingBookings]);
+    }, [selectedTeacher, availabilities, existingBookings, googleCalendarEvents]);
 
   const handleSlotSelect = (date, time) => {
     setSelectedDate(date);
@@ -261,6 +295,18 @@ export default function BookClass() {
         });
       } catch (pushError) {
         console.error('Error enviando push notification:', pushError);
+      }
+
+      // Sync with Google Calendar for both teacher and student
+      try {
+        if (selectedTeacher.google_calendar_connected) {
+          await base44.functions.invoke('syncGoogleCalendar', { bookingId: newBooking.id });
+        }
+        if (student.google_calendar_connected) {
+          await base44.functions.invoke('syncGoogleCalendar', { bookingId: newBooking.id });
+        }
+      } catch (syncError) {
+        console.error('Error syncing with Google Calendar:', syncError);
       }
 
       // Notificar a n8n
