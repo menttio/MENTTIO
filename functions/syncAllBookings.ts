@@ -5,20 +5,29 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
 
     // Get all scheduled bookings
-    const bookings = await base44.asServiceRole.entities.Booking.filter({ 
+    const scheduledBookings = await base44.asServiceRole.entities.Booking.filter({ 
       status: 'scheduled' 
     });
 
-    console.log(`Found ${bookings.length} scheduled bookings to sync`);
+    // Get cancelled bookings to clean up from calendar
+    const cancelledBookings = await base44.asServiceRole.entities.Booking.filter({ 
+      status: 'cancelled' 
+    });
+
+    console.log(`Found ${scheduledBookings.length} scheduled bookings to sync and ${cancelledBookings.length} cancelled to clean`);
 
     const results = {
-      total: bookings.length,
+      total_scheduled: scheduledBookings.length,
+      total_cancelled: cancelledBookings.length,
       synced_teacher: 0,
       synced_student: 0,
+      deleted_teacher: 0,
+      deleted_student: 0,
       errors: []
     };
 
-    for (const booking of bookings) {
+    // Sync scheduled bookings
+    for (const booking of scheduledBookings) {
       try {
         // Get teacher and student info
         const teachers = await base44.asServiceRole.entities.Teacher.filter({ 
@@ -77,6 +86,54 @@ Deno.serve(async (req) => {
           booking_id: booking.id,
           error: error.message
         });
+      }
+    }
+
+    // Clean up cancelled bookings from Google Calendar
+    for (const booking of cancelledBookings) {
+      try {
+        const teachers = await base44.asServiceRole.entities.Teacher.filter({ 
+          user_email: booking.teacher_email 
+        });
+        const students = await base44.asServiceRole.entities.Student.filter({ 
+          user_email: booking.student_email 
+        });
+
+        // Delete for teacher
+        if (teachers.length > 0 && teachers[0].google_calendar_connected && booking.google_event_id_teacher) {
+          try {
+            const response = await base44.asServiceRole.functions.invoke('deleteGoogleCalendarEvent', {
+              bookingId: booking.id,
+              userType: 'teacher',
+              userEmail: booking.teacher_email
+            });
+            
+            if (response.data?.success) {
+              results.deleted_teacher++;
+            }
+          } catch (error) {
+            console.error(`Error deleting booking ${booking.id} for teacher:`, error);
+          }
+        }
+
+        // Delete for student
+        if (students.length > 0 && students[0].google_calendar_connected && booking.google_event_id_student) {
+          try {
+            const response = await base44.asServiceRole.functions.invoke('deleteGoogleCalendarEvent', {
+              bookingId: booking.id,
+              userType: 'student',
+              userEmail: booking.student_email
+            });
+            
+            if (response.data?.success) {
+              results.deleted_student++;
+            }
+          } catch (error) {
+            console.error(`Error deleting booking ${booking.id} for student:`, error);
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing cancelled booking ${booking.id}:`, error);
       }
     }
 

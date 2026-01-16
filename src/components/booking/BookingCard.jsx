@@ -162,6 +162,30 @@ export default function BookingCard({
         link_page: 'TeacherCalendar'
       });
 
+      // Delete from Google Calendar for both teacher and student
+      try {
+        const teachers = await base44.entities.Teacher.filter({ user_email: booking.teacher_email });
+        const students = await base44.entities.Student.filter({ user_email: booking.student_email });
+        
+        if (teachers.length > 0 && teachers[0].google_calendar_connected) {
+          await base44.functions.invoke('deleteGoogleCalendarEvent', { 
+            bookingId: booking.id,
+            userType: 'teacher',
+            userEmail: booking.teacher_email
+          });
+        }
+        
+        if (students.length > 0 && students[0].google_calendar_connected) {
+          await base44.functions.invoke('deleteGoogleCalendarEvent', { 
+            bookingId: booking.id,
+            userType: 'student',
+            userEmail: booking.student_email
+          });
+        }
+      } catch (deleteError) {
+        console.error('Error deleting from Google Calendar:', deleteError);
+      }
+
       // Notificar a n8n sobre la cancelación
       try {
         await base44.functions.invoke('notifyN8N', {
