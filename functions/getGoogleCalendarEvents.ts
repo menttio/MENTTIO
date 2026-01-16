@@ -29,8 +29,10 @@ Deno.serve(async (req) => {
     let tokens = users[0].google_calendar_tokens;
     let accessToken = tokens.access_token;
 
-    // Check if token needs refresh (if it expires soon or already expired)
-    if (tokens.refresh_token && (!tokens.expiry_date || Date.now() >= tokens.expiry_date)) {
+    // Always refresh token to ensure it's valid
+    if (tokens.refresh_token) {
+      console.log('🔄 Refrescando token de Google Calendar...');
+      
       const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -46,6 +48,8 @@ Deno.serve(async (req) => {
         const newTokens = await refreshResponse.json();
         accessToken = newTokens.access_token;
         
+        console.log('✅ Token refrescado correctamente');
+        
         // Update tokens in database
         tokens = {
           ...tokens,
@@ -56,6 +60,10 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities[entity].update(users[0].id, {
           google_calendar_tokens: tokens
         });
+      } else {
+        const error = await refreshResponse.text();
+        console.error('❌ Error refrescando token:', error);
+        throw new Error(`Failed to refresh token: ${error}`);
       }
     }
 
