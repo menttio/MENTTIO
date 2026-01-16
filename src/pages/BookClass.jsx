@@ -46,7 +46,7 @@ export default function BookClass() {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [duration, setDuration] = useState(60);
+  const duration = 60; // Fixed 1 hour duration
   const [googleCalendarEvents, setGoogleCalendarEvents] = useState([]);
 
   useEffect(() => {
@@ -565,27 +565,6 @@ export default function BookClass() {
                 Volver
               </Button>
             </div>
-
-            {/* Duration selector */}
-            <Card className="mb-4">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <Clock className="text-[#41f2c0]" size={20} />
-                  <span className="text-[#404040] font-medium">Duración:</span>
-                  <Select value={duration.toString()} onValueChange={(v) => setDuration(Number(v))}>
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 min</SelectItem>
-                      <SelectItem value="60">1 hora</SelectItem>
-                      <SelectItem value="90">1.5 horas</SelectItem>
-                      <SelectItem value="120">2 horas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
 
             <div className="grid lg:grid-cols-3 gap-4">
               <div className="lg:col-span-2">
