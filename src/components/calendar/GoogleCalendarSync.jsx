@@ -31,17 +31,50 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
 
   const handleToggle = async () => {
     if (!connected) {
-      // Redirect to Google OAuth flow
-      const redirectUrl = window.location.href;
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${encodeURIComponent(import.meta.env.VITE_GOOGLE_CLIENT_ID || '')}&` +
-        `redirect_uri=${encodeURIComponent(window.location.origin + '/oauth/callback')}&` +
-        `response_type=code&` +
-        `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly')}&` +
-        `access_type=offline&` +
-        `state=${encodeURIComponent(JSON.stringify({ userEmail, userType, redirectUrl }))}`;
+      setToggling(true);
       
-      window.location.href = authUrl;
+      try {
+        // Get OAuth URL from backend
+        const response = await base44.functions.invoke('getGoogleOAuthUrl', { userType });
+        const authUrl = response.data.url;
+        
+        // Open OAuth in popup
+        const popup = window.open(
+          authUrl,
+          'Google Calendar OAuth',
+          'width=600,height=700,scrollbars=yes'
+        );
+
+        // Listen for OAuth completion
+        const handleMessage = (event) => {
+          if (event.data.type === 'oauth_success') {
+            setConnected(true);
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+            window.location.reload(); // Refresh to update UI
+          } else if (event.data.type === 'oauth_error') {
+            alert('Error al conectar con Google Calendar');
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+          }
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        // Check if popup was closed without completing
+        const checkClosed = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(checkClosed);
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+          }
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error starting OAuth:', error);
+        alert('Error al iniciar la conexión');
+        setToggling(false);
+      }
     } else {
       // Disconnect
       setToggling(true);
