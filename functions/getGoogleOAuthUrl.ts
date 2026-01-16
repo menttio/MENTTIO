@@ -19,8 +19,8 @@ Deno.serve(async (req) => {
       }, { status: 500 });
     }
 
-    const origin = new URL(req.url).origin;
-    const redirectUri = `${origin}/api/functions/googleOAuthCallback`;
+    // Use the app's published domain, not the function's domain
+    const redirectUri = 'https://menttio.base44.app/api/functions/googleOAuthCallback';
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +

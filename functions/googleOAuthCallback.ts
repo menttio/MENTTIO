@@ -32,7 +32,6 @@ Deno.serve(async (req) => {
     const { userEmail, userType } = stateData;
 
     // Exchange code for tokens
-    const origin = new URL(req.url).origin;
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -42,7 +41,7 @@ Deno.serve(async (req) => {
         code,
         client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'),
         client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'),
-        redirect_uri: `${origin}/api/functions/googleOAuthCallback`,
+        redirect_uri: 'https://menttio.base44.app/api/functions/googleOAuthCallback',
         grant_type: 'authorization_code',
       }),
     });
