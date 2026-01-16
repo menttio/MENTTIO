@@ -30,16 +30,30 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
   }, [userEmail, userType]);
 
   const handleToggle = async () => {
-    setToggling(true);
-    try {
-      const newState = !connected;
-      await base44.functions.invoke('toggleGoogleCalendar', { connect: newState });
-      setConnected(newState);
-    } catch (error) {
-      console.error('Error toggling Google Calendar:', error);
-      alert('Error al cambiar la sincronización');
-    } finally {
-      setToggling(false);
+    if (!connected) {
+      // Redirect to Google OAuth flow
+      const redirectUrl = window.location.href;
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${encodeURIComponent(import.meta.env.VITE_GOOGLE_CLIENT_ID || '')}&` +
+        `redirect_uri=${encodeURIComponent(window.location.origin + '/oauth/callback')}&` +
+        `response_type=code&` +
+        `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly')}&` +
+        `access_type=offline&` +
+        `state=${encodeURIComponent(JSON.stringify({ userEmail, userType, redirectUrl }))}`;
+      
+      window.location.href = authUrl;
+    } else {
+      // Disconnect
+      setToggling(true);
+      try {
+        await base44.functions.invoke('toggleGoogleCalendar', { connect: false });
+        setConnected(false);
+      } catch (error) {
+        console.error('Error disconnecting Google Calendar:', error);
+        alert('Error al desconectar');
+      } finally {
+        setToggling(false);
+      }
     }
   };
 
