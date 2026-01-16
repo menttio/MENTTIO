@@ -168,13 +168,6 @@ export default function TeacherCalendar() {
           <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
         </div>
 
-        {/* Google Calendar Sync */}
-        {teacher && (
-          <div className="mb-6">
-            <GoogleCalendarSync userEmail={teacher.user_email} userType="teacher" />
-          </div>
-        )}
-
         {/* Legend */}
         <Card className="mb-6 calendar-legend">
         <CardContent className="p-4">
@@ -226,9 +219,14 @@ export default function TeacherCalendar() {
                 >
                   <ChevronLeft size={20} />
                 </Button>
-                <h3 className="font-semibold text-lg text-[#404040] capitalize">
-                  {format(currentMonth, 'MMMM yyyy', { locale: es })}
-                </h3>
+                <div className="flex items-center gap-3">
+                  <h3 className="font-semibold text-lg text-[#404040] capitalize">
+                    {format(currentMonth, 'MMMM yyyy', { locale: es })}
+                  </h3>
+                  {teacher && (
+                    <GoogleCalendarSync userEmail={teacher.user_email} userType="teacher" />
+                  )}
+                </div>
                 <Button
                   variant="ghost"
                   size="icon"

@@ -119,17 +119,15 @@ export default function MyClasses() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Mis Clases</h1>
-        <p className="text-gray-500 mt-2">Historial completo de todas tus clases</p>
-      </div>
-
-      {/* Google Calendar Sync */}
-      {student && (
-        <div className="mb-6">
-          <GoogleCalendarSync userEmail={student.user_email} userType="student" />
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-[#404040]">Mis Clases</h1>
+          <p className="text-gray-500 mt-2">Historial completo de todas tus clases</p>
         </div>
-      )}
+        {student && (
+          <GoogleCalendarSync userEmail={student.user_email} userType="student" />
+        )}
+      </div>
 
       {/* Filters */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
