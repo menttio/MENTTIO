@@ -109,6 +109,39 @@ export default function ManageSubjects() {
       }
 
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+
+      // Update all students that have this teacher assigned
+      const user = await base44.auth.me();
+      const allStudents = await base44.entities.Student.list();
+      
+      for (const student of allStudents) {
+        if (student.assigned_teachers?.length > 0) {
+          const hasThisTeacher = student.assigned_teachers.some(at => at.teacher_id === teacher.id);
+          
+          if (hasThisTeacher) {
+            // Update student's assigned_teachers array to match teacher's current subjects
+            const updatedAssignedTeachers = student.assigned_teachers.map(at => {
+              if (at.teacher_id === teacher.id) {
+                // Check if this subject still exists in teacher's subjects
+                const teacherSubject = updatedSubjects.find(s => s.subject_id === at.subject_id);
+                if (teacherSubject) {
+                  return {
+                    ...at,
+                    subject_name: teacherSubject.subject_name
+                  };
+                }
+                return null; // Mark for removal
+              }
+              return at;
+            }).filter(at => at !== null); // Remove marked entries
+
+            await base44.entities.Student.update(student.id, {
+              assigned_teachers: updatedAssignedTeachers
+            });
+          }
+        }
+      }
+
       await loadData();
       setShowDialog(false);
     } catch (error) {
@@ -122,6 +155,24 @@ export default function ManageSubjects() {
     try {
       const updatedSubjects = (teacher.subjects || []).filter(s => !(s.subject_id === subjectId && s.level === level));
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+
+      // Remove this subject from all students that have this teacher assigned
+      const allStudents = await base44.entities.Student.list();
+      
+      for (const student of allStudents) {
+        if (student.assigned_teachers?.length > 0) {
+          const updatedAssignedTeachers = student.assigned_teachers.filter(at => 
+            !(at.teacher_id === teacher.id && at.subject_id === subjectId)
+          );
+
+          if (updatedAssignedTeachers.length !== student.assigned_teachers.length) {
+            await base44.entities.Student.update(student.id, {
+              assigned_teachers: updatedAssignedTeachers
+            });
+          }
+        }
+      }
+
       await loadData();
     } catch (error) {
       console.error(error);
