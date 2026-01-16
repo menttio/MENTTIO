@@ -198,7 +198,7 @@ export default function BookClass() {
           .filter(b => b.date === dateStr)
           .map(b => b.start_time);
 
-        // Filter out Google Calendar busy slots (block entire event duration)
+        // Filter out Google Calendar busy slots considering 1-hour class duration
         const googleBusySlots = new Set();
         googleCalendarEvents
           .filter(e => {
@@ -210,19 +210,20 @@ export default function BookClass() {
             const eventStart = parseISO(e.start);
             const eventEnd = parseISO(e.end);
 
-            // Block all slots that fall within or overlap with event
+            // Block all slots where a 1-hour class would overlap with the event
             slots[dateStr]?.forEach(slot => {
               const [slotHour, slotMin] = slot.split(':').map(Number);
 
-              // Create slot time on the same date
+              // Create slot start time on the same date
               const slotStart = new Date(dateStr);
               slotStart.setHours(slotHour, slotMin, 0, 0);
 
-              // Assume maximum booking duration (2 hours) for blocking
+              // Calculate when a class starting at this slot would end (1 hour duration)
               const slotEnd = new Date(slotStart);
-              slotEnd.setMinutes(slotEnd.getMinutes() + 120);
+              slotEnd.setMinutes(slotEnd.getMinutes() + 60);
 
-              // Block if slot overlaps with event: slotStart < eventEnd && slotEnd > eventStart
+              // Block if a 1-hour class starting at this slot overlaps with the event
+              // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
               if (slotStart < eventEnd && slotEnd > eventStart) {
                 googleBusySlots.add(slot);
               }
