@@ -62,6 +62,15 @@ export default function TeacherCalendar() {
           setShowTour(true);
         }
 
+        // Sync bookings with Google Calendar on page load
+        if (teacherData.google_calendar_connected) {
+          try {
+            await base44.functions.invoke('syncAllBookings', {});
+          } catch (syncError) {
+            console.error('Error syncing bookings:', syncError);
+          }
+        }
+
         const allBookings = await base44.entities.Booking.filter({ 
           teacher_email: user.email 
         });
