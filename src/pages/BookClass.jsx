@@ -200,8 +200,15 @@ export default function BookClass() {
 
         // Filter out Google Calendar busy slots
         const googleBusySlots = googleCalendarEvents
-          .filter(e => e.date === dateStr && e.startTime)
-          .map(e => e.startTime);
+          .filter(e => {
+            if (!e.start) return false;
+            const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
+            return eventDate === dateStr;
+          })
+          .map(e => {
+            const eventTime = format(parseISO(e.start), 'HH:mm');
+            return eventTime;
+          });
 
         slots[dateStr] = slots[dateStr].filter(s => 
           !bookedSlots.includes(s) && !googleBusySlots.includes(s)
