@@ -87,11 +87,18 @@ export default function BookClass() {
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
+    console.log('🔍 DEBUG - Student assigned_teachers:', student.assigned_teachers);
+    
     const subjectMap = new Map();
     student.assigned_teachers.forEach(at => {
       // Verify the teacher still has this subject
       const teacher = teachers.find(t => t.id === at.teacher_id);
+      console.log(`🔍 DEBUG - Checking teacher ${at.teacher_name} for subject ${at.subject_name}`);
+      console.log(`🔍 DEBUG - Teacher found:`, teacher?.full_name);
+      console.log(`🔍 DEBUG - Teacher subjects:`, teacher?.subjects);
+      
       const teacherStillHasSubject = teacher?.subjects?.some(s => s.subject_id === at.subject_id);
+      console.log(`🔍 DEBUG - Teacher still has subject ${at.subject_name}:`, teacherStillHasSubject);
       
       if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
         subjectMap.set(at.subject_id, {
@@ -100,7 +107,10 @@ export default function BookClass() {
         });
       }
     });
-    return Array.from(subjectMap.values());
+    
+    const result = Array.from(subjectMap.values());
+    console.log('🔍 DEBUG - Final availableSubjects:', result);
+    return result;
   }, [student, teachers]);
 
   // Get teachers for selected subject from assigned teachers (verify they still teach it)
