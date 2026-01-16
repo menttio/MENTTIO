@@ -9,10 +9,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { startDate, endDate } = await req.json();
+    const { startDate, endDate, userType } = await req.json();
 
-    // Get access token for Google Calendar
-    const accessToken = await base44.asServiceRole.connectors.getAccessToken('googlecalendar');
+    // Get user's Google Calendar tokens
+    const entity = userType === 'teacher' ? 'Teacher' : 'Student';
+    const users = await base44.asServiceRole.entities[entity].filter({ user_email: user.email });
+    
+    if (users.length === 0 || !users[0].google_calendar_tokens) {
+      return Response.json({ events: [] });
+    }
+
+    const accessToken = users[0].google_calendar_tokens.access_token;
 
     // Fetch events from Google Calendar
     const url = new URL('https://www.googleapis.com/calendar/v3/calendars/primary/events');

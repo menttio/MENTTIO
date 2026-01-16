@@ -18,8 +18,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // Get access token for Google Calendar
-    const accessToken = await base44.asServiceRole.connectors.getAccessToken('googlecalendar');
+    // Determine if current user is teacher or student
+    const isTeacher = user.email === booking.teacher_email;
+    const entity = isTeacher ? 'Teacher' : 'Student';
+    const userEmail = user.email;
+
+    // Get user's Google Calendar tokens
+    const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
+    
+    if (users.length === 0 || !users[0].google_calendar_tokens) {
+      return Response.json({ error: 'Google Calendar not connected' }, { status: 400 });
+    }
+
+    const accessToken = users[0].google_calendar_tokens.access_token;
 
     // Create event in Google Calendar
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
