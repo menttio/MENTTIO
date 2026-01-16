@@ -9,15 +9,22 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { startDate, endDate, userType } = await req.json();
+    const { startDate, endDate, userType, userEmail } = await req.json();
 
     // Get user's Google Calendar tokens
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
-    const users = await base44.asServiceRole.entities[entity].filter({ user_email: user.email });
+    const targetEmail = userEmail || user.email; // Use provided email or fallback to current user
+    const users = await base44.asServiceRole.entities[entity].filter({ user_email: targetEmail });
+    
+    console.log('🔍 Buscando tokens para:', targetEmail, 'en entidad:', entity);
+    console.log('📦 Usuarios encontrados:', users.length);
     
     if (users.length === 0 || !users[0].google_calendar_tokens) {
+      console.log('⚠️ No hay tokens de Google Calendar para este usuario');
       return Response.json({ events: [] });
     }
+    
+    console.log('✅ Tokens encontrados, cargando eventos...');
 
     let tokens = users[0].google_calendar_tokens;
     let accessToken = tokens.access_token;
@@ -71,9 +78,11 @@ Deno.serve(async (req) => {
     }
 
     const data = await response.json();
+    
+    console.log('📅 Eventos recibidos de Google:', data.items?.length || 0);
 
     // Transform events to our format
-    const events = data.items.map(event => {
+    const events = (data.items || []).map(event => {
       const start = event.start.dateTime || event.start.date;
       const end = event.end.dateTime || event.end.date;
       
