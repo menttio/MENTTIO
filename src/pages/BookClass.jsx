@@ -83,13 +83,17 @@ export default function BookClass() {
     loadData();
   }, []);
 
-  // Get unique subjects from assigned teachers
+  // Get unique subjects from assigned teachers (only those that still exist in teacher's subjects)
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
     const subjectMap = new Map();
     student.assigned_teachers.forEach(at => {
-      if (!subjectMap.has(at.subject_id)) {
+      // Verify the teacher still has this subject
+      const teacher = teachers.find(t => t.id === at.teacher_id);
+      const teacherStillHasSubject = teacher?.subjects?.some(s => s.subject_id === at.subject_id);
+      
+      if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
         subjectMap.set(at.subject_id, {
           id: at.subject_id,
           name: at.subject_name
@@ -97,9 +101,9 @@ export default function BookClass() {
       }
     });
     return Array.from(subjectMap.values());
-  }, [student]);
+  }, [student, teachers]);
 
-  // Get teachers for selected subject from assigned teachers
+  // Get teachers for selected subject from assigned teachers (verify they still teach it)
   const teachersForSubject = useMemo(() => {
     if (!selectedSubject || !student?.assigned_teachers?.length) return [];
     
@@ -107,7 +111,11 @@ export default function BookClass() {
       .filter(at => at.subject_id === selectedSubject)
       .map(at => at.teacher_id);
     
-    return teachers.filter(t => teacherIds.includes(t.id));
+    return teachers.filter(t => {
+      const isAssigned = teacherIds.includes(t.id);
+      const stillTeachesSubject = t.subjects?.some(s => s.subject_id === selectedSubject);
+      return isAssigned && stillTeachesSubject;
+    });
   }, [selectedSubject, student, teachers]);
 
   // Helper function to generate slots every 30 minutes from time ranges
