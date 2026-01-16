@@ -3,31 +3,45 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { bookingId } = await req.json();
+    
+    const { bookingId, userType, userEmail } = await req.json();
 
     // Get booking details
-    const booking = await base44.entities.Booking.get(bookingId);
+    const booking = await base44.asServiceRole.entities.Booking.get(bookingId);
     
     if (!booking) {
       return Response.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // Determine if current user is teacher or student
-    const isTeacher = user.email === booking.teacher_email;
-    const entity = isTeacher ? 'Teacher' : 'Student';
-    const userEmail = user.email;
+    // Determine which user to sync for
+    let targetUserEmail, targetUserType, targetEntity;
+    
+    if (userType && userEmail) {
+      // Sync for specific user
+      targetUserEmail = userEmail;
+      targetUserType = userType;
+      targetEntity = userType === 'teacher' ? 'Teacher' : 'Student';
+    } else {
+      // Legacy: sync for current authenticated user
+      const user = await base44.auth.me();
+      if (!user) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      
+      const isTeacher = user.email === booking.teacher_email;
+      targetUserEmail = user.email;
+      targetUserType = isTeacher ? 'teacher' : 'student';
+      targetEntity = isTeacher ? 'Teacher' : 'Student';
+    }
 
     // Get user's Google Calendar tokens
-    const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
+    const users = await base44.asServiceRole.entities[targetEntity].filter({ user_email: targetUserEmail });
     
     if (users.length === 0 || !users[0].google_calendar_tokens) {
-      return Response.json({ error: 'Google Calendar not connected' }, { status: 400 });
+      return Response.json({ 
+        success: false,
+        message: 'Google Calendar not connected for this user' 
+      });
     }
 
     let tokens = users[0].google_calendar_tokens;
@@ -56,19 +70,23 @@ Deno.serve(async (req) => {
           expiry_date: Date.now() + (newTokens.expires_in * 1000)
         };
         
-        await base44.asServiceRole.entities[entity].update(users[0].id, {
+        await base44.asServiceRole.entities[targetEntity].update(users[0].id, {
           google_calendar_tokens: tokens
         });
       }
     }
 
-    // Create event in Google Calendar
+    // Create or update event in Google Calendar
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
     const endDateTime = `${booking.date}T${booking.end_time}:00`;
 
+    const eventDescription = targetUserType === 'teacher' 
+      ? `Clase con ${booking.student_name}`
+      : `Clase con ${booking.teacher_name}`;
+
     const event = {
       summary: `Clase de ${booking.subject_name}`,
-      description: `Clase con ${user.email === booking.teacher_email ? booking.student_name : booking.teacher_name}`,
+      description: eventDescription,
       start: {
         dateTime: startDateTime,
         timeZone: 'Europe/Madrid'
@@ -86,21 +104,50 @@ Deno.serve(async (req) => {
       }
     };
 
-    const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(event)
-    });
+    // Check if event already exists
+    const existingEventId = booking[`google_event_id_${targetUserType}`];
+    
+    let response;
+    if (existingEventId) {
+      // Update existing event
+      response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${existingEventId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(event)
+        }
+      );
+    } else {
+      // Create new event
+      response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(event)
+      });
+    }
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Google Calendar API error: ${error}`);
+      console.error(`Google Calendar API error for ${targetUserType}:`, error);
+      return Response.json({ 
+        success: false,
+        error: `Google Calendar API error: ${error}` 
+      }, { status: 500 });
     }
 
     const createdEvent = await response.json();
+
+    // Store event ID in booking
+    await base44.asServiceRole.entities.Booking.update(booking.id, {
+      [`google_event_id_${targetUserType}`]: createdEvent.id
+    });
 
     return Response.json({ 
       success: true, 
@@ -111,6 +158,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Error syncing with Google Calendar:', error);
     return Response.json({ 
+      success: false,
       error: error.message 
     }, { status: 500 });
   }

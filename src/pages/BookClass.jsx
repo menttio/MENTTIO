@@ -308,10 +308,18 @@ export default function BookClass() {
       // Sync with Google Calendar for both teacher and student
       try {
         if (selectedTeacher.google_calendar_connected) {
-          await base44.functions.invoke('syncGoogleCalendar', { bookingId: newBooking.id });
+          await base44.functions.invoke('syncGoogleCalendar', { 
+            bookingId: newBooking.id,
+            userType: 'teacher',
+            userEmail: selectedTeacher.user_email
+          });
         }
         if (student.google_calendar_connected) {
-          await base44.functions.invoke('syncGoogleCalendar', { bookingId: newBooking.id });
+          await base44.functions.invoke('syncGoogleCalendar', { 
+            bookingId: newBooking.id,
+            userType: 'student',
+            userEmail: user.email
+          });
         }
       } catch (syncError) {
         console.error('Error syncing with Google Calendar:', syncError);
