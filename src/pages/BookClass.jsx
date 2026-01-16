@@ -145,7 +145,8 @@ export default function BookClass() {
         
         const response = await base44.functions.invoke('getGoogleCalendarEvents', {
           startDate: format(now, 'yyyy-MM-dd'),
-          endDate: format(endDate, 'yyyy-MM-dd')
+          endDate: format(endDate, 'yyyy-MM-dd'),
+          userType: 'teacher'
         });
         
         setGoogleCalendarEvents(response.data.events || []);
