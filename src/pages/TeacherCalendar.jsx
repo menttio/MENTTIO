@@ -89,10 +89,22 @@ export default function TeacherCalendar() {
             const response = await base44.functions.invoke('getGoogleCalendarEvents', {
               startDate,
               endDate,
-              userType: 'teacher'
+              userType: 'teacher',
+              userEmail: user.email
             });
             
-            setGoogleCalendarEvents(response.data.events || []);
+            if (response.data.error) {
+              console.error('Error de Google Calendar:', response.data.error);
+              // Reset connection status if there's a persistent error
+              await base44.entities.Teacher.update(teacherData.id, {
+                google_calendar_connected: false,
+                google_calendar_tokens: null
+              });
+              alert('Tu conexión con Google Calendar ha expirado. Por favor, vuelve a conectar.');
+              window.location.reload();
+            } else {
+              setGoogleCalendarEvents(response.data.events || []);
+            }
           } catch (error) {
             console.error('Error loading Google Calendar events:', error);
           }
