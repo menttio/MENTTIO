@@ -199,7 +199,7 @@ export default function BookClass() {
           .map(b => b.start_time);
 
         // Filter out Google Calendar busy slots (block entire event duration)
-        const googleBusySlots = [];
+        const googleBusySlots = new Set();
         googleCalendarEvents
           .filter(e => {
             if (!e.start || !e.end) return false;
@@ -210,21 +210,27 @@ export default function BookClass() {
             const eventStart = parseISO(e.start);
             const eventEnd = parseISO(e.end);
 
-            // Block all 30-minute slots within the event duration
+            // Block all slots that fall within or overlap with event
             slots[dateStr]?.forEach(slot => {
               const [slotHour, slotMin] = slot.split(':').map(Number);
-              const slotTime = new Date(eventStart);
-              slotTime.setHours(slotHour, slotMin, 0, 0);
 
-              // Block if slot overlaps with event
-              if (slotTime >= eventStart && slotTime < eventEnd) {
-                googleBusySlots.push(slot);
+              // Create slot time on the same date
+              const slotStart = new Date(dateStr);
+              slotStart.setHours(slotHour, slotMin, 0, 0);
+
+              // Assume maximum booking duration (2 hours) for blocking
+              const slotEnd = new Date(slotStart);
+              slotEnd.setMinutes(slotEnd.getMinutes() + 120);
+
+              // Block if slot overlaps with event: slotStart < eventEnd && slotEnd > eventStart
+              if (slotStart < eventEnd && slotEnd > eventStart) {
+                googleBusySlots.add(slot);
               }
             });
           });
 
         slots[dateStr] = slots[dateStr].filter(s => 
-          !bookedSlots.includes(s) && !googleBusySlots.includes(s)
+          !bookedSlots.includes(s) && !googleBusySlots.has(s)
         );
       }
     }
