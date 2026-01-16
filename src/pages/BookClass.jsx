@@ -110,27 +110,27 @@ export default function BookClass() {
     return teachers.filter(t => teacherIds.includes(t.id));
   }, [selectedSubject, student, teachers]);
 
-  // Helper function to generate hourly slots from time ranges
+  // Helper function to generate slots every 30 minutes from time ranges
   const generateHourlySlots = (timeSlots) => {
     const allSlots = [];
-    
+
     timeSlots.forEach(slot => {
       const [startHour, startMin] = slot.start_time.split(':').map(Number);
       const [endHour, endMin] = slot.end_time.split(':').map(Number);
-      
+
       let currentHour = startHour;
       let currentMin = startMin;
-      
+
       while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
         allSlots.push(`${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`);
-        currentMin += 60; // Generate hourly slots
+        currentMin += 30; // Generate slots every 30 minutes
         if (currentMin >= 60) {
           currentMin = 0;
           currentHour++;
         }
       }
     });
-    
+
     return allSlots;
   };
 
@@ -198,16 +198,29 @@ export default function BookClass() {
           .filter(b => b.date === dateStr)
           .map(b => b.start_time);
 
-        // Filter out Google Calendar busy slots
-        const googleBusySlots = googleCalendarEvents
+        // Filter out Google Calendar busy slots (block entire event duration)
+        const googleBusySlots = [];
+        googleCalendarEvents
           .filter(e => {
-            if (!e.start) return false;
+            if (!e.start || !e.end) return false;
             const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
             return eventDate === dateStr;
           })
-          .map(e => {
-            const eventTime = format(parseISO(e.start), 'HH:mm');
-            return eventTime;
+          .forEach(e => {
+            const eventStart = parseISO(e.start);
+            const eventEnd = parseISO(e.end);
+
+            // Block all 30-minute slots within the event duration
+            slots[dateStr]?.forEach(slot => {
+              const [slotHour, slotMin] = slot.split(':').map(Number);
+              const slotTime = new Date(eventStart);
+              slotTime.setHours(slotHour, slotMin, 0, 0);
+
+              // Block if slot overlaps with event
+              if (slotTime >= eventStart && slotTime < eventEnd) {
+                googleBusySlots.push(slot);
+              }
+            });
           });
 
         slots[dateStr] = slots[dateStr].filter(s => 
@@ -593,7 +606,7 @@ export default function BookClass() {
                           {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
                         </p>
                         {availableSlots[format(selectedDate, 'yyyy-MM-dd')]?.length > 0 ? (
-                          <div className="space-y-2 max-h-96 overflow-y-auto">
+                          <div className="grid grid-cols-2 gap-2 max-h-96 overflow-y-auto">
                             {availableSlots[format(selectedDate, 'yyyy-MM-dd')].map((slot) => (
                               <Button
                                 key={slot}
