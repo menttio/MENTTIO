@@ -32,6 +32,7 @@ import { cn } from '@/lib/utils';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
 import CalendarTour from '../components/teacher/CalendarTour';
+import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
 
 export default function TeacherCalendar() {
   const [teacher, setTeacher] = useState(null);
@@ -166,6 +167,13 @@ export default function TeacherCalendar() {
           <h1 className="text-3xl font-bold text-[#404040]">Mi Calendario</h1>
           <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
         </div>
+
+        {/* Google Calendar Sync */}
+        {teacher && (
+          <div className="mb-6">
+            <GoogleCalendarSync userEmail={teacher.user_email} userType="teacher" />
+          </div>
+        )}
 
         {/* Legend */}
         <Card className="mb-6 calendar-legend">

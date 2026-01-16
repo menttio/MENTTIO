@@ -22,6 +22,7 @@ import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
 import LeaveReviewDialog from '../components/student/LeaveReviewDialog';
+import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
 
 export default function MyClasses() {
   const [bookings, setBookings] = useState([]);
@@ -122,6 +123,13 @@ export default function MyClasses() {
         <h1 className="text-3xl font-bold text-[#404040]">Mis Clases</h1>
         <p className="text-gray-500 mt-2">Historial completo de todas tus clases</p>
       </div>
+
+      {/* Google Calendar Sync */}
+      {student && (
+        <div className="mb-6">
+          <GoogleCalendarSync userEmail={student.user_email} userType="student" />
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
