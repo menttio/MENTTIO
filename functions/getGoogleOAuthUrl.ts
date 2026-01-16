@@ -11,31 +11,23 @@ Deno.serve(async (req) => {
 
     const { userType } = await req.json();
 
-    const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
+    // Use Base44 app connector to get OAuth URL
+    const accessToken = await base44.asServiceRole.connectors.getAccessToken('googlecalendar');
     
-    if (!clientId) {
-      return Response.json({ 
-        error: 'Google OAuth no configurado. Por favor configura GOOGLE_OAUTH_CLIENT_ID en los secretos.' 
-      }, { status: 500 });
+    // Mark as connected since we're using the app connector
+    const entity = userType === 'teacher' ? 'Teacher' : 'Student';
+    const users = await base44.entities[entity].filter({ user_email: user.email });
+
+    if (users.length > 0) {
+      await base44.entities[entity].update(users[0].id, {
+        google_calendar_connected: true
+      });
     }
 
-    // Get the app's base URL from the request
-    const origin = new URL(req.url).origin;
-    const redirectUri = `${origin}/api/functions/googleOAuthCallback`;
-
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${encodeURIComponent(clientId)}&` +
-      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=code&` +
-      `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly')}&` +
-      `access_type=offline&` +
-      `prompt=consent&` +
-      `state=${encodeURIComponent(JSON.stringify({ userEmail: user.email, userType }))}`;
-
-    return Response.json({ url: authUrl });
+    return Response.json({ connected: true });
 
   } catch (error) {
-    console.error('Error generating OAuth URL:', error);
+    console.error('Error connecting Google Calendar:', error);
     return Response.json({ 
       error: error.message 
     }, { status: 500 });
