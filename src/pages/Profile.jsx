@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -256,6 +257,11 @@ export default function Profile() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Google Calendar Integration */}
+      <div className="mb-6">
+        <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
+      </div>
 
       {/* Change Password */}
       <Card className="mb-6">
