@@ -16,23 +16,15 @@ Deno.serve(async (req) => {
     const targetEmail = userEmail || user.email; // Use provided email or fallback to current user
     const users = await base44.asServiceRole.entities[entity].filter({ user_email: targetEmail });
     
-    console.log('🔍 Buscando tokens para:', targetEmail, 'en entidad:', entity);
-    console.log('📦 Usuarios encontrados:', users.length);
-    
     if (users.length === 0 || !users[0].google_calendar_tokens) {
-      console.log('⚠️ No hay tokens de Google Calendar para este usuario');
       return Response.json({ events: [] });
     }
-    
-    console.log('✅ Tokens encontrados, cargando eventos...');
 
     let tokens = users[0].google_calendar_tokens;
     let accessToken = tokens.access_token;
 
     // Always refresh token to ensure it's valid
     if (tokens.refresh_token) {
-      console.log('🔄 Refrescando token de Google Calendar...');
-      
       const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -48,8 +40,6 @@ Deno.serve(async (req) => {
         const newTokens = await refreshResponse.json();
         accessToken = newTokens.access_token;
         
-        console.log('✅ Token refrescado correctamente');
-        
         // Update tokens in database
         tokens = {
           ...tokens,
@@ -62,7 +52,6 @@ Deno.serve(async (req) => {
         });
       } else {
         const error = await refreshResponse.text();
-        console.error('❌ Error refrescando token:', error);
         throw new Error(`Failed to refresh token: ${error}`);
       }
     }
@@ -86,8 +75,6 @@ Deno.serve(async (req) => {
     }
 
     const data = await response.json();
-    
-    console.log('📅 Eventos recibidos de Google:', data.items?.length || 0);
 
     // Transform events to our format
     const events = (data.items || []).map(event => {
