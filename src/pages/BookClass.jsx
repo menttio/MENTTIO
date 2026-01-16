@@ -87,18 +87,11 @@ export default function BookClass() {
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
-    console.log('🔍 DEBUG - Student assigned_teachers:', student.assigned_teachers);
-    
     const subjectMap = new Map();
     student.assigned_teachers.forEach(at => {
       // Verify the teacher still has this subject
       const teacher = teachers.find(t => t.id === at.teacher_id);
-      console.log(`🔍 DEBUG - Checking teacher ${at.teacher_name} for subject ${at.subject_name}`);
-      console.log(`🔍 DEBUG - Teacher found:`, teacher?.full_name);
-      console.log(`🔍 DEBUG - Teacher subjects:`, teacher?.subjects);
-      
       const teacherStillHasSubject = teacher?.subjects?.some(s => s.subject_id === at.subject_id);
-      console.log(`🔍 DEBUG - Teacher still has subject ${at.subject_name}:`, teacherStillHasSubject);
       
       if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
         subjectMap.set(at.subject_id, {
@@ -108,9 +101,7 @@ export default function BookClass() {
       }
     });
     
-    const result = Array.from(subjectMap.values());
-    console.log('🔍 DEBUG - Final availableSubjects:', result);
-    return result;
+    return Array.from(subjectMap.values());
   }, [student, teachers]);
 
   // Get teachers for selected subject from assigned teachers (verify they still teach it)
@@ -161,8 +152,6 @@ export default function BookClass() {
         const now = new Date();
         const endDate = addDays(now, 30);
 
-        console.log('🔍 Cargando eventos de Google Calendar para:', selectedTeacher.full_name);
-
         const response = await base44.functions.invoke('getGoogleCalendarEvents', {
           startDate: format(now, 'yyyy-MM-dd'),
           endDate: format(endDate, 'yyyy-MM-dd'),
@@ -170,10 +159,9 @@ export default function BookClass() {
           userEmail: selectedTeacher.user_email
         });
 
-        console.log('📅 Eventos recibidos:', response.data.events);
         setGoogleCalendarEvents(response.data.events || []);
       } catch (error) {
-        console.error('❌ Error loading Google Calendar events:', error);
+        console.error('Error loading Google Calendar events:', error);
       }
     };
 
@@ -223,21 +211,15 @@ export default function BookClass() {
         // Filter out Google Calendar busy slots considering 1-hour class duration
         const googleBusySlots = new Set();
 
-        console.log(`🗓️ Procesando fecha ${dateStr}, eventos totales:`, googleCalendarEvents.length);
-
         const eventsForDay = googleCalendarEvents.filter(e => {
           if (!e.start || !e.end) return false;
           const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
           return eventDate === dateStr;
         });
 
-        console.log(`📌 Eventos para ${dateStr}:`, eventsForDay);
-
         eventsForDay.forEach(e => {
             const eventStart = parseISO(e.start);
             const eventEnd = parseISO(e.end);
-
-            console.log(`⏰ Evento: ${e.summary || 'Sin título'} de ${format(eventStart, 'HH:mm')} a ${format(eventEnd, 'HH:mm')}`);
 
             // Block all slots where a 1-hour class would overlap with the event
             slots[dateStr]?.forEach(slot => {
@@ -254,7 +236,6 @@ export default function BookClass() {
               // Block if a 1-hour class starting at this slot overlaps with the event
               // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
               if (slotStart < eventEnd && slotEnd > eventStart) {
-                console.log(`🚫 Bloqueando slot ${slot} (clase de ${format(slotStart, 'HH:mm')} a ${format(slotEnd, 'HH:mm')} se solapa con evento)`);
                 googleBusySlots.add(slot);
               }
             });
