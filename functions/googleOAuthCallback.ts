@@ -65,6 +65,12 @@ Deno.serve(async (req) => {
 
     const tokens = await tokenResponse.json();
 
+    // Add expiry timestamp
+    const tokensWithExpiry = {
+      ...tokens,
+      expiry_date: Date.now() + (tokens.expires_in * 1000)
+    };
+
     // Save tokens and update connection status
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
     const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
@@ -72,7 +78,7 @@ Deno.serve(async (req) => {
     if (users.length > 0) {
       await base44.asServiceRole.entities[entity].update(users[0].id, {
         google_calendar_connected: true,
-        google_calendar_tokens: tokens
+        google_calendar_tokens: tokensWithExpiry
       });
     }
 

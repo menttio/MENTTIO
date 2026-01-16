@@ -30,7 +30,37 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Google Calendar not connected' }, { status: 400 });
     }
 
-    const accessToken = users[0].google_calendar_tokens.access_token;
+    let tokens = users[0].google_calendar_tokens;
+    let accessToken = tokens.access_token;
+
+    // Check if token needs refresh
+    if (tokens.refresh_token && (!tokens.expiry_date || Date.now() >= tokens.expiry_date)) {
+      const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'),
+          client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'),
+          refresh_token: tokens.refresh_token,
+          grant_type: 'refresh_token'
+        })
+      });
+
+      if (refreshResponse.ok) {
+        const newTokens = await refreshResponse.json();
+        accessToken = newTokens.access_token;
+        
+        tokens = {
+          ...tokens,
+          access_token: newTokens.access_token,
+          expiry_date: Date.now() + (newTokens.expires_in * 1000)
+        };
+        
+        await base44.asServiceRole.entities[entity].update(users[0].id, {
+          google_calendar_tokens: tokens
+        });
+      }
+    }
 
     // Create event in Google Calendar
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
