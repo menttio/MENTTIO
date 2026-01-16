@@ -30,24 +30,57 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
   }, [userEmail, userType]);
 
   const handleToggle = async () => {
-    setToggling(true);
-    try {
-      if (!connected) {
-        // Connect using Base44 app connector
+    if (!connected) {
+      setToggling(true);
+      
+      try {
         const response = await base44.functions.invoke('getGoogleOAuthUrl', { userType });
-        if (response.data.connected) {
-          setConnected(true);
-        }
-      } else {
-        // Disconnect
+        const authUrl = response.data.url;
+        
+        const popup = window.open(
+          authUrl,
+          'Google Calendar',
+          'width=600,height=700,scrollbars=yes'
+        );
+
+        const handleMessage = (event) => {
+          if (event.data.type === 'oauth_success') {
+            setConnected(true);
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+          } else if (event.data.type === 'oauth_error') {
+            alert('Error al conectar con Google Calendar');
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+          }
+        };
+
+        window.addEventListener('message', handleMessage);
+
+        const checkClosed = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(checkClosed);
+            window.removeEventListener('message', handleMessage);
+            setToggling(false);
+          }
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error starting OAuth:', error);
+        alert('Error al iniciar la conexión');
+        setToggling(false);
+      }
+    } else {
+      setToggling(true);
+      try {
         await base44.functions.invoke('toggleGoogleCalendar', { connect: false });
         setConnected(false);
+      } catch (error) {
+        console.error('Error disconnecting Google Calendar:', error);
+        alert('Error al desconectar');
+      } finally {
+        setToggling(false);
       }
-    } catch (error) {
-      console.error('Error toggling Google Calendar:', error);
-      alert(connected ? 'Error al desconectar' : 'Error al conectar');
-    } finally {
-      setToggling(false);
     }
   };
 
