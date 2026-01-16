@@ -39,6 +39,7 @@ export default function TeacherCalendar() {
   const [teacher, setTeacher] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [availabilities, setAvailabilities] = useState([]);
+  const [googleCalendarEvents, setGoogleCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -70,6 +71,24 @@ export default function TeacherCalendar() {
           teacher_id: teacherData.id
         });
         setAvailabilities(allAvailabilities);
+
+        // Load Google Calendar events if connected
+        if (teacherData.google_calendar_connected) {
+          try {
+            const startDate = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
+            const endDate = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
+            
+            const response = await base44.functions.invoke('getGoogleCalendarEvents', {
+              startDate,
+              endDate,
+              userType: 'teacher'
+            });
+            
+            setGoogleCalendarEvents(response.data.events || []);
+          } catch (error) {
+            console.error('Error loading Google Calendar events:', error);
+          }
+        }
       }
     } catch (error) {
       console.error(error);
@@ -94,6 +113,15 @@ export default function TeacherCalendar() {
   const getBookingsForDate = (date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     return bookings.filter(b => b.date === dateStr && b.status !== 'cancelled');
+  };
+
+  const getGoogleEventsForDate = (date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return googleCalendarEvents.filter(e => {
+      if (!e.start) return false;
+      const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
+      return eventDate === dateStr;
+    });
   };
 
   const getAvailabilityForDate = (date) => {
@@ -186,10 +214,14 @@ export default function TeacherCalendar() {
             </Button>
           </div>
           {showLegend && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-[#41f2c0]" />
                 <span className="text-gray-600">Clases reservadas</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-orange-500" />
+                <span className="text-gray-600">Eventos personales</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-400" />
@@ -258,9 +290,11 @@ export default function TeacherCalendar() {
                 {/* Day cells */}
                 {days.map((day) => {
                   const dayBookings = getBookingsForDate(day);
+                  const dayGoogleEvents = getGoogleEventsForDate(day);
                   const dayAvailability = getAvailabilityForDate(day);
                   const isSelected = isSameDay(day, selectedDate);
                   const hasBookings = dayBookings.length > 0;
+                  const hasGoogleEvents = dayGoogleEvents.length > 0;
 
                   return (
                     <button
@@ -286,6 +320,11 @@ export default function TeacherCalendar() {
                           <div key={`booking-${idx}`} className="w-1.5 h-1.5 rounded-full bg-[#41f2c0]" />
                         ))}
                         
+                        {/* Google Calendar Events */}
+                        {hasGoogleEvents && dayGoogleEvents.slice(0, 2).map((_, idx) => (
+                          <div key={`google-${idx}`} className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                        ))}
+                        
                         {/* Availability indicators */}
                         {dayAvailability && !dayAvailability.isUnavailable && (
                           <div className={cn(
@@ -299,9 +338,9 @@ export default function TeacherCalendar() {
                           <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
                         )}
                         
-                        {hasBookings && dayBookings.length > 2 && (
-                          <span className="text-[10px] text-gray-500">+{dayBookings.length - 2}</span>
-                        )}
+                        {(hasBookings && dayBookings.length > 2) || (hasGoogleEvents && dayGoogleEvents.length > 2) ? (
+                          <span className="text-[10px] text-gray-500">+{Math.max(dayBookings.length - 2, 0) + Math.max(dayGoogleEvents.length - 2, 0)}</span>
+                        ) : null}
                       </div>
                     </button>
                   );
@@ -321,6 +360,40 @@ export default function TeacherCalendar() {
                   {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
                 </span>
               </h3>
+
+              {/* Google Calendar Events */}
+              {getGoogleEventsForDate(selectedDate).length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-xs font-semibold text-gray-500 mb-2 uppercase">Eventos Personales</h4>
+                  <div className="space-y-2">
+                    {getGoogleEventsForDate(selectedDate)
+                      .sort((a, b) => (a.start || '').localeCompare(b.start || ''))
+                      .map((event, idx) => (
+                        <motion.div
+                          key={`google-${idx}`}
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="p-3 rounded-xl bg-orange-50 border border-orange-200"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <Clock className="text-orange-500" size={14} />
+                            {event.start && event.end && (
+                              <span className="font-medium text-sm">
+                                {format(parseISO(event.start), 'HH:mm')} - {format(parseISO(event.end), 'HH:mm')}
+                              </span>
+                            )}
+                            <Badge className="ml-auto bg-orange-500 text-white text-xs">
+                              Google
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-700 font-medium">
+                            {event.summary || 'Evento sin título'}
+                          </p>
+                        </motion.div>
+                      ))}
+                  </div>
+                </div>
+              )}
 
               {/* Bookings */}
               {selectedDateBookings.length > 0 && (
