@@ -3,10 +3,15 @@ import { Check, Sparkles, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '../../utils';
 
 export default function Pricing() {
-  const handleGetStarted = () => {
-    base44.auth.redirectToLogin(window.location.origin);
+  const handleGetStartedStudent = () => {
+    base44.auth.redirectToLogin(createPageUrl('SelectRole') + '?role=student');
+  };
+
+  const handleGetStartedTeacher = () => {
+    base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
   };
 
   return (
@@ -73,7 +78,7 @@ export default function Pricing() {
             </ul>
 
             <Button 
-              onClick={handleGetStarted}
+              onClick={handleGetStartedStudent}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-lg rounded-xl"
             >
               Empezar gratis
@@ -137,7 +142,7 @@ export default function Pricing() {
             </ul>
 
             <Button 
-              onClick={handleGetStarted}
+              onClick={handleGetStartedTeacher}
               className="w-full bg-white hover:bg-gray-100 text-[#41f2c0] py-6 text-lg rounded-xl font-semibold shadow-xl"
             >
               Prueba gratis 30 días
