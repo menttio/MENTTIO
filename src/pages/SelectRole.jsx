@@ -28,6 +28,10 @@ export default function SelectRole() {
         setUser(currentUser);
         setFormData(prev => ({ ...prev, full_name: currentUser.full_name || '' }));
 
+        // Check URL params for role
+        const urlParams = new URLSearchParams(window.location.search);
+        const roleParam = urlParams.get('role');
+
         // Check if already has a role
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
@@ -39,6 +43,12 @@ export default function SelectRole() {
         if (students.length > 0) {
           navigate(createPageUrl('StudentDashboard'));
           return;
+        }
+
+        // If role param is provided, go directly to details
+        if (roleParam === 'student') {
+          setSelectedRole('student');
+          setStep('details');
         }
       } catch (error) {
         console.error(error);
