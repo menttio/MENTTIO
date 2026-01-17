@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { GraduationCap, BookOpen, ArrowRight, Loader2, Users } from 'lucide-react';
+import { GraduationCap, BookOpen, ArrowRight, Loader2, Users, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -104,6 +104,14 @@ export default function SelectRole() {
       >
         {step === 'role' ? (
           <div className="text-center">
+            <Button
+              variant="ghost"
+              onClick={() => navigate(createPageUrl('Home'))}
+              className="mb-6 text-gray-500 hover:text-[#404040]"
+            >
+              <ArrowLeft size={18} className="mr-2" />
+              Volver
+            </Button>
             <h1 className="text-4xl font-bold mb-4">
               ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
             </h1>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
 import { 
@@ -17,7 +17,8 @@ import {
   Bell,
   BarChart3,
   Library,
-  Settings
+  Settings,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ import NotificationBell from '@/components/notifications/NotificationBell';
 import PushNotificationSetup from '@/components/notifications/PushNotificationSetup';
 
 export default function Layout({ children, currentPageName }) {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -138,12 +140,20 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 px-4 py-3">
         <div className="flex items-center justify-between">
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
           <h1 className="text-lg font-semibold text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</h1>
           <div className="flex items-center gap-2">
             <NotificationBell userEmail={user?.email} />
