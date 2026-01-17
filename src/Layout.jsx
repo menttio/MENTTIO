@@ -121,7 +121,7 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home') {
+  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup') {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
   }
 
