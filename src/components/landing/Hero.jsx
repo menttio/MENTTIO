@@ -143,7 +143,7 @@ export default function Hero() {
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 bg-[#404040] text-white rounded-2xl shadow-lg p-4"
+                className="absolute -bottom-4 -left-4 bg-[#404040] text-white rounded-2xl shadow-lg p-4 z-20"
               >
                 <div className="text-2xl font-bold">95%</div>
                 <div className="text-xs opacity-90">Satisfacción</div>
