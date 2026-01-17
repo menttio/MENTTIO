@@ -10,7 +10,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-[#41f2c0] via-[#35d4a7] to-[#2ab88f] min-h-screen flex items-center">
+    <div className="relative overflow-hidden bg-gradient-to-br from-[#41f2c0] via-[#35d4a7] to-[#2ab88f] min-h-screen flex items-center pt-20">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse" />
@@ -18,24 +18,7 @@ export default function Hero() {
         <div className="absolute bottom-20 right-1/3 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse delay-1000" />
       </div>
 
-      {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-20 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl font-bold text-[#41f2c0]">π</span>
-            </div>
-            <h1 className="text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
-          </div>
-          <Button 
-            onClick={handleGetStarted}
-            variant="outline" 
-            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white hover:text-[#41f2c0] transition-all"
-          >
-            Iniciar Sesión
-          </Button>
-        </div>
-      </nav>
+
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
@@ -74,7 +57,7 @@ export default function Hero() {
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 size="lg" 
                 variant="outline"
-                className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white hover:text-[#41f2c0] px-8 py-6 text-lg rounded-xl"
+                className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#41f2c0] px-8 py-6 text-lg rounded-xl font-semibold"
               >
                 Ver precios
               </Button>
