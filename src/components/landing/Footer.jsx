@@ -60,8 +60,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li><button onClick={() => document.querySelector('section')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#41f2c0] transition-colors">Características</button></li>
               <li><button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#41f2c0] transition-colors">Precios</button></li>
-              <li><button className="hover:text-[#41f2c0] transition-colors">Para Profesores</button></li>
-              <li><button className="hover:text-[#41f2c0] transition-colors">Para Alumnos</button></li>
+              <li><a href="/TeacherSignup" className="hover:text-[#41f2c0] transition-colors">Para Profesores</a></li>
+              <li><a href="/SelectRole?role=student" className="hover:text-[#41f2c0] transition-colors">Para Alumnos</a></li>
             </ul>
           </div>
 
