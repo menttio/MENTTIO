@@ -51,7 +51,7 @@ export default function Contact() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
-        <a href="/">
+        <a href="/Home">
           <Button
             variant="ghost"
             className="mb-4 text-gray-500 hover:text-[#404040]"
