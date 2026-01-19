@@ -43,6 +43,9 @@ export default function Hero() {
             <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
               FAQ
             </button>
+            <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              Sobre nosotros
+            </a>
             <a href="/Contact">
               <Button 
                 className="bg-white text-[#404040] hover:bg-gray-100 shadow-lg"
