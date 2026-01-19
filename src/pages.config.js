@@ -2,7 +2,6 @@ import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
 import Help from './pages/Help';
 import Home from './pages/Home';
-import Landing from './pages/Landing';
 import ManageAvailability from './pages/ManageAvailability';
 import ManageSubjects from './pages/ManageSubjects';
 import Messages from './pages/Messages';
@@ -28,7 +27,6 @@ export const PAGES = {
     "ClassRecordings": ClassRecordings,
     "Help": Help,
     "Home": Home,
-    "Landing": Landing,
     "ManageAvailability": ManageAvailability,
     "ManageSubjects": ManageSubjects,
     "Messages": Messages,
