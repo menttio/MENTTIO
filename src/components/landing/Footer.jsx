@@ -72,7 +72,7 @@ export default function Footer() {
               <li><button className="hover:text-[#41f2c0] transition-colors">Sobre nosotros</button></li>
               <li><button className="hover:text-[#41f2c0] transition-colors">Blog</button></li>
               <li><button className="hover:text-[#41f2c0] transition-colors">Careers</button></li>
-              <li><button onClick={() => window.location.href = '/Contact'} className="hover:text-[#41f2c0] transition-colors">Contacto</button></li>
+              <li><a href="/Contact" className="hover:text-[#41f2c0] transition-colors">Contacto</a></li>
             </ul>
           </div>
 
