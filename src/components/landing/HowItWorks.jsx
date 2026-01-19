@@ -62,7 +62,7 @@ export default function HowItWorks() {
   const steps = activeTab === 'student' ? studentSteps : teacherSteps;
 
   return (
-    <section className="py-24 bg-white">
+    <section id="how-it-works" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

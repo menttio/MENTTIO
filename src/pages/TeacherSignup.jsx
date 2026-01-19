@@ -41,11 +41,12 @@ export default function TeacherSignup() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        setFormData(prev => ({ ...prev, full_name: currentUser.full_name || '' }));
+        setFormData(prev => ({ ...prev, full_name: currentUser.full_name || '', phone: '' }));
 
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
           navigate(createPageUrl('TeacherDashboard'));
+          return;
         }
 
         const allSubjects = await base44.entities.Subject.list();
