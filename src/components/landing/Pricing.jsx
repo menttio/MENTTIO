@@ -7,11 +7,11 @@ import { createPageUrl } from '../../utils';
 
 export default function Pricing() {
   const handleGetStartedStudent = () => {
-    base44.auth.redirectToLogin(createPageUrl('SelectRole') + '?role=student');
+    window.location.href = createPageUrl('SelectRole') + '?role=student';
   };
 
   const handleGetStartedTeacher = () => {
-    base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
+    window.location.href = createPageUrl('TeacherSignup');
   };
 
   return (
