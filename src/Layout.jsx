@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     // Skip auth check for public pages
-    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact') {
+    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs') {
       setLoading(false);
       return;
     }
@@ -127,7 +127,7 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact') {
+  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs') {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
   }
 
