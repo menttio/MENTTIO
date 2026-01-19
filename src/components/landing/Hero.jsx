@@ -28,7 +28,7 @@ export default function Hero() {
             <h1 className="text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
           </div>
           <div className="flex items-center gap-6">
-            <button onClick={() => document.querySelector('section')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
               Características
             </button>
             <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
@@ -36,6 +36,12 @@ export default function Hero() {
             </button>
             <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
               Precios
+            </button>
+            <button onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              Testimonios
+            </button>
+            <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              FAQ
             </button>
             <Button 
               onClick={handleGetStarted}
