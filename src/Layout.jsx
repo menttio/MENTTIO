@@ -33,6 +33,12 @@ export default function Layout({ children, currentPageName }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Skip auth check for public pages
+    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact') {
+      setLoading(false);
+      return;
+    }
+
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
