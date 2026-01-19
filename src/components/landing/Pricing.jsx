@@ -11,7 +11,7 @@ export default function Pricing() {
   };
 
   const handleGetStartedTeacher = () => {
-    base44.auth.redirectToLogin(createPageUrl('SelectRole') + '?role=teacher');
+    base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
   };
 
   return (
