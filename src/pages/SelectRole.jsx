@@ -45,10 +45,14 @@ export default function SelectRole() {
           return;
         }
 
-        // If role param is provided, go directly to details
+        // If role param is provided, handle accordingly
         if (roleParam === 'student') {
           setSelectedRole('student');
           setStep('details');
+        } else if (roleParam === 'teacher') {
+          // Redirect to teacher signup form
+          navigate(createPageUrl('TeacherSignup'));
+          return;
         }
       } catch (error) {
         console.error(error);
