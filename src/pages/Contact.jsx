@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Mail, Send, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,11 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 export default function Contact() {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
+    lastName: '',
     email: '',
-    subject: '',
     message: ''
   });
   const [sending, setSending] = useState(false);
@@ -26,13 +23,13 @@ export default function Contact() {
     try {
       await base44.functions.invoke('sendContactEmail', {
         name: formData.name,
+        lastName: formData.lastName,
         email: formData.email,
-        subject: formData.subject,
         message: formData.message
       });
 
       setSent(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', lastName: '', email: '', message: '' });
       
       setTimeout(() => {
         setSent(false);
@@ -45,7 +42,7 @@ export default function Contact() {
     }
   };
 
-  const isFormValid = formData.name && formData.email && formData.subject && formData.message;
+  const isFormValid = formData.name && formData.lastName && formData.email && formData.message;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4 pt-24">
@@ -54,14 +51,15 @@ export default function Contact() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
-        <Button
-          variant="ghost"
-          onClick={() => navigate(createPageUrl('Home'))}
-          className="mb-4 text-gray-500 hover:text-[#404040]"
-        >
-          <ArrowLeft size={18} className="mr-2" />
-          Volver
-        </Button>
+        <a href="/">
+          <Button
+            variant="ghost"
+            className="mb-4 text-gray-500 hover:text-[#404040]"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            Volver
+          </Button>
+        </a>
 
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
@@ -109,25 +107,25 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-sm font-medium text-[#404040] mb-2">
-                    Email *
+                    Apellidos *
                   </label>
                   <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="tu@email.com"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    placeholder="Tus apellidos"
                     required
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-[#404040] mb-2">
-                    Asunto *
+                    Correo Electrónico *
                   </label>
                   <Input
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder="¿En qué podemos ayudarte?"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="tu@email.com"
                     required
                   />
                 </div>

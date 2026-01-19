@@ -3,25 +3,26 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { name, email, subject, message } = await req.json();
+    const { name, lastName, email, message } = await req.json();
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !lastName || !email || !message) {
       return Response.json(
         { error: 'Todos los campos son obligatorios' },
         { status: 400 }
       );
     }
 
+    const fullName = `${name} ${lastName}`;
+
     // Send email to menttio@menttio.com
-    await base44.integrations.Core.SendEmail({
+    await base44.asServiceRole.integrations.Core.SendEmail({
       from_name: 'Formulario de Contacto - Menπio',
       to: 'menttio@menttio.com',
-      subject: `Contacto: ${subject}`,
+      subject: `Nuevo mensaje de contacto de ${fullName}`,
       body: `
         <h2>Nuevo mensaje de contacto</h2>
-        <p><strong>Nombre:</strong> ${name}</p>
+        <p><strong>Nombre completo:</strong> ${fullName}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Asunto:</strong> ${subject}</p>
         <br>
         <p><strong>Mensaje:</strong></p>
         <p>${message.replace(/\n/g, '<br>')}</p>
@@ -32,13 +33,13 @@ Deno.serve(async (req) => {
     });
 
     // Send confirmation email to user
-    await base44.integrations.Core.SendEmail({
+    await base44.asServiceRole.integrations.Core.SendEmail({
       from_name: 'Menπio',
       to: email,
       subject: 'Hemos recibido tu mensaje',
       body: `
         <h2>¡Gracias por contactarnos!</h2>
-        <p>Hola ${name},</p>
+        <p>Hola ${fullName},</p>
         <p>Hemos recibido tu mensaje y te responderemos lo antes posible.</p>
         <br>
         <p><strong>Tu mensaje:</strong></p>
