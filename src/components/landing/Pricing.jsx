@@ -161,7 +161,7 @@ export default function Pricing() {
           className="text-center mt-12"
         >
           <p className="text-gray-600">
-            ¿Dudas sobre los precios? <button className="text-[#41f2c0] font-semibold hover:underline">Contáctanos</button>
+            ¿Dudas sobre los precios? <button onClick={() => window.location.href = '/Contact'} className="text-[#41f2c0] font-semibold hover:underline">Contáctanos</button>
           </p>
         </motion.div>
       </div>

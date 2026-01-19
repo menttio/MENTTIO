@@ -20,6 +20,7 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import Home from './pages/Home';
 import SelectRole from './pages/SelectRole';
 import Landing from './pages/Landing';
+import Contact from './pages/Contact';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "Home": Home,
     "SelectRole": SelectRole,
     "Landing": Landing,
+    "Contact": Contact,
 }
 
 export const pagesConfig = {
