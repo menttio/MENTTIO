@@ -30,8 +30,7 @@ export default function Footer() {
             <Button
               onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
               size="lg"
-              variant="outline"
-              className="border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
+              className="bg-[#404040] text-white hover:bg-[#303030] px-8 py-6 text-lg rounded-xl shadow-xl font-semibold"
             >
               Ver precios
             </Button>

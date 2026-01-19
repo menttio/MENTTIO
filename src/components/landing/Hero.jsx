@@ -19,7 +19,7 @@ export default function Hero() {
       </div>
 
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-20 px-6 py-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
@@ -27,18 +27,28 @@ export default function Hero() {
             </div>
             <h1 className="text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
           </div>
-          <Button 
-            onClick={handleGetStarted}
-            variant="outline" 
-            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white hover:text-[#41f2c0] transition-all"
-          >
-            Iniciar Sesión
-          </Button>
+          <div className="flex items-center gap-6">
+            <button onClick={() => document.querySelector('section')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              Características
+            </button>
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              ¿Cómo funciona?
+            </button>
+            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+              Precios
+            </button>
+            <Button 
+              onClick={handleGetStarted}
+              className="bg-[#404040] hover:bg-[#303030] text-white shadow-lg"
+            >
+              Iniciar Sesión
+            </Button>
+          </div>
         </div>
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 pt-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text */}
           <motion.div
@@ -73,8 +83,7 @@ export default function Hero() {
               <Button 
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 size="lg" 
-                variant="outline"
-                className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white hover:text-[#41f2c0] px-8 py-6 text-lg rounded-xl"
+                className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-lg rounded-xl shadow-xl font-semibold"
               >
                 Ver precios
               </Button>
