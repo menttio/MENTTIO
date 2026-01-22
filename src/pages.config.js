@@ -23,6 +23,7 @@ import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import Blog from './pages/Blog';
+import Careers from './pages/Careers';
 import __Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "Blog": Blog,
+    "Careers": Careers,
 }
 
 export const pagesConfig = {
