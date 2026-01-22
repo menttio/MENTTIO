@@ -114,9 +114,8 @@ export default function TermsOfService() {
                 por las clases que reserves con los profesores.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                <strong>Para Profesores:</strong> La suscripción tiene un coste de 20€ al mes, con el primer 
-                mes completamente gratis. Eres responsable de mantener tu perfil actualizado y de cumplir con 
-                las clases programadas.
+                <strong>Para Profesores:</strong> La suscripción tiene un coste de 19,99€ al mes. Eres responsable 
+                de mantener tu perfil actualizado y de cumplir con las clases programadas.
               </p>
               <p className="text-gray-600 leading-relaxed">
                 Eres responsable de mantener la confidencialidad de tu contraseña y de todas las actividades 

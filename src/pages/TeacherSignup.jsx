@@ -295,7 +295,7 @@ export default function TeacherSignup() {
                   <div className="bg-[#41f2c0]/10 rounded-xl p-4 mt-6">
                     <h4 className="font-semibold text-[#404040] mb-2">💼 Suscripción Mensual</h4>
                     <p className="text-sm text-gray-600">
-                      Acceso completo a la plataforma por 20€/mes.
+                      Acceso completo a la plataforma por 19,99€/mes.
                     </p>
                   </div>
 
@@ -441,7 +441,7 @@ export default function TeacherSignup() {
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
                     <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-[#404040]">20€</span>
+                      <span className="text-5xl font-bold text-[#404040]">19,99€</span>
                       <span className="text-gray-500">/mes</span>
                     </div>
                   </div>
@@ -453,7 +453,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 20€/mes</p>
+                      <p>- La suscripción tiene un coste de 19,99€/mes</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
