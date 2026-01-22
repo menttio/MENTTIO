@@ -25,6 +25,8 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import Blog from './pages/Blog';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookiesPolicy from './pages/CookiesPolicy';
+import LegalNotice from './pages/LegalNotice';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +58,8 @@ export const PAGES = {
     "Blog": Blog,
     "TermsOfService": TermsOfService,
     "PrivacyPolicy": PrivacyPolicy,
+    "CookiesPolicy": CookiesPolicy,
+    "LegalNotice": LegalNotice,
 }
 
 export const pagesConfig = {

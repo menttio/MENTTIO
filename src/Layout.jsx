@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     // Skip auth check for public pages
-    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy') {
+    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy' || currentPageName === 'CookiesPolicy' || currentPageName === 'LegalNotice') {
       setLoading(false);
       return;
     }
@@ -127,7 +127,7 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy') {
+  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy' || currentPageName === 'CookiesPolicy' || currentPageName === 'LegalNotice') {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
   }
 
