@@ -114,14 +114,10 @@ export default function Pricing() {
                 <span className="text-5xl font-bold text-white">20€</span>
                 <span className="text-white/80">/mes</span>
               </div>
-              <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full mt-3">
-                <span className="text-sm text-white font-semibold">✨ Primer mes GRATIS</span>
-              </div>
             </div>
 
             <ul className="space-y-4 mb-8">
               {[
-                '30 días de prueba gratis',
                 'Gestión automática de reservas',
                 'Calendario inteligente',
                 'Grabación de clases en la nube',
@@ -145,11 +141,8 @@ export default function Pricing() {
               onClick={handleGetStartedTeacher}
               className="w-full bg-white hover:bg-gray-100 text-[#41f2c0] py-6 text-lg rounded-xl font-semibold shadow-xl"
             >
-              Prueba gratis 30 días
+              Comenzar ahora
             </Button>
-            <p className="text-center text-white/70 text-xs mt-3">
-              No se requiere tarjeta de crédito
-            </p>
           </motion.div>
         </div>
 

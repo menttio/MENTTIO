@@ -293,9 +293,9 @@ export default function TeacherSignup() {
                   </div>
 
                   <div className="bg-[#41f2c0]/10 rounded-xl p-4 mt-6">
-                    <h4 className="font-semibold text-[#404040] mb-2">🎉 Primer mes GRATIS</h4>
+                    <h4 className="font-semibold text-[#404040] mb-2">💼 Suscripción Mensual</h4>
                     <p className="text-sm text-gray-600">
-                      Prueba la plataforma durante 30 días sin compromiso. Después solo 29€/mes.
+                      Acceso completo a la plataforma por 20€/mes.
                     </p>
                   </div>
 
@@ -440,11 +440,10 @@ export default function TeacherSignup() {
                 >
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
                     <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
-                    <div className="flex items-baseline justify-center gap-2 mb-2">
-                      <span className="text-5xl font-bold text-[#404040]">0€</span>
-                      <span className="text-gray-500">el primer mes</span>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-5xl font-bold text-[#404040]">20€</span>
+                      <span className="text-gray-500">/mes</span>
                     </div>
-                    <p className="text-sm text-gray-500">Después 29€/mes</p>
                   </div>
 
                   <div className="border border-gray-200 rounded-xl p-4 max-h-64 overflow-y-auto bg-gray-50">
@@ -454,8 +453,8 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- El primer mes es gratuito como periodo de prueba</p>
-                      <p>- Después se cobrará 29€/mes de forma automática</p>
+                      <p>- La suscripción tiene un coste de 20€/mes</p>
+                      <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
                       
