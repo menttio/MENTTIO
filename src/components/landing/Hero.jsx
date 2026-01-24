@@ -1,13 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Video, Calendar, Users } from 'lucide-react';
+import { ArrowRight, Sparkles, Video, Calendar, Users, User, Settings, LogOut, LayoutDashboard } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
+import { createPageUrl } from '../../utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function Hero() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkUser();
+  }, []);
+
   const handleGetStarted = () => {
     const nextUrl = window.location.origin + '/AuthRedirect';
     base44.auth.redirectToLogin(nextUrl);
+  };
+
+  const handleLogout = () => {
+    base44.auth.logout();
+  };
+
+  const goToDashboard = () => {
+    window.location.href = createPageUrl('AuthRedirect');
   };
 
   return (
@@ -54,12 +88,46 @@ export default function Hero() {
                 Contáctanos
               </Button>
             </a>
-            <Button 
-              onClick={handleGetStarted}
-              className="bg-[#404040] hover:bg-[#303030] text-white shadow-lg"
-            >
-              Iniciar Sesión
-            </Button>
+            {!loading && (
+              user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="w-10 h-10 rounded-full bg-white text-[#404040] hover:bg-gray-100 shadow-lg flex items-center justify-center font-semibold transition-all">
+                      {user.full_name?.charAt(0) || 'U'}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium">{user.full_name || 'Usuario'}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={goToDashboard}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Mi Dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.location.href = createPageUrl('Profile')}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Mi Perfil</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Cerrar Sesión</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-[#404040] hover:bg-[#303030] text-white shadow-lg"
+                >
+                  Iniciar Sesión
+                </Button>
+              )
+            )}
           </div>
         </div>
       </nav>
