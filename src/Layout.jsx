@@ -148,7 +148,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'LoginRedirect'];
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
   
   if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;

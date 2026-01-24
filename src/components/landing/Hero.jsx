@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 
 export default function Hero() {
   const handleGetStarted = () => {
-    base44.auth.redirectToLogin();
+    const nextUrl = window.location.origin + '/AuthRedirect';
+    base44.auth.redirectToLogin(nextUrl);
   };
 
   return (
