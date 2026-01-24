@@ -24,6 +24,7 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -94,6 +95,46 @@ export default function Profile() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona una imagen válida');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no puede superar los 5MB');
+      return;
+    }
+
+    setUploadingPhoto(true);
+    try {
+      // Upload file
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // Update profile
+      if (userRole === 'teacher') {
+        await base44.entities.Teacher.update(profile.id, { profile_photo: file_url });
+      } else if (userRole === 'student') {
+        await base44.entities.Student.update(profile.id, { profile_photo: file_url });
+      }
+
+      // Reload data
+      await loadUserData();
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      alert('Error al subir la foto');
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const handleSave = async () => {
@@ -188,9 +229,23 @@ export default function Profile() {
                   <User className="text-white" size={40} />
                 )}
               </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 bg-[#41f2c0] rounded-full flex items-center justify-center text-white hover:bg-[#35d4a7] transition-colors">
-                <Camera size={16} />
-              </button>
+              <input
+                type="file"
+                id="photo-upload"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+              <label
+                htmlFor="photo-upload"
+                className="absolute bottom-0 right-0 w-8 h-8 bg-[#41f2c0] rounded-full flex items-center justify-center text-white hover:bg-[#35d4a7] transition-colors cursor-pointer"
+              >
+                {uploadingPhoto ? (
+                  <Loader2 className="animate-spin" size={16} />
+                ) : (
+                  <Camera size={16} />
+                )}
+              </label>
             </div>
             <div>
               <h3 className="font-semibold text-[#404040] text-lg">{formData.full_name}</h3>

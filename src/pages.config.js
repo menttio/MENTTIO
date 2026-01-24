@@ -1,4 +1,5 @@
 import AboutUs from './pages/AboutUs';
+import AuthRedirect from './pages/AuthRedirect';
 import Blog from './pages/Blog';
 import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
@@ -27,12 +28,12 @@ import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
-import AuthRedirect from './pages/AuthRedirect';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AboutUs": AboutUs,
+    "AuthRedirect": AuthRedirect,
     "Blog": Blog,
     "BookClass": BookClass,
     "ClassRecordings": ClassRecordings,
@@ -61,7 +62,6 @@ export const PAGES = {
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
-    "AuthRedirect": AuthRedirect,
 }
 
 export const pagesConfig = {
