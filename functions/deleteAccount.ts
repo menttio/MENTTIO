@@ -23,31 +23,48 @@ Deno.serve(async (req) => {
       const teacherData = teachers[0];
       
       // Send webhook to N8N to delete corporate account
+      console.log('Teacher data:', teacherData);
+      console.log('Corporate email:', teacherData.corporate_email);
+      
       if (teacherData.corporate_email) {
         try {
           const webhookUrl = Deno.env.get('N8N_DELETE_TEACHER_WEBHOOK_URL');
+          console.log('Webhook URL:', webhookUrl);
+          
           if (webhookUrl) {
+            const payload = {
+              primaryEmail: teacherData.corporate_email,
+              googleUserId: teacherData.corporate_email
+            };
+            console.log('Sending webhook payload:', payload);
+            
             const response = await fetch(webhookUrl, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                primaryEmail: teacherData.corporate_email,
-                googleUserId: teacherData.corporate_email
-              })
+              body: JSON.stringify(payload)
             });
             
+            console.log('Webhook response status:', response.status);
+            const responseText = await response.text();
+            console.log('Webhook response body:', responseText);
+            
             if (!response.ok) {
-              console.error('Error notifying N8N webhook:', await response.text());
+              console.error('Error notifying N8N webhook - Status:', response.status);
             } else {
               console.log('Successfully notified N8N to delete corporate account');
             }
+          } else {
+            console.error('N8N_DELETE_TEACHER_WEBHOOK_URL not found in environment');
           }
         } catch (webhookError) {
           console.error('Error calling N8N webhook:', webhookError);
+          console.error('Webhook error stack:', webhookError.stack);
           // Continue with deletion even if webhook fails
         }
+      } else {
+        console.log('No corporate_email found, skipping webhook');
       }
       
       // Delete availability
