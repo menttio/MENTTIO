@@ -98,7 +98,9 @@ export default function SelectRole() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e?.preventDefault();
+    
     if (selectedRole === 'student' && formData.phone && !validatePhone(formData.phone)) {
       return;
     }
@@ -110,6 +112,7 @@ export default function SelectRole() {
           user_email: user.email,
           full_name: `${formData.first_name} ${formData.last_name}`,
           bio: formData.bio,
+          phone: formData.phone || '',
           subjects: [],
           rating: 0,
           total_classes: 0
@@ -119,14 +122,14 @@ export default function SelectRole() {
         await base44.entities.Student.create({
           user_email: user.email,
           full_name: `${formData.first_name} ${formData.last_name}`,
-          phone: formData.phone,
+          phone: formData.phone || '',
           assigned_teachers: []
         });
         window.location.href = createPageUrl('StudentDashboard');
       }
     } catch (error) {
-      console.error(error);
-    } finally {
+      console.error('Error creating profile:', error);
+      alert('Error al crear el perfil. Por favor, inténtalo de nuevo.');
       setSaving(false);
     }
   };
