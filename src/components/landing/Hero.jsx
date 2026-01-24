@@ -93,7 +93,7 @@ export default function Hero() {
               user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="w-10 h-10 rounded-full bg-white text-[#404040] hover:bg-gray-100 shadow-lg flex items-center justify-center font-semibold transition-all">
+                    <button className="w-10 h-10 rounded-full bg-[#404040] text-white hover:bg-[#303030] shadow-lg flex items-center justify-center font-semibold transition-all">
                       {user.full_name?.charAt(0) || 'U'}
                     </button>
                   </DropdownMenuTrigger>
