@@ -24,17 +24,14 @@ Deno.serve(async (req) => {
     console.log('Enviando datos a n8n:', { nombre, apellidos, email: user.email });
     console.log('Webhook URL:', webhookUrl);
 
-    // Enviar datos a n8n
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nombre,
-        apellidos,
-        email: user.email
-      })
+    // Enviar datos a n8n usando GET con parámetros en la URL
+    const url = new URL(webhookUrl);
+    url.searchParams.append('nombre', nombre);
+    url.searchParams.append('apellidos', apellidos);
+    url.searchParams.append('email', user.email);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET'
     });
 
     console.log('Response status:', response.status);
