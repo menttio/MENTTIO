@@ -53,6 +53,8 @@ export default function BookingCard({
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [review, setReview] = useState(null);
+  const [loadingReview, setLoadingReview] = useState(false);
 
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
@@ -64,6 +66,21 @@ export default function BookingCard({
   const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
 
   const canModify = is24HoursBefore && !isCompleted && !isCancelled;
+
+  // Load review for completed classes
+  React.useEffect(() => {
+    if (isCompleted && !isCancelled) {
+      setLoadingReview(true);
+      base44.entities.Review.filter({ booking_id: booking.id })
+        .then(reviews => {
+          if (reviews.length > 0) {
+            setReview(reviews[0]);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setLoadingReview(false));
+    }
+  }, [booking.id, isCompleted, isCancelled]);
 
   const statusConfig = {
     scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-white' },
@@ -384,6 +401,45 @@ export default function BookingCard({
               Ver grabación de la clase
               <ExternalLink size={14} />
             </a>
+          </div>
+        )}
+
+        {/* Review Section */}
+        {isCompleted && !isCancelled && (
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            {loadingReview ? (
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Loader2 size={14} className="animate-spin" />
+                Cargando reseña...
+              </div>
+            ) : review ? (
+              <div className="bg-[#41f2c0]/5 rounded-lg p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Star className="text-yellow-500 fill-yellow-500" size={16} />
+                    <span className="font-semibold text-[#404040]">
+                      {review.rating}/5
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      - Reseña de {userRole === 'teacher' ? review.student_name : 'ti'}
+                    </span>
+                  </div>
+                </div>
+                {review.comment && (
+                  <p className="text-sm text-gray-600 italic">"{review.comment}"</p>
+                )}
+              </div>
+            ) : userRole === 'student' && onReview ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onReview(booking)}
+                className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+              >
+                <Star size={14} className="mr-2" />
+                Dejar una reseña
+              </Button>
+            ) : null}
           </div>
         )}
 
