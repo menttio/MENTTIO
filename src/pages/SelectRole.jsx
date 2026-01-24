@@ -16,7 +16,8 @@ export default function SelectRole() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: '',
+    first_name: '',
+    last_name: '',
     phone: '',
     bio: ''
   });
@@ -26,7 +27,12 @@ export default function SelectRole() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        setFormData(prev => ({ ...prev, full_name: currentUser.full_name || '' }));
+        const nameParts = (currentUser.full_name || '').split(' ');
+        setFormData(prev => ({ 
+          ...prev, 
+          first_name: nameParts[0] || '',
+          last_name: nameParts.slice(1).join(' ') || ''
+        }));
 
         // Check URL params for role
         const urlParams = new URLSearchParams(window.location.search);
@@ -74,7 +80,7 @@ export default function SelectRole() {
       if (selectedRole === 'teacher') {
         await base44.entities.Teacher.create({
           user_email: user.email,
-          full_name: formData.full_name,
+          full_name: `${formData.first_name} ${formData.last_name}`,
           bio: formData.bio,
           subjects: [],
           rating: 0,
@@ -84,7 +90,7 @@ export default function SelectRole() {
       } else {
         await base44.entities.Student.create({
           user_email: user.email,
-          full_name: formData.full_name,
+          full_name: `${formData.first_name} ${formData.last_name}`,
           phone: formData.phone,
           assigned_teachers: []
         });
@@ -177,15 +183,27 @@ export default function SelectRole() {
             <p className="text-gray-500 mb-8">Esta información será visible para otros usuarios</p>
 
             <div className="space-y-6">
-              <div>
-                <Label htmlFor="name">Nombre completo</Label>
-                <Input
-                  id="name"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  placeholder="Tu nombre"
-                  className="mt-2"
-                />
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="first_name">Nombre</Label>
+                  <Input
+                    id="first_name"
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                    placeholder="Tu nombre"
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="last_name">Apellidos</Label>
+                  <Input
+                    id="last_name"
+                    value={formData.last_name}
+                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                    placeholder="Tus apellidos"
+                    className="mt-2"
+                  />
+                </div>
               </div>
 
               {selectedRole === 'student' && (
@@ -216,7 +234,7 @@ export default function SelectRole() {
 
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.full_name || saving}
+                disabled={!formData.first_name || !formData.last_name || saving}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg rounded-xl"
               >
                 {saving ? (
