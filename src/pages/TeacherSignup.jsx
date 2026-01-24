@@ -192,7 +192,8 @@ export default function TeacherSignup() {
         subscription_active: true,
         subscription_expires: expirationDate.toISOString().split('T')[0],
         trial_used: true,
-        tour_completed: false
+        tour_completed: false,
+        corporate_email: corporateData.email
       });
 
       setShowSuccess(true);

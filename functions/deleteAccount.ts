@@ -20,6 +20,35 @@ Deno.serve(async (req) => {
     
     if (teachers.length > 0) {
       const teacherId = teachers[0].id;
+      const teacherData = teachers[0];
+      
+      // Send webhook to N8N to delete corporate account
+      if (teacherData.corporate_email) {
+        try {
+          const webhookUrl = Deno.env.get('N8N_DELETE_TEACHER_WEBHOOK_URL');
+          if (webhookUrl) {
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                primaryEmail: teacherData.corporate_email,
+                googleUserId: teacherData.corporate_email
+              })
+            });
+            
+            if (!response.ok) {
+              console.error('Error notifying N8N webhook:', await response.text());
+            } else {
+              console.log('Successfully notified N8N to delete corporate account');
+            }
+          }
+        } catch (webhookError) {
+          console.error('Error calling N8N webhook:', webhookError);
+          // Continue with deletion even if webhook fails
+        }
+      }
       
       // Delete availability
       const availabilities = await base44.asServiceRole.entities.Availability.filter({ 
