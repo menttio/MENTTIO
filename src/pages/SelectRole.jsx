@@ -101,35 +101,54 @@ export default function SelectRole() {
   const handleSubmit = async (e) => {
     e?.preventDefault();
     
+    // Validar que los campos requeridos estén llenos
+    if (!formData.first_name || !formData.last_name) {
+      alert('Por favor, completa todos los campos obligatorios');
+      return;
+    }
+    
+    if (selectedRole === 'student' && !formData.phone) {
+      alert('El teléfono es obligatorio para los alumnos');
+      return;
+    }
+    
     if (selectedRole === 'student' && formData.phone && !validatePhone(formData.phone)) {
       return;
     }
     
     setSaving(true);
     try {
+      console.log('Creating profile for:', user.email);
+      
       if (selectedRole === 'teacher') {
-        await base44.entities.Teacher.create({
+        const teacherData = {
           user_email: user.email,
           full_name: `${formData.first_name} ${formData.last_name}`,
-          bio: formData.bio,
+          bio: formData.bio || '',
           phone: formData.phone || '',
           subjects: [],
           rating: 0,
           total_classes: 0
-        });
+        };
+        console.log('Creating teacher:', teacherData);
+        await base44.entities.Teacher.create(teacherData);
         window.location.href = createPageUrl('TeacherDashboard');
       } else {
-        await base44.entities.Student.create({
+        const studentData = {
           user_email: user.email,
           full_name: `${formData.first_name} ${formData.last_name}`,
-          phone: formData.phone || '',
+          phone: formData.phone,
           assigned_teachers: []
-        });
+        };
+        console.log('Creating student:', studentData);
+        await base44.entities.Student.create(studentData);
+        console.log('Student created successfully');
         window.location.href = createPageUrl('StudentDashboard');
       }
     } catch (error) {
       console.error('Error creating profile:', error);
-      alert('Error al crear el perfil. Por favor, inténtalo de nuevo.');
+      console.error('Error details:', error.message, error.stack);
+      alert(`Error al crear el perfil: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
       setSaving(false);
     }
   };
