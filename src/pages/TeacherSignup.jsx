@@ -25,6 +25,8 @@ export default function TeacherSignup() {
   const [step, setStep] = useState(1);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [corporateAccount, setCorporateAccount] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -131,6 +133,25 @@ export default function TeacherSignup() {
   const handleFinalize = async () => {
     setSaving(true);
     try {
+      // Separar nombre y apellidos
+      const nameParts = formData.full_name.trim().split(' ');
+      const nombre = nameParts[0];
+      const apellidos = nameParts.slice(1).join(' ');
+
+      // Crear usuario corporativo en n8n
+      const { data: corporateData } = await base44.functions.invoke('createCorporateUser', {
+        nombre,
+        apellidos
+      });
+
+      if (corporateData.status !== 'ok') {
+        throw new Error('Error al crear usuario corporativo');
+      }
+
+      // Guardar datos corporativos para mostrar
+      setCorporateAccount(corporateData);
+
+      // Crear registro de profesor
       const expirationDate = new Date();
       expirationDate.setMonth(expirationDate.getMonth() + 1);
 
@@ -150,10 +171,10 @@ export default function TeacherSignup() {
         tour_completed: false
       });
 
-      window.location.href = createPageUrl('TeacherDashboard');
+      setShowSuccess(true);
     } catch (error) {
       console.error(error);
-    } finally {
+      alert('Error al crear la cuenta. Por favor, inténtalo de nuevo.');
       setSaving(false);
     }
   };
@@ -162,6 +183,84 @@ export default function TeacherSignup() {
     return (
       <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
         <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+      </div>
+    );
+  }
+
+  if (showSuccess && corporateAccount) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-2xl"
+        >
+          <Card className="shadow-xl">
+            <CardContent className="p-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <Check className="text-green-600" size={40} />
+              </div>
+              
+              <h2 className="text-3xl font-bold text-[#404040] mb-2">
+                ¡Cuenta Creada con Éxito!
+              </h2>
+              
+              <p className="text-gray-600 mb-8">
+                Tu cuenta corporativa ha sido creada correctamente
+              </p>
+
+              <div className="bg-[#41f2c0]/10 rounded-xl p-6 mb-6 text-left">
+                <h3 className="font-semibold text-[#404040] mb-4">Datos de Acceso Corporativo:</h3>
+                
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm text-gray-500">Correo Corporativo:</label>
+                    <p className="text-lg font-mono font-semibold text-[#404040] break-all">
+                      {corporateAccount.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                <p className="text-sm text-yellow-800">
+                  <strong>⚠️ Importante:</strong> Recibirás un correo con tu contraseña temporal en tu bandeja de entrada. 
+                  Por favor, cámbiala en tu primer inicio de sesión.
+                </p>
+              </div>
+
+              <Button
+                onClick={() => window.location.href = createPageUrl('TeacherDashboard')}
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
+              >
+                Ir al Panel de Profesor
+                <ArrowRight size={18} className="ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (saving) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
+        >
+          <div className="w-24 h-24 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-6">
+            <Loader2 className="animate-spin text-[#41f2c0]" size={48} />
+          </div>
+          <h2 className="text-2xl font-bold text-[#404040] mb-2">
+            Creando tu perfil...
+          </h2>
+          <p className="text-gray-600">
+            Estamos configurando tu cuenta corporativa, esto tomará unos segundos
+          </p>
+        </motion.div>
       </div>
     );
   }
