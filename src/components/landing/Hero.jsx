@@ -93,8 +93,16 @@ export default function Hero() {
               user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="w-10 h-10 rounded-full bg-[#404040] text-white hover:bg-[#303030] shadow-lg flex items-center justify-center font-semibold transition-all">
-                      {user.full_name?.charAt(0) || 'U'}
+                    <button className="w-10 h-10 rounded-full bg-[#404040] text-white hover:bg-[#303030] shadow-lg flex items-center justify-center font-semibold transition-all overflow-hidden">
+                      {profile?.profile_photo ? (
+                        <img 
+                          src={profile.profile_photo} 
+                          alt={user.full_name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span>{user.full_name?.charAt(0) || 'U'}</span>
+                      )}
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
