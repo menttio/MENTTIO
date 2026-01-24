@@ -235,13 +235,20 @@ export default function TeacherSignup() {
                       {corporateAccount.email}
                     </p>
                   </div>
+                  
+                  <div>
+                    <label className="text-sm text-gray-500">Contraseña Temporal:</label>
+                    <p className="text-lg font-mono font-semibold text-[#404040]">
+                      {corporateAccount.password}
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
                 <p className="text-sm text-yellow-800">
-                  <strong>⚠️ Importante:</strong> Recibirás un correo con tu contraseña temporal en tu bandeja de entrada. 
-                  Por favor, cámbiala en tu primer inicio de sesión.
+                  <strong>⚠️ Importante:</strong> Guarda estos datos en un lugar seguro. 
+                  Por favor, cambia la contraseña en tu primer inicio de sesión.
                 </p>
               </div>
 

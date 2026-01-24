@@ -49,7 +49,8 @@ Deno.serve(async (req) => {
       status: result.status,
       email: result.email,
       firstName: result.firstName,
-      lastName: result.lastName
+      lastName: result.lastName,
+      password: result.password
     });
 
   } catch (error) {
