@@ -44,8 +44,7 @@ export default function Hero() {
   }, []);
 
   const handleGetStarted = () => {
-    const nextUrl = window.location.origin + '/AuthRedirect';
-    base44.auth.redirectToLogin(nextUrl);
+    window.location.href = createPageUrl('SelectRole');
   };
 
   const handleLogout = () => {
@@ -142,7 +141,7 @@ export default function Hero() {
                 </DropdownMenu>
               ) : (
                 <Button 
-                  onClick={handleGetStarted}
+                  onClick={() => window.location.href = createPageUrl('SelectRole')}
                   className="bg-[#404040] hover:bg-[#303030] text-white shadow-lg"
                 >
                   Iniciar Sesión
