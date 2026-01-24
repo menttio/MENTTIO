@@ -15,6 +15,7 @@ import {
 
 export default function Hero() {
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,6 +23,17 @@ export default function Hero() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        
+        // Load profile photo
+        const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+        if (teachers.length > 0) {
+          setProfile(teachers[0]);
+        } else {
+          const students = await base44.entities.Student.filter({ user_email: currentUser.email });
+          if (students.length > 0) {
+            setProfile(students[0]);
+          }
+        }
       } catch (error) {
         setUser(null);
       } finally {
