@@ -29,7 +29,8 @@ export default function TeacherSignup() {
   const [showSuccess, setShowSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
-    full_name: '',
+    nombre: '',
+    apellidos: '',
     phone: '',
     education: '',
     experience_years: 0
@@ -43,7 +44,13 @@ export default function TeacherSignup() {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        setFormData(prev => ({ ...prev, full_name: currentUser.full_name || '', phone: '' }));
+        const nameParts = (currentUser.full_name || '').split(' ');
+        setFormData(prev => ({ 
+          ...prev, 
+          nombre: nameParts[0] || '', 
+          apellidos: nameParts.slice(1).join(' ') || '',
+          phone: '' 
+        }));
 
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
@@ -100,10 +107,16 @@ export default function TeacherSignup() {
   const validateStep1 = () => {
     const newErrors = {};
     
-    if (!formData.full_name.trim()) {
-      newErrors.full_name = 'El nombre es obligatorio';
-    } else if (!validateName(formData.full_name)) {
-      newErrors.full_name = 'Introduce un nombre válido (mínimo 3 caracteres, solo letras)';
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = 'El nombre es obligatorio';
+    } else if (!validateName(formData.nombre)) {
+      newErrors.nombre = 'Introduce un nombre válido (mínimo 3 caracteres, solo letras)';
+    }
+    
+    if (!formData.apellidos.trim()) {
+      newErrors.apellidos = 'Los apellidos son obligatorios';
+    } else if (!validateName(formData.apellidos)) {
+      newErrors.apellidos = 'Introduce apellidos válidos (mínimo 3 caracteres, solo letras)';
     }
     
     if (!formData.phone.trim()) {
@@ -126,22 +139,17 @@ export default function TeacherSignup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const canContinueStep1 = formData.full_name && formData.phone && formData.education && formData.experience_years >= 0;
+  const canContinueStep1 = formData.nombre && formData.apellidos && formData.phone && formData.education && formData.experience_years >= 0;
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
     setSaving(true);
     try {
-      // Separar nombre y apellidos
-      const nameParts = formData.full_name.trim().split(' ');
-      const nombre = nameParts[0];
-      const apellidos = nameParts.slice(1).join(' ');
-
       // Crear usuario corporativo en n8n
       const response = await base44.functions.invoke('createCorporateUser', {
-        nombre,
-        apellidos
+        nombre: formData.nombre,
+        apellidos: formData.apellidos
       });
 
       console.log('Respuesta completa:', response);
@@ -165,7 +173,7 @@ export default function TeacherSignup() {
 
       await base44.entities.Teacher.create({
         user_email: user.email,
-        full_name: formData.full_name,
+        full_name: `${formData.nombre} ${formData.apellidos}`,
         phone: formData.phone,
         education: formData.education,
         experience_years: formData.experience_years,
@@ -329,19 +337,37 @@ export default function TeacherSignup() {
                 >
                   <div>
                     <label className="block text-sm font-medium text-[#404040] mb-2">
-                      Nombre y Apellidos *
+                      Nombre *
                     </label>
                     <Input
-                      value={formData.full_name}
+                      value={formData.nombre}
                       onChange={(e) => {
-                        setFormData({ ...formData, full_name: e.target.value });
-                        if (errors.full_name) setErrors({ ...errors, full_name: undefined });
+                        setFormData({ ...formData, nombre: e.target.value });
+                        if (errors.nombre) setErrors({ ...errors, nombre: undefined });
                       }}
-                      placeholder="Ej: Juan García López"
-                      className={errors.full_name ? 'border-red-500' : ''}
+                      placeholder="Ej: Juan"
+                      className={errors.nombre ? 'border-red-500' : ''}
                     />
-                    {errors.full_name && (
-                      <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>
+                    {errors.nombre && (
+                      <p className="text-red-500 text-xs mt-1">{errors.nombre}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#404040] mb-2">
+                      Apellidos *
+                    </label>
+                    <Input
+                      value={formData.apellidos}
+                      onChange={(e) => {
+                        setFormData({ ...formData, apellidos: e.target.value });
+                        if (errors.apellidos) setErrors({ ...errors, apellidos: undefined });
+                      }}
+                      placeholder="Ej: García López"
+                      className={errors.apellidos ? 'border-red-500' : ''}
+                    />
+                    {errors.apellidos && (
+                      <p className="text-red-500 text-xs mt-1">{errors.apellidos}</p>
                     )}
                   </div>
 
