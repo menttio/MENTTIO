@@ -133,7 +133,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;
 
   const handleLogout = () => {
-    base44.auth.logout();
+    base44.auth.logout(createPageUrl('Home'));
   };
 
   if (loading) {
@@ -170,12 +170,12 @@ export default function Layout({ children, currentPageName }) {
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button 
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            <Link 
+              to={createPageUrl('Home')}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
             >
               <ArrowLeft size={20} />
-            </button>
+            </Link>
             <button 
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -197,12 +197,12 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Desktop Header with Back Button */}
       <header className="hidden lg:block fixed top-4 left-64 right-0 z-10 px-8">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040]"
+        <Link 
+          to={createPageUrl('Home')}
+          className="p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center"
         >
           <ArrowLeft size={20} />
-        </button>
+        </Link>
       </header>
 
       {/* Sidebar */}

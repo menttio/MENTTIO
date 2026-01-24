@@ -37,7 +37,8 @@ export default function Hero() {
   };
 
   const handleLogout = () => {
-    base44.auth.logout();
+    const homeUrl = window.location.origin + '/Home';
+    base44.auth.logout(homeUrl);
   };
 
   const goToDashboard = () => {
