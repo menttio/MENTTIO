@@ -8,7 +8,8 @@ import {
   Save,
   Loader2,
   CheckCircle,
-  Camera
+  Camera,
+  Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,18 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { createPageUrl } from '../utils';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -25,6 +38,7 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -182,6 +196,20 @@ export default function Profile() {
       alert('Error al guardar los cambios');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      await base44.functions.invoke('deleteAccount');
+      
+      // Logout and redirect to home
+      window.location.href = createPageUrl('Home');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Error al eliminar la cuenta');
+      setDeleting(false);
     }
   };
 
@@ -388,7 +416,7 @@ export default function Profile() {
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
+        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg mb-4"
       >
         {saving ? (
           <Loader2 className="animate-spin" size={20} />
@@ -399,6 +427,58 @@ export default function Profile() {
           </>
         )}
       </Button>
+
+      {/* Delete Account Section */}
+      <Card className="border-red-200 bg-red-50">
+        <CardHeader>
+          <CardTitle className="text-red-600">Zona Peligrosa</CardTitle>
+          <CardDescription>Esta acción es permanente y no se puede deshacer</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                disabled={deleting}
+                className="w-full bg-red-600 hover:bg-red-700"
+              >
+                {deleting ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <>
+                    <Trash2 size={20} className="mr-2" />
+                    Eliminar mi cuenta
+                  </>
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Estás completamente seguro?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Esta acción no se puede deshacer. Se eliminarán permanentemente:
+                  <ul className="list-disc ml-6 mt-2 space-y-1">
+                    <li>Tu perfil de {userRole === 'teacher' ? 'profesor' : 'alumno'}</li>
+                    <li>Todas tus reservas de clases</li>
+                    <li>Tus conversaciones y mensajes</li>
+                    <li>Tus notificaciones</li>
+                    <li>Toda tu información personal</li>
+                  </ul>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteAccount}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Sí, eliminar mi cuenta
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
+      </Card>
     </div>
   );
 }
