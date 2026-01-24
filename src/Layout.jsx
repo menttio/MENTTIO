@@ -195,6 +195,16 @@ export default function Layout({ children, currentPageName }) {
         </div>
       </header>
 
+      {/* Desktop Header with Back Button */}
+      <header className="hidden lg:block fixed top-4 left-64 right-0 z-10 px-8">
+        <button 
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040]"
+        >
+          <ArrowLeft size={20} />
+        </button>
+      </header>
+
       {/* Sidebar */}
       <aside className={cn(
         "fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0",
@@ -268,7 +278,7 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Main Content */}
-      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-0">
+      <main className="lg:ml-64 min-h-screen pt-16 lg:pt-16">
         <div className="p-4 lg:p-8">
           {children}
         </div>
