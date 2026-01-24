@@ -21,6 +21,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
+    console.log('Enviando datos a n8n:', { nombre, apellidos, email: user.email });
+    console.log('Webhook URL:', webhookUrl);
+
     // Enviar datos a n8n
     const response = await fetch(webhookUrl, {
       method: 'POST',
@@ -34,11 +37,16 @@ Deno.serve(async (req) => {
       })
     });
 
+    console.log('Response status:', response.status);
+    
     if (!response.ok) {
-      throw new Error('Error en el webhook de n8n');
+      const errorText = await response.text();
+      console.error('Error response from n8n:', errorText);
+      throw new Error(`Error en el webhook de n8n: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log('Respuesta de n8n:', result);
 
     return Response.json({
       status: result.status,

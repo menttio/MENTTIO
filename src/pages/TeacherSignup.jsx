@@ -139,10 +139,18 @@ export default function TeacherSignup() {
       const apellidos = nameParts.slice(1).join(' ');
 
       // Crear usuario corporativo en n8n
-      const { data: corporateData } = await base44.functions.invoke('createCorporateUser', {
+      const response = await base44.functions.invoke('createCorporateUser', {
         nombre,
         apellidos
       });
+
+      console.log('Respuesta completa:', response);
+
+      if (!response.data || response.data.error) {
+        throw new Error(response.data?.error || 'Error al crear usuario corporativo');
+      }
+
+      const corporateData = response.data;
 
       if (corporateData.status !== 'ok') {
         throw new Error('Error al crear usuario corporativo');
@@ -173,8 +181,8 @@ export default function TeacherSignup() {
 
       setShowSuccess(true);
     } catch (error) {
-      console.error(error);
-      alert('Error al crear la cuenta. Por favor, inténtalo de nuevo.');
+      console.error('Error completo:', error);
+      alert(`Error al crear la cuenta: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
       setSaving(false);
     }
   };
