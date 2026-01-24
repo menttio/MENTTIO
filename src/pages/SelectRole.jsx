@@ -24,65 +24,26 @@ export default function SelectRole() {
   });
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
-        
-        if (!isAuthenticated) {
-          // Redirect to login with return URL
-          base44.auth.redirectToLogin(createPageUrl('SelectRole'));
-          return;
-        }
+    // No authentication required - just load the role selection page
+    setLoading(false);
+  }, []);
 
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        const nameParts = (currentUser.full_name || '').split(' ');
-        setFormData(prev => ({ 
-          ...prev, 
-          first_name: nameParts[0] || '',
-          last_name: nameParts.slice(1).join(' ') || ''
-        }));
-
-        // Check URL params for role
-        const urlParams = new URLSearchParams(window.location.search);
-        const roleParam = urlParams.get('role');
-
-        // Check if already has a role
-        const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
-        if (teachers.length > 0) {
-          navigate(createPageUrl('TeacherDashboard'));
-          return;
-        }
-
-        const students = await base44.entities.Student.filter({ user_email: currentUser.email });
-        if (students.length > 0) {
-          navigate(createPageUrl('StudentDashboard'));
-          return;
-        }
-
-        // If role param is provided, go directly to details
-        if (roleParam === 'student') {
-          setSelectedRole('student');
-          setStep('details');
-        }
-      } catch (error) {
-        console.error('Error checking user:', error);
-        // If there's an auth error, redirect to login
-        base44.auth.redirectToLogin(createPageUrl('SelectRole'));
-      } finally {
-        setLoading(false);
+  const handleRoleSelect = (role, action) => {
+    // Store selected role in sessionStorage
+    sessionStorage.setItem('selected_role', role);
+    sessionStorage.setItem('role_action', action); // 'login' or 'register'
+    
+    if (action === 'register') {
+      // Go directly to signup form
+      if (role === 'teacher') {
+        navigate(createPageUrl('TeacherSignup'));
+      } else {
+        navigate(createPageUrl('StudentSignup'));
       }
-    };
-    checkUser();
-  }, [navigate]);
-
-  const handleRoleSelect = (role) => {
-    if (role === 'teacher') {
-      navigate(createPageUrl('TeacherSignup'));
-      return;
+    } else {
+      // Redirect to Google Auth
+      base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
     }
-    setSelectedRole(role);
-    setStep('details');
   };
 
   const validatePhone = (phone) => {
@@ -178,53 +139,99 @@ export default function SelectRole() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
-        {step === 'role' ? (
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              onClick={() => navigate(createPageUrl('Home'))}
-              className="mb-6 text-gray-500 hover:text-[#404040]"
-            >
-              <ArrowLeft size={18} className="mr-2" />
-              Volver
-            </Button>
-            <h1 className="text-4xl font-bold mb-4">
-              ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
-            </h1>
-            <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
+        <div className="text-center">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(createPageUrl('Home'))}
+            className="mb-6 text-gray-500 hover:text-[#404040]"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            Volver
+          </Button>
+          <h1 className="text-4xl font-bold mb-4">
+            ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
+          </h1>
+          <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <motion.button
+              {/* Student Card */}
+              <motion.div
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleRoleSelect('student')}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0] group"
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
               >
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center group-hover:bg-[#41f2c0] transition-colors">
-                  <GraduationCap className="text-[#41f2c0] group-hover:text-white transition-colors" size={40} />
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
+                  <GraduationCap className="text-[#41f2c0]" size={40} />
                 </div>
                 <h2 className="text-2xl font-semibold text-[#404040] mb-2">Soy Alumno</h2>
-                <p className="text-gray-500">Quiero reservar clases particulares con profesores</p>
-              </motion.button>
+                <p className="text-gray-500 mb-6">Quiero reservar clases particulares con profesores</p>
 
-              <motion.button
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => handleRoleSelect('student', 'login')}
+                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  >
+                    Iniciar Sesión
+                  </Button>
+                  <Button
+                    onClick={() => handleRoleSelect('student', 'register')}
+                    variant="outline"
+                    className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                  >
+                    Registrarme
+                  </Button>
+                </div>
+              </motion.div>
+
+              {/* Teacher Card */}
+              <motion.div
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleRoleSelect('teacher')}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0] group"
+                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
               >
-                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center group-hover:bg-[#41f2c0] transition-colors">
-                  <BookOpen className="text-[#41f2c0] group-hover:text-white transition-colors" size={40} />
+                <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
+                  <BookOpen className="text-[#41f2c0]" size={40} />
                 </div>
                 <h2 className="text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
-                <p className="text-gray-500">Quiero ofrecer clases particulares a alumnos</p>
-                <p className="text-xs text-[#41f2c0] mt-2 font-medium">
+                <p className="text-gray-500 mb-2">Quiero ofrecer clases particulares a alumnos</p>
+                <p className="text-xs text-[#41f2c0] mb-6 font-medium">
                   Requiere suscripción mensual
                 </p>
-              </motion.button>
+
+                <div className="space-y-3">
+                  <Button
+                    onClick={() => handleRoleSelect('teacher', 'login')}
+                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  >
+                    Iniciar Sesión
+                  </Button>
+                  <Button
+                    onClick={() => handleRoleSelect('teacher', 'register')}
+                    variant="outline"
+                    className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                  >
+                    Registrarme
+                  </Button>
+                </div>
+              </motion.div>
             </div>
-          </div>
-        ) : (
+            </div>
+            </motion.div>
+            </div>
+            );
+            }
+
+            return null; // Remove the old student details form
+            }
+
+            if (false) { // This block is now unreachable but keeping structure
+            return (
+            <div className="min-h-screen flex items-center justify-center p-4">
+            <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-2xl"
+            >
+            <div className="text-center">{/* old content */}</div>
+            {step === 'role' ? (<div></div>) : (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
