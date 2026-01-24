@@ -33,11 +33,19 @@ export default function Layout({ children, currentPageName }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Skip auth check for public pages
-    if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy' || currentPageName === 'CookiesPolicy' || currentPageName === 'LegalNotice') {
+    // Public pages that don't require authentication
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice'];
+    
+    if (publicPages.includes(currentPageName)) {
       setLoading(false);
       return;
     }
+
+    // Teacher-only pages
+    const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory'];
+    
+    // Student-only pages
+    const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile'];
 
     const loadUser = async () => {
       try {
@@ -53,6 +61,12 @@ export default function Layout({ children, currentPageName }) {
             const expirationDate = new Date(teacher.subscription_expires);
             if (expirationDate > new Date()) {
               setUserRole('teacher');
+              
+              // Block access to student pages
+              if (studentPages.includes(currentPageName)) {
+                window.location.href = createPageUrl('TeacherDashboard');
+                return;
+              }
             } else {
               // Subscription expired - redirect to renewal
               setUserRole('expired_teacher');
@@ -71,6 +85,12 @@ export default function Layout({ children, currentPageName }) {
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
           if (students.length > 0) {
             setUserRole('student');
+            
+            // Block access to teacher pages
+            if (teacherPages.includes(currentPageName)) {
+              window.location.href = createPageUrl('StudentDashboard');
+              return;
+            }
           } else {
             setUserRole('new');
             // Redirect new users to role selection
@@ -86,7 +106,7 @@ export default function Layout({ children, currentPageName }) {
       }
     };
     loadUser();
-  }, []);
+  }, [currentPageName]);
 
   const studentNavItems = [
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
@@ -127,7 +147,10 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (currentPageName === 'SelectRole' || currentPageName === 'Landing' || currentPageName === 'Home' || currentPageName === 'TeacherSignup' || currentPageName === 'Contact' || currentPageName === 'AboutUs' || currentPageName === 'Blog' || currentPageName === 'TermsOfService' || currentPageName === 'PrivacyPolicy' || currentPageName === 'CookiesPolicy' || currentPageName === 'LegalNotice') {
+  // Public pages without layout
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice'];
+  
+  if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
   }
 
