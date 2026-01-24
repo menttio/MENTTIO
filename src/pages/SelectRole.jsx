@@ -26,6 +26,14 @@ export default function SelectRole() {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        const isAuthenticated = await base44.auth.isAuthenticated();
+        
+        if (!isAuthenticated) {
+          // Redirect to login with return URL
+          base44.auth.redirectToLogin(createPageUrl('SelectRole'));
+          return;
+        }
+
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         const nameParts = (currentUser.full_name || '').split(' ');
@@ -58,7 +66,9 @@ export default function SelectRole() {
           setStep('details');
         }
       } catch (error) {
-        console.error(error);
+        console.error('Error checking user:', error);
+        // If there's an auth error, redirect to login
+        base44.auth.redirectToLogin(createPageUrl('SelectRole'));
       } finally {
         setLoading(false);
       }
