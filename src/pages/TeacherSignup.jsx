@@ -32,6 +32,7 @@ export default function TeacherSignup() {
     nombre: '',
     apellidos: '',
     phone: '',
+    email_personal: '',
     education: '',
     experience_years: 0
   });
@@ -42,35 +43,11 @@ export default function TeacherSignup() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
-        
-        if (!isAuthenticated) {
-          base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
-          return;
-        }
-
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        const nameParts = (currentUser.full_name || '').split(' ');
-        setFormData(prev => ({ 
-          ...prev, 
-          nombre: nameParts[0] || '', 
-          apellidos: nameParts.slice(1).join(' ') || '',
-          phone: '' 
-        }));
-
-        const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
-        if (teachers.length > 0) {
-          navigate(createPageUrl('TeacherDashboard'));
-          return;
-        }
-
         const allSubjects = await base44.entities.Subject.list();
         setSubjects(allSubjects);
+        setLoading(false);
       } catch (error) {
         console.error('Error loading teacher signup:', error);
-        base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
-      } finally {
         setLoading(false);
       }
     };
@@ -112,6 +89,11 @@ export default function TeacherSignup() {
     return name.trim().length >= 3 && /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/.test(name);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const validateStep1 = () => {
     const newErrors = {};
     
@@ -125,6 +107,12 @@ export default function TeacherSignup() {
       newErrors.apellidos = 'Los apellidos son obligatorios';
     } else if (!validateName(formData.apellidos)) {
       newErrors.apellidos = 'Introduce apellidos válidos (mínimo 3 caracteres, solo letras)';
+    }
+
+    if (!formData.email_personal.trim()) {
+      newErrors.email_personal = 'El email personal es obligatorio';
+    } else if (!validateEmail(formData.email_personal)) {
+      newErrors.email_personal = 'Introduce un email válido';
     }
     
     if (!formData.phone.trim()) {
@@ -147,7 +135,7 @@ export default function TeacherSignup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const canContinueStep1 = formData.nombre && formData.apellidos && formData.phone && formData.education && formData.experience_years >= 0;
+  const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education && formData.experience_years >= 0;
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
@@ -175,12 +163,12 @@ export default function TeacherSignup() {
       // Guardar datos corporativos para mostrar
       setCorporateAccount(corporateData);
 
-      // Crear registro de profesor
+      // Crear registro de profesor (vinculado al email corporativo)
       const expirationDate = new Date();
       expirationDate.setMonth(expirationDate.getMonth() + 1);
 
-      await base44.entities.Teacher.create({
-        user_email: user.email,
+      await base44.asServiceRole.entities.Teacher.create({
+        user_email: corporateData.email, // Email corporativo
         full_name: `${formData.nombre} ${formData.apellidos}`,
         phone: formData.phone,
         education: formData.education,
@@ -255,17 +243,30 @@ export default function TeacherSignup() {
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                <p className="text-sm text-yellow-800 mb-2">
+                  <strong>⚠️ Importante:</strong> Guarda estos datos en un lugar seguro.
+                </p>
                 <p className="text-sm text-yellow-800">
-                  <strong>⚠️ Importante:</strong> Guarda estos datos en un lugar seguro. 
-                  Por favor, cambia la contraseña en tu primer inicio de sesión.
+                  Por favor, cambia la contraseña en tu primer inicio de sesión de Google.
                 </p>
               </div>
 
+              <div className="bg-[#41f2c0]/10 border border-[#41f2c0] rounded-xl p-4 mb-6">
+                <p className="text-sm text-[#404040] font-medium mb-2">
+                  📌 Próximos pasos:
+                </p>
+                <ol className="text-sm text-gray-700 space-y-1 ml-4 list-decimal">
+                  <li>Inicia sesión en Google con tu cuenta corporativa</li>
+                  <li>Accede a Menπio usando "Iniciar sesión con Google"</li>
+                  <li>Conecta tu Google Calendar para gestionar tus clases</li>
+                </ol>
+              </div>
+
               <Button
-                onClick={() => window.location.href = createPageUrl('TeacherDashboard')}
+                onClick={() => window.location.href = createPageUrl('Home')}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
               >
-                Ir al Panel de Profesor
+                Ir a Iniciar Sesión
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </CardContent>
@@ -306,7 +307,7 @@ export default function TeacherSignup() {
       >
         <Button
           variant="ghost"
-          onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
+          onClick={() => step === 1 ? navigate(createPageUrl('Home')) : setStep(step - 1)}
           className="mb-4"
         >
           <ArrowLeft size={18} className="mr-2" />
@@ -385,6 +386,26 @@ export default function TeacherSignup() {
                     {errors.apellidos && (
                       <p className="text-red-500 text-xs mt-1">{errors.apellidos}</p>
                     )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#404040] mb-2">
+                      Email Personal *
+                    </label>
+                    <Input
+                      type="email"
+                      value={formData.email_personal}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email_personal: e.target.value });
+                        if (errors.email_personal) setErrors({ ...errors, email_personal: undefined });
+                      }}
+                      placeholder="tu.email@gmail.com"
+                      className={errors.email_personal ? 'border-red-500' : ''}
+                    />
+                    {errors.email_personal && (
+                      <p className="text-red-500 text-xs mt-1">{errors.email_personal}</p>
+                    )}
+                    <p className="text-gray-400 text-xs mt-1">Para notificaciones y recuperación de cuenta</p>
                   </div>
 
                   <div>
