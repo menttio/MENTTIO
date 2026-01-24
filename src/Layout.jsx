@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
     
     if (publicPages.includes(currentPageName)) {
       setLoading(false);
