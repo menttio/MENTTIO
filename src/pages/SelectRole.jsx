@@ -114,7 +114,7 @@ export default function SelectRole() {
           rating: 0,
           total_classes: 0
         });
-        navigate(createPageUrl('TeacherDashboard'));
+        window.location.href = createPageUrl('TeacherDashboard');
       } else {
         await base44.entities.Student.create({
           user_email: user.email,
@@ -122,7 +122,7 @@ export default function SelectRole() {
           phone: formData.phone,
           assigned_teachers: []
         });
-        navigate(createPageUrl('StudentDashboard'));
+        window.location.href = createPageUrl('StudentDashboard');
       }
     } catch (error) {
       console.error(error);
