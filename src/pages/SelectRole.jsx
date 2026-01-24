@@ -15,6 +15,7 @@ export default function SelectRole() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -74,7 +75,34 @@ export default function SelectRole() {
     setStep('details');
   };
 
+  const validatePhone = (phone) => {
+    const cleanPhone = phone.replace(/\s/g, '');
+    if (cleanPhone.length === 0) {
+      setPhoneError('');
+      return true;
+    }
+    if (!/^\d{9}$/.test(cleanPhone)) {
+      setPhoneError('El teléfono debe tener 9 dígitos');
+      return false;
+    }
+    setPhoneError('');
+    return true;
+  };
+
+  const handlePhoneChange = (value) => {
+    setFormData({ ...formData, phone: value });
+    if (value) {
+      validatePhone(value);
+    } else {
+      setPhoneError('');
+    }
+  };
+
   const handleSubmit = async () => {
+    if (selectedRole === 'student' && formData.phone && !validatePhone(formData.phone)) {
+      return;
+    }
+    
     setSaving(true);
     try {
       if (selectedRole === 'teacher') {
@@ -185,7 +213,9 @@ export default function SelectRole() {
             <div className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="first_name">Nombre</Label>
+                  <Label htmlFor="first_name">
+                    Nombre <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="first_name"
                     value={formData.first_name}
@@ -195,7 +225,9 @@ export default function SelectRole() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="last_name">Apellidos</Label>
+                  <Label htmlFor="last_name">
+                    Apellidos <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="last_name"
                     value={formData.last_name}
@@ -208,14 +240,19 @@ export default function SelectRole() {
 
               {selectedRole === 'student' && (
                 <div>
-                  <Label htmlFor="phone">Teléfono de contacto</Label>
+                  <Label htmlFor="phone">
+                    Teléfono de contacto <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="phone"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+34 600 000 000"
-                    className="mt-2"
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    placeholder="600000000"
+                    className={`mt-2 ${phoneError ? 'border-red-500' : ''}`}
                   />
+                  {phoneError && (
+                    <p className="text-red-500 text-sm mt-1">{phoneError}</p>
+                  )}
                 </div>
               )}
 
@@ -234,7 +271,12 @@ export default function SelectRole() {
 
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.first_name || !formData.last_name || saving}
+                disabled={
+                  !formData.first_name || 
+                  !formData.last_name || 
+                  (selectedRole === 'student' && (!formData.phone || phoneError)) ||
+                  saving
+                }
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg rounded-xl"
               >
                 {saving ? (
