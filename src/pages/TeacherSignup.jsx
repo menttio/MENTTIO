@@ -42,6 +42,13 @@ export default function TeacherSignup() {
   useEffect(() => {
     const checkUser = async () => {
       try {
+        const isAuthenticated = await base44.auth.isAuthenticated();
+        
+        if (!isAuthenticated) {
+          base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
+          return;
+        }
+
         const currentUser = await base44.auth.me();
         setUser(currentUser);
         const nameParts = (currentUser.full_name || '').split(' ');
@@ -61,7 +68,8 @@ export default function TeacherSignup() {
         const allSubjects = await base44.entities.Subject.list();
         setSubjects(allSubjects);
       } catch (error) {
-        console.error(error);
+        console.error('Error loading teacher signup:', error);
+        base44.auth.redirectToLogin(createPageUrl('TeacherSignup'));
       } finally {
         setLoading(false);
       }

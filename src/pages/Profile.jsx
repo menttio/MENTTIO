@@ -204,7 +204,10 @@ export default function Profile() {
     try {
       await base44.functions.invoke('deleteAccount');
       
-      // Logout and redirect to home
+      // Clear all auth data and force logout
+      await base44.auth.logout();
+      
+      // Redirect to home with full page reload to clear all state
       window.location.href = createPageUrl('Home');
     } catch (error) {
       console.error('Error deleting account:', error);
@@ -431,7 +434,7 @@ export default function Profile() {
       {/* Delete Account Section */}
       <Card className="border-red-200 bg-red-50">
         <CardHeader>
-          <CardTitle className="text-red-600">Zona Peligrosa</CardTitle>
+          <CardTitle className="text-red-600">Eliminar Cuenta</CardTitle>
           <CardDescription>Esta acción es permanente y no se puede deshacer</CardDescription>
         </CardHeader>
         <CardContent>
