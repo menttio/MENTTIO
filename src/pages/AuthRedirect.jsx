@@ -13,28 +13,63 @@ export default function AuthRedirect() {
         const user = await base44.auth.me();
         
         if (!user) {
-          // No hay usuario, volver a home
           window.location.href = createPageUrl('Home');
           return;
         }
 
-        // Verificar si es profesor
+        // Check if there's a selected role from SelectRole page
+        const selectedRole = sessionStorage.getItem('selected_role');
+        const roleAction = sessionStorage.getItem('role_action');
+        
+        if (selectedRole && roleAction === 'login') {
+          // User is trying to login with a specific role
+          if (selectedRole === 'teacher') {
+            const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+            if (teachers.length > 0) {
+              // Teacher account found
+              sessionStorage.removeItem('selected_role');
+              sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('TeacherDashboard');
+              return;
+            } else {
+              // Not a teacher - redirect to signup
+              sessionStorage.removeItem('selected_role');
+              sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('TeacherSignup');
+              return;
+            }
+          } else if (selectedRole === 'student') {
+            const students = await base44.entities.Student.filter({ user_email: user.email });
+            if (students.length > 0) {
+              // Student account found
+              sessionStorage.removeItem('selected_role');
+              sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('StudentDashboard');
+              return;
+            } else {
+              // Not a student - redirect to signup
+              sessionStorage.removeItem('selected_role');
+              sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('StudentSignup');
+              return;
+            }
+          }
+        }
+        
+        // No role selected or old flow - check what account type exists
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
-          // Es profesor - redirigir a dashboard de profesor
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
-        // Verificar si es alumno
         const students = await base44.entities.Student.filter({ user_email: user.email });
         if (students.length > 0) {
-          // Es alumno - redirigir a dashboard de alumno
           window.location.href = createPageUrl('StudentDashboard');
           return;
         }
 
-        // No tiene rol - redirigir a selección de rol
+        // New user - redirect to role selection
         window.location.href = createPageUrl('SelectRole');
       } catch (error) {
         console.error('Error determining redirect:', error);
