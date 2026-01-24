@@ -142,48 +142,31 @@ export default function TeacherSignup() {
   const handleFinalize = async () => {
     setSaving(true);
     try {
-      // Crear usuario corporativo en n8n
-      const response = await base44.functions.invoke('createCorporateUser', {
+      // Registrar profesor (crea usuario corporativo + registro en DB)
+      const response = await base44.functions.invoke('registerTeacher', {
         nombre: formData.nombre,
-        apellidos: formData.apellidos
+        apellidos: formData.apellidos,
+        email_personal: formData.email_personal,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects
       });
 
       console.log('Respuesta completa:', response);
 
       if (!response.data || response.data.error) {
-        throw new Error(response.data?.error || 'Error al crear usuario corporativo');
+        throw new Error(response.data?.error || 'Error al crear la cuenta');
       }
 
-      const corporateData = response.data;
+      const { email, password } = response.data;
 
-      if (corporateData.status !== 'ok') {
-        throw new Error('Error al crear usuario corporativo');
+      if (!email || !password) {
+        throw new Error('No se recibieron las credenciales corporativas');
       }
 
       // Guardar datos corporativos para mostrar
-      setCorporateAccount(corporateData);
-
-      // Crear registro de profesor (vinculado al email corporativo)
-      const expirationDate = new Date();
-      expirationDate.setMonth(expirationDate.getMonth() + 1);
-
-      await base44.asServiceRole.entities.Teacher.create({
-        user_email: corporateData.email, // Email corporativo
-        full_name: `${formData.nombre} ${formData.apellidos}`,
-        phone: formData.phone,
-        education: formData.education,
-        experience_years: formData.experience_years,
-        bio: '',
-        subjects: teacherSubjects,
-        rating: 0,
-        total_classes: 0,
-        subscription_active: true,
-        subscription_expires: expirationDate.toISOString().split('T')[0],
-        trial_used: true,
-        tour_completed: false,
-        corporate_email: corporateData.email
-      });
-
+      setCorporateAccount({ email, password });
       setShowSuccess(true);
     } catch (error) {
       console.error('Error completo:', error);
