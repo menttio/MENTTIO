@@ -84,7 +84,7 @@ export default function SelectRole() {
                 <Button
                   onClick={() => handleRoleSelect('student', 'register')}
                   variant="outline"
-                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#404040] hover:text-white"
                 >
                   Registrarme
                 </Button>
@@ -115,7 +115,7 @@ export default function SelectRole() {
                 <Button
                   onClick={() => handleRoleSelect('teacher', 'register')}
                   variant="outline"
-                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#404040] hover:text-white"
                 >
                   Registrarme
                 </Button>

@@ -35,6 +35,8 @@ export default function AuthRedirect() {
               // Not a teacher - redirect to signup
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              // Logout to prevent showing as "logged in" without registration
+              await base44.auth.logout();
               window.location.href = createPageUrl('TeacherSignup');
               return;
             }
@@ -50,6 +52,8 @@ export default function AuthRedirect() {
               // Not a student - redirect to signup
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              // Logout to prevent showing as "logged in" without registration
+              await base44.auth.logout();
               window.location.href = createPageUrl('StudentSignup');
               return;
             }

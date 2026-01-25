@@ -290,7 +290,7 @@ export default function TeacherSignup() {
       >
         <Button
           variant="ghost"
-          onClick={() => step === 1 ? navigate(createPageUrl('Home')) : setStep(step - 1)}
+          onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
           className="mb-4"
         >
           <ArrowLeft size={18} className="mr-2" />

@@ -22,20 +22,26 @@ export default function Hero() {
     const checkUser = async () => {
       try {
         const currentUser = await base44.auth.me();
-        setUser(currentUser);
         
-        // Load profile photo
+        // Only show user as logged in if they have a profile in the database
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
+          setUser(currentUser);
           setProfile(teachers[0]);
         } else {
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
           if (students.length > 0) {
+            setUser(currentUser);
             setProfile(students[0]);
+          } else {
+            // User is authenticated but not registered - don't show as logged in
+            setUser(null);
+            setProfile(null);
           }
         }
       } catch (error) {
         setUser(null);
+        setProfile(null);
       } finally {
         setLoading(false);
       }

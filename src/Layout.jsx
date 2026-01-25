@@ -34,7 +34,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
     
     if (publicPages.includes(currentPageName)) {
       setLoading(false);
@@ -148,7 +148,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
   
   if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
