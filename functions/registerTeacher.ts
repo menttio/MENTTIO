@@ -23,19 +23,43 @@ Deno.serve(async (req) => {
     }
 
     // 1. Crear usuario corporativo en Google Workspace (vía N8N)
-    const createUserResponse = await base44.functions.invoke('createCorporateUser', {
-      nombre,
-      apellidos
+    const webhookUrl = Deno.env.get('N8N_CREATE_USER_WEBHOOK_URL');
+    
+    if (!webhookUrl) {
+      return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
+    }
+
+    console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
+    
+    // Enviar datos a n8n usando GET con parámetros en la URL
+    const url = new URL(webhookUrl);
+    url.searchParams.append('nombre', nombre);
+    url.searchParams.append('apellidos', apellidos);
+    url.searchParams.append('email', email_personal);
+
+    const webhookResponse = await fetch(url.toString(), {
+      method: 'GET'
     });
 
-    if (!createUserResponse.data || createUserResponse.data.error || createUserResponse.data.status !== 'ok') {
-      console.error('Error creando usuario corporativo:', createUserResponse.data);
+    console.log('Webhook response status:', webhookResponse.status);
+    
+    if (!webhookResponse.ok) {
+      const errorText = await webhookResponse.text();
+      console.error('Error response from n8n:', errorText);
       return Response.json({ 
-        error: createUserResponse.data?.error || 'Error al crear usuario corporativo' 
+        error: `Error en el webhook de n8n: ${webhookResponse.status}` 
       }, { status: 500 });
     }
 
-    const corporateData = createUserResponse.data;
+    const corporateData = await webhookResponse.json();
+    console.log('Respuesta de n8n:', corporateData);
+
+    if (corporateData.status !== 'ok') {
+      console.error('Error en respuesta de n8n:', corporateData);
+      return Response.json({ 
+        error: corporateData.error || 'Error al crear usuario corporativo' 
+      }, { status: 500 });
+    }
 
     // 2. Crear registro de profesor con Service Role (vinculado al email corporativo)
     const expirationDate = new Date();
