@@ -227,10 +227,13 @@ export default function TeacherSignup() {
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
                 <p className="text-sm text-yellow-800 mb-2">
-                  <strong>⚠️ Importante:</strong> Guarda estos datos en un lugar seguro.
+                  <strong>⚠️ Importante:</strong> Revisa tu correo corporativo para completar el registro.
+                </p>
+                <p className="text-sm text-yellow-800 mb-2">
+                  Recibirás un email de invitación de Base44 en <strong>{corporateAccount.email}</strong>. Haz clic en el enlace y establece tu contraseña para acceder a Menπio.
                 </p>
                 <p className="text-sm text-yellow-800">
-                  Por favor, cambia la contraseña en tu primer inicio de sesión de Google.
+                  Puedes cambiar la contraseña de tu cuenta de Google cuando quieras, y te recomendamos usar la misma en Menπio por comodidad.
                 </p>
               </div>
 
