@@ -94,15 +94,17 @@ export default function BookClass() {
       const teacherStillHasSubject = teacher?.subjects?.some(s => s.subject_id === at.subject_id);
       
       if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
+        // Get subject name from subjects array for reliability
+        const subjectInfo = subjects.find(s => s.id === at.subject_id);
         subjectMap.set(at.subject_id, {
           id: at.subject_id,
-          name: at.subject_name
+          name: subjectInfo?.name || at.subject_name
         });
       }
     });
     
     return Array.from(subjectMap.values());
-  }, [student, teachers]);
+  }, [student, teachers, subjects]);
 
   // Get teachers for selected subject from assigned teachers (verify they still teach it)
   const teachersForSubject = useMemo(() => {
