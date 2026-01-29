@@ -96,6 +96,17 @@ export default function ManageSubjects() {
             : s
         );
       } else {
+        // Check for duplicates (same subject + same level)
+        const isDuplicate = currentSubjects.some(s => 
+          s.subject_id === selectedSubjectId && s.level === selectedLevel
+        );
+
+        if (isDuplicate) {
+          alert('Ya tienes esta asignatura con este nivel. Por favor, edita la existente o elige un nivel diferente.');
+          setSaving(false);
+          return;
+        }
+
         // Add new
         updatedSubjects = [
           ...currentSubjects,
