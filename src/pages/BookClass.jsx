@@ -391,7 +391,7 @@ export default function BookClass() {
     }
   };
 
-  if (loading) {
+  if (loading || !subjects.length) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
