@@ -82,7 +82,16 @@ Deno.serve(async (req) => {
       corporate_email: corporateData.email
     });
 
-    // 3. Devolver datos de la cuenta corporativa
+    // 3. Invitar al usuario a Base44 para que pueda usar email+password además de Google OAuth
+    try {
+      await base44.asServiceRole.users.inviteUser(corporateData.email, 'user');
+      console.log('Usuario invitado correctamente a Base44');
+    } catch (inviteError) {
+      console.error('Error invitando usuario (puede que ya exista):', inviteError);
+      // No fallar el registro si ya existe el usuario
+    }
+
+    // 4. Devolver datos de la cuenta corporativa
     return Response.json({
       status: 'ok',
       email: corporateData.email,
