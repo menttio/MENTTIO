@@ -204,15 +204,37 @@ export default function BookClass() {
         }
       }
       
-      // Filter out already booked slots
+      // Filter out already booked slots considering 1-hour class duration
       if (slots[dateStr]) {
-        const bookedSlots = teacherBookings
+        const blockedSlots = new Set();
+        
+        // Block slots based on existing bookings
+        teacherBookings
           .filter(b => b.date === dateStr)
-          .map(b => b.start_time);
+          .forEach(booking => {
+            const [bookingHour, bookingMin] = booking.start_time.split(':').map(Number);
+            const [bookingEndHour, bookingEndMin] = booking.end_time.split(':').map(Number);
+            
+            // Block all slots where a new 1-hour class would overlap
+            slots[dateStr]?.forEach(slot => {
+              const [slotHour, slotMin] = slot.split(':').map(Number);
+              
+              // New class would start at slotHour:slotMin and end 60 minutes later
+              const newClassStart = slotHour * 60 + slotMin;
+              const newClassEnd = newClassStart + 60;
+              
+              // Existing booking time in minutes
+              const bookingStart = bookingHour * 60 + bookingMin;
+              const bookingEnd = bookingEndHour * 60 + bookingEndMin;
+              
+              // Check if they overlap: newClassStart < bookingEnd AND newClassEnd > bookingStart
+              if (newClassStart < bookingEnd && newClassEnd > bookingStart) {
+                blockedSlots.add(slot);
+              }
+            });
+          });
 
         // Filter out Google Calendar busy slots considering 1-hour class duration
-        const googleBusySlots = new Set();
-
         const eventsForDay = googleCalendarEvents.filter(e => {
           if (!e.start || !e.end) return false;
           const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
@@ -238,14 +260,12 @@ export default function BookClass() {
               // Block if a 1-hour class starting at this slot overlaps with the event
               // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
               if (slotStart < eventEnd && slotEnd > eventStart) {
-                googleBusySlots.add(slot);
+                blockedSlots.add(slot);
               }
             });
           });
 
-        slots[dateStr] = slots[dateStr].filter(s => 
-          !bookedSlots.includes(s) && !googleBusySlots.has(s)
-        );
+        slots[dateStr] = slots[dateStr].filter(s => !blockedSlots.has(s));
       }
     }
     
