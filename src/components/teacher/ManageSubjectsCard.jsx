@@ -27,6 +27,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
   const [showDialog, setShowDialog] = useState(false);
   const [editingSubject, setEditingSubject] = useState(null);
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState('');
   const [price, setPrice] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
