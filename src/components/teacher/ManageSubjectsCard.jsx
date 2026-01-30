@@ -114,9 +114,11 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
     }
   };
 
-  const handleDelete = async (subjectId) => {
+  const handleDelete = async (subjectId, level) => {
     try {
-      const updatedSubjects = (teacher.subjects || []).filter(s => s.subject_id !== subjectId);
+      const updatedSubjects = (teacher.subjects || []).filter(
+        s => !(s.subject_id === subjectId && s.level === level)
+      );
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
       onUpdate();
     } catch (error) {
