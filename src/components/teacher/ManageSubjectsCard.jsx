@@ -233,6 +233,20 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             </div>
 
             <div>
+              <Label>Nivel</Label>
+              <Select value={selectedLevel} onValueChange={setSelectedLevel}>
+                <SelectTrigger className="mt-2">
+                  <SelectValue placeholder="Selecciona un nivel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ESO">ESO</SelectItem>
+                  <SelectItem value="Bachillerato">Bachillerato</SelectItem>
+                  <SelectItem value="Universidad">Universidad</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
               <Label>Precio por hora (€)</Label>
               <Input
                 type="number"
