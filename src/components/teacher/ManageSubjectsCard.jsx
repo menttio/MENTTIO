@@ -50,6 +50,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
   const handleAdd = () => {
     setEditingSubject(null);
     setSelectedSubjectId('');
+    setSelectedLevel('');
     setPrice('');
     setShowDialog(true);
   };
@@ -57,6 +58,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
   const handleEdit = (subject) => {
     setEditingSubject(subject);
     setSelectedSubjectId(subject.subject_id);
+    setSelectedLevel(subject.level);
     setPrice(subject.price_per_hour.toString());
     setShowDialog(true);
   };
