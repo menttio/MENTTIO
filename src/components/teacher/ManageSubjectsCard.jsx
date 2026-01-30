@@ -189,7 +189,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-red-500 hover:text-red-600"
-                      onClick={() => handleDelete(subject.subject_id)}
+                      onClick={() => handleDelete(subject.subject_id, subject.level)}
                     >
                       <Trash2 size={14} />
                     </Button>
