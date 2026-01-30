@@ -106,19 +106,23 @@ export default function BookClass() {
     return Array.from(subjectMap.values());
   }, [student, teachers, subjects]);
 
-  // Get teachers for selected subject from assigned teachers (verify they still teach it)
+  // Get teachers for selected subject - ONLY from assigned teachers
   const teachersForSubject = useMemo(() => {
     if (!selectedSubject || !student?.assigned_teachers?.length) return [];
     
-    const teacherIds = student.assigned_teachers
-      .filter(at => at.subject_id === selectedSubject)
-      .map(at => at.teacher_id);
+    // Get the specific assigned teachers for this subject
+    const assignedForSubject = student.assigned_teachers.filter(
+      at => at.subject_id === selectedSubject
+    );
     
-    return teachers.filter(t => {
-      const isAssigned = teacherIds.includes(t.id);
-      const stillTeachesSubject = t.subjects?.some(s => s.subject_id === selectedSubject);
-      return isAssigned && stillTeachesSubject;
-    });
+    // Map to actual teacher objects, filtering out any that don't exist or don't teach the subject
+    return assignedForSubject
+      .map(at => teachers.find(t => t.id === at.teacher_id))
+      .filter(teacher => {
+        if (!teacher) return false;
+        // Verify teacher still teaches this subject
+        return teacher.subjects?.some(s => s.subject_id === selectedSubject);
+      });
   }, [selectedSubject, student, teachers]);
 
   // Helper function to generate slots every 30 minutes from time ranges
