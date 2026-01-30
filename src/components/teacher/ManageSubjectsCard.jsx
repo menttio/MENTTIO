@@ -64,28 +64,41 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
   };
 
   const handleSave = async () => {
-    if (!selectedSubjectId || !price) return;
+    if (!selectedSubjectId || !selectedLevel || !price) return;
 
     setSaving(true);
     try {
       const selectedSubject = allSubjects.find(s => s.id === selectedSubjectId);
       const currentSubjects = teacher.subjects || [];
 
+      // Check if this subject+level combination already exists
+      const existingIndex = currentSubjects.findIndex(
+        s => s.subject_id === selectedSubjectId && s.level === selectedLevel
+      );
+
       let updatedSubjects;
       if (editingSubject) {
-        // Update existing
+        // Update existing - find by original subject_id and level
         updatedSubjects = currentSubjects.map(s =>
-          s.subject_id === editingSubject.subject_id
-            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, price_per_hour: parseFloat(price) }
+          s.subject_id === editingSubject.subject_id && s.level === editingSubject.level
+            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
             : s
         );
       } else {
+        // Check for duplicate before adding
+        if (existingIndex !== -1) {
+          alert('Ya tienes esta asignatura con este nivel. Por favor, edítala en lugar de crear una nueva.');
+          setSaving(false);
+          return;
+        }
+        
         // Add new
         updatedSubjects = [
           ...currentSubjects,
           {
             subject_id: selectedSubjectId,
             subject_name: selectedSubject.name,
+            level: selectedLevel,
             price_per_hour: parseFloat(price)
           }
         ];
