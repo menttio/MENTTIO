@@ -266,7 +266,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={!selectedSubjectId || !price || saving}
+              disabled={!selectedSubjectId || !selectedLevel || !price || saving}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}
