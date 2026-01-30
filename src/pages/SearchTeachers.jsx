@@ -101,6 +101,9 @@ export default function SearchTeachers() {
   const filteredTeachers = useMemo(() => {
     return teachers
       .filter(teacher => {
+        // No mostrar profesores sin asignaturas
+        if (!teacher.subjects || teacher.subjects.length === 0) return false;
+        
         // Search filter
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
