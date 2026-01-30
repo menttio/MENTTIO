@@ -126,9 +126,8 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
     }
   };
 
-  const availableSubjects = allSubjects.filter(s =>
-    editingSubject?.subject_id === s.id || !(teacher.subjects || []).some(ts => ts.subject_id === s.id)
-  );
+  // No filter - allow selecting any subject since level matters too
+  const availableSubjects = allSubjects;
 
   return (
     <>
