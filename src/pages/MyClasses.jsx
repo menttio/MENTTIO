@@ -27,9 +27,9 @@ export default function MyClasses() {
   const [bookings, setBookings] = useState([]);
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('date_desc');
+  const [sortBy, setSortBy] = useState('date_asc');
   const [editingBooking, setEditingBooking] = useState(null);
   const [reviewingBooking, setReviewingBooking] = useState(null);
 
