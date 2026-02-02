@@ -218,15 +218,15 @@ export default function TeacherClassHistory() {
           </Popover>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
           {/* Status Tabs */}
-          <Tabs value={filter} onValueChange={setFilter} className="flex-1">
-            <TabsList className="bg-gray-100 w-full md:w-auto">
-              <TabsTrigger value="all">Todas</TabsTrigger>
-              <TabsTrigger value="upcoming">Próximas</TabsTrigger>
-              <TabsTrigger value="completed">Completadas</TabsTrigger>
-              <TabsTrigger value="unpaid">No Pagadas</TabsTrigger>
-              <TabsTrigger value="cancelled">Canceladas</TabsTrigger>
+          <Tabs value={filter} onValueChange={setFilter} className="flex-1 w-full overflow-x-auto">
+            <TabsList className="bg-gray-100 w-full lg:w-auto justify-start lg:justify-center">
+              <TabsTrigger value="all" className="text-xs sm:text-sm whitespace-nowrap">Todas</TabsTrigger>
+              <TabsTrigger value="upcoming" className="text-xs sm:text-sm whitespace-nowrap">Próximas</TabsTrigger>
+              <TabsTrigger value="completed" className="text-xs sm:text-sm whitespace-nowrap">Completadas</TabsTrigger>
+              <TabsTrigger value="unpaid" className="text-xs sm:text-sm whitespace-nowrap">No Pagadas</TabsTrigger>
+              <TabsTrigger value="cancelled" className="text-xs sm:text-sm whitespace-nowrap">Canceladas</TabsTrigger>
             </TabsList>
           </Tabs>
 
