@@ -35,7 +35,10 @@ export default function NotificationBell({ userEmail }) {
       );
       
       setNotifications(sorted.slice(0, 10)); // Show last 10
-      setUnreadCount(sorted.filter(n => !n.is_read).length);
+      
+      // Count ALL unread notifications, not just the displayed ones
+      const totalUnread = sorted.filter(n => !n.is_read).length;
+      setUnreadCount(totalUnread);
     } catch (error) {
       console.error(error);
     }
@@ -58,11 +61,16 @@ export default function NotificationBell({ userEmail }) {
         is_read: false
       });
       
-      await Promise.all(
-        allUnreadNotifications.map(n => 
-          base44.entities.Notification.update(n.id, { is_read: true })
-        )
-      );
+      if (allUnreadNotifications.length > 0) {
+        await Promise.all(
+          allUnreadNotifications.map(n => 
+            base44.entities.Notification.update(n.id, { is_read: true })
+          )
+        );
+      }
+      
+      // Force update the state immediately
+      setUnreadCount(0);
       await loadNotifications();
     } catch (error) {
       console.error(error);
@@ -83,7 +91,18 @@ export default function NotificationBell({ userEmail }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl" align="center" sideOffset={8}>
+      <PopoverContent 
+        className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl" 
+        align="end"
+        alignOffset={0}
+        sideOffset={8}
+        style={{ 
+          left: '50%',
+          transform: 'translateX(-50%)',
+          right: 'auto'
+        }}
+        onInteractOutside={() => setIsOpen(false)}
+      >
         <NotificationList
           notifications={notifications}
           onMarkAsRead={handleMarkAsRead}
