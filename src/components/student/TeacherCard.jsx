@@ -3,6 +3,7 @@ import { Star, Clock, DollarSign, User, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import TeacherAvailability from './TeacherAvailability';
 
 export default function TeacherCard({ 
   teacher, 
@@ -99,13 +100,16 @@ export default function TeacherCard({
 
       {/* Price & Actions */}
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        {priceDisplay && (
-          <div className="flex items-center gap-1 text-[#404040]">
-            <DollarSign size={18} className="text-[#41f2c0]" />
-            <span className="font-semibold text-lg">{priceDisplay}</span>
-            <span className="text-gray-500 text-sm">/hora</span>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {priceDisplay && (
+            <div className="flex items-center gap-1 text-[#404040]">
+              <DollarSign size={18} className="text-[#41f2c0]" />
+              <span className="font-semibold text-lg">{priceDisplay}</span>
+              <span className="text-gray-500 text-sm">/hora</span>
+            </div>
+          )}
+          <TeacherAvailability teacherId={teacher.id} />
+        </div>
 
         {showActions && (
           <div className="flex gap-2">
