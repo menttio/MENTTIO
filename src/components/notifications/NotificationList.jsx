@@ -57,7 +57,7 @@ export default function NotificationList({
       <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
         <div className="flex items-center gap-2 flex-1">
           <h3 className="font-semibold text-[#404040]">Notificaciones</h3>
-          {hasUnread && (
+          {hasUnread && notifications.length > 0 && (
             <Button
               variant="ghost"
               size="sm"
@@ -74,7 +74,7 @@ export default function NotificationList({
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="h-8 w-8 text-gray-400 hover:text-gray-600"
+          className="h-8 w-8 text-gray-400 hover:text-gray-600 flex-shrink-0"
         >
           <X size={18} />
         </Button>
