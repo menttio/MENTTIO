@@ -305,8 +305,8 @@ export default function Hero() {
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 pt-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 py-20 pt-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -318,12 +318,12 @@ export default function Hero() {
               <span className="text-white text-sm font-medium">La revolución de las clases particulares</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Tu plataforma de clases
               <span className="block text-[#404040]">todo en uno</span>
             </h1>
             
-            <p className="text-xl text-white/90 mb-8 leading-relaxed">
+            <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
               Conecta con profesores expertos, gestiona tus clases, accede a grabaciones y materiales. 
               Todo automatizado en una sola plataforma.
             </p>
@@ -347,18 +347,18 @@ export default function Hero() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-3 md:gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">1000+</div>
-                <div className="text-sm text-white/80">Clases impartidas</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">1000+</div>
+                <div className="text-xs md:text-sm text-white/80">Clases impartidas</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-sm text-white/80">Alumnos activos</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">500+</div>
+                <div className="text-xs md:text-sm text-white/80">Alumnos activos</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-1">200+</div>
-                <div className="text-sm text-white/80">Profesores</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">200+</div>
+                <div className="text-xs md:text-sm text-white/80">Profesores</div>
               </div>
             </div>
           </motion.div>
@@ -368,7 +368,7 @@ export default function Hero() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
+            className="relative hidden lg:block"
           >
             <div className="relative">
               {/* Main card */}
