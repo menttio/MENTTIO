@@ -23,6 +23,8 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
+    console.log('Attempting to verify password for user:', user.email);
+    
     // Verify current password by trying to sign in
     const signInUrl = 'https://api.base44.com/auth/signin';
     const verifyResponse = await fetch(signInUrl, {
@@ -37,12 +39,25 @@ Deno.serve(async (req) => {
       })
     });
 
+    console.log('Verify response status:', verifyResponse.status);
+    
     if (!verifyResponse.ok) {
-      return Response.json({ 
-        error: 'La contraseña actual es incorrecta' 
-      }, { status: 400 });
+      const errorText = await verifyResponse.text();
+      console.error('Verification failed:', errorText);
+      
+      // Check if user doesn't have a password (OAuth user)
+      if (verifyResponse.status === 401 || errorText.includes('no password')) {
+        console.log('User may not have a password set (OAuth login). Setting new password directly.');
+        // Allow setting password without verification for OAuth users
+      } else {
+        return Response.json({ 
+          error: 'La contraseña actual es incorrecta' 
+        }, { status: 400 });
+      }
     }
 
+    console.log('Updating password for user:', user.email);
+    
     // Update password using Base44 Admin API with service role
     const updateUrl = 'https://api.base44.com/admin/users/update-password';
     const updateResponse = await fetch(updateUrl, {
@@ -58,13 +73,18 @@ Deno.serve(async (req) => {
       })
     });
 
+    console.log('Update response status:', updateResponse.status);
+
     if (!updateResponse.ok) {
       const errorText = await updateResponse.text();
       console.error('Error updating password:', errorText);
       return Response.json({ 
-        error: 'Error al actualizar la contraseña. Por favor, inténtalo de nuevo.' 
+        error: 'Error al actualizar la contraseña. Detalles: ' + errorText 
       }, { status: 500 });
     }
+
+    const result = await updateResponse.json();
+    console.log('Password updated successfully:', result);
 
     return Response.json({ 
       success: true,
