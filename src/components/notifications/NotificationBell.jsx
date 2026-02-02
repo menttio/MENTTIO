@@ -92,16 +92,9 @@ export default function NotificationBell({ userEmail }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl" 
-        align="end"
-        alignOffset={0}
+        className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl mx-auto" 
+        align="center"
         sideOffset={8}
-        style={{ 
-          left: '50%',
-          transform: 'translateX(-50%)',
-          right: 'auto'
-        }}
-        onInteractOutside={() => setIsOpen(false)}
       >
         <NotificationList
           notifications={notifications}
