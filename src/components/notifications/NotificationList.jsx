@@ -55,18 +55,29 @@ export default function NotificationList({
     <div className="max-h-[500px] overflow-hidden flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
-        <h3 className="font-semibold text-[#404040]">Notificaciones</h3>
-        {hasUnread && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onMarkAllAsRead}
-            className="text-[#41f2c0] hover:text-[#35d4a7] text-xs"
-          >
-            <CheckCheck size={14} className="mr-1" />
-            Marcar todas como leídas
-          </Button>
-        )}
+        <div className="flex items-center gap-2 flex-1">
+          <h3 className="font-semibold text-[#404040]">Notificaciones</h3>
+          {hasUnread && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onMarkAllAsRead}
+              className="text-[#41f2c0] hover:text-[#35d4a7] text-xs"
+            >
+              <CheckCheck size={14} className="mr-1" />
+              <span className="hidden sm:inline">Marcar todas como leídas</span>
+              <span className="sm:hidden">Marcar leídas</span>
+            </Button>
+          )}
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="h-8 w-8 text-gray-400 hover:text-gray-600"
+        >
+          <X size={18} />
+        </Button>
       </div>
 
       {/* Notifications */}
