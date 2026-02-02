@@ -52,12 +52,19 @@ export default function NotificationBell({ userEmail }) {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const unreadNotifications = notifications.filter(n => !n.is_read);
+      // Fetch ALL unread notifications, not just the first 10 displayed
+      const allUnreadNotifications = await base44.entities.Notification.filter({ 
+        user_email: userEmail,
+        is_read: false
+      });
+      
+      // Mark all as read
       await Promise.all(
-        unreadNotifications.map(n => 
+        allUnreadNotifications.map(n => 
           base44.entities.Notification.update(n.id, { is_read: true })
         )
       );
+      
       await loadNotifications();
     } catch (error) {
       console.error(error);
