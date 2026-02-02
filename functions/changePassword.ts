@@ -23,56 +23,33 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Verify current password by attempting to sign in
-    const verifyResponse = await fetch(`${Deno.env.get('BASE44_API_URL')}/auth/signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': Deno.env.get('BASE44_APP_ID')
-      },
-      body: JSON.stringify({
-        email: user.email,
-        password: currentPassword
-      })
-    });
-
-    if (!verifyResponse.ok) {
+    // Use Base44 SDK to update password
+    try {
+      await base44.auth.updatePassword(currentPassword, newPassword);
+      
       return Response.json({ 
-        error: 'La contraseña actual es incorrecta' 
-      }, { status: 400 });
-    }
-
-    // Update password using service role
-    const updateResponse = await fetch(`${Deno.env.get('BASE44_API_URL')}/auth/update-password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': Deno.env.get('BASE44_APP_ID'),
-        'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`
-      },
-      body: JSON.stringify({
-        email: user.email,
-        newPassword: newPassword
-      })
-    });
-
-    if (!updateResponse.ok) {
-      const error = await updateResponse.text();
-      console.error('Error updating password:', error);
+        success: true,
+        message: 'Contraseña actualizada correctamente' 
+      });
+    } catch (passwordError) {
+      console.error('Password update error:', passwordError);
+      
+      // Check if it's a wrong password error
+      if (passwordError.message?.includes('incorrect') || passwordError.message?.includes('wrong')) {
+        return Response.json({ 
+          error: 'La contraseña actual es incorrecta' 
+        }, { status: 400 });
+      }
+      
       return Response.json({ 
         error: 'Error al actualizar la contraseña. Por favor, inténtalo de nuevo.' 
       }, { status: 500 });
     }
 
-    return Response.json({ 
-      success: true,
-      message: 'Contraseña actualizada correctamente' 
-    });
-
   } catch (error) {
     console.error('Error in changePassword:', error);
     return Response.json({ 
-      error: 'Error al procesar la solicitud' 
+      error: 'Error al procesar la solicitud: ' + error.message 
     }, { status: 500 });
   }
 });
