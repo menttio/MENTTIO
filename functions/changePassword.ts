@@ -23,28 +23,53 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Use Base44 SDK to update password
-    try {
-      await base44.auth.updatePassword(currentPassword, newPassword);
-      
+    // Verify current password by trying to sign in
+    const signInUrl = 'https://api.base44.com/auth/signin';
+    const verifyResponse = await fetch(signInUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Id': Deno.env.get('BASE44_APP_ID')
+      },
+      body: JSON.stringify({
+        email: user.email,
+        password: currentPassword
+      })
+    });
+
+    if (!verifyResponse.ok) {
       return Response.json({ 
-        success: true,
-        message: 'Contraseña actualizada correctamente' 
-      });
-    } catch (passwordError) {
-      console.error('Password update error:', passwordError);
-      
-      // Check if it's a wrong password error
-      if (passwordError.message?.includes('incorrect') || passwordError.message?.includes('wrong')) {
-        return Response.json({ 
-          error: 'La contraseña actual es incorrecta' 
-        }, { status: 400 });
-      }
-      
+        error: 'La contraseña actual es incorrecta' 
+      }, { status: 400 });
+    }
+
+    // Update password using Base44 Admin API with service role
+    const updateUrl = 'https://api.base44.com/admin/users/update-password';
+    const updateResponse = await fetch(updateUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-App-Id': Deno.env.get('BASE44_APP_ID'),
+        'Authorization': `Bearer ${Deno.env.get('BASE44_SERVICE_ROLE_KEY')}`
+      },
+      body: JSON.stringify({
+        email: user.email,
+        password: newPassword
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      console.error('Error updating password:', errorText);
       return Response.json({ 
         error: 'Error al actualizar la contraseña. Por favor, inténtalo de nuevo.' 
       }, { status: 500 });
     }
+
+    return Response.json({ 
+      success: true,
+      message: 'Contraseña actualizada correctamente' 
+    });
 
   } catch (error) {
     console.error('Error in changePassword:', error);
