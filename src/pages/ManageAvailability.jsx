@@ -232,10 +232,10 @@ export default function ManageAvailability() {
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#404040]">Gestionar Disponibilidad</h1>
-          <p className="text-gray-500 mt-2">Configura tu horario habitual y excepciones puntuales</p>
-        </div>
+         <div className="mb-8">
+           <h1 className="text-3xl font-bold text-[#404040] whitespace-nowrap overflow-hidden text-ellipsis sm:whitespace-normal">Gestionar Disponibilidad</h1>
+           <p className="text-gray-500 mt-2">Configura tu horario habitual y excepciones puntuales</p>
+         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6 tabs-list">
@@ -461,7 +461,7 @@ export default function ManageAvailability() {
               </CardHeader>
               <CardContent>
                 {exceptions.length > 0 ? (
-                  <div className="space-y-3 px-2">
+                  <div className="space-y-3 max-w-2xl">
                     {exceptions.map((exception) => (
                       <div
                         key={exception.id}
