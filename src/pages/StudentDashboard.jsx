@@ -192,20 +192,20 @@ export default function StudentDashboard() {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-3 mb-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
         >
           <Card>
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-                <BookOpen className="text-[#41f2c0]" size={20} />
+            <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
+                <BookOpen className="text-[#41f2c0]" size={18} />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-[#404040]">{totalClasses}</p>
-                <p className="text-xs text-gray-500">Total clases</p>
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{totalClasses}</p>
+                <p className="text-xs text-gray-500 text-center sm:text-left whitespace-nowrap">Total clases</p>
               </div>
             </CardContent>
           </Card>
@@ -217,13 +217,13 @@ export default function StudentDashboard() {
           transition={{ delay: 0.3 }}
         >
           <Card>
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <Clock className="text-green-600" size={20} />
+            <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                <Clock className="text-green-600" size={18} />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-[#404040]">{completedClasses}</p>
-                <p className="text-xs text-gray-500">Completadas</p>
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{completedClasses}</p>
+                <p className="text-xs text-gray-500 text-center sm:text-left whitespace-nowrap">Completadas</p>
               </div>
             </CardContent>
           </Card>
@@ -235,13 +235,13 @@ export default function StudentDashboard() {
           transition={{ delay: 0.4 }}
         >
           <Card>
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <Calendar className="text-blue-600" size={20} />
+            <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <Calendar className="text-blue-600" size={18} />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-[#404040]">{scheduledClasses}</p>
-                <p className="text-xs text-gray-500">Programadas</p>
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{scheduledClasses}</p>
+                <p className="text-xs text-gray-500 text-center sm:text-left whitespace-nowrap">Programadas</p>
               </div>
             </CardContent>
           </Card>
