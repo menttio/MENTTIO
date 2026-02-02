@@ -52,9 +52,14 @@ export default function NotificationBell({ userEmail }) {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const unreadNotifications = notifications.filter(n => !n.is_read);
+      // Get ALL unread notifications, not just the visible ones
+      const allUnreadNotifications = await base44.entities.Notification.filter({ 
+        user_email: userEmail,
+        is_read: false
+      });
+      
       await Promise.all(
-        unreadNotifications.map(n => 
+        allUnreadNotifications.map(n => 
           base44.entities.Notification.update(n.id, { is_read: true })
         )
       );
@@ -78,7 +83,7 @@ export default function NotificationBell({ userEmail }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0" align="end">
+      <PopoverContent className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl" align="center" sideOffset={8}>
         <NotificationList
           notifications={notifications}
           onMarkAsRead={handleMarkAsRead}
