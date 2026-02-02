@@ -253,8 +253,8 @@ export default function ManageAvailability() {
         <TabsContent value="regular">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Horario Semanal</span>
+              <CardTitle className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                <span className="whitespace-nowrap">Horario Semanal</span>
                 <Button
                   onClick={saveRegularSchedule}
                   disabled={saving}
@@ -461,7 +461,7 @@ export default function ManageAvailability() {
               </CardHeader>
               <CardContent>
                 {exceptions.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-3 px-2">
                     {exceptions.map((exception) => (
                       <div
                         key={exception.id}
