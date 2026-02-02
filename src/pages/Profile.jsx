@@ -172,10 +172,25 @@ export default function Profile() {
       // Update user full_name in auth
       await base44.auth.updateMe({ full_name: formData.full_name });
 
-      // TODO: Password change - would need a backend function
-      if (formData.newPassword) {
-        // For now, show message that password change needs to be implemented
-        alert('Cambio de contraseña pendiente de implementación');
+      // Handle password change
+      if (formData.newPassword && formData.currentPassword) {
+        try {
+          const passwordResponse = await base44.functions.invoke('changePassword', {
+            currentPassword: formData.currentPassword,
+            newPassword: formData.newPassword
+          });
+
+          if (!passwordResponse.data.success) {
+            alert(passwordResponse.data.error || 'Error al cambiar la contraseña');
+            setSaving(false);
+            return;
+          }
+        } catch (error) {
+          console.error('Error changing password:', error);
+          alert(error.response?.data?.error || 'Error al cambiar la contraseña');
+          setSaving(false);
+          return;
+        }
       }
 
       setSuccess(true);
