@@ -28,7 +28,7 @@ export default function SelectRole() {
         navigate(createPageUrl('StudentSignup'));
       }
     } else {
-      // Redirect to Google Auth
+      // Redirect to login page
       base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
     }
   };
