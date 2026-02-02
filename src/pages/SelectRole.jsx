@@ -107,7 +107,7 @@ export default function SelectRole() {
 
               <div className="space-y-3">
                 <Button
-                  onClick={() => navigate(createPageUrl('Login'))}
+                  onClick={() => navigate(createPageUrl('LoginPage'))}
                   className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
                 >
                   Iniciar Sesión
