@@ -24,7 +24,6 @@ import { format, parseISO, isAfter, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
-import MyTeacherCard from '../components/student/MyTeacherCard';
 import {
   Dialog,
   DialogContent,
@@ -40,8 +39,7 @@ export default function StudentDashboard() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [removingTeacher, setRemovingTeacher] = useState(null);
-  const [removing, setRemoving] = useState(false);
+
 
   const loadData = async () => {
     try {
@@ -84,27 +82,7 @@ export default function StudentDashboard() {
   const completedClasses = bookings.filter(b => b.status === 'completed').length;
   const scheduledClasses = bookings.filter(b => b.status === 'scheduled').length;
 
-  const handleRemoveTeacher = async () => {
-    if (!removingTeacher) return;
-    
-    setRemoving(true);
-    try {
-      const updatedAssignments = student.assigned_teachers.filter(
-        at => at.teacher_id !== removingTeacher.id
-      );
-      
-      await base44.entities.Student.update(student.id, {
-        assigned_teachers: updatedAssignments
-      });
-      
-      await loadData();
-      setRemovingTeacher(null);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setRemoving(false);
-    }
-  };
+
 
   const getTeacherSubjects = (teacherId) => {
     return student?.assigned_teachers
@@ -270,7 +248,7 @@ export default function StudentDashboard() {
         </motion.div>
       </div>
 
-      {/* My Teachers - Detailed View */}
+      {/* My Teachers - Summary */}
       {teachers.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -279,22 +257,18 @@ export default function StudentDashboard() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-[#404040]">Mis Profesores</h2>
-              <p className="text-gray-500 text-sm mt-1">Información detallada de tus profesores asignados</p>
-            </div>
+            <h2 className="text-xl font-semibold text-[#404040]">Mis Profesores</h2>
             <Link 
-              to={createPageUrl('SearchTeachers')}
+              to={createPageUrl('MyTeachers')}
               className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
             >
-              Buscar más <ChevronRight size={16} />
+              Ver todos <ChevronRight size={16} />
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {teachers.map((teacher, idx) => {
-              const assignedSubjects = student?.assigned_teachers
-                ?.filter(at => at.teacher_id === teacher.id) || [];
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {teachers.slice(0, 3).map((teacher, idx) => {
+              const teacherSubjects = getTeacherSubjects(teacher.id);
               
               return (
                 <motion.div
@@ -303,11 +277,56 @@ export default function StudentDashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + idx * 0.1 }}
                 >
-                  <MyTeacherCard
-                    teacher={teacher}
-                    assignedSubjects={assignedSubjects}
-                    onRemove={setRemovingTeacher}
-                  />
+                  <Link to={createPageUrl('MyTeachers')}>
+                    <Card className="hover:shadow-md transition-all cursor-pointer group">
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
+                            {teacher.profile_photo ? (
+                              <img 
+                                src={teacher.profile_photo} 
+                                alt={teacher.full_name}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                            ) : (
+                              <User className="text-white" size={24} />
+                            )}
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-[#404040] truncate">
+                              {teacher.full_name}
+                            </h3>
+                            <div className="flex items-center gap-1 mt-1">
+                              <Star className="text-yellow-400 fill-yellow-400" size={12} />
+                              <span className="text-sm text-gray-500">
+                                {teacher.rating?.toFixed(1) || '5.0'}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <ChevronRight className="text-gray-400 group-hover:text-[#41f2c0] transition-colors" size={20} />
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {teacherSubjects.slice(0, 2).map((subject, idx) => (
+                            <Badge 
+                              key={idx}
+                              variant="secondary"
+                              className="bg-[#41f2c0]/10 text-[#404040] text-xs"
+                            >
+                              {subject}
+                            </Badge>
+                          ))}
+                          {teacherSubjects.length > 2 && (
+                            <Badge variant="secondary" className="bg-gray-100 text-gray-500 text-xs">
+                              +{teacherSubjects.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 </motion.div>
               );
             })}
@@ -359,42 +378,7 @@ export default function StudentDashboard() {
         )}
       </motion.div>
 
-      {/* Remove Teacher Dialog */}
-      <Dialog open={!!removingTeacher} onOpenChange={(open) => !open && setRemovingTeacher(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>¿Eliminar profesor?</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que quieres eliminar a <strong>{removingTeacher?.full_name}</strong> de tu lista de profesores?
-              Ya no aparecerá como opción al reservar clases.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRemovingTeacher(null)}>
-              Cancelar
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleRemoveTeacher}
-              disabled={removing}
-            >
-              {removing ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
-                  <Clock size={16} />
-                </motion.div>
-              ) : (
-                <>
-                  <Trash2 size={16} className="mr-2" />
-                  Eliminar
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
     </div>
   );
 }

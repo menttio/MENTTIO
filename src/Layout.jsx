@@ -112,7 +112,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
     { name: 'Reservar Clase', icon: Calendar, page: 'BookClass' },
     { name: 'Mis Clases', icon: BookOpen, page: 'MyClasses' },
-    { name: 'Mis Profesores', icon: Users, page: 'StudentDashboard' },
+    { name: 'Mis Profesores', icon: Users, page: 'MyTeachers' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
     { name: 'Biblioteca', icon: Library, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
