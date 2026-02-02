@@ -99,8 +99,8 @@ export default function TeacherCard({
       )}
 
       {/* Price & Actions */}
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
           {priceDisplay && (
             <div className="flex items-center gap-1 text-[#404040]">
               <DollarSign size={18} className="text-[#41f2c0]" />
@@ -112,13 +112,13 @@ export default function TeacherCard({
         </div>
 
         {showActions && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full md:w-auto">
             {isAssigned ? (
               <Button
                 size="sm"
                 variant="outline"
                 onClick={() => onRemove?.(teacher)}
-                className="text-red-500 border-red-200 hover:bg-red-50"
+                className="text-red-500 border-red-200 hover:bg-red-50 flex-1 md:flex-initial"
               >
                 <Trash2 size={16} className="mr-1" />
                 Quitar
@@ -127,7 +127,7 @@ export default function TeacherCard({
               <Button
                 size="sm"
                 onClick={() => onAssign?.(teacher)}
-                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-1 md:flex-initial"
               >
                 <Plus size={16} className="mr-1" />
                 Añadir
