@@ -499,15 +499,15 @@ export default function TeacherCalendar() {
 
       {/* Full list below */}
       <div className="mt-8 booking-list-section">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
           <h2 className="text-xl font-semibold text-[#404040]">
             Clases del día seleccionado
           </h2>
-          <Tabs value={paymentFilter} onValueChange={setPaymentFilter}>
-            <TabsList className="bg-gray-100">
-              <TabsTrigger value="all">Todas</TabsTrigger>
-              <TabsTrigger value="unpaid">No Pagadas</TabsTrigger>
-              <TabsTrigger value="paid">Pagadas</TabsTrigger>
+          <Tabs value={paymentFilter} onValueChange={setPaymentFilter} className="w-full lg:w-auto">
+            <TabsList className="bg-gray-100 w-full lg:w-auto">
+              <TabsTrigger value="all" className="text-xs sm:text-sm flex-1 lg:flex-none">Todas</TabsTrigger>
+              <TabsTrigger value="unpaid" className="text-xs sm:text-sm flex-1 lg:flex-none whitespace-nowrap">No Pagadas</TabsTrigger>
+              <TabsTrigger value="paid" className="text-xs sm:text-sm flex-1 lg:flex-none">Pagadas</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
