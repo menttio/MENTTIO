@@ -305,7 +305,7 @@ export default function BookingCard({
         </div>
 
         {/* Date & Time */}
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mb-4">
           <div className="flex items-center gap-2 text-sm">
             <Calendar size={16} className="text-[#41f2c0]" />
             <span className="text-[#404040] font-medium capitalize">
@@ -360,18 +360,18 @@ export default function BookingCard({
         {booking.files && booking.files.length > 0 && (
           <div className="border-t border-gray-100 pt-4 mt-4">
             <h4 className="text-sm font-medium text-gray-500 mb-2">Archivos adjuntos</h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {booking.files.map((file, idx) => (
                 <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
                   <a
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors"
+                    className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
                   >
-                    <FileText size={14} className="text-[#41f2c0]" />
-                    <span className="truncate max-w-[150px]">{file.name}</span>
-                    <ExternalLink size={12} className="text-gray-400" />
+                    <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
+                    <span className="truncate">{file.name}</span>
+                    <ExternalLink size={12} className="text-gray-400 flex-shrink-0" />
                   </a>
                   {file.uploaded_by === userRole && (
                     <button

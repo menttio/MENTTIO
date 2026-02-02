@@ -244,7 +244,7 @@ export default function SearchTeachers() {
 
       {/* Filters Bar */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col gap-4">
           {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -256,9 +256,10 @@ export default function SearchTeachers() {
             />
           </div>
 
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {/* Subject Filter */}
           <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-            <SelectTrigger className="w-full lg:w-48">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Asignatura" />
             </SelectTrigger>
             <SelectContent>
@@ -273,7 +274,7 @@ export default function SearchTeachers() {
 
           {/* Level Filter */}
           <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-            <SelectTrigger className="w-full lg:w-40">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Nivel" />
             </SelectTrigger>
             <SelectContent>
@@ -286,7 +287,7 @@ export default function SearchTeachers() {
 
           {/* Price Filter */}
           <Select value={priceRange} onValueChange={setPriceRange}>
-            <SelectTrigger className="w-full lg:w-40">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Precio" />
             </SelectTrigger>
             <SelectContent>
@@ -299,7 +300,7 @@ export default function SearchTeachers() {
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full lg:w-40">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Ordenar por" />
             </SelectTrigger>
             <SelectContent>
@@ -309,6 +310,7 @@ export default function SearchTeachers() {
               <SelectItem value="price_high">Precio: mayor a menor</SelectItem>
             </SelectContent>
           </Select>
+          </div>
 
           {hasActiveFilters && (
             <Button
@@ -332,7 +334,7 @@ export default function SearchTeachers() {
 
       {/* Teachers Grid */}
       {filteredTeachers.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AnimatePresence>
             {filteredTeachers.map((teacher, idx) => (
               <motion.div

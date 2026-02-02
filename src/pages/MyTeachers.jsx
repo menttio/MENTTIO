@@ -123,7 +123,7 @@ export default function MyTeachers() {
 
       {/* Teachers Grid */}
       {filteredTeachers.length > 0 ? (
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredTeachers.map((teacher, idx) => {
             const assignedSubjects = student?.assigned_teachers
               ?.filter(at => at.teacher_id === teacher.id) || [];

@@ -306,17 +306,17 @@ export default function ClassRecordings() {
             >
               <Card className="hover:shadow-md transition-all">
                 <CardContent className="p-5">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
                         <BookOpen className="text-white" size={24} />
                       </div>
                       
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-[#404040] text-lg mb-1 truncate">
+                      <div className="flex-1 min-w-0 w-full">
+                        <h3 className="font-semibold text-[#404040] text-base md:text-lg mb-1 truncate">
                           {booking.subject_name}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-gray-500">
                           <span className="flex items-center gap-1">
                             <CalendarIcon size={14} />
                             {format(parseISO(booking.date), "d 'de' MMMM, yyyy", { locale: es })}
@@ -334,16 +334,16 @@ export default function ClassRecordings() {
 
                     {booking.recording_url ? (
                       <Button
-                        size="default"
+                        size="sm"
                         onClick={() => window.open(booking.recording_url, '_blank')}
-                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-shrink-0"
+                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-shrink-0 w-full md:w-auto"
                       >
-                        <Play size={18} className="mr-2" />
+                        <Play size={16} className="mr-2" />
                         Ver clase
-                        <ExternalLink size={14} className="ml-2" />
+                        <ExternalLink size={12} className="ml-2" />
                       </Button>
                     ) : (
-                      <Badge variant="secondary" className="text-gray-500 flex-shrink-0 py-2 px-4">
+                      <Badge variant="secondary" className="text-gray-500 flex-shrink-0 py-2 px-4 w-full md:w-auto text-center">
                         Sin grabación
                       </Badge>
                     )}
