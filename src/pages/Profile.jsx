@@ -4,7 +4,6 @@ import {
   User, 
   Mail, 
   Phone, 
-  Lock,
   Save,
   Loader2,
   CheckCircle,
@@ -42,10 +41,7 @@ export default function Profile() {
   
   const [formData, setFormData] = useState({
     full_name: '',
-    phone: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    phone: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -93,20 +89,6 @@ export default function Profile() {
 
     if (!formData.full_name.trim()) {
       newErrors.full_name = 'El nombre es obligatorio';
-    }
-
-    if (formData.newPassword) {
-      if (formData.newPassword.length < 6) {
-        newErrors.newPassword = 'La contraseña debe tener al menos 6 caracteres';
-      }
-      if (formData.newPassword !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Las contraseñas no coinciden';
-      }
-      // Only require current password if not OAuth user
-      const isOAuthUser = user?.email?.includes('google') || user?.email?.includes('oauth');
-      if (!formData.currentPassword && !isOAuthUser) {
-        newErrors.currentPassword = 'Introduce tu contraseña actual';
-      }
     }
 
     setErrors(newErrors);
@@ -174,37 +156,8 @@ export default function Profile() {
       // Update user full_name in auth
       await base44.auth.updateMe({ full_name: formData.full_name });
 
-      // Handle password change
-      if (formData.newPassword) {
-        try {
-          const passwordResponse = await base44.functions.invoke('changePassword', {
-            currentPassword: formData.currentPassword || '',
-            newPassword: formData.newPassword
-          });
-
-          if (!passwordResponse.data.success) {
-            alert(passwordResponse.data.error || 'Error al cambiar la contraseña');
-            setSaving(false);
-            return;
-          }
-        } catch (error) {
-          console.error('Error changing password:', error);
-          alert(error.response?.data?.error || 'Error al cambiar la contraseña');
-          setSaving(false);
-          return;
-        }
-      }
-
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-      
-      // Clear password fields
-      setFormData(prev => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      }));
 
       // Reload data
       await loadUserData();
@@ -365,78 +318,6 @@ export default function Profile() {
       <div className="mb-6">
         <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
       </div>
-
-      {/* Change Password */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Cambiar Contraseña</CardTitle>
-          <CardDescription>
-            {user?.email?.includes('google') || user?.email?.includes('oauth') 
-              ? 'Registrado con Google - establece una contraseña para poder iniciar sesión también con email'
-              : 'Deja en blanco si no quieres cambiarla'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Current Password - only show if not OAuth user */}
-          {!user?.email?.includes('google') && !user?.email?.includes('oauth') && (
-            <div>
-              <Label htmlFor="currentPassword">Contraseña actual</Label>
-              <div className="relative mt-1">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <Input
-                  id="currentPassword"
-                  type="password"
-                  value={formData.currentPassword}
-                  onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                  className="pl-10"
-                  placeholder="••••••••"
-                />
-              </div>
-              {errors.currentPassword && (
-                <p className="text-red-500 text-xs mt-1">{errors.currentPassword}</p>
-              )}
-            </div>
-          )}
-
-          {/* New Password */}
-          <div>
-            <Label htmlFor="newPassword">Nueva contraseña</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <Input
-                id="newPassword"
-                type="password"
-                value={formData.newPassword}
-                onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
-                className="pl-10"
-                placeholder="••••••••"
-              />
-            </div>
-            {errors.newPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.newPassword}</p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-            <Label htmlFor="confirmPassword">Confirmar nueva contraseña</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                className="pl-10"
-                placeholder="••••••••"
-              />
-            </div>
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Save Button */}
       <Button
