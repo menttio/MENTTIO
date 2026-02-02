@@ -24,6 +24,7 @@ import { format, parseISO, isAfter, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
+import MyTeacherCard from '../components/student/MyTeacherCard';
 import {
   Dialog,
   DialogContent,
@@ -269,7 +270,7 @@ export default function StudentDashboard() {
         </motion.div>
       </div>
 
-      {/* My Teachers */}
+      {/* My Teachers - Detailed View */}
       {teachers.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -278,7 +279,10 @@ export default function StudentDashboard() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-[#404040]">Mis Profesores</h2>
+            <div>
+              <h2 className="text-2xl font-bold text-[#404040]">Mis Profesores</h2>
+              <p className="text-gray-500 text-sm mt-1">Información detallada de tus profesores asignados</p>
+            </div>
             <Link 
               to={createPageUrl('SearchTeachers')}
               className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
@@ -287,9 +291,10 @@ export default function StudentDashboard() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             {teachers.map((teacher, idx) => {
-              const teacherSubjects = getTeacherSubjects(teacher.id);
+              const assignedSubjects = student?.assigned_teachers
+                ?.filter(at => at.teacher_id === teacher.id) || [];
               
               return (
                 <motion.div
@@ -298,60 +303,11 @@ export default function StudentDashboard() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + idx * 0.1 }}
                 >
-                  <Card className="hover:shadow-md transition-all">
-                    <CardContent className="p-5">
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
-                          {teacher.profile_photo ? (
-                            <img 
-                              src={teacher.profile_photo} 
-                              alt={teacher.full_name}
-                              className="w-full h-full object-cover rounded-xl"
-                            />
-                          ) : (
-                            <User className="text-white" size={24} />
-                          )}
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-[#404040] truncate">
-                            {teacher.full_name}
-                          </h3>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Star className="text-yellow-400 fill-yellow-400" size={12} />
-                            <span className="text-sm text-gray-500">
-                              {teacher.rating?.toFixed(1) || '5.0'}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Subjects */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {teacherSubjects.map((subject, idx) => (
-                          <Badge 
-                            key={idx}
-                            variant="secondary"
-                            className="bg-[#41f2c0]/10 text-[#404040] text-xs"
-                          >
-                            {subject}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex justify-end">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setRemovingTeacher(teacher)}
-                          className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <MyTeacherCard
+                    teacher={teacher}
+                    assignedSubjects={assignedSubjects}
+                    onRemove={setRemovingTeacher}
+                  />
                 </motion.div>
               );
             })}

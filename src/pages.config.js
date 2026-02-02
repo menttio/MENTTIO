@@ -68,17 +68,17 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import RenewSubscription from './pages/RenewSubscription';
 import SearchTeachers from './pages/SearchTeachers';
+import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
+import StudentSignup from './pages/StudentSignup';
+import StudentSignupComplete from './pages/StudentSignupComplete';
 import TeacherCalendar from './pages/TeacherCalendar';
 import TeacherClassHistory from './pages/TeacherClassHistory';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
+import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
-import TeacherSignup from './pages/TeacherSignup';
-import StudentSignupComplete from './pages/StudentSignupComplete';
-import SelectRole from './pages/SelectRole';
-import StudentSignup from './pages/StudentSignup';
 import __Layout from './Layout.jsx';
 
 
@@ -104,17 +104,17 @@ export const PAGES = {
     "Profile": Profile,
     "RenewSubscription": RenewSubscription,
     "SearchTeachers": SearchTeachers,
+    "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
+    "StudentSignup": StudentSignup,
+    "StudentSignupComplete": StudentSignupComplete,
     "TeacherCalendar": TeacherCalendar,
     "TeacherClassHistory": TeacherClassHistory,
     "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
+    "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
-    "TeacherSignup": TeacherSignup,
-    "StudentSignupComplete": StudentSignupComplete,
-    "SelectRole": SelectRole,
-    "StudentSignup": StudentSignup,
 }
 
 export const pagesConfig = {
