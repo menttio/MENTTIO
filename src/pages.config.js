@@ -66,7 +66,6 @@ import MyStudents from './pages/MyStudents';
 import MyTeachers from './pages/MyTeachers';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PrivacyPolicy from './pages/PrivacyPolicy';
-import Profile from './pages/Profile';
 import RenewSubscription from './pages/RenewSubscription';
 import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
@@ -80,6 +79,7 @@ import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
+import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
@@ -103,7 +103,6 @@ export const PAGES = {
     "MyTeachers": MyTeachers,
     "PaymentSuccess": PaymentSuccess,
     "PrivacyPolicy": PrivacyPolicy,
-    "Profile": Profile,
     "RenewSubscription": RenewSubscription,
     "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
@@ -117,6 +116,7 @@ export const PAGES = {
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
