@@ -446,7 +446,7 @@ export default function BookClass() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Reservar Clase</h1>
-        <p className="text-gray-500 mt-2">Selecciona asignatura, profesor y horario</p>
+        <p className="text-gray-500 mt-2 text-sm">Selecciona asignatura, profesor y horario</p>
       </div>
 
       {/* Progress Steps */}

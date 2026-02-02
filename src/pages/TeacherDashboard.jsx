@@ -110,7 +110,7 @@ export default function TeacherDashboard() {
         <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">
           ¡Hola, {teacher?.full_name?.split(' ')[0] || 'Profesor'}! 👋
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className="text-gray-500 mt-2 text-sm">
           Bienvenido de nuevo a tu panel de profesor
         </p>
       </motion.div>

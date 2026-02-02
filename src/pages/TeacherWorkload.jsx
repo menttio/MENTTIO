@@ -131,14 +131,14 @@ export default function TeacherWorkload() {
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-        <div>
+        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Estadísticas</h1>
-          <p className="text-gray-500 mt-2">Analiza tu desempeño y gestiona tu tiempo</p>
+          <p className="text-gray-500 mt-2 text-sm">Analiza tu desempeño y gestiona tu tiempo</p>
         </div>
-        
+
         <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -146,7 +146,7 @@ export default function TeacherWorkload() {
             <SelectItem value="month">Este mes</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+        </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 workload-stats">

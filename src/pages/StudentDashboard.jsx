@@ -112,7 +112,7 @@ export default function StudentDashboard() {
         <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">
           ¡Hola, {student?.full_name?.split(' ')[0] || 'Alumno'}! 👋
         </h1>
-        <p className="text-gray-500 mt-2">
+        <p className="text-gray-500 mt-2 text-sm">
           Bienvenido de nuevo a tu portal de clases
         </p>
       </motion.div>

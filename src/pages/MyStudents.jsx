@@ -125,11 +125,11 @@ export default function MyStudents() {
       )}
 
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
-          <p className="text-gray-500 mt-2">Información completa de tus alumnos</p>
-        </div>
+         {/* Header */}
+         <div className="mb-8">
+           <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
+           <p className="text-gray-500 mt-2 text-sm">Información completa de tus alumnos</p>
+         </div>
 
         {/* Search */}
         <div className="relative mb-6 students-search">

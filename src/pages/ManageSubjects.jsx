@@ -213,19 +213,21 @@ export default function ManageSubjects() {
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
+        <div className="mb-6">
+          <div className="mb-4">
             <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
-            <p className="text-gray-500 mt-2">Gestiona las materias que impartes y sus precios</p>
+            <p className="text-gray-500 mt-2 text-sm">Gestiona las materias que impartes y sus precios</p>
           </div>
-          <Button
-            onClick={handleAdd}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
-          >
-            <Plus size={18} className="mr-2" />
-            Añadir Asignatura
-          </Button>
-        </div>
+          <div className="w-full">
+            <Button
+              onClick={handleAdd}
+              className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
+            >
+              <Plus size={18} className="mr-2" />
+              Añadir Asignatura
+            </Button>
+          </div>
+          </div>
 
       {/* Subjects Grid */}
       {teacher?.subjects?.length > 0 ? (

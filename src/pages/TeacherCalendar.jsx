@@ -214,7 +214,7 @@ export default function TeacherCalendar() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Calendario</h1>
-          <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
+          <p className="text-gray-500 mt-2 text-sm">Visualiza todas tus clases, disponibilidades y excepciones</p>
         </div>
 
         {/* Legend */}
