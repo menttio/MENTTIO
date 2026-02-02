@@ -115,8 +115,8 @@ export default function ClassRecordings() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Biblioteca de Clases</h1>
-        <p className="text-gray-500 mt-2">
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Biblioteca de Clases</h1>
+        <p className="text-gray-500 mt-2 text-sm">
           Accede a las grabaciones de tus clases completadas
         </p>
       </div>

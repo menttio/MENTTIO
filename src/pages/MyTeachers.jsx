@@ -91,8 +91,8 @@ export default function MyTeachers() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-[#404040]">Mis Profesores</h1>
-        <p className="text-gray-500 mt-2">Información detallada de tus profesores asignados</p>
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Profesores</h1>
+        <p className="text-gray-500 mt-2 text-sm">Información detallada de tus profesores asignados</p>
       </motion.div>
 
       {/* Search and Actions */}

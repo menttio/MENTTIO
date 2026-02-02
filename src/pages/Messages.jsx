@@ -194,10 +194,10 @@ export default function Messages() {
   return (
     <div className="max-w-7xl mx-auto h-[calc(100vh-8rem)]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-[#404040]">Mensajes</h1>
-          <p className="text-gray-500 mt-2">
+      <div className="mb-6">
+        <div className="mb-4">
+          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mensajes</h1>
+          <p className="text-gray-500 mt-2 text-sm">
             {userRole === 'student' 
               ? 'Chatea con tus profesores' 
               : 'Chatea con tus alumnos'}
@@ -206,7 +206,7 @@ export default function Messages() {
         {availableContacts.length > 0 && (
           <Button
             onClick={() => setShowNewChat(true)}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
           >
             <Plus size={18} className="mr-2" />
             Nueva conversación
