@@ -149,12 +149,16 @@ export default function TeacherSignup() {
   const handleFinalize = async () => {
     setSaving(true);
     try {
+      console.log('Iniciando registro de profesor:', formData.email_personal);
+      
       // Register user with email and password
       await base44.auth.register({
         email: formData.email_personal,
         password: formData.password,
         full_name: `${formData.nombre} ${formData.apellidos}`
       });
+
+      console.log('Usuario registrado exitosamente');
 
       // Create teacher profile
       const expirationDate = new Date();
@@ -175,6 +179,8 @@ export default function TeacherSignup() {
         trial_used: true,
         tour_completed: false
       });
+
+      console.log('Perfil de profesor creado exitosamente');
 
       // Success - redirect to dashboard
       window.location.href = createPageUrl('TeacherDashboard');

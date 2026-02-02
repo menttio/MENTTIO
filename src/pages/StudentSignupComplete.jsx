@@ -20,12 +20,16 @@ export default function StudentSignupComplete() {
 
         const data = JSON.parse(signupData);
         
+        console.log('Iniciando registro de estudiante:', data.email);
+        
         // Register with email/password using Base44 SDK
         await base44.auth.register({
           email: data.email,
           password: data.password,
           full_name: `${data.first_name} ${data.last_name}`
         });
+        
+        console.log('Usuario registrado exitosamente');
         
         // Create student profile
         await base44.entities.Student.create({
@@ -35,11 +39,13 @@ export default function StudentSignupComplete() {
           assigned_teachers: []
         });
 
+        console.log('Perfil de estudiante creado');
+
         sessionStorage.removeItem('student_signup_data');
         window.location.href = createPageUrl('StudentDashboard');
       } catch (error) {
-        console.error('Error completing signup:', error);
-        setError(error.message);
+        console.error('Error completo al registrar:', error);
+        setError(`Error: ${error.message || 'No se pudo completar el registro'}`);
       }
     };
 
