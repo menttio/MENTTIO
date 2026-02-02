@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Video, Calendar, Users, User, Settings, LogOut, LayoutDashboard } from 'lucide-react';
+import { ArrowRight, Sparkles, Video, Calendar, Users, User, Settings, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '../../utils';
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ export default function Hero() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -80,23 +81,25 @@ export default function Hero() {
             </div>
             <h1 className="text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
           </div>
-          <div className="flex items-center gap-6">
-            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+          
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-6">
+            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               Características
             </button>
-            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               ¿Cómo funciona?
             </button>
-            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               Precios
             </button>
-            <button onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <button onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               Testimonios
             </button>
-            <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               FAQ
             </button>
-            <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors hidden md:block">
+            <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors">
               Sobre nosotros
             </a>
             <a href="/Contact">
@@ -155,7 +158,138 @@ export default function Hero() {
               )
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-3">
+            {!loading && (
+              user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="w-10 h-10 rounded-full bg-[#404040] text-white hover:bg-[#303030] shadow-lg flex items-center justify-center font-semibold transition-all overflow-hidden">
+                      {profile?.profile_photo ? (
+                        <img 
+                          src={profile.profile_photo} 
+                          alt={user.full_name} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span>{user.full_name?.charAt(0) || 'U'}</span>
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium">{user.full_name || 'Usuario'}</p>
+                        <p className="text-xs text-gray-500">{user.email}</p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={goToDashboard}>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Mi Dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => window.location.href = createPageUrl('Profile')}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Mi Perfil</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Cerrar Sesión</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  onClick={() => window.location.href = createPageUrl('SelectRole')}
+                  className="bg-[#404040] hover:bg-[#303030] text-white shadow-lg text-sm px-3 py-2"
+                >
+                  Iniciar Sesión
+                </Button>
+              )
+            )}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            >
+              {mobileMenuOpen ? <X className="text-white" size={24} /> : <Menu className="text-white" size={24} />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="py-4 space-y-2">
+                <button 
+                  onClick={() => {
+                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  Características
+                </button>
+                <button 
+                  onClick={() => {
+                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  ¿Cómo funciona?
+                </button>
+                <button 
+                  onClick={() => {
+                    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  Precios
+                </button>
+                <button 
+                  onClick={() => {
+                    document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  Testimonios
+                </button>
+                <button 
+                  onClick={() => {
+                    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+                    setMobileMenuOpen(false);
+                  }} 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  FAQ
+                </button>
+                <a 
+                  href="/AboutUs" 
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  Sobre nosotros
+                </a>
+                <a 
+                  href="/Contact"
+                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                >
+                  Contáctanos
+                </a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Content */}
