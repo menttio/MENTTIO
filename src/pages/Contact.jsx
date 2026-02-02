@@ -66,10 +66,10 @@ export default function Contact() {
             <div className="w-20 h-20 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-4">
               <Mail className="text-[#41f2c0]" size={40} />
             </div>
-            <CardTitle className="text-3xl font-bold text-[#404040]">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-[#404040]">
               Contáctanos
             </CardTitle>
-            <p className="text-gray-500 mt-2">
+            <p className="text-sm md:text-base text-gray-500 mt-2">
               ¿Tienes alguna pregunta? Estamos aquí para ayudarte
             </p>
           </CardHeader>
@@ -146,7 +146,7 @@ export default function Contact() {
                 <Button
                   type="submit"
                   disabled={!isFormValid || sending}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg rounded-xl"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
                 >
                   {sending ? (
                     <Loader2 className="animate-spin" />

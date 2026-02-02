@@ -671,7 +671,7 @@ export default function BookClass() {
               >
                 <Button
                   onClick={() => setStep(4)}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6"
                 >
                   Continuar
                   <ChevronRight size={18} className="ml-2" />
@@ -749,7 +749,7 @@ export default function BookClass() {
                 <Button
                   onClick={handleConfirmBooking}
                   disabled={saving}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
                 >
                   {saving ? (
                     <Loader2 className="animate-spin" />

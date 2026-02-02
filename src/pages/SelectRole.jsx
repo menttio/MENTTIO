@@ -64,22 +64,22 @@ export default function SelectRole() {
           >
             <ArrowLeft size={20} />
           </button>
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
             ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
           </h1>
-          <p className="text-gray-500 mb-12">¿Cómo quieres usar la plataforma?</p>
+          <p className="text-sm md:text-base text-gray-500 mb-8 md:mb-12">¿Cómo quieres usar la plataforma?</p>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student Card */}
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
             >
-              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
-                <GraduationCap className="text-[#41f2c0]" size={40} />
+              <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
+                <GraduationCap className="text-[#41f2c0]" size={32} />
               </div>
-              <h2 className="text-2xl font-semibold text-[#404040] mb-2">Soy Alumno</h2>
-              <p className="text-gray-500 mb-6">Quiero reservar clases particulares con profesores</p>
+              <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Alumno</h2>
+              <p className="text-sm md:text-base text-gray-500 mb-6">Quiero reservar clases particulares con profesores</p>
 
               <div className="space-y-3">
                 <Button
@@ -103,12 +103,12 @@ export default function SelectRole() {
               whileHover={{ scale: 1.02 }}
               className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
             >
-              <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
-                <BookOpen className="text-[#41f2c0]" size={40} />
+              <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
+                <BookOpen className="text-[#41f2c0]" size={32} />
               </div>
-              <h2 className="text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
-              <p className="text-gray-500 mb-2">Quiero ofrecer clases particulares a alumnos</p>
-              <p className="text-xs text-[#41f2c0] mb-6 font-medium">
+              <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
+              <p className="text-sm md:text-base text-gray-500 mb-2">Quiero ofrecer clases particulares a alumnos</p>
+              <p className="text-xs text-[#41f2c0] mb-4 md:mb-6 font-medium">
                 Requiere suscripción mensual
               </p>
 

@@ -323,7 +323,7 @@ export default function Profile() {
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg mb-4"
+        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg mb-4"
       >
         {saving ? (
           <Loader2 className="animate-spin" size={20} />

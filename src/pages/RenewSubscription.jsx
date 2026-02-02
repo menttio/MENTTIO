@@ -70,10 +70,10 @@ export default function RenewSubscription() {
             <div className="w-20 h-20 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="text-orange-500" size={40} />
             </div>
-            <CardTitle className="text-3xl font-bold text-[#404040]">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-[#404040]">
               Suscripción Expirada
             </CardTitle>
-            <p className="text-gray-500 mt-2">
+            <p className="text-sm md:text-base text-gray-500 mt-2">
               Tu suscripción ha caducado. Renuévala para seguir ofreciendo tus clases.
             </p>
           </CardHeader>

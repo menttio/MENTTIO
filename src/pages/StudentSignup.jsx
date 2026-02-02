@@ -151,7 +151,7 @@ export default function StudentSignup() {
           <Button
             type="submit"
             disabled={!formData.first_name || !formData.last_name || !formData.phone || phoneError || loading}
-            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg rounded-xl"
+            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
           >
             {loading ? (
               <Loader2 className="animate-spin" />
