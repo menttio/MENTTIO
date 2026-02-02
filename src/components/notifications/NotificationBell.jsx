@@ -35,10 +35,7 @@ export default function NotificationBell({ userEmail }) {
       );
       
       setNotifications(sorted.slice(0, 10)); // Show last 10
-      
-      // Count ALL unread notifications, not just the displayed ones
-      const totalUnread = sorted.filter(n => !n.is_read).length;
-      setUnreadCount(totalUnread);
+      setUnreadCount(sorted.filter(n => !n.is_read).length);
     } catch (error) {
       console.error(error);
     }
@@ -54,29 +51,16 @@ export default function NotificationBell({ userEmail }) {
   };
 
   const handleMarkAllAsRead = async () => {
-    // Immediately hide the badge
-    setUnreadCount(0);
-    
     try {
-      // Get ALL unread notifications
-      const allUnreadNotifications = await base44.entities.Notification.filter({ 
-        user_email: userEmail,
-        is_read: false
-      });
-      
-      if (allUnreadNotifications.length > 0) {
-        await Promise.all(
-          allUnreadNotifications.map(n => 
-            base44.entities.Notification.update(n.id, { is_read: true })
-          )
-        );
-      }
-      
+      const unreadNotifications = notifications.filter(n => !n.is_read);
+      await Promise.all(
+        unreadNotifications.map(n => 
+          base44.entities.Notification.update(n.id, { is_read: true })
+        )
+      );
       await loadNotifications();
     } catch (error) {
       console.error(error);
-      // Reload to get correct count if error
-      await loadNotifications();
     }
   };
 
@@ -94,11 +78,7 @@ export default function NotificationBell({ userEmail }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent 
-        className="w-[90vw] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl !left-[5vw] sm:!left-auto" 
-        align="end"
-        sideOffset={8}
-      >
+      <PopoverContent className="w-96 p-0" align="end">
         <NotificationList
           notifications={notifications}
           onMarkAsRead={handleMarkAsRead}
