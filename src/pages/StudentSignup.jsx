@@ -72,19 +72,26 @@ export default function StudentSignup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f2f2f2] to-white">
+      {/* Mobile Back Button - Fixed Position */}
+      <button
+        onClick={() => navigate(createPageUrl('SelectRole'))}
+        className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+      >
+        <ArrowLeft size={20} className="text-[#404040]" />
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg"
       >
-        <Button
-          variant="ghost"
+        {/* Desktop Back Button */}
+        <button
           onClick={() => navigate(createPageUrl('SelectRole'))}
-          className="mb-6 text-gray-500 hover:text-[#404040]"
+          className="mb-6 p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex"
         >
-          <ArrowLeft size={18} className="mr-2" />
-          Volver
-        </Button>
+          <ArrowLeft size={20} />
+        </button>
 
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
           <GraduationCap className="text-[#41f2c0]" size={32} />
