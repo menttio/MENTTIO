@@ -99,8 +99,8 @@ export default function Blog() {
       </div>
 
       {/* Articles Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article, index) => (
             <motion.div
               key={article.id}
@@ -156,19 +156,19 @@ export default function Blog() {
       {/* Newsletter Section */}
       <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
             Suscríbete a nuestro newsletter
           </h2>
-          <p className="text-white/90 mb-8">
+          <p className="text-sm md:text-base text-white/90 mb-8">
             Recibe los mejores consejos y novedades directamente en tu correo
           </p>
-          <div className="flex gap-4 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="tu@email.com"
               className="flex-1 px-4 py-3 rounded-xl border-0 focus:ring-2 focus:ring-white"
             />
-            <Button className="bg-[#404040] hover:bg-[#303030] text-white px-8 rounded-xl">
+            <Button className="bg-[#404040] hover:bg-[#303030] text-white px-8 rounded-xl w-full sm:w-auto">
               Suscribirse
             </Button>
           </div>

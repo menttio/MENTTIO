@@ -19,18 +19,18 @@ export default function Footer() {
           <p className="text-xl text-white/90 mb-8">
             Únete a miles de profesores y alumnos que ya usan Menπio
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <Button
               onClick={handleGetStarted}
               size="lg"
-              className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-lg rounded-xl shadow-xl font-semibold"
+              className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
             >
               Comenzar gratis ahora
             </Button>
             <Button
               onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
               size="lg"
-              className="bg-[#404040] text-white hover:bg-[#303030] px-8 py-6 text-lg rounded-xl shadow-xl font-semibold"
+              className="bg-[#404040] text-white hover:bg-[#303030] px-8 py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
             >
               Ver precios
             </Button>

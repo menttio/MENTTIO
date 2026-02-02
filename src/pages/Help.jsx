@@ -124,7 +124,7 @@ export default function Help() {
                 Si tienes alguna pregunta o problema que no hemos cubierto, no dudes en contactarnos.
               </p>
               <div className="flex gap-3">
-                <Button variant="outline">
+                <Button variant="outline" className="w-full sm:w-auto text-sm">
                   📧 soporte@menpio.com
                 </Button>
               </div>

@@ -79,7 +79,7 @@ export default function Pricing() {
 
             <Button 
               onClick={handleGetStartedStudent}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 text-lg rounded-xl"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
             >
               Empezar gratis
             </Button>
@@ -139,7 +139,7 @@ export default function Pricing() {
 
             <Button 
               onClick={handleGetStartedTeacher}
-              className="w-full bg-white hover:bg-gray-100 text-[#41f2c0] py-6 text-lg rounded-xl font-semibold shadow-xl"
+              className="w-full bg-white hover:bg-gray-100 text-[#41f2c0] py-5 md:py-6 text-base md:text-lg rounded-xl font-semibold shadow-xl"
             >
               Comenzar ahora
             </Button>

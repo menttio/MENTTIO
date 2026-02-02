@@ -73,7 +73,7 @@ export default function Hero() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-6 py-4">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-4 md:px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Mobile Menu Button - Left Side */}
@@ -84,10 +84,10 @@ export default function Hero() {
               {mobileMenuOpen ? <X className="text-white" size={24} /> : <Menu className="text-white" size={24} />}
             </button>
             
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-2xl font-bold text-[#41f2c0]">π</span>
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-xl md:text-2xl font-bold text-[#41f2c0]">π</span>
             </div>
-            <h1 className="text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
           </div>
           
           {/* Desktop Menu */}
@@ -328,19 +328,19 @@ export default function Hero() {
               Todo automatizado en una sola plataforma.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-12">
               <Button 
                 onClick={handleGetStarted}
                 size="lg" 
-                className="bg-[#404040] hover:bg-[#303030] text-white px-8 py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all"
+                className="bg-[#404040] hover:bg-[#303030] text-white px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
               >
                 Comenzar gratis
-                <ArrowRight className="ml-2" size={20} />
+                <ArrowRight className="ml-2" size={18} />
               </Button>
               <Button 
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 size="lg" 
-                className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-lg rounded-xl shadow-xl font-semibold"
+                className="bg-white text-[#41f2c0] hover:bg-gray-100 px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
               >
                 Ver precios
               </Button>

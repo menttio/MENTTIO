@@ -78,11 +78,11 @@ export default function RenewSubscription() {
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center">
-              <p className="text-sm text-gray-500 mb-2">Renovación mensual</p>
+            <div className="bg-[#41f2c0]/10 rounded-2xl p-4 md:p-6 text-center">
+              <p className="text-xs md:text-sm text-gray-500 mb-2">Renovación mensual</p>
               <div className="flex items-baseline justify-center gap-2 mb-4">
-                <span className="text-5xl font-bold text-[#404040]">29€</span>
-                <span className="text-gray-500">/mes</span>
+                <span className="text-3xl md:text-5xl font-bold text-[#404040]">29€</span>
+                <span className="text-sm md:text-base text-gray-500">/mes</span>
               </div>
               <ul className="text-left space-y-2 max-w-sm mx-auto mb-6">
                 <li className="flex items-start gap-2 text-sm">
@@ -118,7 +118,7 @@ export default function RenewSubscription() {
               <Button
                 onClick={handleRenew}
                 disabled={renewing}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-lg py-6"
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
               >
                 {renewing ? <Loader2 className="animate-spin" /> : 'Renovar Suscripción'}
               </Button>

@@ -19,16 +19,16 @@ export default function AboutUs() {
       </div>
 
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl lg:text-6xl font-bold text-[#404040] mb-6">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#404040] mb-6">
             Sobre <span className="text-[#41f2c0]">Men<span className="text-[#404040]">π</span>io</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Estamos transformando la forma en que profesores y alumnos se conectan, 
             haciendo que la educación personalizada sea accesible para todos.
           </p>
@@ -56,7 +56,7 @@ export default function AboutUs() {
         </motion.div>
 
         {/* Values */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -110,10 +110,10 @@ export default function AboutUs() {
           transition={{ delay: 0.5 }}
           className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-2xl p-12"
         >
-          <h2 className="text-3xl font-bold text-white text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
             Menπio en números
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-5xl font-bold text-white mb-2">500+</div>
               <div className="text-white/80 text-lg">Profesores activos</div>
@@ -142,14 +142,14 @@ export default function AboutUs() {
           <p className="text-gray-600 mb-8 text-lg">
             Únete a nuestra comunidad y descubre una nueva forma de enseñar y aprender
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <a href="/SelectRole?role=student">
-              <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-6 text-lg rounded-xl">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+            <a href="/SelectRole?role=student" className="w-full sm:w-auto">
+              <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-6 text-base md:text-lg rounded-xl w-full">
                 Soy Alumno
               </Button>
             </a>
-            <a href="/TeacherSignup">
-              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white px-8 py-6 text-lg rounded-xl">
+            <a href="/TeacherSignup" className="w-full sm:w-auto">
+              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white px-8 py-6 text-base md:text-lg rounded-xl w-full">
                 Soy Profesor
               </Button>
             </a>
