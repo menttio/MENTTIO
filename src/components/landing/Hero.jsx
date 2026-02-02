@@ -76,6 +76,14 @@ export default function Hero() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {/* Mobile Menu Button - Left Side */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+            >
+              {mobileMenuOpen ? <X className="text-white" size={24} /> : <Menu className="text-white" size={24} />}
+            </button>
+            
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-2xl font-bold text-[#41f2c0]">π</span>
             </div>
@@ -159,7 +167,7 @@ export default function Hero() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile User Section */}
           <div className="md:hidden flex items-center gap-3">
             {!loading && (
               user ? (
@@ -209,12 +217,6 @@ export default function Hero() {
                 </Button>
               )
             )}
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              {mobileMenuOpen ? <X className="text-white" size={24} /> : <Menu className="text-white" size={24} />}
-            </button>
           </div>
         </div>
 
@@ -228,61 +230,71 @@ export default function Hero() {
               transition={{ duration: 0.3 }}
               className="md:hidden overflow-hidden"
             >
-              <div className="py-4 space-y-2">
+              <div className="py-4 space-y-2 bg-white/95 backdrop-blur-md rounded-lg mt-4 shadow-xl">
                 <button 
                   onClick={() => {
-                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
                   }} 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Características
                 </button>
                 <button 
                   onClick={() => {
-                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
                   }} 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   ¿Cómo funciona?
                 </button>
                 <button 
                   onClick={() => {
-                    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
                   }} 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Precios
                 </button>
                 <button 
                   onClick={() => {
-                    document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
                   }} 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Testimonios
                 </button>
                 <button 
                   onClick={() => {
-                    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
                   }} 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   FAQ
                 </button>
                 <a 
                   href="/AboutUs" 
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Sobre nosotros
                 </a>
                 <a 
                   href="/Contact"
-                  className="block w-full text-left px-4 py-2 text-white hover:bg-white/10 rounded-lg font-medium transition-colors"
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Contáctanos
                 </a>
