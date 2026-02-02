@@ -54,8 +54,11 @@ export default function NotificationBell({ userEmail }) {
   };
 
   const handleMarkAllAsRead = async () => {
+    // Immediately hide the badge
+    setUnreadCount(0);
+    
     try {
-      // Get ALL unread notifications, not just the visible ones
+      // Get ALL unread notifications
       const allUnreadNotifications = await base44.entities.Notification.filter({ 
         user_email: userEmail,
         is_read: false
@@ -69,11 +72,11 @@ export default function NotificationBell({ userEmail }) {
         );
       }
       
-      // Force update the state immediately
-      setUnreadCount(0);
       await loadNotifications();
     } catch (error) {
       console.error(error);
+      // Reload to get correct count if error
+      await loadNotifications();
     }
   };
 
@@ -92,8 +95,8 @@ export default function NotificationBell({ userEmail }) {
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="w-[calc(100vw-2rem)] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl mx-auto" 
-        align="center"
+        className="w-[90vw] sm:w-96 p-0 bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 shadow-2xl !left-[5vw] sm:!left-auto" 
+        align="end"
         sideOffset={8}
       >
         <NotificationList
