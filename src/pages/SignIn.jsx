@@ -20,37 +20,9 @@ export default function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     
-    if (!formData.email || !formData.password) {
-      setError('Por favor, completa todos los campos');
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      await base44.auth.login({
-        email: formData.email,
-        password: formData.password
-      });
-
-      // Verificar el rol después del login exitoso
-      const user = await base44.auth.me();
-      const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
-      const students = await base44.entities.Student.filter({ user_email: user.email });
-      
-      if (teachers.length > 0) {
-        window.location.href = createPageUrl('TeacherDashboard');
-      } else if (students.length > 0) {
-        window.location.href = createPageUrl('StudentDashboard');
-      } else {
-        window.location.href = createPageUrl('SelectRole');
-      }
-    } catch (error) {
-      console.error('Error completo:', error);
-      setError('Email o contraseña incorrectos');
-      setLoading(false);
-    }
+    // Redirect to Base44's built-in login page
+    base44.auth.redirectToLogin(window.location.origin + createPageUrl('AuthRedirect'));
   };
 
   return (
