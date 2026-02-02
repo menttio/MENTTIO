@@ -99,7 +99,7 @@ export default function NotificationBell({ userEmail }) {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[calc(100vw-2rem)] sm:w-96 p-0" align="end" sideOffset={5} alignOffset={8}>
+      <PopoverContent className="w-[calc(100vw-2rem)] sm:w-96 p-0" align="end" sideOffset={5} alignOffset={35}>
         <NotificationList
           notifications={notifications}
           onMarkAsRead={handleMarkAsRead}
