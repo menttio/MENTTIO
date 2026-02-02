@@ -7,7 +7,8 @@ import {
   Clock, 
   X,
   CheckCheck,
-  AlertCircle
+  AlertCircle,
+  Bell
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
