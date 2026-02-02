@@ -43,16 +43,25 @@ export default function SelectRole() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      {/* Mobile Back Button - Fixed Position */}
+      <button
+        onClick={() => navigate(createPageUrl('Home'))}
+        className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg bg-white shadow-md hover:bg-gray-50 transition-colors"
+      >
+        <ArrowLeft size={20} className="text-[#404040]" />
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl"
       >
         <div className="text-center">
+          {/* Desktop Back Button */}
           <Button
             variant="ghost"
             onClick={() => navigate(createPageUrl('Home'))}
-            className="mb-6 text-gray-500 hover:text-[#404040]"
+            className="mb-6 text-gray-500 hover:text-[#404040] hidden lg:flex mx-auto"
           >
             <ArrowLeft size={18} className="mr-2" />
             Volver
