@@ -15,8 +15,6 @@ export default function StudentSignup() {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    email: '',
-    password: '',
     phone: ''
   });
 
@@ -43,35 +41,10 @@ export default function StudentSignup() {
     }
   };
 
-  const [emailError, setEmailError] = useState('');
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email.length === 0) {
-      setEmailError('');
-      return true;
-    }
-    if (!emailRegex.test(email)) {
-      setEmailError('Introduce un email válido');
-      return false;
-    }
-    setEmailError('');
-    return true;
-  };
-
-  const handleEmailChange = (value) => {
-    setFormData({ ...formData, email: value });
-    if (value) {
-      validateEmail(value);
-    } else {
-      setEmailError('');
-    }
-  };
-
   const handleSubmit = async (e) => {
     e?.preventDefault();
     
-    if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
+    if (!formData.first_name || !formData.last_name) {
       alert('Por favor, completa todos los campos obligatorios');
       return;
     }
@@ -84,16 +57,12 @@ export default function StudentSignup() {
     if (formData.phone && !validatePhone(formData.phone)) {
       return;
     }
-
-    if (formData.email && !validateEmail(formData.email)) {
-      return;
-    }
     
     setLoading(true);
     try {
-      // Register and complete student profile directly
+      // First authenticate with Google
       sessionStorage.setItem('student_signup_data', JSON.stringify(formData));
-      navigate(createPageUrl('StudentSignupComplete'));
+      base44.auth.redirectToLogin(createPageUrl('StudentSignupComplete'));
     } catch (error) {
       console.error('Error:', error);
       alert(`Error: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
@@ -157,37 +126,6 @@ export default function StudentSignup() {
           </div>
 
           <div>
-            <Label htmlFor="email">
-              Email <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleEmailChange(e.target.value)}
-              placeholder="tu@email.com"
-              className={`mt-2 ${emailError ? 'border-red-500' : ''}`}
-            />
-            {emailError && (
-              <p className="text-red-500 text-sm mt-1">{emailError}</p>
-            )}
-          </div>
-
-          <div>
-            <Label htmlFor="password">
-              Contraseña <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              placeholder="Mínimo 6 caracteres"
-              className="mt-2"
-            />
-          </div>
-
-          <div>
             <Label htmlFor="phone">
               Teléfono de contacto <span className="text-red-500">*</span>
             </Label>
@@ -205,14 +143,14 @@ export default function StudentSignup() {
 
           <Button
             type="submit"
-            disabled={!formData.first_name || !formData.last_name || !formData.email || !formData.password || !formData.phone || phoneError || emailError || loading}
+            disabled={!formData.first_name || !formData.last_name || !formData.phone || phoneError || loading}
             className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg rounded-xl"
           >
             {loading ? (
               <Loader2 className="animate-spin" />
             ) : (
               <>
-                Crear Cuenta <ArrowRight className="ml-2" />
+                Continuar con Google <ArrowRight className="ml-2" />
               </>
             )}
           </Button>

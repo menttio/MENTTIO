@@ -33,7 +33,6 @@ export default function TeacherSignup() {
     apellidos: '',
     phone: '',
     email_personal: '',
-    password: '',
     education: '',
     experience_years: 0
   });
@@ -111,15 +110,9 @@ export default function TeacherSignup() {
     }
 
     if (!formData.email_personal.trim()) {
-      newErrors.email_personal = 'El email es obligatorio';
+      newErrors.email_personal = 'El email personal es obligatorio';
     } else if (!validateEmail(formData.email_personal)) {
       newErrors.email_personal = 'Introduce un email válido';
-    }
-
-    if (!formData.password.trim()) {
-      newErrors.password = 'La contraseña es obligatoria';
-    } else if (formData.password.trim().length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
     }
     
     if (!formData.phone.trim()) {
@@ -142,48 +135,39 @@ export default function TeacherSignup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.password && formData.phone && formData.education && formData.experience_years >= 0;
+  const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education && formData.experience_years >= 0;
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
     setSaving(true);
     try {
-      console.log('Iniciando registro de profesor:', formData.email_personal);
-      
-      // Register user with email and password
-      await base44.auth.register({
-        email: formData.email_personal,
-        password: formData.password,
-        full_name: `${formData.nombre} ${formData.apellidos}`
-      });
-
-      console.log('Usuario registrado exitosamente');
-
-      // Create teacher profile
-      const expirationDate = new Date();
-      expirationDate.setMonth(expirationDate.getMonth() + 1);
-
-      await base44.entities.Teacher.create({
-        user_email: formData.email_personal,
-        full_name: `${formData.nombre} ${formData.apellidos}`,
+      // Registrar profesor (crea usuario corporativo + registro en DB)
+      const response = await base44.functions.invoke('registerTeacher', {
+        nombre: formData.nombre,
+        apellidos: formData.apellidos,
+        email_personal: formData.email_personal,
         phone: formData.phone,
         education: formData.education,
         experience_years: formData.experience_years,
-        bio: '',
-        subjects: teacherSubjects,
-        rating: 0,
-        total_classes: 0,
-        subscription_active: true,
-        subscription_expires: expirationDate.toISOString().split('T')[0],
-        trial_used: true,
-        tour_completed: false
+        subjects: teacherSubjects
       });
 
-      console.log('Perfil de profesor creado exitosamente');
+      console.log('Respuesta completa:', response);
 
-      // Success - redirect to dashboard
-      window.location.href = createPageUrl('TeacherDashboard');
+      if (!response.data || response.data.error) {
+        throw new Error(response.data?.error || 'Error al crear la cuenta');
+      }
+
+      const { email, password } = response.data;
+
+      if (!email || !password) {
+        throw new Error('No se recibieron las credenciales corporativas');
+      }
+
+      // Guardar datos corporativos para mostrar
+      setCorporateAccount({ email, password });
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error completo:', error);
       alert(`Error al crear la cuenta: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
@@ -199,7 +183,84 @@ export default function TeacherSignup() {
     );
   }
 
+  if (showSuccess && corporateAccount) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-2xl"
+        >
+          <Card className="shadow-xl">
+            <CardContent className="p-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <Check className="text-green-600" size={40} />
+              </div>
+              
+              <h2 className="text-3xl font-bold text-[#404040] mb-2">
+                ¡Cuenta Creada con Éxito!
+              </h2>
+              
+              <p className="text-gray-600 mb-8">
+                Tu cuenta corporativa ha sido creada correctamente
+              </p>
 
+              <div className="bg-[#41f2c0]/10 rounded-xl p-6 mb-6 text-left">
+                <h3 className="font-semibold text-[#404040] mb-4">Datos de Acceso Corporativo:</h3>
+                
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm text-gray-500">Correo Corporativo:</label>
+                    <p className="text-lg font-mono font-semibold text-[#404040] break-all">
+                      {corporateAccount.email}
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm text-gray-500">Contraseña Temporal:</label>
+                    <p className="text-lg font-mono font-semibold text-[#404040]">
+                      {corporateAccount.password}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                <p className="text-sm text-yellow-800 mb-2">
+                  <strong>⚠️ Importante:</strong> Revisa tu correo corporativo para completar el registro.
+                </p>
+                <p className="text-sm text-yellow-800 mb-2">
+                  Recibirás un email de invitación de Base44 en <strong>{corporateAccount.email}</strong>. Haz clic en el enlace y establece tu contraseña para acceder a Menπio.
+                </p>
+                <p className="text-sm text-yellow-800">
+                  Puedes cambiar la contraseña de tu cuenta de Google cuando quieras, y te recomendamos usar la misma en Menπio por comodidad.
+                </p>
+              </div>
+
+              <div className="bg-[#41f2c0]/10 border border-[#41f2c0] rounded-xl p-4 mb-6">
+                <p className="text-sm text-[#404040] font-medium mb-2">
+                  📌 Próximos pasos:
+                </p>
+                <ol className="text-sm text-gray-700 space-y-1 ml-4 list-decimal">
+                  <li>Inicia sesión en Google con tu cuenta corporativa</li>
+                  <li>Accede a Menπio usando "Iniciar sesión con Google"</li>
+                  <li>Conecta tu Google Calendar para gestionar tus clases</li>
+                </ol>
+              </div>
+
+              <Button
+                onClick={() => window.location.href = createPageUrl('Home')}
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
+              >
+                Ir a Iniciar Sesión
+                <ArrowRight size={18} className="ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (saving) {
     return (
@@ -315,7 +376,7 @@ export default function TeacherSignup() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#404040] mb-2">
-                      Email *
+                      Email Personal *
                     </label>
                     <Input
                       type="email"
@@ -324,31 +385,13 @@ export default function TeacherSignup() {
                         setFormData({ ...formData, email_personal: e.target.value });
                         if (errors.email_personal) setErrors({ ...errors, email_personal: undefined });
                       }}
-                      placeholder="tu@email.com"
+                      placeholder="tu.email@gmail.com"
                       className={errors.email_personal ? 'border-red-500' : ''}
                     />
                     {errors.email_personal && (
                       <p className="text-red-500 text-xs mt-1">{errors.email_personal}</p>
                     )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-[#404040] mb-2">
-                      Contraseña *
-                    </label>
-                    <Input
-                      type="password"
-                      value={formData.password}
-                      onChange={(e) => {
-                        setFormData({ ...formData, password: e.target.value });
-                        if (errors.password) setErrors({ ...errors, password: undefined });
-                      }}
-                      placeholder="Mínimo 6 caracteres"
-                      className={errors.password ? 'border-red-500' : ''}
-                    />
-                    {errors.password && (
-                      <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-                    )}
+                    <p className="text-gray-400 text-xs mt-1">Para notificaciones y recuperación de cuenta</p>
                   </div>
 
                   <div>

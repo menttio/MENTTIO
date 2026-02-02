@@ -136,13 +136,6 @@ export default function Layout({ children, currentPageName }) {
     base44.auth.logout(createPageUrl('Home'));
   };
 
-  // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'SignIn'];
-  
-  if (publicPages.includes(currentPageName)) {
-    return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
@@ -154,15 +147,11 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  if (!user || !userRole) {
-    return (
-      <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-[#41f2c0]" />
-          <p className="text-[#404040]">Verificando acceso...</p>
-        </div>
-      </div>
-    );
+  // Public pages without layout
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
+  
+  if (publicPages.includes(currentPageName)) {
+    return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
   }
 
   return (

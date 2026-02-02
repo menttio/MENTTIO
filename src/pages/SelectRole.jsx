@@ -28,7 +28,7 @@ export default function SelectRole() {
         navigate(createPageUrl('StudentSignup'));
       }
     } else {
-      // Redirect to login page
+      // Redirect to Google Auth
       base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
     }
   };
@@ -76,7 +76,7 @@ export default function SelectRole() {
 
               <div className="space-y-3">
                 <Button
-                  onClick={() => navigate(createPageUrl('SignIn'))}
+                  onClick={() => handleRoleSelect('student', 'login')}
                   className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
                 >
                   Iniciar Sesión
@@ -107,7 +107,7 @@ export default function SelectRole() {
 
               <div className="space-y-3">
                 <Button
-                  onClick={() => navigate(createPageUrl('SignIn'))}
+                  onClick={() => handleRoleSelect('teacher', 'login')}
                   className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
                 >
                   Iniciar Sesión
