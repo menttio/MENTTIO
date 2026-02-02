@@ -11,7 +11,6 @@ export default function StudentSignupComplete() {
   useEffect(() => {
     const completeSignup = async () => {
       try {
-        const user = await base44.auth.me();
         const signupData = sessionStorage.getItem('student_signup_data');
         
         if (!signupData) {
@@ -21,8 +20,16 @@ export default function StudentSignupComplete() {
 
         const data = JSON.parse(signupData);
         
+        // Register with email/password using Base44 SDK
+        await base44.auth.register({
+          email: data.email,
+          password: data.password,
+          full_name: `${data.first_name} ${data.last_name}`
+        });
+        
+        // Create student profile
         await base44.entities.Student.create({
-          user_email: user.email,
+          user_email: data.email,
           full_name: `${data.first_name} ${data.last_name}`,
           phone: data.phone,
           assigned_teachers: []
