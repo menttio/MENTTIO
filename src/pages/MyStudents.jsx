@@ -143,7 +143,7 @@ export default function MyStudents() {
         </div>
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-3 gap-4 mb-6 students-stats">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 students-stats">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
@@ -210,8 +210,8 @@ export default function MyStudents() {
                       onClick={() => setExpandedStudent(isExpanded ? null : student.id)}
                       className="w-full p-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors student-expand"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center">
+                      <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
                           {student.profile_photo ? (
                             <img 
                               src={student.profile_photo} 
@@ -225,16 +225,16 @@ export default function MyStudents() {
                           )}
                         </div>
                         
-                        <div>
-                          <h3 className="font-semibold text-[#404040] text-lg">{student.full_name}</h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <Mail size={14} />
-                              {student.user_email}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-[#404040] text-base md:text-lg truncate">{student.full_name}</h3>
+                          <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mt-1 text-xs md:text-sm text-gray-500">
+                            <span className="flex items-center gap-1 truncate">
+                              <Mail size={14} className="flex-shrink-0" />
+                              <span className="truncate">{student.user_email}</span>
                             </span>
                             {student.phone && (
                               <span className="flex items-center gap-1">
-                                <Phone size={14} />
+                                <Phone size={14} className="flex-shrink-0" />
                                 {student.phone}
                               </span>
                             )}
@@ -242,11 +242,11 @@ export default function MyStudents() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="text-right hidden md:block">
-                          <p className="text-sm text-gray-500">{stats.totalClasses} clases</p>
-                          <p className="font-semibold text-[#41f2c0]">{stats.totalSpent.toFixed(0)}€</p>
-                        </div>
+                      <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                      <div className="text-right">
+                        <p className="text-xs md:text-sm text-gray-500">{stats.totalClasses} clases</p>
+                        <p className="text-sm md:text-base font-semibold text-[#41f2c0]">{stats.totalSpent.toFixed(0)}€</p>
+                      </div>
                         {isExpanded ? (
                           <ChevronUp className="text-gray-400" size={20} />
                         ) : (
@@ -266,7 +266,7 @@ export default function MyStudents() {
                         >
                           <div className="px-5 pb-5 pt-2 border-t border-gray-100">
                             {/* Stats */}
-                            <div className="grid grid-cols-3 gap-4 mb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                               <div className="p-3 rounded-lg bg-gray-50">
                                 <p className="text-xl font-bold text-[#404040]">{stats.completedClasses}</p>
                                 <p className="text-xs text-gray-500">Completadas</p>

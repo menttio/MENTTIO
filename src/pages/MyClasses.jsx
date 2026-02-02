@@ -125,7 +125,7 @@ export default function MyClasses() {
 
       {/* Filters */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col gap-4">
           {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -138,19 +138,21 @@ export default function MyClasses() {
           </div>
 
           {/* Status Tabs */}
-          <Tabs value={filter} onValueChange={setFilter}>
-            <TabsList className="bg-gray-100">
-              <TabsTrigger value="all">Todas</TabsTrigger>
-              <TabsTrigger value="upcoming">Próximas</TabsTrigger>
-              <TabsTrigger value="completed">Completadas</TabsTrigger>
-              <TabsTrigger value="cancelled">Canceladas</TabsTrigger>
-              <TabsTrigger value="unpaid">No Pagadas</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="overflow-x-auto">
+            <Tabs value={filter} onValueChange={setFilter}>
+              <TabsList className="bg-gray-100 w-full md:w-auto">
+                <TabsTrigger value="all" className="text-xs md:text-sm">Todas</TabsTrigger>
+                <TabsTrigger value="upcoming" className="text-xs md:text-sm">Próximas</TabsTrigger>
+                <TabsTrigger value="completed" className="text-xs md:text-sm">Completadas</TabsTrigger>
+                <TabsTrigger value="cancelled" className="text-xs md:text-sm">Canceladas</TabsTrigger>
+                <TabsTrigger value="unpaid" className="text-xs md:text-sm">No Pagadas</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
           {/* Sort */}
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full md:w-40">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

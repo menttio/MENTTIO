@@ -149,7 +149,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
     : conversation.student_name;
 
   return (
-    <div className="flex-1 flex flex-col h-full">
+    <div className="flex-1 flex flex-col h-full w-full">
       {/* Chat Header */}
       <div className="p-4 border-b border-gray-100 bg-white">
         <div className="flex items-center gap-3">
@@ -183,7 +183,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
                 )}
               >
                 <div className={cn(
-                  "max-w-[70%] rounded-2xl px-4 py-3",
+                  "max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3",
                   isOwnMessage 
                     ? "bg-[#41f2c0] text-white" 
                     : "bg-white text-[#404040] border border-gray-100"

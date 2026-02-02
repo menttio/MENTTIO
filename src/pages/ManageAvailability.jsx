@@ -311,17 +311,17 @@ export default function ManageAvailability() {
                     <AnimatePresence>
                       {isEnabled && dayConfig?.slots?.map((slot, slotIdx) => (
                         <motion.div
-                          key={slotIdx}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="flex items-center gap-3 mt-2"
+                        key={slotIdx}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="flex flex-wrap items-center gap-2 md:gap-3 mt-2"
                         >
                           <Select
                             value={slot.start_time}
                             onValueChange={(v) => updateDaySlot(day.value, slotIdx, 'start_time', v)}
                           >
-                            <SelectTrigger className="w-28">
+                            <SelectTrigger className="w-20 md:w-28">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -331,13 +331,13 @@ export default function ManageAvailability() {
                             </SelectContent>
                           </Select>
                           
-                          <span className="text-gray-400">a</span>
+                          <span className="text-gray-400 text-sm">a</span>
                           
                           <Select
                             value={slot.end_time}
                             onValueChange={(v) => updateDaySlot(day.value, slotIdx, 'end_time', v)}
                           >
-                            <SelectTrigger className="w-28">
+                            <SelectTrigger className="w-20 md:w-28">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -376,7 +376,7 @@ export default function ManageAvailability() {
                 <CardTitle>Añadir Excepción</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label>Fecha</Label>
                     <Input
@@ -401,7 +401,7 @@ export default function ManageAvailability() {
                   <div>
                     <Label className="mb-2 block">Horario para este día</Label>
                     {newException.time_slots.map((slot, idx) => (
-                      <div key={idx} className="flex items-center gap-3 mt-2">
+                      <div key={idx} className="flex flex-wrap items-center gap-2 md:gap-3 mt-2">
                         <Select
                           value={slot.start_time}
                           onValueChange={(v) => {
@@ -410,7 +410,7 @@ export default function ManageAvailability() {
                             setNewException({ ...newException, time_slots: updated });
                           }}
                         >
-                          <SelectTrigger className="w-28">
+                          <SelectTrigger className="w-20 md:w-28">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -420,7 +420,7 @@ export default function ManageAvailability() {
                           </SelectContent>
                         </Select>
                         
-                        <span className="text-gray-400">a</span>
+                        <span className="text-gray-400 text-sm">a</span>
                         
                         <Select
                           value={slot.end_time}
@@ -430,7 +430,7 @@ export default function ManageAvailability() {
                             setNewException({ ...newException, time_slots: updated });
                           }}
                         >
-                          <SelectTrigger className="w-28">
+                          <SelectTrigger className="w-20 md:w-28">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>

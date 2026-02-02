@@ -232,7 +232,7 @@ export default function TeacherCalendar() {
             </Button>
           </div>
           {showLegend && (
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-[#41f2c0]" />
                 <span className="text-gray-600">Clases reservadas</span>
@@ -258,9 +258,9 @@ export default function TeacherCalendar() {
         </CardContent>
       </Card>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Calendar */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 w-full overflow-x-auto">
           <Card className="calendar-grid">
             <CardContent className="p-0">
               {/* Calendar Header */}

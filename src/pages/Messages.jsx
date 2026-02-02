@@ -216,9 +216,9 @@ export default function Messages() {
 
       {/* Chat Interface */}
       <Card className="h-full overflow-hidden messages-list">
-        <div className="flex h-full">
+        <div className="flex flex-col md:flex-row h-full">
           {/* Conversations List */}
-          <div className="w-80 border-r border-gray-100 flex flex-col bg-gray-50">
+          <div className={`${selectedConversation ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-gray-100 flex-col bg-gray-50`}
             <div className="p-4 border-b border-gray-100 bg-white">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />

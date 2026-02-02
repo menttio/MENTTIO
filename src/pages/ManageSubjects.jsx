@@ -229,7 +229,7 @@ export default function ManageSubjects() {
 
       {/* Subjects Grid */}
       {teacher?.subjects?.length > 0 ? (
-        <div className="grid md:grid-cols-2 gap-4 subjects-management">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 subjects-management">
           {teacher.subjects.map((subject, idx) => (
             <motion.div
               key={`${subject.subject_id}-${subject.level}`}

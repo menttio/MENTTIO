@@ -522,8 +522,8 @@ export default function TeacherSignup() {
                   ) : (
                     <div className="space-y-3">
                       {teacherSubjects.map((ts, idx) => (
-                        <div key={idx} className="flex gap-3 items-center p-3 bg-gray-50 rounded-xl">
-                          <div className="flex-1">
+                        <div key={idx} className="flex flex-col md:flex-row gap-3 items-stretch md:items-center p-3 bg-gray-50 rounded-xl">
+                          <div className="flex-1 min-w-0">
                             <Select
                               value={ts.subject_id}
                               onValueChange={(value) => updateSubject(idx, 'subject_id', value)}
@@ -540,7 +540,7 @@ export default function TeacherSignup() {
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="w-32">
+                          <div className="w-full md:w-32">
                             <Select
                               value={ts.level}
                               onValueChange={(value) => updateSubject(idx, 'level', value)}
@@ -555,7 +555,7 @@ export default function TeacherSignup() {
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-1 md:flex-initial">
                             <Input
                               type="number"
                               value={ts.price_per_hour}
@@ -564,7 +564,7 @@ export default function TeacherSignup() {
                               min="0"
                               max="999"
                               step="0.5"
-                              className="w-24 text-right"
+                              className="w-20 md:w-24 text-right"
                             />
                             <span className="text-sm text-gray-500 font-medium whitespace-nowrap">€/h</span>
                           </div>

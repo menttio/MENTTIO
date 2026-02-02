@@ -195,7 +195,7 @@ export default function TeacherDashboard() {
       </motion.div>
 
       {/* Quick Actions */}
-      <div className="grid md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

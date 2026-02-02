@@ -75,17 +75,17 @@ export default function TeacherProfile() {
 
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6 profile-header">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6 profile-header">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="self-start">
           <ArrowLeft size={20} />
         </Button>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-[#404040]">Mi Perfil</h1>
-          <p className="text-gray-500 mt-1">Gestiona tu información profesional</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-[#404040]">Mi Perfil</h1>
+          <p className="text-sm md:text-base text-gray-500 mt-1">Gestiona tu información profesional</p>
         </div>
         <Button
           onClick={() => setShowEditDialog(true)}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white edit-profile-btn"
+          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white edit-profile-btn w-full md:w-auto"
         >
           <Edit size={16} className="mr-2" />
           Editar Perfil
@@ -96,7 +96,7 @@ export default function TeacherProfile() {
       <Card className="mb-6 profile-info profile-rating">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0 mx-auto md:mx-0">
               {teacher.profile_photo ? (
                 <img 
                   src={teacher.profile_photo} 
@@ -104,16 +104,16 @@ export default function TeacherProfile() {
                   className="w-full h-full object-cover rounded-2xl"
                 />
               ) : (
-                <span className="text-5xl text-white font-bold">
+                <span className="text-3xl md:text-5xl text-white font-bold">
                   {teacher.full_name?.charAt(0)}
                 </span>
               )}
             </div>
 
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-[#404040] mb-2">{teacher.full_name}</h2>
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-xl md:text-2xl font-bold text-[#404040] mb-2">{teacher.full_name}</h2>
               
-              <div className="flex items-center gap-4 mb-3">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 mb-3">
                 <div className="flex items-center gap-1">
                   <Star className="text-yellow-400 fill-yellow-400" size={18} />
                   <span className="font-semibold">{teacher.rating?.toFixed(1) || '5.0'}</span>
@@ -150,7 +150,7 @@ export default function TeacherProfile() {
 
         {/* About Tab */}
         <TabsContent value="about">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Experience */}
             <Card>
               <CardContent className="p-6">

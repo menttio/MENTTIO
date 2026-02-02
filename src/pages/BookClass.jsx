@@ -450,7 +450,7 @@ export default function BookClass() {
       </div>
 
       {/* Progress Steps */}
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-2 md:gap-4 mb-8 overflow-x-auto pb-2">
         {[
           { num: 1, label: 'Asignatura' },
           { num: 2, label: 'Profesor' },
@@ -461,23 +461,23 @@ export default function BookClass() {
             <button
               onClick={() => s.num < step && setStep(s.num)}
               disabled={s.num > step}
-              className={`flex items-center gap-2 ${
+              className={`flex items-center gap-1 md:gap-2 flex-shrink-0 ${
                 s.num <= step ? 'text-[#41f2c0]' : 'text-gray-300'
               }`}
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+              <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold ${
                 s.num < step 
                   ? 'bg-[#41f2c0] text-white'
                   : s.num === step
                     ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
                     : 'border-2 border-gray-200 text-gray-300'
               }`}>
-                {s.num < step ? <Check size={16} /> : s.num}
+                {s.num < step ? <Check size={14} /> : s.num}
               </div>
-              <span className="hidden sm:block text-sm font-medium">{s.label}</span>
+              <span className="hidden md:block text-xs md:text-sm font-medium whitespace-nowrap">{s.label}</span>
             </button>
             {idx < 3 && (
-              <div className={`flex-1 h-0.5 ${
+              <div className={`flex-1 min-w-[20px] h-0.5 ${
                 s.num < step ? 'bg-[#41f2c0]' : 'bg-gray-200'
               }`} />
             )}
@@ -604,8 +604,8 @@ export default function BookClass() {
               </Button>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2 w-full overflow-x-auto">
                 <BookingCalendar
                   availableSlots={availableSlots}
                   existingBookings={existingBookings}
