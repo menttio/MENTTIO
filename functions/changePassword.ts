@@ -11,9 +11,9 @@ Deno.serve(async (req) => {
 
     const { currentPassword, newPassword } = await req.json();
 
-    if (!currentPassword || !newPassword) {
+    if (!newPassword) {
       return Response.json({ 
-        error: 'Se requieren la contraseña actual y la nueva contraseña' 
+        error: 'Se requiere la nueva contraseña' 
       }, { status: 400 });
     }
 
@@ -23,37 +23,35 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    console.log('Attempting to verify password for user:', user.email);
+    console.log('Attempting to change password for user:', user.email);
     
-    // Verify current password by trying to sign in
-    const signInUrl = 'https://api.base44.com/auth/signin';
-    const verifyResponse = await fetch(signInUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': Deno.env.get('BASE44_APP_ID')
-      },
-      body: JSON.stringify({
-        email: user.email,
-        password: currentPassword
-      })
-    });
+    // Only verify current password if provided
+    if (currentPassword) {
+      console.log('Verifying current password...');
+      const signInUrl = 'https://api.base44.com/auth/signin';
+      const verifyResponse = await fetch(signInUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-App-Id': Deno.env.get('BASE44_APP_ID')
+        },
+        body: JSON.stringify({
+          email: user.email,
+          password: currentPassword
+        })
+      });
 
-    console.log('Verify response status:', verifyResponse.status);
-    
-    if (!verifyResponse.ok) {
-      const errorText = await verifyResponse.text();
-      console.error('Verification failed:', errorText);
+      console.log('Verify response status:', verifyResponse.status);
       
-      // Check if user doesn't have a password (OAuth user)
-      if (verifyResponse.status === 401 || errorText.includes('no password')) {
-        console.log('User may not have a password set (OAuth login). Setting new password directly.');
-        // Allow setting password without verification for OAuth users
-      } else {
+      if (!verifyResponse.ok) {
+        const errorText = await verifyResponse.text();
+        console.error('Verification failed:', errorText);
         return Response.json({ 
           error: 'La contraseña actual es incorrecta' 
         }, { status: 400 });
       }
+    } else {
+      console.log('No current password provided - assuming OAuth user setting password for first time');
     }
 
     console.log('Updating password for user:', user.email);

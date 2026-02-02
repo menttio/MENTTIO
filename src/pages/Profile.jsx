@@ -102,7 +102,9 @@ export default function Profile() {
       if (formData.newPassword !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Las contraseñas no coinciden';
       }
-      if (!formData.currentPassword) {
+      // Only require current password if not OAuth user
+      const isOAuthUser = user?.email?.includes('google') || user?.email?.includes('oauth');
+      if (!formData.currentPassword && !isOAuthUser) {
         newErrors.currentPassword = 'Introduce tu contraseña actual';
       }
     }
@@ -173,10 +175,10 @@ export default function Profile() {
       await base44.auth.updateMe({ full_name: formData.full_name });
 
       // Handle password change
-      if (formData.newPassword && formData.currentPassword) {
+      if (formData.newPassword) {
         try {
           const passwordResponse = await base44.functions.invoke('changePassword', {
-            currentPassword: formData.currentPassword,
+            currentPassword: formData.currentPassword || '',
             newPassword: formData.newPassword
           });
 
@@ -368,27 +370,33 @@ export default function Profile() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Cambiar Contraseña</CardTitle>
-          <CardDescription>Deja en blanco si no quieres cambiarla</CardDescription>
+          <CardDescription>
+            {user?.email?.includes('google') || user?.email?.includes('oauth') 
+              ? 'Registrado con Google - establece una contraseña para poder iniciar sesión también con email'
+              : 'Deja en blanco si no quieres cambiarla'}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Current Password */}
-          <div>
-            <Label htmlFor="currentPassword">Contraseña actual</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <Input
-                id="currentPassword"
-                type="password"
-                value={formData.currentPassword}
-                onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                className="pl-10"
-                placeholder="••••••••"
-              />
+          {/* Current Password - only show if not OAuth user */}
+          {!user?.email?.includes('google') && !user?.email?.includes('oauth') && (
+            <div>
+              <Label htmlFor="currentPassword">Contraseña actual</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Input
+                  id="currentPassword"
+                  type="password"
+                  value={formData.currentPassword}
+                  onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                  className="pl-10"
+                  placeholder="••••••••"
+                />
+              </div>
+              {errors.currentPassword && (
+                <p className="text-red-500 text-xs mt-1">{errors.currentPassword}</p>
+              )}
             </div>
-            {errors.currentPassword && (
-              <p className="text-red-500 text-xs mt-1">{errors.currentPassword}</p>
-            )}
-          </div>
+          )}
 
           {/* New Password */}
           <div>
