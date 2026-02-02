@@ -29,27 +29,37 @@ export default function SignIn() {
     
     setLoading(true);
     try {
-      await base44.auth.login({
-        email: formData.email,
-        password: formData.password
-      });
+      // Primero, verificar si el usuario existe en las entidades
+      const teachers = await base44.entities.Teacher.filter({ user_email: formData.email });
+      const students = await base44.entities.Student.filter({ user_email: formData.email });
+      
+      if (teachers.length === 0 && students.length === 0) {
+        setError('No existe ninguna cuenta con este email');
+        setLoading(false);
+        return;
+      }
 
-      // Check role and redirect
-      const user = await base44.auth.me();
-      const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
-      if (teachers.length > 0) {
-        window.location.href = createPageUrl('TeacherDashboard');
-      } else {
-        const students = await base44.entities.Student.filter({ user_email: user.email });
-        if (students.length > 0) {
+      // Intentar login
+      try {
+        await base44.auth.login({
+          email: formData.email,
+          password: formData.password
+        });
+
+        // Redirigir según el rol
+        if (teachers.length > 0) {
+          window.location.href = createPageUrl('TeacherDashboard');
+        } else if (students.length > 0) {
           window.location.href = createPageUrl('StudentDashboard');
-        } else {
-          window.location.href = createPageUrl('SelectRole');
         }
+      } catch (loginError) {
+        console.error('Error de login:', loginError);
+        setError('Contraseña incorrecta. Si creaste tu cuenta recientemente, asegúrate de usar la contraseña que estableciste durante el registro.');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error:', error);
-      setError('Email o contraseña incorrectos');
+      setError('Error al verificar la cuenta. Por favor, inténtalo de nuevo.');
       setLoading(false);
     }
   };
