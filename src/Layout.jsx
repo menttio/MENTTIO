@@ -29,6 +29,7 @@ export default function Layout({ children, currentPageName }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +57,7 @@ export default function Layout({ children, currentPageName }) {
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
           const teacher = teachers[0];
+          setProfile(teacher);
           // Verify subscription is active
           if (teacher.subscription_active && teacher.subscription_expires) {
             const expirationDate = new Date(teacher.subscription_expires);
@@ -84,6 +86,7 @@ export default function Layout({ children, currentPageName }) {
           // Check if user is a student
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
           if (students.length > 0) {
+            setProfile(students[0]);
             setUserRole('student');
             
             // Block access to teacher pages
@@ -189,11 +192,19 @@ export default function Layout({ children, currentPageName }) {
           <h1 className="text-lg font-semibold text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</h1>
           <div className="flex items-center gap-2">
             <NotificationBell userEmail={user?.email} />
-            <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
-              <span className="text-white font-medium">
-                {user?.full_name?.charAt(0) || 'U'}
-              </span>
-            </div>
+            {profile?.profile_photo ? (
+              <img 
+                src={profile.profile_photo} 
+                alt="Profile" 
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                <span className="text-white font-medium">
+                  {user?.full_name?.charAt(0) || 'U'}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -247,11 +258,19 @@ export default function Layout({ children, currentPageName }) {
           {/* User Section */}
           <div className="p-4 border-t border-gray-100">
             <div className="flex items-center gap-3 mb-4 px-2">
-              <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                <span className="text-white font-medium">
-                  {user?.full_name?.charAt(0) || 'U'}
-                </span>
-              </div>
+              {profile?.profile_photo ? (
+                <img 
+                  src={profile.profile_photo} 
+                  alt="Profile" 
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                  <span className="text-white font-medium">
+                    {user?.full_name?.charAt(0) || 'U'}
+                  </span>
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-[#404040] truncate">
                   {user?.full_name || 'Usuario'}
