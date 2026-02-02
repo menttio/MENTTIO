@@ -286,19 +286,26 @@ export default function TeacherSignup() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
+      {/* Mobile Back Button - Fixed Position */}
+      <button
+        onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
+        className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+      >
+        <ArrowLeft size={20} className="text-[#404040]" />
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-4xl"
       >
-        <Button
-          variant="ghost"
+        {/* Desktop Back Button */}
+        <button
           onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
-          className="mb-4"
+          className="mb-4 p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex"
         >
-          <ArrowLeft size={18} className="mr-2" />
-          Volver
-        </Button>
+          <ArrowLeft size={20} />
+        </button>
 
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
