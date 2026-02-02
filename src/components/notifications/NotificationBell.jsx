@@ -34,40 +34,54 @@ export default function NotificationBell({ userEmail }) {
         new Date(b.created_date) - new Date(a.created_date)
       );
       
+      // Calculate unread count from ALL notifications
+      const totalUnread = sorted.filter(n => !n.is_read).length;
+      
       setNotifications(sorted.slice(0, 10)); // Show last 10
-      setUnreadCount(sorted.filter(n => !n.is_read).length);
+      setUnreadCount(totalUnread);
     } catch (error) {
       console.error(error);
+      setUnreadCount(0);
     }
   };
 
   const handleMarkAsRead = async (notificationId) => {
     try {
       await base44.entities.Notification.update(notificationId, { is_read: true });
+      // Decrement unread count immediately
+      setUnreadCount(prev => Math.max(0, prev - 1));
       await loadNotifications();
     } catch (error) {
       console.error(error);
+      await loadNotifications();
     }
   };
 
   const handleMarkAllAsRead = async () => {
     try {
-      // Fetch ALL unread notifications, not just the first 10 displayed
+      // Immediately set unread count to 0
+      setUnreadCount(0);
+      
+      // Fetch ALL unread notifications
       const allUnreadNotifications = await base44.entities.Notification.filter({ 
         user_email: userEmail,
         is_read: false
       });
       
       // Mark all as read
-      await Promise.all(
-        allUnreadNotifications.map(n => 
-          base44.entities.Notification.update(n.id, { is_read: true })
-        )
-      );
+      if (allUnreadNotifications.length > 0) {
+        await Promise.all(
+          allUnreadNotifications.map(n => 
+            base44.entities.Notification.update(n.id, { is_read: true })
+          )
+        );
+      }
       
+      // Reload notifications
       await loadNotifications();
     } catch (error) {
       console.error(error);
+      await loadNotifications();
     }
   };
 
