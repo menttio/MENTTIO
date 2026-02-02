@@ -238,7 +238,7 @@ export default function SearchTeachers() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Buscar Profesores</h1>
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Buscar Profesores</h1>
         <p className="text-gray-500 mt-2">Encuentra el profesor perfecto para ti</p>
       </div>
 

@@ -109,7 +109,7 @@ export default function StudentDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold text-[#404040]">
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">
           ¡Hola, {student?.full_name?.split(' ')[0] || 'Alumno'}! 👋
         </h1>
         <p className="text-gray-500 mt-2">

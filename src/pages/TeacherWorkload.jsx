@@ -133,7 +133,7 @@ export default function TeacherWorkload() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[#404040]">Estadísticas</h1>
+          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Estadísticas</h1>
           <p className="text-gray-500 mt-2">Analiza tu desempeño y gestiona tu tiempo</p>
         </div>
         

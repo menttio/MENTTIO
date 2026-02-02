@@ -213,7 +213,7 @@ export default function TeacherCalendar() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-[#404040]">Mi Calendario</h1>
+          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Calendario</h1>
           <p className="text-gray-500 mt-2">Visualiza todas tus clases, disponibilidades y excepciones</p>
         </div>
 

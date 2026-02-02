@@ -445,7 +445,7 @@ export default function BookClass() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Reservar Clase</h1>
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Reservar Clase</h1>
         <p className="text-gray-500 mt-2">Selecciona asignatura, profesor y horario</p>
       </div>
 

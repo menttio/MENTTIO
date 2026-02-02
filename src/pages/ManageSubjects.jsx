@@ -215,7 +215,7 @@ export default function ManageSubjects() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
+            <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
             <p className="text-gray-500 mt-2">Gestiona las materias que impartes y sus precios</p>
           </div>
           <Button
