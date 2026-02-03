@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
   {
-    question: '¿Cómo funciona el periodo de prueba para profesores?',
-    answer: 'Los profesores tienen 30 días completamente gratis para probar toda la plataforma. No se requiere tarjeta de crédito. Después del mes de prueba, si decides continuar, se cobra 20€/mes. Puedes cancelar en cualquier momento.'
+    question: '¿Cuánto cuesta la suscripción para profesores?',
+    answer: 'La suscripción para profesores cuesta 19,99€/mes. No se requiere tarjeta de crédito para registrarse. Puedes cancelar en cualquier momento desde tu panel de control.'
   },
   {
     question: '¿Los alumnos tienen que pagar algo?',
@@ -41,7 +41,7 @@ const faqs = [
   },
   {
     question: '¿Puedo probar la plataforma antes de decidirme?',
-    answer: 'Por supuesto. Los profesores tienen 30 días gratis y los alumnos pueden registrarse y explorar la plataforma sin costo. No hay compromiso ni necesidad de datos de pago para empezar.'
+    answer: 'Por supuesto. Los alumnos pueden registrarse y explorar la plataforma sin costo. Los profesores pueden registrarse para activar su suscripción y comenzar a recibir alumnos inmediatamente.'
   }
 ];
 

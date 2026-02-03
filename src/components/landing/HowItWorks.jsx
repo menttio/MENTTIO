@@ -34,7 +34,7 @@ const teacherSteps = [
   {
     icon: UserCircle,
     title: 'Crea tu perfil',
-    description: 'Configura tu perfil de profesor con tu experiencia, materias y tarifas. Primer mes gratis.',
+    description: 'Configura tu perfil de profesor con tu experiencia, materias y tarifas.',
     color: 'bg-orange-500'
   },
   {
