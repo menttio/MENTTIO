@@ -110,6 +110,9 @@ export default function Hero() {
             <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors">
               Sobre nosotros
             </a>
+            <a href="/Blog" className="text-white hover:text-[#404040] font-medium transition-colors">
+              Blog
+            </a>
             <a href="/Contact">
               <Button 
                 className="bg-white text-[#404040] hover:bg-gray-100 shadow-lg"
@@ -291,6 +294,12 @@ export default function Hero() {
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Sobre nosotros
+                </a>
+                <a 
+                  href="/Blog" 
+                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
+                >
+                  Blog
                 </a>
                 <a 
                   href="/Contact"
