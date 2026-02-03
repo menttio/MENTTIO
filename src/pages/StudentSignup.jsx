@@ -62,6 +62,7 @@ export default function StudentSignup() {
     try {
       // First authenticate with Google
       sessionStorage.setItem('student_signup_data', JSON.stringify(formData));
+      sessionStorage.setItem('auth_intent', 'signup');
       base44.auth.redirectToLogin(createPageUrl('StudentSignupComplete'));
     } catch (error) {
       console.error('Error:', error);
@@ -157,7 +158,7 @@ export default function StudentSignup() {
               <Loader2 className="animate-spin" />
             ) : (
               <>
-                Continuar con Google <ArrowRight className="ml-2" />
+                Continuar <ArrowRight className="ml-2" />
               </>
             )}
           </Button>
