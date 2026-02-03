@@ -4,46 +4,52 @@ import { motion } from 'framer-motion';
 
 const testimonials = [
   {
-    name: 'María García',
-    role: 'Estudiante de Bachillerato',
+    name: 'Carlos Sanchez',
+    role: '18 años',
+    subject: 'Preparación Selectividad',
+    image: '👨‍🎓',
+    rating: 5,
+    text: 'Las clases han sido de gran ayuda para prepararme para la prueba de acceso a la universidad. ¡Muy recomendable!.'
+  },
+  {
+    name: 'Alumna',
+    role: '14 años',
+    subject: 'Matemáticas ESO',
     image: '👩‍🎓',
     rating: 5,
-    text: 'Menπio ha cambiado mi forma de estudiar. Puedo reservar clases cuando las necesito y repasar las grabaciones antes de los exámenes. ¡Mis notas han mejorado muchísimo!'
+    text: 'Las clases son muy buenas, me han ayudado mucho y me siento más segura con el contenido. Estoy muy contenta con la forma en que se explican los temas, todo es claro y fácil de entender.'
   },
   {
-    name: 'Carlos Rodríguez',
-    role: 'Profesor de Matemáticas',
-    image: '👨‍🏫',
+    name: 'Alonso Martín',
+    role: '14 años',
+    subject: 'Matemáticas ESO',
+    image: '👨‍🎓',
     rating: 5,
-    text: 'Como profesor, esta plataforma me ha facilitado todo. Ya no pierdo tiempo gestionando reservas o pagos. Me centro solo en enseñar y mis alumnos están más contentos que nunca.'
+    text: 'Las clases han sido muy satisfactorias y me han ayudado muchísimo a mejorar y aprobar mis exámenes'
   },
   {
-    name: 'Laura Martínez',
-    role: 'Madre de alumno',
-    image: '👩‍💼',
+    name: 'Alumna',
+    role: '18 años',
+    subject: 'Preparación Selectividad',
+    image: '👩‍🎓',
     rating: 5,
-    text: 'Increíble poder hacer seguimiento de las clases de mi hijo. La transparencia en pagos y la facilidad de comunicación con los profesores me dan mucha tranquilidad.'
+    text: 'Gracias a las clases, llegué mucho más preparado para la prueba de acceso a la universidad. Las explicaciones fueron claras y me ayudaron a entender todo mejor..'
   },
   {
-    name: 'David López',
-    role: 'Estudiante Universitario',
-    image: '👨‍💻',
-    rating: 5,
-    text: 'Necesitaba clases de programación y encontré al profesor perfecto en minutos. El sistema de reservas es super intuitivo y tener todo grabado es un plus enorme.'
-  },
-  {
-    name: 'Ana Fernández',
-    role: 'Profesora de Inglés',
-    image: '👩‍🏫',
-    rating: 5,
-    text: 'Empecé con el mes gratis y me quedé. La plataforma es profesional, fácil de usar y me ha ayudado a conseguir muchos más alumnos. Totalmente recomendable.'
-  },
-  {
-    name: 'Jorge Sánchez',
-    role: 'Estudiante de ESO',
+    name: 'Alumno',
+    role: '17 años',
+    subject: 'Matemáticas / Física / Química Bachillerato',
     image: '🧑‍🎓',
     rating: 5,
-    text: 'Antes me costaba mucho pedir ayuda. Con Menπio es super fácil encontrar profesores y reservar clases. Además puedo chatear con ellos cuando tengo dudas rápidas.'
+    text: 'Las clases me parecen muy útiles, especialmente para aclarar conceptos que no tenía del todo claros.'
+  },
+  {
+    name: 'Alumno',
+    role: '17 años',
+    subject: 'Matemáticas / Física y química / Tecnología / Inglés BACH',
+    image: '👨‍🎓',
+    rating: 5,
+    text: 'Explica muy bien, de manera muy amena, fácil de entender e intuitiva, además es un profesor muy cercano a sus alumnos dispuesto a ayudar cuando sea necesario.'
   }
 ];
 
@@ -84,6 +90,7 @@ export default function Testimonials() {
                 <div>
                   <h4 className="font-semibold text-[#404040]">{testimonial.name}</h4>
                   <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="text-xs text-[#41f2c0] font-medium">{testimonial.subject}</p>
                 </div>
               </div>
 

@@ -103,7 +103,7 @@ export default function AboutUs() {
           </motion.div>
         </div>
 
-        {/* Stats */}
+        {/* What We Offer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -111,20 +111,23 @@ export default function AboutUs() {
           className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-2xl p-12"
         >
           <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
-            Menπio en números
+            ¿Qué ofrecemos?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-5xl font-bold text-white mb-2">500+</div>
-              <div className="text-white/80 text-lg">Profesores activos</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <div className="text-4xl mb-4">📅</div>
+              <h3 className="text-xl font-bold text-white mb-2">Gestión Inteligente</h3>
+              <p className="text-white/80">Calendario automatizado y sincronización con Google Calendar</p>
             </div>
-            <div>
-              <div className="text-5xl font-bold text-white mb-2">2,000+</div>
-              <div className="text-white/80 text-lg">Alumnos registrados</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <div className="text-4xl mb-4">📚</div>
+              <h3 className="text-xl font-bold text-white mb-2">Biblioteca Digital</h3>
+              <p className="text-white/80">Acceso a grabaciones y materiales de todas tus clases</p>
             </div>
-            <div>
-              <div className="text-5xl font-bold text-white mb-2">10,000+</div>
-              <div className="text-white/80 text-lg">Clases impartidas</div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+              <div className="text-4xl mb-4">💬</div>
+              <h3 className="text-xl font-bold text-white mb-2">Comunicación Directa</h3>
+              <p className="text-white/80">Chat integrado entre profesores y alumnos</p>
             </div>
           </div>
         </motion.div>
