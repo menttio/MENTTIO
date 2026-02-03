@@ -267,7 +267,7 @@ export default function Layout({ children, currentPageName }) {
                 <p className="text-sm font-medium text-[#404040] truncate">
                   {user?.full_name || 'Usuario'}
                 </p>
-                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                <p className="text-xs text-gray-500 truncate break-all">{user?.email}</p>
               </div>
               <NotificationBell userEmail={user?.email} />
             </div>

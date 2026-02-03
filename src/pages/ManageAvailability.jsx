@@ -234,7 +234,7 @@ export default function ManageAvailability() {
         {/* Header */}
          <div className="mb-8">
            <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Gestionar Disponibilidad</h1>
-           <p className="text-gray-500 mt-2">Configura tu horario habitual y excepciones puntuales</p>
+           <p className="text-gray-500 mt-2 text-sm">Configura tu horario habitual y excepciones puntuales</p>
          </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -377,7 +377,7 @@ export default function ManageAvailability() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                  <div className="px-1">
                     <Label>Fecha</Label>
                     <Input
                       type="date"
