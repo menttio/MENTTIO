@@ -248,9 +248,9 @@ export default function Profile() {
                 )}
               </label>
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-[#404040] text-lg">{formData.full_name}</h3>
-              <p className="text-gray-500 text-sm">{user?.email}</p>
+              <p className="text-gray-500 text-sm truncate">{user?.email}</p>
               <p className="text-xs text-gray-400 mt-1 capitalize">{userRole === 'teacher' ? 'Profesor' : 'Alumno'}</p>
             </div>
           </div>
