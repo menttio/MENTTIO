@@ -60,10 +60,11 @@ export default function StudentSignup() {
     
     setLoading(true);
     try {
-      // First authenticate with Google
+      // Store signup data and redirect to signup page
       sessionStorage.setItem('student_signup_data', JSON.stringify(formData));
-      sessionStorage.setItem('auth_intent', 'signup');
-      base44.auth.redirectToLogin(createPageUrl('StudentSignupComplete'));
+      // Redirect to Base44's signup page with the nextUrl parameter
+      const nextUrl = window.location.origin + createPageUrl('StudentSignupComplete');
+      window.location.href = `/auth/signup?nextUrl=${encodeURIComponent(nextUrl)}`;
     } catch (error) {
       console.error('Error:', error);
       alert(`Error: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
