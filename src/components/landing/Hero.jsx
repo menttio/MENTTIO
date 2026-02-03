@@ -348,17 +348,17 @@ export default function Hero() {
 
             {/* Key Features */}
             <div className="grid grid-cols-3 gap-3 md:gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
-                <Calendar className="text-white mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-white font-medium">Gestión de calendario</div>
+              <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
+                <Calendar className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Gestión de calendario</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
-                <Video className="text-white mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-white font-medium">Grabaciones disponibles</div>
+              <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
+                <Video className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Grabaciones disponibles</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
-                <Users className="text-white mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-white font-medium">Profesores expertos</div>
+              <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
+                <Users className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Profesores expertos</div>
               </div>
             </div>
           </motion.div>
