@@ -80,7 +80,7 @@ export default function WelcomeTour({ teacherId, teacherName, onComplete }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-w-[calc(100vw-2rem)] overflow-hidden"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] p-6 text-white relative">

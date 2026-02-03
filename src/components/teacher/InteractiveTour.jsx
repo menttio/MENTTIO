@@ -115,20 +115,20 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
       let top, left;
-      const tooltipWidth = 500; // Ancho del tooltip
+      const tooltipWidth = Math.min(500, window.innerWidth - 32); // Ancho del tooltip con margen de 16px por lado
       const tooltipHeight = 250; // Altura estimada del tooltip
       
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
         // Para los primeros 4 pasos (stats cards), desplazar más a la izquierda
         if (currentStep >= 0 && currentStep <= 3) {
-          left = rect.left + scrollLeft + (rect.width / 2) - 180;
+          left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2) - 180, window.innerWidth - tooltipWidth - 16));
         } else {
-          left = rect.left + scrollLeft + (rect.width / 2);
+          left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2), window.innerWidth - tooltipWidth - 16));
         }
       } else if (step.position === 'top') {
         top = rect.top + scrollTop - tooltipHeight - 20;
-        left = rect.left + scrollLeft + (rect.width / 2);
+        left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2), window.innerWidth - tooltipWidth - 16));
       } else if (step.position === 'right') {
         // Para los pasos 5, 6 y 7 (action cards), subir verticalmente
         if (currentStep >= 4 && currentStep <= 6) {
@@ -136,10 +136,16 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
         } else {
           top = rect.top + scrollTop + (rect.height / 2);
         }
-        left = rect.right + scrollLeft + 20;
+        // Asegurar que el tooltip no se salga de la pantalla
+        const calculatedLeft = rect.right + scrollLeft + 20;
+        left = Math.min(calculatedLeft, window.innerWidth - tooltipWidth - 16);
+        // Si no cabe a la derecha, mostrarlo a la izquierda
+        if (calculatedLeft + tooltipWidth > window.innerWidth - 16) {
+          left = Math.max(16, rect.left + scrollLeft - tooltipWidth - 20);
+        }
       } else if (step.position === 'left') {
         top = rect.top + scrollTop + (rect.height / 2);
-        left = rect.left + scrollLeft - tooltipWidth - 20;
+        left = Math.max(16, rect.left + scrollLeft - tooltipWidth - 20);
       }
       
       setTooltipPosition({ top, left, position: step.position });
@@ -243,7 +249,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
             zIndex: 102,
             pointerEvents: 'auto'
           }}
-          className="w-[500px] max-w-[calc(100vw-2rem)]"
+          className="w-[500px] max-w-[calc(100vw-2rem)] mx-4"
         >
           <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
             {/* Header */}
