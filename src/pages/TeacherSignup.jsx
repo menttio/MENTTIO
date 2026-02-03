@@ -249,7 +249,7 @@ export default function TeacherSignup() {
               </div>
 
               <Button
-                onClick={() => window.location.href = createPageUrl('Home')}
+                onClick={() => window.location.href = `/login?from_url=${encodeURIComponent(window.location.origin + createPageUrl('AuthRedirect'))}`}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
               >
                 Ir a Iniciar Sesión
