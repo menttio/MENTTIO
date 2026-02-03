@@ -114,20 +114,20 @@ export default function AboutUs() {
             ¿Qué ofrecemos?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
               <div className="text-4xl mb-4">📅</div>
-              <h3 className="text-xl font-bold text-white mb-2">Gestión Inteligente</h3>
-              <p className="text-white/80">Calendario automatizado y sincronización con Google Calendar</p>
+              <h3 className="text-xl font-bold text-[#404040] mb-2">Gestión Inteligente</h3>
+              <p className="text-gray-600">Calendario automatizado y sincronización con Google Calendar</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
               <div className="text-4xl mb-4">📚</div>
-              <h3 className="text-xl font-bold text-white mb-2">Biblioteca Digital</h3>
-              <p className="text-white/80">Acceso a grabaciones y materiales de todas tus clases</p>
+              <h3 className="text-xl font-bold text-[#404040] mb-2">Biblioteca Digital</h3>
+              <p className="text-gray-600">Acceso a grabaciones y materiales de todas tus clases</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <div className="bg-white rounded-2xl p-6 text-center shadow-lg">
               <div className="text-4xl mb-4">💬</div>
-              <h3 className="text-xl font-bold text-white mb-2">Comunicación Directa</h3>
-              <p className="text-white/80">Chat integrado entre profesores y alumnos</p>
+              <h3 className="text-xl font-bold text-[#404040] mb-2">Comunicación Directa</h3>
+              <p className="text-gray-600">Chat integrado entre profesores y alumnos</p>
             </div>
           </div>
         </motion.div>
