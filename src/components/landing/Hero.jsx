@@ -346,19 +346,19 @@ export default function Hero() {
               </Button>
             </div>
 
-            {/* Stats */}
+            {/* Key Features */}
             <div className="grid grid-cols-3 gap-3 md:gap-6">
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">1000+</div>
-                <div className="text-xs md:text-sm text-white/80">Clases impartidas</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
+                <Calendar className="text-white mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-white font-medium">Gestión de calendario</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-xs md:text-sm text-white/80">Alumnos activos</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
+                <Video className="text-white mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-white font-medium">Grabaciones disponibles</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">200+</div>
-                <div className="text-xs md:text-sm text-white/80">Profesores</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 md:p-4 text-center">
+                <Users className="text-white mb-2 mx-auto" size={24} />
+                <div className="text-xs md:text-sm text-white font-medium">Profesores expertos</div>
               </div>
             </div>
           </motion.div>
