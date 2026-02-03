@@ -198,8 +198,8 @@ export default function Profile() {
     <div className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Mi Perfil</h1>
-        <p className="text-gray-500 mt-2">Administra tu información personal</p>
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Perfil</h1>
+        <p className="text-gray-500 mt-2 text-sm">Administra tu información personal</p>
       </div>
 
       {/* Success Message */}

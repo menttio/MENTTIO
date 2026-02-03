@@ -47,8 +47,8 @@ export default function Help() {
 
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#404040]">Centro de Ayuda</h1>
-          <p className="text-gray-500 mt-2">Recursos y tutoriales para usar la plataforma</p>
+          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Centro de Ayuda</h1>
+          <p className="text-gray-500 mt-2 text-sm">Recursos y tutoriales para usar la plataforma</p>
         </div>
 
         <div className="grid gap-6">
@@ -125,7 +125,7 @@ export default function Help() {
               </p>
               <div className="flex gap-3">
                 <Button variant="outline" className="w-full sm:w-auto text-sm">
-                  📧 soporte@menpio.com
+                  📧 mentio@menttio.com
                 </Button>
               </div>
             </CardContent>
