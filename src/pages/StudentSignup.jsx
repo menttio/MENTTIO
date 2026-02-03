@@ -62,9 +62,9 @@ export default function StudentSignup() {
     try {
       // Store signup data and redirect to signup page
       sessionStorage.setItem('student_signup_data', JSON.stringify(formData));
-      // Redirect to Base44's signup page with the nextUrl parameter
-      const nextUrl = window.location.origin + createPageUrl('StudentSignupComplete');
-      window.location.href = `/auth/signup?nextUrl=${encodeURIComponent(nextUrl)}`;
+      // Use Base44's redirectToLogin which includes signup option
+      // The user can click "Need an account? Sign up" on the login page
+      base44.auth.redirectToLogin(createPageUrl('StudentSignupComplete'));
     } catch (error) {
       console.error('Error:', error);
       alert(`Error: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
