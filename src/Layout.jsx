@@ -35,7 +35,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
     
     if (publicPages.includes(currentPageName)) {
       setLoading(false);
@@ -96,9 +96,9 @@ export default function Layout({ children, currentPageName }) {
             }
           } else {
             setUserRole('new');
-            // Redirect new users to role selection
-            if (currentPageName !== 'SelectRole') {
-              window.location.href = createPageUrl('SelectRole');
+            // Redirect new users to registration warning
+            if (currentPageName !== 'UserNotRegistered') {
+              window.location.href = createPageUrl('UserNotRegistered');
             }
           }
         }
@@ -152,7 +152,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect'];
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
   
   if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
