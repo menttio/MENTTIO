@@ -248,8 +248,8 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* User Section */}
-          <div className="p-4 border-t border-gray-100">
-            <div className="flex items-center gap-3 mb-4 px-2">
+          <div className="p-6 border-t border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
               {profile?.profile_photo ? (
                 <img 
                   src={profile.profile_photo} 
