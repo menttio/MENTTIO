@@ -29,7 +29,7 @@ export default function SelectRole() {
       }
     } else {
       // Redirect to Google Auth for login
-      window.location.href = base44.auth.getLoginUrl(createPageUrl('AuthRedirect'));
+      base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
     }
   };
 
