@@ -204,12 +204,13 @@ export default function ManageSubjects() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <SubjectsTour
           teacherId={teacher.id}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}

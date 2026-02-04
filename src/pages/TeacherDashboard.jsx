@@ -92,13 +92,14 @@ export default function TeacherDashboard() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <InteractiveTour
           teacherId={teacher.id}
           teacherName={teacher.full_name}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
       
         <div className="max-w-6xl mx-auto">
           {/* Welcome Section */}

@@ -203,12 +203,13 @@ export default function TeacherCalendar() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <CalendarTour
           teacherId={teacher.id}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}

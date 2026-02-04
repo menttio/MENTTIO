@@ -223,12 +223,13 @@ export default function ManageAvailability() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <AvailabilityTour
           teacherId={teacher.id}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}

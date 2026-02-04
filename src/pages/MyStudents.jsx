@@ -117,12 +117,13 @@ export default function MyStudents() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <StudentsTour
           teacherId={teacher.id}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
 
       <div className="max-w-4xl mx-auto">
          {/* Header */}

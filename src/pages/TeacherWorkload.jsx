@@ -122,12 +122,13 @@ export default function TeacherWorkload() {
 
   return (
     <>
-      {showTour && teacher && (
+      {/* Temporarily disabled tour */}
+      {/* {showTour && teacher && (
         <WorkloadTour
           teacherId={teacher.id}
           onComplete={() => setShowTour(false)}
         />
-      )}
+      )} */}
 
       <div className="max-w-6xl mx-auto">
         {/* Header */}
