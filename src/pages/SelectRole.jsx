@@ -28,8 +28,8 @@ export default function SelectRole() {
         navigate(createPageUrl('StudentSignup'));
       }
     } else {
-      // Redirect to Google Auth
-      base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
+      // Redirect to Google Auth for login
+      window.location.href = base44.auth.getLoginUrl(createPageUrl('AuthRedirect'));
     }
   };
 
