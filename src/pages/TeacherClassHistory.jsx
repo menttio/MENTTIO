@@ -87,6 +87,9 @@ export default function TeacherClassHistory() {
       if (filter === 'unpaid') {
         return booking.payment_status === 'pending' && booking.status !== 'cancelled';
       }
+      if (filter === 'paid') {
+        return booking.payment_status === 'paid';
+      }
       return true;
     })
     .filter(booking => {
@@ -225,6 +228,7 @@ export default function TeacherClassHistory() {
               <TabsTrigger value="all" className="text-xs sm:text-sm whitespace-nowrap">Todas</TabsTrigger>
               <TabsTrigger value="upcoming" className="text-xs sm:text-sm whitespace-nowrap">Próximas</TabsTrigger>
               <TabsTrigger value="completed" className="text-xs sm:text-sm whitespace-nowrap">Completadas</TabsTrigger>
+              <TabsTrigger value="paid" className="text-xs sm:text-sm whitespace-nowrap">Pagadas</TabsTrigger>
               <TabsTrigger value="unpaid" className="text-xs sm:text-sm whitespace-nowrap">No Pagadas</TabsTrigger>
               <TabsTrigger value="cancelled" className="text-xs sm:text-sm whitespace-nowrap">Canceladas</TabsTrigger>
             </TabsList>
@@ -286,6 +290,7 @@ export default function TeacherClassHistory() {
           open={!!editingBooking}
           onClose={() => setEditingBooking(null)}
           onSave={loadBookings}
+          userRole="teacher"
         />
       )}
     </div>

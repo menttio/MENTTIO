@@ -125,6 +125,7 @@ export default function Layout({ children, currentPageName }) {
   const teacherNavItems = [
     { name: 'Inicio', icon: Home, page: 'TeacherDashboard' },
     { name: 'Calendario', icon: Calendar, page: 'TeacherCalendar' },
+    { name: 'Mis Clases', icon: BookOpen, page: 'TeacherClassHistory' },
     { name: 'Disponibilidad', icon: Clock, page: 'ManageAvailability' },
     { name: 'Asignaturas', icon: Library, page: 'ManageSubjects' },
     { name: 'Alumnos', icon: Users, page: 'MyStudents' },
