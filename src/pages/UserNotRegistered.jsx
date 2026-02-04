@@ -35,12 +35,14 @@ export default function UserNotRegistered() {
     const urlParams = new URLSearchParams(window.location.search);
     const role = urlParams.get('role');
     
+    console.log('Role detected:', role); // Debug
+    
     if (role === 'teacher') {
-      navigate(createPageUrl('TeacherSignup'));
+      window.location.href = createPageUrl('TeacherSignup');
     } else if (role === 'student') {
-      navigate(createPageUrl('StudentSignup'));
+      window.location.href = createPageUrl('StudentSignup');
     } else {
-      navigate(createPageUrl('SelectRole'));
+      window.location.href = createPageUrl('SelectRole');
     }
   };
 
