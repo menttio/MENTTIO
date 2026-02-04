@@ -32,12 +32,10 @@ export default function AuthRedirect() {
               window.location.href = createPageUrl('TeacherDashboard');
               return;
             } else {
-              // Not a teacher - redirect to signup
+              // Not a teacher - redirect to warning page
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              // Logout to prevent showing as "logged in" without registration
-              await base44.auth.logout();
-              window.location.href = createPageUrl('TeacherSignup');
+              window.location.href = createPageUrl('UserNotRegistered');
               return;
             }
           } else if (selectedRole === 'student') {
@@ -49,12 +47,10 @@ export default function AuthRedirect() {
               window.location.href = createPageUrl('StudentDashboard');
               return;
             } else {
-              // Not a student - redirect to signup
+              // Not a student - redirect to warning page
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              // Logout to prevent showing as "logged in" without registration
-              await base44.auth.logout();
-              window.location.href = createPageUrl('StudentSignup');
+              window.location.href = createPageUrl('UserNotRegistered');
               return;
             }
           }
@@ -73,8 +69,8 @@ export default function AuthRedirect() {
           return;
         }
 
-        // New user - redirect to role selection
-        window.location.href = createPageUrl('SelectRole');
+        // New user - redirect to warning page
+        window.location.href = createPageUrl('UserNotRegistered');
       } catch (error) {
         console.error('Error determining redirect:', error);
         window.location.href = createPageUrl('Home');
