@@ -46,9 +46,9 @@ export default function SelectRole() {
       {/* Mobile Back Button - Fixed Position */}
       <button
         onClick={() => navigate(createPageUrl('Home'))}
-        className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+        className="fixed top-4 left-4 z-50 lg:hidden p-2.5 rounded-lg bg-white hover:shadow-md transition-all shadow-sm inline-flex items-center justify-center"
       >
-        <ArrowLeft size={20} className="text-[#404040]" />
+        <ArrowLeft size={22} className="text-[#404040]" />
       </button>
 
       <motion.div
@@ -60,9 +60,9 @@ export default function SelectRole() {
           {/* Desktop Back Button */}
           <button
             onClick={() => navigate(createPageUrl('Home'))}
-            className="mb-6 p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex mx-auto"
+            className="mb-6 p-2.5 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex mx-auto"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={22} />
           </button>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
