@@ -261,6 +261,47 @@ export default function Blog() {
         </div>
       </div>
 
+      {/* Article Modal */}
+      <Dialog open={selectedArticle !== null} onOpenChange={() => setSelectedArticle(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {selectedArticle && (
+            <div>
+              <div className="relative h-64 md:h-80 -mt-6 -mx-6 mb-6 overflow-hidden">
+                <img 
+                  src={selectedArticle.image} 
+                  alt={selectedArticle.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                  <div className="p-6 text-white">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(selectedArticle.category)} mb-3 inline-block`}>
+                      {selectedArticle.category}
+                    </span>
+                    <h2 className="text-3xl font-bold">{selectedArticle.title}</h2>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 px-2">
+                <div className="flex items-center gap-2">
+                  <Calendar size={16} />
+                  <span>{selectedArticle.date}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock size={16} />
+                  <span>{selectedArticle.readTime} de lectura</span>
+                </div>
+              </div>
+
+              <div 
+                className="prose prose-lg max-w-none px-2"
+                dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Newsletter Section */}
       <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
