@@ -20,6 +20,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
   const [saving, setSaving] = useState(false);
   const [availabilities, setAvailabilities] = useState([]);
   const [existingBookings, setExistingBookings] = useState([]);
+  const [googleEvents, setGoogleEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -38,6 +39,22 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
         });
         // Exclude current booking
         setExistingBookings(allBookings.filter(b => b.id !== booking.id));
+
+        // Load Google Calendar events if connected
+        const teachers = await base44.entities.Teacher.filter({ id: booking.teacher_id });
+        if (teachers.length > 0 && teachers[0].google_calendar_connected) {
+          try {
+            const response = await base44.functions.invoke('getGoogleCalendarEvents', {
+              userEmail: booking.teacher_email,
+              userType: 'teacher'
+            });
+            if (response.data?.events) {
+              setGoogleEvents(response.data.events);
+            }
+          } catch (error) {
+            console.error('Error loading Google Calendar events:', error);
+          }
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -122,12 +139,36 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
           .filter(b => b.date === dateStr)
           .forEach(b => blockedSlots.add(b.start_time));
         
+        // Block Google Calendar events
+        googleEvents.forEach(event => {
+          if (!event.start?.dateTime) return;
+          
+          const eventStart = new Date(event.start.dateTime);
+          const eventEnd = new Date(event.end.dateTime);
+          const eventDateStr = format(eventStart, 'yyyy-MM-dd');
+          
+          if (eventDateStr === dateStr) {
+            slots[dateStr]?.forEach(slot => {
+              const [slotHour, slotMin] = slot.split(':').map(Number);
+              const slotStart = new Date(dateStr);
+              slotStart.setHours(slotHour, slotMin, 0, 0);
+              const slotEnd = new Date(slotStart);
+              slotEnd.setHours(slotHour + 1, slotMin, 0, 0);
+              
+              // Check for overlap
+              if (slotStart < eventEnd && slotEnd > eventStart) {
+                blockedSlots.add(slot);
+              }
+            });
+          }
+        });
+        
         slots[dateStr] = slots[dateStr].filter(s => !blockedSlots.has(s));
       }
     }
     
     return slots;
-  }, [availabilities, existingBookings, booking, userRole]);
+  }, [availabilities, existingBookings, googleEvents, booking, userRole]);
 
   const handleSlotSelect = (date, time) => {
     setSelectedDate(date);
