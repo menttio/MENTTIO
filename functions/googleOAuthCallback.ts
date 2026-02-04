@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
         code,
         client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'),
         client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'),
-        redirect_uri: 'https://raulng16--mentio.app.base44.com/api/functions/googleOAuthCallback',
+        redirect_uri: 'https://menttio.base44.app/api/functions/googleOAuthCallback',
         grant_type: 'authorization_code',
       }),
     });
