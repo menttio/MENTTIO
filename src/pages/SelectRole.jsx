@@ -72,8 +72,9 @@ export default function SelectRole() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student Card */}
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-8 rounded-2xl shadow-lg transition-all border-2 border-gray-100"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
                 <GraduationCap className="text-[#41f2c0]" size={32} />
@@ -100,8 +101,10 @@ export default function SelectRole() {
 
             {/* Teacher Card */}
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-[#41f2c0]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white p-8 rounded-2xl shadow-lg transition-all border-2 border-gray-100"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
                 <BookOpen className="text-[#41f2c0]" size={32} />
