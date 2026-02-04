@@ -324,7 +324,7 @@ export default function Hero() {
           >
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Sparkles className="text-white" size={16} />
-              <span className="text-white text-sm font-medium">La revolución de las clases particulares</span>
+              <span className="text-white text-sm font-medium">Únete a miles de profesores y alumnos que ya confían en Menttio</span>
             </div>
             
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
