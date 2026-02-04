@@ -69,24 +69,31 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
 
   const generateHourlySlots = (timeSlots) => {
     const allSlots = [];
-    
+    const classDuration = booking?.duration_minutes || 60;
+
     timeSlots.forEach(slot => {
       const [startHour, startMin] = slot.start_time.split(':').map(Number);
       const [endHour, endMin] = slot.end_time.split(':').map(Number);
-      
+
+      // Calculate the last possible start time (end_time - class duration)
+      const endTimeInMinutes = endHour * 60 + endMin;
+      const lastStartTimeInMinutes = endTimeInMinutes - classDuration;
+
       let currentHour = startHour;
       let currentMin = startMin;
-      
-      while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
+      let currentTimeInMinutes = currentHour * 60 + currentMin;
+
+      while (currentTimeInMinutes <= lastStartTimeInMinutes) {
         allSlots.push(`${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`);
-        currentMin += 60;
+        currentMin += 30; // Generate slots every 30 minutes
         if (currentMin >= 60) {
           currentMin = 0;
           currentHour++;
         }
+        currentTimeInMinutes = currentHour * 60 + currentMin;
       }
     });
-    
+
     return allSlots;
   };
 
@@ -120,6 +127,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
       
       if (slots[dateStr]) {
         const blockedSlots = new Set();
+        const classDuration = booking?.duration_minutes || 60;
         
         // Block slots within 24h for students
         if (userRole === 'student') {
@@ -134,12 +142,33 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
           });
         }
         
-        // Block already booked slots
+        // Block slots based on existing bookings (check for overlap)
         existingBookings
           .filter(b => b.date === dateStr)
-          .forEach(b => blockedSlots.add(b.start_time));
+          .forEach(existingBooking => {
+            const [bookingHour, bookingMin] = existingBooking.start_time.split(':').map(Number);
+            const [bookingEndHour, bookingEndMin] = existingBooking.end_time.split(':').map(Number);
+            
+            // Block all slots where a new class would overlap
+            slots[dateStr]?.forEach(slot => {
+              const [slotHour, slotMin] = slot.split(':').map(Number);
+              
+              // New class would start at slotHour:slotMin and end classDuration minutes later
+              const newClassStart = slotHour * 60 + slotMin;
+              const newClassEnd = newClassStart + classDuration;
+              
+              // Existing booking time in minutes
+              const bookingStart = bookingHour * 60 + bookingMin;
+              const bookingEnd = bookingEndHour * 60 + bookingEndMin;
+              
+              // Check if they overlap: newClassStart < bookingEnd AND newClassEnd > bookingStart
+              if (newClassStart < bookingEnd && newClassEnd > bookingStart) {
+                blockedSlots.add(slot);
+              }
+            });
+          });
         
-        // Block Google Calendar events
+        // Block Google Calendar events (check for overlap)
         googleEvents.forEach(event => {
           if (!event.start?.dateTime) return;
           
@@ -150,12 +179,17 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
           if (eventDateStr === dateStr) {
             slots[dateStr]?.forEach(slot => {
               const [slotHour, slotMin] = slot.split(':').map(Number);
+              
+              // Create slot start time on the same date
               const slotStart = new Date(dateStr);
               slotStart.setHours(slotHour, slotMin, 0, 0);
-              const slotEnd = new Date(slotStart);
-              slotEnd.setHours(slotHour + 1, slotMin, 0, 0);
               
-              // Check for overlap
+              // Calculate when a class starting at this slot would end
+              const slotEnd = new Date(slotStart);
+              slotEnd.setMinutes(slotEnd.getMinutes() + classDuration);
+              
+              // Block if a class starting at this slot overlaps with the event
+              // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
               if (slotStart < eventEnd && slotEnd > eventStart) {
                 blockedSlots.add(slot);
               }
