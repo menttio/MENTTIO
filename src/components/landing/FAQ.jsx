@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     question: '¿Los alumnos tienen que pagar algo?',
-    answer: 'No. El registro y uso de la plataforma es 100% gratuito para alumnos. Solo pagas las clases que tomes directamente a través de Stripe, sin comisiones adicionales de Menπio.'
+    answer: 'No. El registro y uso de la plataforma es 100% gratuito para alumnos. Solo pagas las clases que tomes directamente a través de Stripe, sin comisiones adicionales de Menttio.'
   },
   {
     question: '¿Cómo se gestionan los pagos de las clases?',
@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     question: '¿Cómo me comunico con mi profesor/alumno?',
-    answer: 'Menπio incluye un sistema de chat integrado donde puedes comunicarte directamente con tus profesores o alumnos, compartir archivos, resolver dudas y coordinar las clases.'
+    answer: 'Menttio incluye un sistema de chat integrado donde puedes comunicarte directamente con tus profesores o alumnos, compartir archivos, resolver dudas y coordinar las clases.'
   },
   {
     question: '¿Puedo subir materiales y ejercicios?',
@@ -61,7 +61,7 @@ export default function FAQ() {
             Preguntas frecuentes
           </h2>
           <p className="text-xl text-gray-600">
-            Todo lo que necesitas saber sobre Menπio
+            Todo lo que necesitas saber sobre Menttio
           </p>
         </motion.div>
 

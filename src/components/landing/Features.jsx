@@ -67,7 +67,7 @@ export default function Features() {
             Todo lo que necesitas en un solo lugar
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Menπio automatiza todo el proceso de gestión de clases particulares para que te centres en lo importante: enseñar y aprender.
+            Menttio automatiza todo el proceso de gestión de clases particulares para que te centres en lo importante: enseñar y aprender.
           </p>
         </motion.div>
 

@@ -17,7 +17,7 @@ export default function Footer() {
             ¿Listo para empezar?
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            Únete a miles de profesores y alumnos que ya usan Menπio
+            Únete a miles de profesores y alumnos que ya usan Menttio
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             <Button
@@ -91,7 +91,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-400">
-            © 2026 Menπio. Todos los derechos reservados.
+            © 2026 Menttio. Todos los derechos reservados.
           </p>
           
           {/* Social Links */}

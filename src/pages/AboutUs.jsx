@@ -140,7 +140,7 @@ export default function AboutUs() {
           className="text-center mt-16"
         >
           <h2 className="text-3xl font-bold text-[#404040] mb-4">
-            ¿Listo para ser parte de Menπio?
+            ¿Listo para ser parte de Menttio?
           </h2>
           <p className="text-gray-600 mb-8 text-lg">
             Únete a nuestra comunidad y descubre una nueva forma de enseñar y aprender
