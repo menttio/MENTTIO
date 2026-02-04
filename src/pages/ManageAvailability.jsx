@@ -40,7 +40,7 @@ const DAYS_OF_WEEK = [
   { value: 0, label: 'Domingo' },
 ];
 
-const TIME_SLOTS = Array.from({ length: 28 }, (_, i) => {
+const TIME_SLOTS = Array.from({ length: 34 }, (_, i) => {
   const hour = Math.floor(i / 2) + 7;
   const minutes = i % 2 === 0 ? '00' : '30';
   return `${hour.toString().padStart(2, '0')}:${minutes}`;
