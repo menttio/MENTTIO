@@ -125,7 +125,7 @@ export default function Help() {
               </p>
               <div className="flex gap-3">
                 <Button variant="outline" className="w-full sm:w-auto text-sm">
-                  📧 mentio@menttio.com
+                  📧 menttio@menttio.com
                 </Button>
               </div>
             </CardContent>
