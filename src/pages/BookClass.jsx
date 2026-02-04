@@ -190,9 +190,10 @@ export default function BookClass() {
     const teacherAvailability = availabilities.filter(a => a.teacher_id === selectedTeacher.id);
     const teacherBookings = existingBookings.filter(b => b.teacher_id === selectedTeacher.id);
     
-    // Generate slots for next 30 days, starting from tomorrow
+    // Generate slots for next 30 days, starting from 24 hours from now
     const now = new Date();
     const minDate = addDays(now, 1);
+    const minDateTime = addDays(now, 1); // 24 hours minimum
     for (let i = 0; i < 30; i++) {
       const date = addDays(minDate, i);
       const dateStr = format(date, 'yyyy-MM-dd');
@@ -219,6 +220,17 @@ export default function BookClass() {
       // Filter out already booked slots considering 1-hour class duration
       if (slots[dateStr]) {
         const blockedSlots = new Set();
+        
+        // Block slots within the next 24 hours
+        slots[dateStr]?.forEach(slot => {
+          const [slotHour, slotMin] = slot.split(':').map(Number);
+          const slotDateTime = new Date(dateStr);
+          slotDateTime.setHours(slotHour, slotMin, 0, 0);
+          
+          if (slotDateTime < minDateTime) {
+            blockedSlots.add(slot);
+          }
+        });
         
         // Block slots based on existing bookings
         teacherBookings
