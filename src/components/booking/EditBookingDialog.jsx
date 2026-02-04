@@ -15,7 +15,7 @@ import { Loader2, Calendar, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import BookingCalendar from './BookingCalendar';
 
-export default function EditBookingDialog({ booking, open, onClose, onSave }) {
+export default function EditBookingDialog({ booking, open, onClose, onSave, userRole = 'student' }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [availabilities, setAvailabilities] = useState([]);
@@ -77,6 +77,8 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
     if (!booking) return {};
     
     const slots = {};
+    const now = new Date();
+    const minDateTime = userRole === 'student' ? addDays(now, 1) : now; // 24h for students, no limit for teachers
     
     for (let i = 0; i < 30; i++) {
       const date = addDays(new Date(), i);
@@ -100,16 +102,32 @@ export default function EditBookingDialog({ booking, open, onClose, onSave }) {
       }
       
       if (slots[dateStr]) {
-        const bookedSlots = existingBookings
-          .filter(b => b.date === dateStr)
-          .map(b => b.start_time);
+        const blockedSlots = new Set();
         
-        slots[dateStr] = slots[dateStr].filter(s => !bookedSlots.includes(s));
+        // Block slots within 24h for students
+        if (userRole === 'student') {
+          slots[dateStr]?.forEach(slot => {
+            const [slotHour, slotMin] = slot.split(':').map(Number);
+            const slotDateTime = new Date(dateStr);
+            slotDateTime.setHours(slotHour, slotMin, 0, 0);
+            
+            if (slotDateTime < minDateTime) {
+              blockedSlots.add(slot);
+            }
+          });
+        }
+        
+        // Block already booked slots
+        existingBookings
+          .filter(b => b.date === dateStr)
+          .forEach(b => blockedSlots.add(b.start_time));
+        
+        slots[dateStr] = slots[dateStr].filter(s => !blockedSlots.has(s));
       }
     }
     
     return slots;
-  }, [availabilities, existingBookings, booking]);
+  }, [availabilities, existingBookings, booking, userRole]);
 
   const handleSlotSelect = (date, time) => {
     setSelectedDate(date);

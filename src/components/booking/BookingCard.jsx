@@ -65,7 +65,10 @@ export default function BookingCard({
   const isCancelled = booking.status === 'cancelled';
   const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
 
-  const canModify = is24HoursBefore && !isCompleted && !isCancelled;
+  // Students need 24h advance, teachers can always modify
+  const canModify = userRole === 'teacher' 
+    ? !isCompleted && !isCancelled
+    : is24HoursBefore && !isCompleted && !isCancelled;
 
   // Load review for completed classes
   React.useEffect(() => {
@@ -444,7 +447,7 @@ export default function BookingCard({
         )}
 
         {/* Modification Warning */}
-        {!canModify && !isCompleted && !isCancelled && (
+        {!canModify && !isCompleted && !isCancelled && userRole === 'student' && (
           <div className="text-xs text-orange-500 mt-4 bg-orange-50 p-2 rounded-lg">
             ⚠️ No se puede modificar a menos de 24h de la clase
           </div>

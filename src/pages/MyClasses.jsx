@@ -200,6 +200,7 @@ export default function MyClasses() {
           open={!!editingBooking}
           onClose={() => setEditingBooking(null)}
           onSave={loadBookings}
+          userRole="student"
         />
       )}
 
