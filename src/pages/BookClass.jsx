@@ -126,23 +126,31 @@ export default function BookClass() {
   }, [selectedSubject, student, teachers]);
 
   // Helper function to generate slots every 30 minutes from time ranges
+  // Last slot ensures the class ends at end_time (not starts at end_time)
   const generateHourlySlots = (timeSlots) => {
     const allSlots = [];
+    const classDuration = 60; // 60 minutes class duration
 
     timeSlots.forEach(slot => {
       const [startHour, startMin] = slot.start_time.split(':').map(Number);
       const [endHour, endMin] = slot.end_time.split(':').map(Number);
 
+      // Calculate the last possible start time (end_time - class duration)
+      const endTimeInMinutes = endHour * 60 + endMin;
+      const lastStartTimeInMinutes = endTimeInMinutes - classDuration;
+
       let currentHour = startHour;
       let currentMin = startMin;
+      let currentTimeInMinutes = currentHour * 60 + currentMin;
 
-      while (currentHour < endHour || (currentHour === endHour && currentMin < endMin)) {
+      while (currentTimeInMinutes <= lastStartTimeInMinutes) {
         allSlots.push(`${currentHour.toString().padStart(2, '0')}:${currentMin.toString().padStart(2, '0')}`);
         currentMin += 30; // Generate slots every 30 minutes
         if (currentMin >= 60) {
           currentMin = 0;
           currentHour++;
         }
+        currentTimeInMinutes = currentHour * 60 + currentMin;
       }
     });
 
