@@ -19,8 +19,8 @@ Deno.serve(async (req) => {
       }, { status: 500 });
     }
 
-    // Use the app's published domain, not the function's domain
-    const redirectUri = 'https://raulng16--mentio.app.base44.com/api/oauth/callback';
+    // Use the correct function URL for callback
+    const redirectUri = 'https://raulng16--mentio.app.base44.com/api/functions/googleOAuthCallback';
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
