@@ -20,9 +20,10 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
   const [saving, setSaving] = useState(false);
   const [availabilities, setAvailabilities] = useState([]);
   const [existingBookings, setExistingBookings] = useState([]);
-  const [googleEvents, setGoogleEvents] = useState([]);
+  const [googleCalendarEvents, setGoogleCalendarEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [teacher, setTeacher] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -40,20 +41,10 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
         // Exclude current booking
         setExistingBookings(allBookings.filter(b => b.id !== booking.id));
 
-        // Load Google Calendar events if connected
+        // Load teacher
         const teachers = await base44.entities.Teacher.filter({ id: booking.teacher_id });
-        if (teachers.length > 0 && teachers[0].google_calendar_connected) {
-          try {
-            const response = await base44.functions.invoke('getGoogleCalendarEvents', {
-              userEmail: booking.teacher_email,
-              userType: 'teacher'
-            });
-            if (response.data?.events) {
-              setGoogleEvents(response.data.events);
-            }
-          } catch (error) {
-            console.error('Error loading Google Calendar events:', error);
-          }
+        if (teachers.length > 0) {
+          setTeacher(teachers[0]);
         }
       } catch (error) {
         console.error(error);
@@ -66,6 +57,31 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
       loadData();
     }
   }, [open, booking]);
+
+  // Load Google Calendar events when teacher is loaded
+  useEffect(() => {
+    const loadGoogleEvents = async () => {
+      if (!teacher?.google_calendar_connected) return;
+
+      try {
+        const now = new Date();
+        const endDate = addDays(now, 30);
+
+        const response = await base44.functions.invoke('getGoogleCalendarEvents', {
+          startDate: format(now, 'yyyy-MM-dd'),
+          endDate: format(endDate, 'yyyy-MM-dd'),
+          userType: 'teacher',
+          userEmail: teacher.user_email
+        });
+
+        setGoogleCalendarEvents(response.data.events || []);
+      } catch (error) {
+        console.error('Error loading Google Calendar events:', error);
+      }
+    };
+
+    loadGoogleEvents();
+  }, [teacher]);
 
   const generateHourlySlots = (timeSlots) => {
     const allSlots = [];
@@ -169,32 +185,34 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
           });
         
         // Block Google Calendar events (check for overlap)
-        googleEvents.forEach(event => {
-          if (!event.start?.dateTime) return;
-          
-          const eventStart = new Date(event.start.dateTime);
-          const eventEnd = new Date(event.end.dateTime);
-          const eventDateStr = format(eventStart, 'yyyy-MM-dd');
-          
-          if (eventDateStr === dateStr) {
-            slots[dateStr]?.forEach(slot => {
-              const [slotHour, slotMin] = slot.split(':').map(Number);
-              
-              // Create slot start time on the same date
-              const slotStart = new Date(dateStr);
-              slotStart.setHours(slotHour, slotMin, 0, 0);
-              
-              // Calculate when a class starting at this slot would end
-              const slotEnd = new Date(slotStart);
-              slotEnd.setMinutes(slotEnd.getMinutes() + classDuration);
-              
-              // Block if a class starting at this slot overlaps with the event
-              // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
-              if (slotStart < eventEnd && slotEnd > eventStart) {
-                blockedSlots.add(slot);
-              }
-            });
-          }
+        const eventsForDay = googleCalendarEvents.filter(e => {
+          if (!e.start || !e.end) return false;
+          const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
+          return eventDate === dateStr;
+        });
+
+        eventsForDay.forEach(e => {
+          const eventStart = parseISO(e.start);
+          const eventEnd = parseISO(e.end);
+
+          // Block all slots where a class would overlap with the event
+          slots[dateStr]?.forEach(slot => {
+            const [slotHour, slotMin] = slot.split(':').map(Number);
+
+            // Create slot start time on the same date
+            const slotStart = new Date(dateStr);
+            slotStart.setHours(slotHour, slotMin, 0, 0);
+
+            // Calculate when a class starting at this slot would end
+            const slotEnd = new Date(slotStart);
+            slotEnd.setMinutes(slotEnd.getMinutes() + classDuration);
+
+            // Block if a class starting at this slot overlaps with the event
+            // Overlap occurs if: slotStart < eventEnd AND slotEnd > eventStart
+            if (slotStart < eventEnd && slotEnd > eventStart) {
+              blockedSlots.add(slot);
+            }
+          });
         });
         
         slots[dateStr] = slots[dateStr].filter(s => !blockedSlots.has(s));
@@ -202,7 +220,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
     }
     
     return slots;
-  }, [availabilities, existingBookings, googleEvents, booking, userRole]);
+  }, [availabilities, existingBookings, googleCalendarEvents, booking, userRole]);
 
   const handleSlotSelect = (date, time) => {
     setSelectedDate(date);
