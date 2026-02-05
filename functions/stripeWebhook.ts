@@ -33,12 +33,42 @@ Deno.serve(async (req) => {
       // Update existing booking or create new one
       let booking;
       if (metadata.bookingId) {
+        // Get booking to get teacher info
+        const existingBooking = await base44.asServiceRole.entities.Booking.filter({ id: metadata.bookingId });
+        const bookingData = existingBooking[0];
+
         // Update existing booking
         booking = await base44.asServiceRole.entities.Booking.update(metadata.bookingId, {
           payment_status: 'paid',
           payment_method: 'stripe',
           stripe_payment_id: session.payment_intent
         });
+
+        // Notify teacher about payment
+        await base44.asServiceRole.entities.Notification.create({
+          user_id: bookingData.teacher_id,
+          user_email: bookingData.teacher_email,
+          type: 'booking_new',
+          title: 'Pago recibido',
+          message: `${bookingData.student_name} ha pagado la clase de ${bookingData.subject_name} del ${bookingData.date}`,
+          related_id: metadata.bookingId,
+          link_page: 'TeacherCalendar'
+        });
+
+        // Send push notification to teacher
+        try {
+          await base44.asServiceRole.functions.invoke('sendPushNotification', {
+            userEmail: bookingData.teacher_email,
+            title: 'Pago recibido',
+            body: `${bookingData.student_name} ha pagado la clase`,
+            data: {
+              booking_id: metadata.bookingId,
+              page: 'TeacherCalendar'
+            }
+          });
+        } catch (pushError) {
+          console.error('Error enviando push notification:', pushError);
+        }
       } else {
         // Create new booking (for backward compatibility)
         booking = await base44.asServiceRole.entities.Booking.create({
