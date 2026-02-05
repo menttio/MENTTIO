@@ -13,7 +13,7 @@ export default function AuthRedirect() {
         const user = await base44.auth.me();
         
         if (!user) {
-          window.location.href = createPageUrl('Home');
+          window.location.replace(createPageUrl('Home'));
           return;
         }
 
