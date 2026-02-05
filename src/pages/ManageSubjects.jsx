@@ -32,6 +32,7 @@ export default function ManageSubjects() {
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [price, setPrice] = useState('');
+  const [customSubjectName, setCustomSubjectName] = useState('');
   const [saving, setSaving] = useState(false);
   const [showTour, setShowTour] = useState(false);
 
@@ -68,38 +69,63 @@ export default function ManageSubjects() {
     setSelectedSubjectId('');
     setSelectedLevel('');
     setPrice('');
+    setCustomSubjectName('');
     setShowDialog(true);
   };
 
   const handleEdit = (subject) => {
     setEditingSubject(subject);
-    setSelectedSubjectId(subject.subject_id);
+    setSelectedSubjectId(subject.subject_id || 'custom');
     setSelectedLevel(subject.level || '');
     setPrice(subject.price_per_hour.toString());
+    setCustomSubjectName(subject.subject_id ? '' : subject.subject_name);
     setShowDialog(true);
   };
 
   const handleSave = async () => {
+    // Validate custom subject name if "Otro" is selected
+    if (selectedSubjectId === 'custom' && !customSubjectName.trim()) {
+      alert('Por favor, escribe el nombre de la asignatura');
+      return;
+    }
+    
     if (!selectedSubjectId || !selectedLevel || !price) return;
 
     setSaving(true);
     try {
-      const selectedSubject = allSubjects.find(s => s.id === selectedSubjectId);
+      const selectedSubject = selectedSubjectId !== 'custom' 
+        ? allSubjects.find(s => s.id === selectedSubjectId)
+        : null;
+      
+      const subjectName = selectedSubjectId === 'custom' 
+        ? customSubjectName.trim()
+        : selectedSubject.name;
+
       const currentSubjects = teacher.subjects || [];
 
       let updatedSubjects;
       if (editingSubject) {
         // Update existing
-        updatedSubjects = currentSubjects.map(s =>
-          s.subject_id === editingSubject.subject_id && s.level === editingSubject.level
-            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
-            : s
-        );
+        const oldSubjectIdentifier = editingSubject.subject_id || editingSubject.subject_name;
+        updatedSubjects = currentSubjects.map(s => {
+          const currentIdentifier = s.subject_id || s.subject_name;
+          if (currentIdentifier === oldSubjectIdentifier && s.level === editingSubject.level) {
+            return { 
+              subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+              subject_name: subjectName, 
+              level: selectedLevel, 
+              price_per_hour: parseFloat(price) 
+            };
+          }
+          return s;
+        });
       } else {
-        // Check for duplicates (same subject + same level)
-        const isDuplicate = currentSubjects.some(s => 
-          s.subject_id === selectedSubjectId && s.level === selectedLevel
-        );
+        // Check for duplicates
+        const isDuplicate = currentSubjects.some(s => {
+          const sIdentifier = s.subject_id || s.subject_name;
+          const newIdentifier = selectedSubjectId !== 'custom' ? selectedSubjectId : subjectName;
+          return sIdentifier === newIdentifier && s.level === selectedLevel;
+        });
 
         if (isDuplicate) {
           alert('Ya tienes esta asignatura con este nivel. Por favor, edita la existente o elige un nivel diferente.');
@@ -111,8 +137,8 @@ export default function ManageSubjects() {
         updatedSubjects = [
           ...currentSubjects,
           {
-            subject_id: selectedSubjectId,
-            subject_name: selectedSubject.name,
+            subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+            subject_name: subjectName,
             level: selectedLevel,
             price_per_hour: parseFloat(price)
           }
@@ -338,9 +364,23 @@ export default function ManageSubjects() {
                       {subject.name}
                     </SelectItem>
                   ))}
+                  <SelectItem value="custom">Otro (escribir asignatura)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            {selectedSubjectId === 'custom' && (
+              <div>
+                <Label>Nombre de la asignatura</Label>
+                <Input
+                  type="text"
+                  value={customSubjectName}
+                  onChange={(e) => setCustomSubjectName(e.target.value)}
+                  placeholder="Escribe el nombre de la asignatura"
+                  className="mt-2"
+                />
+              </div>
+            )}
 
             <div>
               <Label>Nivel</Label>
@@ -376,7 +416,7 @@ export default function ManageSubjects() {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={!selectedSubjectId || !selectedLevel || !price || saving}
+              disabled={!selectedSubjectId || !selectedLevel || !price || (selectedSubjectId === 'custom' && !customSubjectName.trim()) || saving}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}

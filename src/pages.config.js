@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AboutUs from './pages/AboutUs';
+import AuthRedirect from './pages/AuthRedirect';
 import Blog from './pages/Blog';
 import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
@@ -66,6 +67,7 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import RenewSubscription from './pages/RenewSubscription';
+import ReviewsHistory from './pages/ReviewsHistory';
 import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
@@ -73,19 +75,18 @@ import StudentSignup from './pages/StudentSignup';
 import StudentSignupComplete from './pages/StudentSignupComplete';
 import TeacherCalendar from './pages/TeacherCalendar';
 import TeacherClassHistory from './pages/TeacherClassHistory';
+import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
-import TeacherDashboard from './pages/TeacherDashboard';
-import AuthRedirect from './pages/AuthRedirect';
 import UserNotRegistered from './pages/UserNotRegistered';
-import ReviewsHistory from './pages/ReviewsHistory';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AboutUs": AboutUs,
+    "AuthRedirect": AuthRedirect,
     "Blog": Blog,
     "BookClass": BookClass,
     "ClassRecordings": ClassRecordings,
@@ -104,6 +105,7 @@ export const PAGES = {
     "PrivacyPolicy": PrivacyPolicy,
     "Profile": Profile,
     "RenewSubscription": RenewSubscription,
+    "ReviewsHistory": ReviewsHistory,
     "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
@@ -111,14 +113,12 @@ export const PAGES = {
     "StudentSignupComplete": StudentSignupComplete,
     "TeacherCalendar": TeacherCalendar,
     "TeacherClassHistory": TeacherClassHistory,
+    "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
-    "TeacherDashboard": TeacherDashboard,
-    "AuthRedirect": AuthRedirect,
     "UserNotRegistered": UserNotRegistered,
-    "ReviewsHistory": ReviewsHistory,
 }
 
 export const pagesConfig = {
