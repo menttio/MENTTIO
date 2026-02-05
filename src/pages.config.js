@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AboutUs from './pages/AboutUs';
+import AuthRedirect from './pages/AuthRedirect';
 import Blog from './pages/Blog';
 import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
@@ -73,18 +74,18 @@ import StudentSignup from './pages/StudentSignup';
 import StudentSignupComplete from './pages/StudentSignupComplete';
 import TeacherCalendar from './pages/TeacherCalendar';
 import TeacherClassHistory from './pages/TeacherClassHistory';
+import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
-import AuthRedirect from './pages/AuthRedirect';
-import TeacherDashboard from './pages/TeacherDashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AboutUs": AboutUs,
+    "AuthRedirect": AuthRedirect,
     "Blog": Blog,
     "BookClass": BookClass,
     "ClassRecordings": ClassRecordings,
@@ -110,13 +111,12 @@ export const PAGES = {
     "StudentSignupComplete": StudentSignupComplete,
     "TeacherCalendar": TeacherCalendar,
     "TeacherClassHistory": TeacherClassHistory,
+    "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
-    "AuthRedirect": AuthRedirect,
-    "TeacherDashboard": TeacherDashboard,
 }
 
 export const pagesConfig = {

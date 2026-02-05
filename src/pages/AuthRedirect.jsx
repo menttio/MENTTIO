@@ -32,10 +32,10 @@ export default function AuthRedirect() {
               window.location.href = createPageUrl('TeacherDashboard');
               return;
             } else {
-              // Not a teacher - redirect to warning page with role parameter
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=teacher';
+              // Not a teacher - redirect to warning page
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('UserNotRegistered');
               return;
             }
           } else if (selectedRole === 'student') {
@@ -47,10 +47,10 @@ export default function AuthRedirect() {
               window.location.href = createPageUrl('StudentDashboard');
               return;
             } else {
-              // Not a student - redirect to warning page with role parameter
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=student';
+              // Not a student - redirect to warning page
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('UserNotRegistered');
               return;
             }
           }

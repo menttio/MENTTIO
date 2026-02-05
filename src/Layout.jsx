@@ -107,8 +107,6 @@ export default function Layout({ children, currentPageName }) {
         }
       } catch (error) {
         console.error('Error loading user:', error);
-        // If auth fails, redirect to login
-        base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
       } finally {
         setLoading(false);
       }
