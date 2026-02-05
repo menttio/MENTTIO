@@ -73,7 +73,7 @@ export default function AuthRedirect() {
         window.location.replace(createPageUrl('UserNotRegistered'));
       } catch (error) {
         console.error('Error determining redirect:', error);
-        window.location.href = createPageUrl('Home');
+        window.location.replace(createPageUrl('Home'));
       }
     };
 
