@@ -80,6 +80,7 @@ import TermsOfService from './pages/TermsOfService';
 import TeacherDashboard from './pages/TeacherDashboard';
 import AuthRedirect from './pages/AuthRedirect';
 import UserNotRegistered from './pages/UserNotRegistered';
+import ReviewsHistory from './pages/ReviewsHistory';
 import __Layout from './Layout.jsx';
 
 
@@ -117,6 +118,7 @@ export const PAGES = {
     "TeacherDashboard": TeacherDashboard,
     "AuthRedirect": AuthRedirect,
     "UserNotRegistered": UserNotRegistered,
+    "ReviewsHistory": ReviewsHistory,
 }
 
 export const pagesConfig = {

@@ -40,6 +40,32 @@ export default function LeaveReviewDialog({ booking, student, open, onClose, onS
         rating: avgRating
       });
 
+      // Create notification for teacher
+      await base44.entities.Notification.create({
+        user_id: booking.teacher_id,
+        user_email: booking.teacher_email,
+        type: 'booking_new',
+        title: 'Nueva valoración',
+        message: `${student.full_name} ha valorado tu clase de ${booking.subject_name} con ${rating} estrellas`,
+        related_id: booking.id,
+        link_page: 'ReviewsHistory'
+      });
+
+      // Send push notification to teacher
+      try {
+        await base44.functions.invoke('sendPushNotification', {
+          userEmail: booking.teacher_email,
+          title: 'Nueva valoración',
+          body: `${student.full_name} te ha dado ${rating} estrellas`,
+          data: {
+            booking_id: booking.id,
+            page: 'ReviewsHistory'
+          }
+        });
+      } catch (pushError) {
+        console.error('Error enviando push notification:', pushError);
+      }
+
       onSave();
       onClose();
     } catch (error) {
