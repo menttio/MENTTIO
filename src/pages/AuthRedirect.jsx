@@ -10,9 +10,21 @@ export default function AuthRedirect() {
   useEffect(() => {
     const determineRedirect = async () => {
       try {
-        const user = await base44.auth.me();
+        // Check authentication
+        const isAuth = await base44.auth.isAuthenticated();
         
-        if (!user) {
+        if (!isAuth) {
+          window.location.href = createPageUrl('Home');
+          return;
+        }
+
+        // Get user info
+        let userEmail;
+        try {
+          const user = await base44.auth.me();
+          userEmail = user.email;
+        } catch (authError) {
+          console.error('Auth error:', authError);
           window.location.href = createPageUrl('Home');
           return;
         }
@@ -24,7 +36,7 @@ export default function AuthRedirect() {
         if (selectedRole && roleAction === 'login') {
           // User is trying to login with a specific role
           if (selectedRole === 'teacher') {
-            const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+            const teachers = await base44.entities.Teacher.filter({ user_email: userEmail });
             if (teachers.length > 0) {
               // Teacher account found
               sessionStorage.removeItem('selected_role');
@@ -39,7 +51,7 @@ export default function AuthRedirect() {
               return;
             }
           } else if (selectedRole === 'student') {
-            const students = await base44.entities.Student.filter({ user_email: user.email });
+            const students = await base44.entities.Student.filter({ user_email: userEmail });
             if (students.length > 0) {
               // Student account found
               sessionStorage.removeItem('selected_role');
@@ -57,13 +69,13 @@ export default function AuthRedirect() {
         }
         
         // No role selected or old flow - check what account type exists
-        const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+        const teachers = await base44.entities.Teacher.filter({ user_email: userEmail });
         if (teachers.length > 0) {
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
-        const students = await base44.entities.Student.filter({ user_email: user.email });
+        const students = await base44.entities.Student.filter({ user_email: userEmail });
         if (students.length > 0) {
           window.location.href = createPageUrl('StudentDashboard');
           return;

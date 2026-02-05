@@ -76,11 +76,11 @@ import TeacherCalendar from './pages/TeacherCalendar';
 import TeacherClassHistory from './pages/TeacherClassHistory';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
+import TeacherReviews from './pages/TeacherReviews';
 import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
-import TeacherReviews from './pages/TeacherReviews';
 import __Layout from './Layout.jsx';
 
 
@@ -114,11 +114,11 @@ export const PAGES = {
     "TeacherClassHistory": TeacherClassHistory,
     "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
+    "TeacherReviews": TeacherReviews,
     "TeacherSignup": TeacherSignup,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
-    "TeacherReviews": TeacherReviews,
 }
 
 export const pagesConfig = {
