@@ -10,18 +10,12 @@ export default function UserNotRegistered() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [detectedRole, setDetectedRole] = useState(null);
 
   useEffect(() => {
     const checkUser = async () => {
       try {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
-        
-        // Detect role from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const role = urlParams.get('role');
-        setDetectedRole(role);
       } catch (error) {
         console.error('Error loading user:', error);
         navigate(createPageUrl('Home'));
@@ -37,9 +31,15 @@ export default function UserNotRegistered() {
   };
 
   const handleGoToRegister = () => {
-    if (detectedRole === 'teacher') {
+    // Check URL parameters to determine role
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
+    
+    console.log('Role detected:', role); // Debug
+    
+    if (role === 'teacher') {
       window.location.href = createPageUrl('TeacherSignup');
-    } else if (detectedRole === 'student') {
+    } else if (role === 'student') {
       window.location.href = createPageUrl('StudentSignup');
     } else {
       window.location.href = createPageUrl('SelectRole');
