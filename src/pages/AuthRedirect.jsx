@@ -13,7 +13,7 @@ export default function AuthRedirect() {
         const user = await base44.auth.me();
         
         if (!user) {
-          window.location.replace(createPageUrl('Home'));
+          window.location.href = createPageUrl('Home');
           return;
         }
 
@@ -26,31 +26,31 @@ export default function AuthRedirect() {
           if (selectedRole === 'teacher') {
             const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
             if (teachers.length > 0) {
-              // Teacher account found - clean sessionStorage and redirect
+              // Teacher account found
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.replace(createPageUrl('TeacherDashboard'));
+              window.location.href = createPageUrl('TeacherDashboard');
               return;
             } else {
               // Not a teacher - redirect to warning page with role parameter
+              window.location.href = createPageUrl('UserNotRegistered') + '?role=teacher';
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.replace(createPageUrl('UserNotRegistered') + '?role=teacher');
               return;
             }
           } else if (selectedRole === 'student') {
             const students = await base44.entities.Student.filter({ user_email: user.email });
             if (students.length > 0) {
-              // Student account found - clean sessionStorage and redirect
+              // Student account found
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.replace(createPageUrl('StudentDashboard'));
+              window.location.href = createPageUrl('StudentDashboard');
               return;
             } else {
               // Not a student - redirect to warning page with role parameter
+              window.location.href = createPageUrl('UserNotRegistered') + '?role=student';
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.replace(createPageUrl('UserNotRegistered') + '?role=student');
               return;
             }
           }
@@ -59,21 +59,21 @@ export default function AuthRedirect() {
         // No role selected or old flow - check what account type exists
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
-          window.location.replace(createPageUrl('TeacherDashboard'));
+          window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
         const students = await base44.entities.Student.filter({ user_email: user.email });
         if (students.length > 0) {
-          window.location.replace(createPageUrl('StudentDashboard'));
+          window.location.href = createPageUrl('StudentDashboard');
           return;
         }
 
         // New user - redirect to warning page
-        window.location.replace(createPageUrl('UserNotRegistered'));
+        window.location.href = createPageUrl('UserNotRegistered');
       } catch (error) {
         console.error('Error determining redirect:', error);
-        window.location.replace(createPageUrl('Home'));
+        window.location.href = createPageUrl('Home');
       }
     };
 

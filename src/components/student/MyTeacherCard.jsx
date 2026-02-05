@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Star, User, Clock, BookOpen, Mail, Phone, GraduationCap, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import TeacherAvailability from './TeacherAvailability';
-import TeacherReviewsDialog from './TeacherReviewsDialog';
 
 export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
-  const [showReviews, setShowReviews] = useState(false);
   return (
     <Card className="hover:shadow-lg transition-all border border-gray-100">
       <CardContent className="p-6">
@@ -31,13 +29,10 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
             </h3>
             
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 md:gap-4 text-sm text-gray-600 mb-2">
-              <button
-                onClick={() => setShowReviews(true)}
-                className="flex items-center gap-1 hover:bg-yellow-50 px-2 py-1 rounded-lg transition-colors"
-              >
+              <div className="flex items-center gap-1">
                 <Star className="text-yellow-400 fill-yellow-400" size={16} />
                 <span className="font-semibold">{teacher.rating?.toFixed(1) || '5.0'}</span>
-              </button>
+              </div>
               <div className="flex items-center gap-1">
                 <BookOpen size={16} />
                 <span>{teacher.total_classes || 0} clases</span>
@@ -173,13 +168,6 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
           )}
         </div>
       </CardContent>
-
-      <TeacherReviewsDialog
-        teacherId={teacher.id}
-        teacherName={teacher.full_name}
-        open={showReviews}
-        onClose={() => setShowReviews(false)}
-      />
     </Card>
   );
 }

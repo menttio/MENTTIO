@@ -171,17 +171,15 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Link to={createPageUrl('TeacherReviews')} className="block">
-            <Card className="stats-rating hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-yellow-400 group">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <Star className="text-yellow-400 group-hover:scale-110 transition-transform" size={24} />
-                </div>
-                <p className="text-3xl font-bold text-[#404040]">{teacher?.rating?.toFixed(1) || '5.0'}</p>
-                <p className="text-sm text-gray-500">Valoración</p>
-              </CardContent>
-            </Card>
-          </Link>
+          <Card className="stats-rating">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between mb-2">
+                <Star className="text-yellow-400" size={24} />
+              </div>
+              <p className="text-3xl font-bold text-[#404040]">{teacher?.rating?.toFixed(1) || '5.0'}</p>
+              <p className="text-sm text-gray-500">Valoración</p>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
 
