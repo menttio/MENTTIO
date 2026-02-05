@@ -31,7 +31,8 @@ export default function UserNotRegistered() {
   };
 
   const handleGoToRegister = () => {
-    navigate(createPageUrl('SelectRole'));
+    // Logout first, then redirect to SelectRole page
+    base44.auth.logout(createPageUrl('SelectRole'));
   };
 
   if (loading) {
