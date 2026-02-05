@@ -51,6 +51,10 @@ export default function Layout({ children, currentPageName }) {
     const loadUser = async () => {
       try {
         const currentUser = await base44.auth.me();
+        if (!currentUser) {
+          setLoading(false);
+          return;
+        }
         setUser(currentUser);
         
         // Check if user is a teacher
