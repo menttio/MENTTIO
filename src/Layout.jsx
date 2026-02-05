@@ -122,6 +122,12 @@ export default function Layout({ children, currentPageName }) {
             // Redirect new users to registration warning
             if (currentPageName !== 'UserNotRegistered') {
               console.log('➡️ Redirigiendo a UserNotRegistered...');
+              // Save what type of page they were trying to access
+              if (teacherPages.includes(currentPageName)) {
+                localStorage.setItem('menttio_intended_role', 'teacher');
+              } else if (studentPages.includes(currentPageName)) {
+                localStorage.setItem('menttio_intended_role', 'student');
+              }
               window.location.href = createPageUrl('UserNotRegistered');
             }
           }

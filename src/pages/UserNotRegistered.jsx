@@ -31,8 +31,20 @@ export default function UserNotRegistered() {
   };
 
   const handleGoToRegister = () => {
-    // Logout first, then redirect to SelectRole page
-    base44.auth.logout(createPageUrl('SelectRole'));
+    // Check what role the user intended to access
+    const intendedRole = localStorage.getItem('menttio_intended_role');
+    localStorage.removeItem('menttio_intended_role'); // Clean up
+    
+    // Redirect to appropriate signup page based on intended role
+    let redirectPage = 'SelectRole'; // default
+    if (intendedRole === 'student') {
+      redirectPage = 'StudentSignup';
+    } else if (intendedRole === 'teacher') {
+      redirectPage = 'TeacherSignup';
+    }
+    
+    // Logout first, then redirect to signup page
+    base44.auth.logout(createPageUrl(redirectPage));
   };
 
   if (loading) {
