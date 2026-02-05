@@ -82,6 +82,7 @@ export default function Layout({ children, currentPageName }) {
               window.location.href = createPageUrl('RenewSubscription');
             }
           }
+          setLoading(false);
         } else {
           // Check if user is a student
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
@@ -94,8 +95,10 @@ export default function Layout({ children, currentPageName }) {
               window.location.href = createPageUrl('StudentDashboard');
               return;
             }
+            setLoading(false);
           } else {
             setUserRole('new');
+            setLoading(false);
             // Redirect new users to registration warning with role parameter
             if (currentPageName !== 'UserNotRegistered') {
               // Try to determine the intended role from the current page
@@ -107,7 +110,6 @@ export default function Layout({ children, currentPageName }) {
         }
       } catch (error) {
         console.error('Error loading user:', error);
-      } finally {
         setLoading(false);
       }
     };
