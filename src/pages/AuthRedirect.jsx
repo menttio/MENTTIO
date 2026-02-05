@@ -26,31 +26,31 @@ export default function AuthRedirect() {
           if (selectedRole === 'teacher') {
             const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
             if (teachers.length > 0) {
-              // Teacher account found
+              // Teacher account found - clean sessionStorage and redirect
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.href = createPageUrl('TeacherDashboard');
+              window.location.replace(createPageUrl('TeacherDashboard'));
               return;
             } else {
               // Not a teacher - redirect to warning page with role parameter
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=teacher';
+              window.location.replace(createPageUrl('UserNotRegistered') + '?role=teacher');
               return;
             }
           } else if (selectedRole === 'student') {
             const students = await base44.entities.Student.filter({ user_email: user.email });
             if (students.length > 0) {
-              // Student account found
+              // Student account found - clean sessionStorage and redirect
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.href = createPageUrl('StudentDashboard');
+              window.location.replace(createPageUrl('StudentDashboard'));
               return;
             } else {
               // Not a student - redirect to warning page with role parameter
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=student';
+              window.location.replace(createPageUrl('UserNotRegistered') + '?role=student');
               return;
             }
           }
