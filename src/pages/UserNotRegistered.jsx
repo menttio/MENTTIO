@@ -31,19 +31,7 @@ export default function UserNotRegistered() {
   };
 
   const handleGoToRegister = () => {
-    // Check URL parameters to determine role
-    const urlParams = new URLSearchParams(window.location.search);
-    const role = urlParams.get('role');
-    
-    console.log('Role detected:', role); // Debug
-    
-    if (role === 'teacher') {
-      window.location.href = createPageUrl('TeacherSignup');
-    } else if (role === 'student') {
-      window.location.href = createPageUrl('StudentSignup');
-    } else {
-      window.location.href = createPageUrl('SelectRole');
-    }
+    navigate(createPageUrl('SelectRole'));
   };
 
   if (loading) {

@@ -96,12 +96,9 @@ export default function Layout({ children, currentPageName }) {
             }
           } else {
             setUserRole('new');
-            // Redirect new users to registration warning with role parameter
+            // Redirect new users to registration warning
             if (currentPageName !== 'UserNotRegistered') {
-              // Try to determine the intended role from the current page
-              const isTeacherPage = teacherPages.includes(currentPageName);
-              const roleParam = isTeacherPage ? '?role=teacher' : '?role=student';
-              window.location.href = createPageUrl('UserNotRegistered') + roleParam;
+              window.location.href = createPageUrl('UserNotRegistered');
             }
           }
         }
