@@ -34,13 +34,18 @@ export default function Layout({ children, currentPageName }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
+    
     // Public pages that don't require authentication
     const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
     
     if (publicPages.includes(currentPageName)) {
+      console.log('✅ Página pública detectada:', currentPageName);
       setLoading(false);
       return;
     }
+
+    console.log('⚠️ Página privada - cargando usuario...');
 
     // Teacher-only pages
     const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory'];
@@ -50,61 +55,81 @@ export default function Layout({ children, currentPageName }) {
 
     const loadUser = async () => {
       try {
+        console.log('🔍 Intentando cargar usuario...');
         const currentUser = await base44.auth.me();
+        console.log('👤 Usuario cargado:', currentUser);
         setUser(currentUser);
         
         // Check if user is a teacher
+        console.log('🔍 Buscando profesor con email:', currentUser.email);
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+        console.log('📋 Profesores encontrados:', teachers.length);
+        
         if (teachers.length > 0) {
           const teacher = teachers[0];
+          console.log('👨‍🏫 Perfil profesor:', teacher);
           setProfile(teacher);
           // Verify subscription is active
           if (teacher.subscription_active && teacher.subscription_expires) {
             const expirationDate = new Date(teacher.subscription_expires);
             if (expirationDate > new Date()) {
+              console.log('✅ Profesor con suscripción activa');
               setUserRole('teacher');
               
               // Block access to student pages
               if (studentPages.includes(currentPageName)) {
+                console.log('🚫 Profesor intentando acceder a página de estudiante, redirigiendo...');
                 window.location.href = createPageUrl('TeacherDashboard');
                 return;
               }
             } else {
+              console.log('⏰ Suscripción expirada');
               // Subscription expired - redirect to renewal
               setUserRole('expired_teacher');
               if (currentPageName !== 'RenewSubscription') {
+                console.log('➡️ Redirigiendo a renovación...');
                 window.location.href = createPageUrl('RenewSubscription');
               }
             }
           } else {
+            console.log('❌ Sin suscripción activa');
             setUserRole('expired_teacher');
             if (currentPageName !== 'RenewSubscription') {
+              console.log('➡️ Redirigiendo a renovación...');
               window.location.href = createPageUrl('RenewSubscription');
             }
           }
         } else {
           // Check if user is a student
+          console.log('🔍 Buscando estudiante con email:', currentUser.email);
           const students = await base44.entities.Student.filter({ user_email: currentUser.email });
+          console.log('📋 Estudiantes encontrados:', students.length);
+          
           if (students.length > 0) {
+            console.log('👨‍🎓 Perfil estudiante:', students[0]);
             setProfile(students[0]);
             setUserRole('student');
             
             // Block access to teacher pages
             if (teacherPages.includes(currentPageName)) {
+              console.log('🚫 Estudiante intentando acceder a página de profesor, redirigiendo...');
               window.location.href = createPageUrl('StudentDashboard');
               return;
             }
           } else {
+            console.log('⚠️ Usuario no registrado como profesor ni estudiante');
             setUserRole('new');
             // Redirect new users to registration warning
             if (currentPageName !== 'UserNotRegistered') {
+              console.log('➡️ Redirigiendo a UserNotRegistered...');
               window.location.href = createPageUrl('UserNotRegistered');
             }
           }
         }
       } catch (error) {
-        console.error('Error loading user:', error);
+        console.error('❌ Error loading user:', error);
       } finally {
+        console.log('✅ Carga de usuario finalizada');
         setLoading(false);
       }
     };
