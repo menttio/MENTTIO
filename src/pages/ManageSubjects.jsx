@@ -369,8 +369,8 @@ export default function ManageSubjects() {
                 <Label>Nombre de la asignatura</Label>
                 <Input
                   type="text"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  value={customSubjectName}
+                  onChange={(e) => setCustomSubjectName(e.target.value)}
                   placeholder="Ej: Dibujo Técnico"
                   className="mt-2"
                 />
