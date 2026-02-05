@@ -50,19 +50,7 @@ export default function Layout({ children, currentPageName }) {
 
     const loadUser = async () => {
       try {
-        const isAuthenticated = await base44.auth.isAuthenticated();
-        if (!isAuthenticated) {
-          console.log('User not authenticated, redirecting to login');
-          base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
-          return;
-        }
-        
         const currentUser = await base44.auth.me();
-        if (!currentUser) {
-          console.log('No user data, redirecting to login');
-          base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
-          return;
-        }
         setUser(currentUser);
         
         // Check if user is a teacher
@@ -119,6 +107,8 @@ export default function Layout({ children, currentPageName }) {
         }
       } catch (error) {
         console.error('Error loading user:', error);
+        // If auth fails, redirect to login
+        base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
       } finally {
         setLoading(false);
       }
