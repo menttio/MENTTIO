@@ -43,7 +43,7 @@ export default function Layout({ children, currentPageName }) {
     }
 
     // Teacher-only pages
-    const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory'];
+    const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory', 'TeacherReviews'];
     
     // Student-only pages
     const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile'];
