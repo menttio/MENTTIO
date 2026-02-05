@@ -68,7 +68,6 @@ export default function ManageSubjects() {
     setSelectedSubjectId('');
     setSelectedLevel('');
     setPrice('');
-    setCustomSubjectName('');
     setShowDialog(true);
   };
 
@@ -80,32 +79,12 @@ export default function ManageSubjects() {
     setShowDialog(true);
   };
 
-  const [customSubjectName, setCustomSubjectName] = useState('');
-
   const handleSave = async () => {
     if (!selectedSubjectId || !selectedLevel || !price) return;
-    if (selectedSubjectId === 'custom' && !customSubjectName.trim()) return;
 
     setSaving(true);
     try {
-      let subjectName;
-      let finalSubjectId;
-
-      if (selectedSubjectId === 'custom') {
-        // Create a new subject for custom entry
-        const newSubject = await base44.entities.Subject.create({
-          name: customSubjectName,
-          icon: '📖',
-          description: 'Asignatura personalizada'
-        });
-        subjectName = newSubject.name;
-        finalSubjectId = newSubject.id;
-      } else {
-        const selectedSubject = allSubjects.find(s => s.id === selectedSubjectId);
-        subjectName = selectedSubject.name;
-        finalSubjectId = selectedSubjectId;
-      }
-
+      const selectedSubject = allSubjects.find(s => s.id === selectedSubjectId);
       const currentSubjects = teacher.subjects || [];
 
       let updatedSubjects;
@@ -113,13 +92,13 @@ export default function ManageSubjects() {
         // Update existing
         updatedSubjects = currentSubjects.map(s =>
           s.subject_id === editingSubject.subject_id && s.level === editingSubject.level
-            ? { subject_id: finalSubjectId, subject_name: subjectName, level: selectedLevel, price_per_hour: parseFloat(price) }
+            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
             : s
         );
       } else {
         // Check for duplicates (same subject + same level)
         const isDuplicate = currentSubjects.some(s => 
-          s.subject_id === finalSubjectId && s.level === selectedLevel
+          s.subject_id === selectedSubjectId && s.level === selectedLevel
         );
 
         if (isDuplicate) {
@@ -132,8 +111,8 @@ export default function ManageSubjects() {
         updatedSubjects = [
           ...currentSubjects,
           {
-            subject_id: finalSubjectId,
-            subject_name: subjectName,
+            subject_id: selectedSubjectId,
+            subject_name: selectedSubject.name,
             level: selectedLevel,
             price_per_hour: parseFloat(price)
           }
@@ -359,23 +338,9 @@ export default function ManageSubjects() {
                       {subject.name}
                     </SelectItem>
                   ))}
-                  <SelectItem value="custom">Otra asignatura</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-
-            {selectedSubjectId === 'custom' && (
-              <div>
-                <Label>Nombre de la asignatura</Label>
-                <Input
-                  type="text"
-                  value={customSubjectName}
-                  onChange={(e) => setCustomSubjectName(e.target.value)}
-                  placeholder="Ej: Dibujo Técnico"
-                  className="mt-2"
-                />
-              </div>
-            )}
 
             <div>
               <Label>Nivel</Label>
