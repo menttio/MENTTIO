@@ -10,21 +10,9 @@ export default function AuthRedirect() {
   useEffect(() => {
     const determineRedirect = async () => {
       try {
-        // Check authentication
-        const isAuth = await base44.auth.isAuthenticated();
+        const user = await base44.auth.me();
         
-        if (!isAuth) {
-          window.location.href = createPageUrl('Home');
-          return;
-        }
-
-        // Get user info
-        let userEmail;
-        try {
-          const user = await base44.auth.me();
-          userEmail = user.email;
-        } catch (authError) {
-          console.error('Auth error:', authError);
+        if (!user) {
           window.location.href = createPageUrl('Home');
           return;
         }
@@ -36,7 +24,7 @@ export default function AuthRedirect() {
         if (selectedRole && roleAction === 'login') {
           // User is trying to login with a specific role
           if (selectedRole === 'teacher') {
-            const teachers = await base44.entities.Teacher.filter({ user_email: userEmail });
+            const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
             if (teachers.length > 0) {
               // Teacher account found
               sessionStorage.removeItem('selected_role');
@@ -45,13 +33,13 @@ export default function AuthRedirect() {
               return;
             } else {
               // Not a teacher - redirect to warning page with role parameter
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=teacher';
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('UserNotRegistered') + '?role=teacher';
               return;
             }
           } else if (selectedRole === 'student') {
-            const students = await base44.entities.Student.filter({ user_email: userEmail });
+            const students = await base44.entities.Student.filter({ user_email: user.email });
             if (students.length > 0) {
               // Student account found
               sessionStorage.removeItem('selected_role');
@@ -60,22 +48,22 @@ export default function AuthRedirect() {
               return;
             } else {
               // Not a student - redirect to warning page with role parameter
-              window.location.href = createPageUrl('UserNotRegistered') + '?role=student';
               sessionStorage.removeItem('selected_role');
               sessionStorage.removeItem('role_action');
+              window.location.href = createPageUrl('UserNotRegistered') + '?role=student';
               return;
             }
           }
         }
         
         // No role selected or old flow - check what account type exists
-        const teachers = await base44.entities.Teacher.filter({ user_email: userEmail });
+        const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
-        const students = await base44.entities.Student.filter({ user_email: userEmail });
+        const students = await base44.entities.Student.filter({ user_email: user.email });
         if (students.length > 0) {
           window.location.href = createPageUrl('StudentDashboard');
           return;
