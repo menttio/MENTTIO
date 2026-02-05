@@ -59,18 +59,18 @@ export default function AuthRedirect() {
         // No role selected or old flow - check what account type exists
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
-          window.location.href = createPageUrl('TeacherDashboard');
+          window.location.replace(createPageUrl('TeacherDashboard'));
           return;
         }
 
         const students = await base44.entities.Student.filter({ user_email: user.email });
         if (students.length > 0) {
-          window.location.href = createPageUrl('StudentDashboard');
+          window.location.replace(createPageUrl('StudentDashboard'));
           return;
         }
 
         // New user - redirect to warning page
-        window.location.href = createPageUrl('UserNotRegistered');
+        window.location.replace(createPageUrl('UserNotRegistered'));
       } catch (error) {
         console.error('Error determining redirect:', error);
         window.location.href = createPageUrl('Home');
