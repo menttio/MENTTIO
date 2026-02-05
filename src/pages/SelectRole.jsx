@@ -28,6 +28,8 @@ export default function SelectRole() {
         navigate(createPageUrl('StudentSignup'));
       }
     } else {
+      // Store intended role for login flow
+      localStorage.setItem('menttio_intended_role', role);
       // Redirect to Google Auth for login
       base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
     }
