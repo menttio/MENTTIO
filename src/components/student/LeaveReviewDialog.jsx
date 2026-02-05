@@ -40,6 +40,17 @@ export default function LeaveReviewDialog({ booking, student, open, onClose, onS
         rating: avgRating
       });
 
+      // Create notification for teacher
+      await base44.entities.Notification.create({
+        user_id: booking.teacher_id,
+        user_email: booking.teacher_email,
+        type: 'booking_new',
+        title: 'Nueva reseña recibida',
+        message: `${student.full_name} te ha dejado una reseña de ${rating} estrellas`,
+        related_id: booking.id,
+        link_page: 'TeacherReviews'
+      });
+
       onSave();
       onClose();
     } catch (error) {
