@@ -30,6 +30,26 @@ Deno.serve(async (req) => {
 
       console.log('Payment successful for booking:', metadata.bookingId);
 
+      // Check if this is a subscription payment (new teacher)
+      if (metadata.type === 'subscription' && metadata.teacher_email) {
+        try {
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: 'menttio@menttio.com',
+            subject: 'Nuevo profesor suscrito',
+            body: `
+              <h2>Nuevo profesor se ha suscrito</h2>
+              <p><strong>Nombre:</strong> ${metadata.teacher_name || 'No especificado'}</p>
+              <p><strong>Email:</strong> ${metadata.teacher_email}</p>
+              <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
+              <p><strong>Monto:</strong> ${session.amount_total / 100}€</p>
+            `
+          });
+          console.log('Correo de nueva suscripción enviado a menttio@menttio.com');
+        } catch (emailError) {
+          console.error('Error enviando correo de suscripción:', emailError);
+        }
+      }
+
       // Update existing booking or create new one
       let booking;
       if (metadata.bookingId) {
