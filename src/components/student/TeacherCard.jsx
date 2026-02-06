@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Clock, DollarSign, User, Plus, Trash2 } from 'lucide-react';
+import { Star, Clock, DollarSign, User, Plus, Trash2, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
@@ -10,6 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function TeacherCard({ 
   teacher, 
@@ -20,7 +23,9 @@ export default function TeacherCard({
   showActions = true,
   selectedSubject = null
 }) {
+  const navigate = useNavigate();
   const [showAllSubjects, setShowAllSubjects] = useState(false);
+  const [startingChat, setStartingChat] = useState(false);
   
   const subjectInfo = selectedSubject 
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
@@ -37,6 +42,54 @@ export default function TeacherCard({
           ? `${minPrice}€ - ${maxPrice}€`
           : `${minPrice}€`;
       })();
+
+  const handleStartChat = async () => {
+    setStartingChat(true);
+    try {
+      const user = await base44.auth.me();
+      const students = await base44.entities.Student.filter({ user_email: user.email });
+      
+      if (students.length === 0) {
+        alert('No se encontró tu perfil de estudiante');
+        setStartingChat(false);
+        return;
+      }
+
+      const student = students[0];
+
+      // Check if conversation already exists
+      const existingConversations = await base44.entities.Conversation.filter({
+        student_id: student.id,
+        teacher_id: teacher.id
+      });
+
+      if (existingConversations.length > 0) {
+        // Navigate to existing conversation
+        navigate(createPageUrl('Messages'));
+        return;
+      }
+
+      // Create new conversation
+      await base44.entities.Conversation.create({
+        student_id: student.id,
+        student_name: student.full_name,
+        student_email: user.email,
+        teacher_id: teacher.id,
+        teacher_name: teacher.full_name,
+        teacher_email: teacher.user_email,
+        unread_count_student: 0,
+        unread_count_teacher: 0
+      });
+
+      // Navigate to messages
+      navigate(createPageUrl('Messages'));
+    } catch (error) {
+      console.error('Error starting chat:', error);
+      alert('Hubo un error al iniciar el chat');
+    } finally {
+      setStartingChat(false);
+    }
+  };
 
   return (
     <motion.div
@@ -125,6 +178,16 @@ export default function TeacherCard({
 
         {showActions && (
           <div className="flex gap-2 w-full md:w-auto">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleStartChat}
+              disabled={startingChat}
+              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white flex-1 md:flex-initial"
+            >
+              <MessageCircle size={16} className="mr-1" />
+              {startingChat ? 'Abriendo...' : 'Chatear'}
+            </Button>
             {isAssigned ? (
               <Button
                 size="sm"
