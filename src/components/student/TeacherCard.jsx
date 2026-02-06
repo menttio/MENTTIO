@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Star, Clock, DollarSign, User, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import TeacherAvailability from './TeacherAvailability';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function TeacherCard({ 
   teacher, 
@@ -14,6 +20,8 @@ export default function TeacherCard({
   showActions = true,
   selectedSubject = null
 }) {
+  const [showAllSubjects, setShowAllSubjects] = useState(false);
+  
   const subjectInfo = selectedSubject 
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
     : teacher.subjects?.[0];
@@ -83,8 +91,12 @@ export default function TeacherCard({
               </Badge>
             ))}
             {teacher.subjects?.length > 3 && (
-              <Badge variant="secondary" className="bg-gray-100 text-gray-500">
-                +{teacher.subjects.length - 3}
+              <Badge 
+                variant="secondary" 
+                className="bg-gray-100 text-gray-500 cursor-pointer hover:bg-gray-200"
+                onClick={() => setShowAllSubjects(true)}
+              >
+                +{teacher.subjects.length - 3} más
               </Badge>
             )}
           </div>
@@ -136,6 +148,32 @@ export default function TeacherCard({
           </div>
         )}
       </div>
+
+      {/* All Subjects Dialog */}
+      <Dialog open={showAllSubjects} onOpenChange={setShowAllSubjects}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Asignaturas de {teacher.full_name}</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-4">
+            {teacher.subjects?.map((subject, idx) => (
+              <div 
+                key={idx}
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-[#41f2c0] transition-colors"
+              >
+                <div className="flex-1">
+                  <p className="font-medium text-[#404040]">{subject.subject_name}</p>
+                  <p className="text-xs text-gray-500 mt-1">{subject.level}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-[#41f2c0]">{subject.price_per_hour}€</p>
+                  <p className="text-xs text-gray-500">por hora</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
