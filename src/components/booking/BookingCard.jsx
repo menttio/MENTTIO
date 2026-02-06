@@ -325,17 +325,17 @@ export default function BookingCard({
         </div>
 
         {/* Meet Link Button */}
-        {booking.meet_link && !isCancelled && (
+        {booking.meet_link && !isCancelled && !isCompleted && (
           <div className="mb-4">
             <a
               href={booking.meet_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#41f2c0] hover:bg-[#35d4a7] text-white font-medium rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm rounded-lg transition-colors"
             >
-              <VideoIcon size={18} />
+              <VideoIcon size={14} />
               Unirse a la videollamada
-              <ExternalLink size={14} />
+              <ExternalLink size={12} />
             </a>
           </div>
         )}
