@@ -117,6 +117,26 @@ Deno.serve(async (req) => {
       });
 
       console.log('Notifications created');
+
+      // Send email notification to Menttio
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: 'menttio@menttio.com',
+          subject: 'Nuevo alumno suscrito - Pago recibido',
+          body: `
+            <h2>Nuevo pago recibido</h2>
+            <p><strong>Alumno:</strong> ${metadata.student_name} (${metadata.student_email})</p>
+            <p><strong>Profesor:</strong> ${metadata.teacher_name}</p>
+            <p><strong>Asignatura:</strong> ${metadata.subject_name}</p>
+            <p><strong>Fecha:</strong> ${metadata.date} a las ${metadata.start_time}</p>
+            <p><strong>Precio:</strong> ${metadata.price}€</p>
+            <p><strong>ID de pago Stripe:</strong> ${session.payment_intent}</p>
+          `
+        });
+        console.log('Email enviado a menttio@menttio.com');
+      } catch (emailError) {
+        console.error('Error enviando email a menttio@menttio.com:', emailError);
+      }
     }
 
     return Response.json({ received: true });
