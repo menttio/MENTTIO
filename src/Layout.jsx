@@ -32,6 +32,7 @@ export default function Layout({ children, currentPageName }) {
   const [profile, setProfile] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
@@ -52,6 +53,22 @@ export default function Layout({ children, currentPageName }) {
     
     // Student-only pages
     const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile'];
+
+    const loadUnreadMessages = async (userEmail, role, profileId) => {
+      try {
+        const conversations = role === 'teacher'
+          ? await base44.entities.Conversation.filter({ teacher_id: profileId })
+          : await base44.entities.Conversation.filter({ student_id: profileId });
+        
+        const total = conversations.reduce((sum, conv) => {
+          return sum + (role === 'teacher' ? conv.unread_count_teacher : conv.unread_count_student);
+        }, 0);
+        
+        setUnreadCount(total);
+      } catch (error) {
+        console.error('Error loading unread messages:', error);
+      }
+    };
 
     const loadUser = async () => {
       try {
@@ -75,6 +92,9 @@ export default function Layout({ children, currentPageName }) {
             if (expirationDate > new Date()) {
               console.log('✅ Profesor con suscripción activa');
               setUserRole('teacher');
+              
+              // Load unread messages
+              loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
               
               // Block access to student pages
               if (studentPages.includes(currentPageName)) {
@@ -109,6 +129,9 @@ export default function Layout({ children, currentPageName }) {
             console.log('👨‍🎓 Perfil estudiante:', students[0]);
             setProfile(students[0]);
             setUserRole('student');
+            
+            // Load unread messages
+            loadUnreadMessages(currentUser.email, 'student', students[0].id);
             
             // Block access to teacher pages
             if (teacherPages.includes(currentPageName)) {
@@ -266,7 +289,7 @@ export default function Layout({ children, currentPageName }) {
                 to={createPageUrl(item.page)}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
+                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative",
                   currentPageName === item.page
                     ? "bg-[#41f2c0] text-white shadow-lg shadow-[#41f2c0]/30"
                     : "text-[#404040] hover:bg-gray-100"
@@ -274,6 +297,11 @@ export default function Layout({ children, currentPageName }) {
               >
                 <item.icon size={20} />
                 <span className="font-medium">{item.name}</span>
+                {item.page === 'Messages' && unreadCount > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>
