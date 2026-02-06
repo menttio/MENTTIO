@@ -16,7 +16,8 @@ import {
   Loader2,
   Star,
   CreditCard,
-  AlertCircle
+  AlertCircle,
+  VideoIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -322,6 +323,22 @@ export default function BookingCard({
             </span>
           </div>
         </div>
+
+        {/* Meet Link Button */}
+        {booking.meet_link && !isCancelled && (
+          <div className="mb-4">
+            <a
+              href={booking.meet_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#41f2c0] hover:bg-[#35d4a7] text-white font-medium rounded-lg transition-colors"
+            >
+              <VideoIcon size={18} />
+              Unirse a la videollamada
+              <ExternalLink size={14} />
+            </a>
+          </div>
+        )}
 
         {/* Price & Payment Status */}
         {booking.price && (
