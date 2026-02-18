@@ -80,12 +80,16 @@ Deno.serve(async (req) => {
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
     const endDateTime = `${booking.date}T${booking.end_time}:00`;
 
+    const eventTitle = targetUserType === 'teacher' 
+      ? `Clase de ${booking.subject_name} con ${booking.student_name}`
+      : `Clase de ${booking.subject_name} con ${booking.teacher_name}`;
+
     const eventDescription = targetUserType === 'teacher' 
       ? `Clase con ${booking.student_name}`
       : `Clase con ${booking.teacher_name}`;
 
     const event = {
-      summary: `Clase de ${booking.subject_name}`,
+      summary: eventTitle,
       description: eventDescription,
       start: {
         dateTime: startDateTime,
