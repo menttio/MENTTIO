@@ -59,9 +59,10 @@ export default function BookingCard({
 
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
+  const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
   const now = new Date();
   const is24HoursBefore = isAfter(bookingDateTime, addHours(now, 24));
-  const isPast = isBefore(bookingDateTime, now);
+  const isPast = isBefore(bookingEndDateTime, now);
   const isCompleted = booking.status === 'completed' || isPast;
   const isCancelled = booking.status === 'cancelled';
   const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
