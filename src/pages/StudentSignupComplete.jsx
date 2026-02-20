@@ -28,6 +28,24 @@ export default function StudentSignupComplete() {
           assigned_teachers: []
         });
 
+        // Enviar email de notificación a menttio
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: 'menttio@menttio.com',
+            subject: 'Nuevo Alumno Registrado - Menttio',
+            body: `
+              <h2>Nuevo Alumno Registrado</h2>
+              <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
+              <p><strong>Email:</strong> ${user.email}</p>
+              <p><strong>Teléfono:</strong> ${data.phone}</p>
+              <p><strong>Rol:</strong> Alumno</p>
+            `
+          });
+        } catch (emailError) {
+          console.error('Error enviando email de notificación:', emailError);
+          // No fallar el registro si falla el email
+        }
+
         sessionStorage.removeItem('student_signup_data');
         window.location.href = createPageUrl('StudentDashboard');
       } catch (error) {

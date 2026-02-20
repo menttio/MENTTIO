@@ -91,7 +91,28 @@ Deno.serve(async (req) => {
       // No fallar el registro si ya existe el usuario
     }
 
-    // 4. Devolver datos de la cuenta corporativa
+    // 4. Enviar email de notificación a menttio
+    try {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: 'menttio@menttio.com',
+        subject: 'Nuevo Profesor Registrado - Menttio',
+        body: `
+          <h2>Nuevo Profesor Registrado</h2>
+          <p><strong>Nombre:</strong> ${nombre} ${apellidos}</p>
+          <p><strong>Email personal:</strong> ${email_personal}</p>
+          <p><strong>Email corporativo:</strong> ${corporateData.email}</p>
+          <p><strong>Teléfono:</strong> ${phone}</p>
+          <p><strong>Formación:</strong> ${education}</p>
+          <p><strong>Años de experiencia:</strong> ${experience_years || 'No especificado'}</p>
+          <p><strong>Rol:</strong> Profesor</p>
+        `
+      });
+    } catch (emailError) {
+      console.error('Error enviando email de notificación:', emailError);
+      // No fallar el registro si falla el email
+    }
+
+    // 5. Devolver datos de la cuenta corporativa
     return Response.json({
       status: 'ok',
       email: corporateData.email,
