@@ -188,6 +188,29 @@ export default function SearchTeachers() {
         ...prev,
         assigned_teachers: updatedAssignments
       }));
+
+      // Enviar email de notificación al profesor
+      try {
+        const subjectName = subjects.find(s => s.id === subjectId)?.name || subject?.subject_name;
+        await base44.integrations.Core.SendEmail({
+          to: selectedTeacher.user_email,
+          subject: 'Nuevo alumno añadido - Menttio',
+          body: `
+            <h2>Nuevo Alumno Añadido</h2>
+            <p>Hola ${selectedTeacher.full_name},</p>
+            <p>Te informamos que un nuevo alumno te ha añadido como profesor:</p>
+            <p><strong>Alumno:</strong> ${student.full_name}</p>
+            <p><strong>Email:</strong> ${student.user_email}</p>
+            <p><strong>Teléfono:</strong> ${student.phone || 'No especificado'}</p>
+            <p><strong>Asignatura:</strong> ${subjectName} - ${level}</p>
+            <p>El alumno ya puede reservar clases contigo en esta asignatura.</p>
+            <p>¡Buena suerte!</p>
+          `
+        });
+      } catch (emailError) {
+        console.error('Error enviando email al profesor:', emailError);
+        // No fallar la asignación si falla el email
+      }
       
       setShowAssignDialog(false);
     } catch (error) {
