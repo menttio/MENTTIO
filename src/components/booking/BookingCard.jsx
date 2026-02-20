@@ -267,7 +267,7 @@ export default function BookingCard({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
             <Badge className={status.color}>{status.label}</Badge>
             {isCompleted && !isCancelled && (
               <Badge className={booking.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
