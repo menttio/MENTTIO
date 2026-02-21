@@ -6,7 +6,8 @@ import {
   Search,
   ChevronDown,
   Loader2,
-  User
+  User,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,7 @@ import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
+import CreateBookingDialog from '../components/teacher/CreateBookingDialog';
 
 export default function TeacherClassHistory() {
   const [bookings, setBookings] = useState([]);
@@ -40,6 +42,7 @@ export default function TeacherClassHistory() {
   const [sortBy, setSortBy] = useState('date_desc');
   const [editingBooking, setEditingBooking] = useState(null);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   const loadBookings = async () => {
     try {
@@ -144,9 +147,18 @@ export default function TeacherClassHistory() {
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#404040]">Historial de Clases</h1>
-        <p className="text-gray-500 mt-2">Todas tus clases con filtros avanzados</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-[#404040]">Historial de Clases</h1>
+          <p className="text-gray-500 mt-2">Todas tus clases con filtros avanzados</p>
+        </div>
+        <Button
+          onClick={() => setShowCreateDialog(true)}
+          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+        >
+          <Plus size={18} className="mr-2" />
+          Crear Reserva
+        </Button>
       </div>
 
       {/* Filters */}
@@ -293,6 +305,14 @@ export default function TeacherClassHistory() {
           userRole="teacher"
         />
       )}
+
+      {/* Create Booking Dialog */}
+      <CreateBookingDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        teacher={teacher}
+        onSuccess={loadBookings}
+      />
     </div>
   );
 }
