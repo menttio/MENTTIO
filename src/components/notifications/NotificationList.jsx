@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
@@ -8,7 +8,9 @@ import {
   X,
   CheckCheck,
   AlertCircle,
-  Bell
+  Bell,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
@@ -39,6 +41,7 @@ export default function NotificationList({
   onClose 
 }) {
   const navigate = useNavigate();
+  const [expandedIds, setExpandedIds] = useState(new Set());
 
   const handleNotificationClick = (notification) => {
     if (!notification.is_read) {
@@ -48,6 +51,19 @@ export default function NotificationList({
       navigate(createPageUrl(notification.link_page));
       onClose();
     }
+  };
+
+  const toggleExpanded = (id, e) => {
+    e.stopPropagation();
+    setExpandedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
   const hasUnread = notifications.some(n => !n.is_read);
@@ -122,9 +138,29 @@ export default function NotificationList({
                         )}
                       </div>
 
-                      <p className="text-sm text-gray-500 line-clamp-2 mb-1">
+                      <p className={cn(
+                        "text-sm text-gray-500 mb-1",
+                        !expandedIds.has(notification.id) && "line-clamp-2"
+                      )}>
                         {notification.message}
                       </p>
+
+                      {notification.message.length > 80 && (
+                        <button
+                          onClick={(e) => toggleExpanded(notification.id, e)}
+                          className="text-xs text-[#41f2c0] hover:text-[#35d4a7] font-medium flex items-center gap-1 mb-1"
+                        >
+                          {expandedIds.has(notification.id) ? (
+                            <>
+                              Ver menos <ChevronUp size={12} />
+                            </>
+                          ) : (
+                            <>
+                              Ver más <ChevronDown size={12} />
+                            </>
+                          )}
+                        </button>
+                      )}
 
                       <span className="text-xs text-gray-400">
                         {formatDistanceToNow(new Date(notification.created_date), { 
