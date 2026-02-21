@@ -104,13 +104,14 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
   // When student is selected, update available subjects
   useEffect(() => {
     if (selectedStudent) {
-      const studentAssignments = selectedStudent.assigned_teachers?.filter(
+      const studentObj = students.find(s => s.id === selectedStudent);
+      const studentAssignments = studentObj?.assigned_teachers?.filter(
         at => at.teacher_id === teacher.id
       ) || [];
       setAvailableSubjects(studentAssignments);
       setSelectedSubject(null);
     }
-  }, [selectedStudent, teacher]);
+  }, [selectedStudent, teacher, students]);
 
   const generateHourlySlots = (startHour = 6, endHour = 23) => {
     const allSlots = [];
