@@ -26,6 +26,16 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import PushNotificationSetup from '@/components/notifications/PushNotificationSetup';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export default function Layout({ children, currentPageName }) {
   const navigate = useNavigate();
