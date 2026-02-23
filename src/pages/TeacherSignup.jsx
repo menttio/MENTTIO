@@ -755,6 +755,33 @@ export default function TeacherSignup() {
                     </p>
                   </div>
 
+                  {formData.subscription_plan === 'basic' && (
+                    <div className="bg-green-50 border-2 border-green-200 rounded-xl p-5 mb-6">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                          <Check className="text-white" size={20} />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 14 días</h4>
+                          <div className="text-sm text-gray-700 space-y-2 text-left">
+                            <p className="flex items-start gap-2">
+                              <span className="text-green-600 mt-0.5">•</span>
+                              <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 14 días son completamente gratis, sin cargos.</span>
+                            </p>
+                            <p className="flex items-start gap-2">
+                              <span className="text-green-600 mt-0.5">•</span>
+                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 9,99€ automáticamente mediante el método de pago que registres.</span>
+                            </p>
+                            <p className="flex items-start gap-2">
+                              <span className="text-green-600 mt-0.5">•</span>
+                              <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 14 días de forma totalmente gratuita, sin ningún cargo.</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="border border-gray-200 rounded-xl p-4 max-h-64 overflow-y-auto bg-gray-50">
                     <h4 className="font-semibold text-[#404040] mb-3">Términos y Condiciones</h4>
                     <div className="text-sm text-gray-600 space-y-2">
@@ -812,9 +839,11 @@ export default function TeacherSignup() {
                     <div className="flex items-start gap-3">
                       <CreditCard className="text-yellow-600 mt-0.5" size={20} />
                       <div>
-                        <h4 className="font-semibold text-[#404040] mb-1">Nota sobre el pago</h4>
-                        <p className="text-sm text-gray-600">
-                          En esta versión demo, el registro se activa automáticamente. En producción, aquí se procesaría el pago con Stripe o PayPal.
+                        <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
+                        <p className="text-sm text-gray-600 text-left">
+                          {formData.subscription_plan === 'basic' 
+                            ? 'En esta versión demo, el registro se activa automáticamente. En producción, tras completar este formulario serás redirigido a un proceso de pago seguro donde registrarás tu método de pago para cuando finalice el período de prueba de 14 días.'
+                            : 'En esta versión demo, el registro se activa automáticamente. En producción, aquí se procesaría el pago con Stripe o PayPal.'}
                         </p>
                       </div>
                     </div>
