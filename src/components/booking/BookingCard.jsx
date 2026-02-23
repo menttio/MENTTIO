@@ -305,6 +305,28 @@ export default function BookingCard({
                     <FileUp size={14} className="mr-2" />
                     Subir archivo
                   </DropdownMenuItem>
+                  {userRole === 'teacher' && isCompleted && (
+                    <>
+                      {booking.payment_status !== 'paid' && (
+                        <DropdownMenuItem onClick={async () => {
+                          await base44.entities.Booking.update(booking.id, { payment_status: 'paid' });
+                          onRefresh?.();
+                        }}>
+                          <CreditCard size={14} className="mr-2" />
+                          Marcar como pagado
+                        </DropdownMenuItem>
+                      )}
+                      {booking.payment_status === 'paid' && (
+                        <DropdownMenuItem onClick={async () => {
+                          await base44.entities.Booking.update(booking.id, { payment_status: 'pending' });
+                          onRefresh?.();
+                        }}>
+                          <AlertCircle size={14} className="mr-2" />
+                          Marcar como no pagado
+                        </DropdownMenuItem>
+                      )}
+                    </>
+                  )}
                   {userRole === 'student' && isCompleted && onReview && (
                     <DropdownMenuItem onClick={() => onReview(booking)}>
                       <Star size={14} className="mr-2" />
