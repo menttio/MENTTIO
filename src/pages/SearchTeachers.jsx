@@ -48,7 +48,7 @@ export default function SearchTeachers() {
   const [selectedSubject, setSelectedSubject] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
-  const [recordingFilter, setRecordingFilter] = useState('all');
+  const [recordingFilter, setRecordingFilter] = useState('with');
   const [sortBy, setSortBy] = useState('rating');
   
   const [showAssignDialog, setShowAssignDialog] = useState(false);
