@@ -72,20 +72,33 @@ export default function BookingCard({
     ? !isCompleted && !isCancelled
     : is24HoursBefore && !isCompleted && !isCancelled;
 
-  // Load review for completed classes
+  // Load teacher info and review for completed classes
   React.useEffect(() => {
-    if (isCompleted && !isCancelled) {
-      setLoadingReview(true);
-      base44.entities.Review.filter({ booking_id: booking.id })
-        .then(reviews => {
-          if (reviews.length > 0) {
-            setReview(reviews[0]);
-          }
-        })
-        .catch(console.error)
-        .finally(() => setLoadingReview(false));
-    }
-  }, [booking.id, isCompleted, isCancelled]);
+    const loadData = async () => {
+      try {
+        const teachers = await base44.entities.Teacher.filter({ id: booking.teacher_id });
+        if (teachers.length > 0) {
+          setTeacher(teachers[0]);
+        }
+      } catch (error) {
+        console.error('Error loading teacher:', error);
+      }
+
+      if (isCompleted && !isCancelled) {
+        setLoadingReview(true);
+        base44.entities.Review.filter({ booking_id: booking.id })
+          .then(reviews => {
+            if (reviews.length > 0) {
+              setReview(reviews[0]);
+            }
+          })
+          .catch(console.error)
+          .finally(() => setLoadingReview(false));
+      }
+    };
+
+    loadData();
+  }, [booking.id, booking.teacher_id, isCompleted, isCancelled]);
 
   const statusConfig = {
     scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-white' },
@@ -439,8 +452,8 @@ export default function BookingCard({
           </div>
         )}
 
-        {/* Recording Link */}
-        {isCompleted && booking.recording_url && (
+        {/* Recording Link - Solo si el profesor tiene plan premium */}
+        {isCompleted && booking.recording_url && teacher?.subscription_plan === 'premium' && (
           <div className="border-t border-gray-100 pt-4 mt-4">
             <a
               href={booking.recording_url}
@@ -452,6 +465,16 @@ export default function BookingCard({
               Ver grabación de la clase
               <ExternalLink size={14} />
             </a>
+          </div>
+        )}
+
+        {/* Mensaje si el profesor no tiene plan premium */}
+        {isCompleted && !isCancelled && teacher?.subscription_plan === 'basic' && (
+          <div className="border-t border-gray-100 pt-4 mt-4">
+            <div className="flex items-center gap-2 text-gray-400 text-sm">
+              <Video size={16} />
+              <span>Grabación no disponible (el profesor tiene el plan básico)</span>
+            </div>
           </div>
         )}
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Clock, DollarSign, User, Plus, Trash2, MessageCircle } from 'lucide-react';
+import { Star, Clock, DollarSign, User, Plus, Trash2, MessageCircle, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
@@ -150,6 +150,12 @@ export default function TeacherCard({
                 onClick={() => setShowAllSubjects(true)}
               >
                 +{teacher.subjects.length - 3} más
+              </Badge>
+            )}
+            {teacher.subscription_plan === 'premium' && (
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700 flex items-center gap-1">
+                <Video size={12} />
+                Grabación
               </Badge>
             )}
           </div>
