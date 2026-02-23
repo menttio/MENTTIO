@@ -125,7 +125,7 @@ export default function Pricing() {
                     </div>
 
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-yellow-400/40 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#404040] rounded-xl flex items-center justify-center">
                         <Crown className="text-white" size={24} />
                       </div>
                       <div>
