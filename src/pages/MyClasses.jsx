@@ -33,6 +33,15 @@ export default function MyClasses() {
   const [editingBooking, setEditingBooking] = useState(null);
   const [reviewingBooking, setReviewingBooking] = useState(null);
 
+  // Check URL params to set initial tab
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'unpaid') {
+      setFilter('unpaid');
+    }
+  }, []);
+
   const loadBookings = async () => {
     try {
       const user = await base44.auth.me();
