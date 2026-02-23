@@ -22,11 +22,13 @@ Deno.serve(async (req) => {
       const teacherId = teachers[0].id;
       const teacherData = teachers[0];
       
-      // Send webhook to N8N to delete corporate account
+      // Send webhook to N8N ONLY for premium teachers (those with @menttio.com corporate email)
       console.log('Teacher data:', teacherData);
       console.log('Corporate email:', teacherData.corporate_email);
+      console.log('Subscription plan:', teacherData.subscription_plan);
       
-      if (teacherData.corporate_email) {
+      // Only send webhook if premium plan (corporate email with @menttio.com)
+      if (teacherData.corporate_email && teacherData.corporate_email.includes('@menttio.com')) {
         try {
           const webhookUrl = Deno.env.get('N8N_DELETE_TEACHER_WEBHOOK_URL');
           console.log('Webhook URL:', webhookUrl);
@@ -36,7 +38,7 @@ Deno.serve(async (req) => {
               primaryEmail: teacherData.corporate_email,
               googleUserId: teacherData.corporate_email
             };
-            console.log('Sending webhook payload:', payload);
+            console.log('Sending webhook payload for premium teacher:', payload);
             
             const response = await fetch(webhookUrl, {
               method: 'POST',
@@ -64,7 +66,7 @@ Deno.serve(async (req) => {
           // Continue with deletion even if webhook fails
         }
       } else {
-        console.log('No corporate_email found, skipping webhook');
+        console.log('Basic plan teacher (no @menttio.com email) - skipping webhook');
       }
       
       // Delete availability
