@@ -10,6 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -137,17 +143,33 @@ export default function TeacherCard({
 
           {/* Recording Badge - Prominent */}
           <div className="mt-2 mb-1">
-            {hasRecording ? (
-              <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 w-fit">
-                <Video size={14} />
-                <span className="font-medium">Grabación disponible</span>
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 w-fit">
-                <Video size={14} className="opacity-50" />
-                <span>Sin grabación</span>
-              </Badge>
-            )}
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  {hasRecording ? (
+                    <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 w-fit cursor-default pointer-events-auto">
+                      <Video size={14} />
+                      <span className="font-medium">Grabación disponible</span>
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 w-fit cursor-default pointer-events-auto">
+                      <Video size={14} className="opacity-50" />
+                      <span>Sin grabación</span>
+                    </Badge>
+                  )}
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="font-medium mb-1">
+                    {hasRecording ? '✓ Grabación disponible' : '✗ Sin grabación'}
+                  </p>
+                  <p className="text-sm">
+                    {hasRecording 
+                      ? 'Las clases con este profesor se graban automáticamente. Podrás verlas repetidas desde la plataforma todas las veces que quieras.'
+                      : 'Las clases con este profesor no se graban. Solo podrás asistir en vivo a la clase.'}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* Subjects */}
