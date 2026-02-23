@@ -364,7 +364,9 @@ export default function TeacherSignup() {
             Creando tu perfil...
           </h2>
           <p className="text-gray-600">
-            Estamos configurando tu cuenta corporativa, esto tomará unos segundos
+            {formData.subscription_plan === 'premium' 
+              ? 'Estamos configurando tu cuenta corporativa, esto tomará unos segundos'
+              : 'Configurando tu perfil de profesor, esto tomará unos segundos'}
           </p>
         </motion.div>
       </div>
