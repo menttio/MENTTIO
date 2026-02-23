@@ -147,20 +147,17 @@ export default function Layout({ children, currentPageName }) {
             // Load unread messages
             loadUnreadMessages(currentUser.email, 'student', students[0].id);
             
-            // Check for unpaid bookings (only if not shown in this session)
-            const hasShownPaymentReminder = sessionStorage.getItem('payment_reminder_shown');
-            if (!hasShownPaymentReminder) {
-              const studentBookings = await base44.entities.Booking.filter({ 
-                student_id: students[0].id,
-                payment_status: 'pending'
-              });
-              // Filter out cancelled bookings
-              const unpaidNonCancelled = studentBookings.filter(b => b.status !== 'cancelled');
-              
-              if (unpaidNonCancelled.length > 0) {
-                setUnpaidBookings(unpaidNonCancelled);
-                setShowPaymentReminder(true);
-              }
+            // Check for unpaid bookings
+            const studentBookings = await base44.entities.Booking.filter({ 
+              student_id: students[0].id,
+              payment_status: 'pending'
+            });
+            // Filter out cancelled bookings
+            const unpaidNonCancelled = studentBookings.filter(b => b.status !== 'cancelled');
+            
+            if (unpaidNonCancelled.length > 0) {
+              setUnpaidBookings(unpaidNonCancelled);
+              setShowPaymentReminder(true);
             }
             
             // Block access to teacher pages
@@ -293,10 +290,7 @@ export default function Layout({ children, currentPageName }) {
             <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
-                onClick={() => {
-                  setShowPaymentReminder(false);
-                  sessionStorage.setItem('payment_reminder_shown', 'true');
-                }}
+                onClick={() => setShowPaymentReminder(false)}
                 className="w-full sm:w-auto"
               >
                 Cerrar
@@ -304,7 +298,6 @@ export default function Layout({ children, currentPageName }) {
               <Button
                 onClick={() => {
                   setShowPaymentReminder(false);
-                  sessionStorage.setItem('payment_reminder_shown', 'true');
                   navigate(createPageUrl('MyClasses') + '?tab=unpaid');
                 }}
                 className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7]"
