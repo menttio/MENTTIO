@@ -136,6 +136,17 @@ export default function TeacherProfile() {
                   </Badge>
                 ))}
               </div>
+
+              {teacher.subscription_plan && (
+                <div className="mt-4 flex items-center gap-2">
+                  <Badge className={teacher.subscription_plan === 'premium' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}>
+                    Plan {teacher.subscription_plan === 'premium' ? 'Premium' : 'Básico'}
+                  </Badge>
+                  {teacher.subscription_plan === 'premium' && (
+                    <span className="text-sm text-gray-500">• Incluye grabación de clases</span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info } from 'lucide-react';
+import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Select,
@@ -34,7 +35,8 @@ export default function TeacherSignup() {
     phone: '',
     email_personal: '',
     education: '',
-    experience_years: 0
+    experience_years: 0,
+    subscription_plan: 'premium'
   });
 
   const [teacherSubjects, setTeacherSubjects] = useState([]);
@@ -150,7 +152,8 @@ export default function TeacherSignup() {
         phone: formData.phone,
         education: formData.education,
         experience_years: formData.experience_years,
-        subjects: teacherSubjects
+        subjects: teacherSubjects,
+        subscription_plan: formData.subscription_plan
       });
 
       console.log('Respuesta completa:', response);
@@ -455,11 +458,91 @@ export default function TeacherSignup() {
                     />
                   </div>
 
-                  <div className="bg-[#41f2c0]/10 rounded-xl p-4 mt-6">
-                    <h4 className="font-semibold text-[#404040] mb-2">💼 Suscripción Mensual</h4>
-                    <p className="text-sm text-gray-600">
-                      Acceso completo a la plataforma por 19,99€/mes.
-                    </p>
+                  <div className="space-y-3 mt-6">
+                    <label className="block text-sm font-medium text-[#404040] mb-3">
+                      Selecciona tu plan *
+                    </label>
+                    
+                    <div 
+                      onClick={() => setFormData({ ...formData, subscription_plan: 'basic' })}
+                      className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
+                        formData.subscription_plan === 'basic' 
+                          ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
+                          <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                        </div>
+                        {formData.subscription_plan === 'basic' && (
+                          <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                            <Check className="text-white" size={16} />
+                          </div>
+                        )}
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Gestión de clases y calendario
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Chat con alumnos
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Gestión de disponibilidad
+                        </li>
+                        <li className="flex items-center gap-2 text-gray-400">
+                          <X size={14} />
+                          Sin grabación de clases
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div 
+                      onClick={() => setFormData({ ...formData, subscription_plan: 'premium' })}
+                      className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
+                        formData.subscription_plan === 'premium' 
+                          ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
+                            <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
+                          </div>
+                          <p className="text-2xl font-bold text-[#404040] mt-1">19,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                        </div>
+                        {formData.subscription_plan === 'premium' && (
+                          <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                            <Check className="text-white" size={16} />
+                          </div>
+                        )}
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Gestión de clases y calendario
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Chat con alumnos
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <Check size={14} className="text-[#41f2c0]" />
+                          Gestión de disponibilidad
+                        </li>
+                        <li className="flex items-center gap-2 font-medium text-[#41f2c0]">
+                          <Check size={14} />
+                          Grabación y almacenamiento de clases
+                        </li>
+                      </ul>
+                    </div>
                   </div>
 
                   <Button
@@ -604,9 +687,15 @@ export default function TeacherSignup() {
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
                     <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-[#404040]">19,99€</span>
+                      <span className="text-5xl font-bold text-[#404040]">
+                        {formData.subscription_plan === 'basic' ? '14,99€' : '19,99€'}
+                      </span>
                       <span className="text-gray-500">/mes</span>
                     </div>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Plan {formData.subscription_plan === 'basic' ? 'Básico' : 'Premium'}
+                      {formData.subscription_plan === 'premium' && ' (con grabación de clases)'}
+                    </p>
                   </div>
 
                   <div className="border border-gray-200 rounded-xl p-4 max-h-64 overflow-y-auto bg-gray-50">

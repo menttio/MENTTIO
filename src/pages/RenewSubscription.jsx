@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { AlertCircle, CreditCard, Check, Loader2 } from 'lucide-react';
+import { AlertCircle, CreditCard, Check, Loader2, Video, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 
 export default function RenewSubscription() {
@@ -12,6 +13,7 @@ export default function RenewSubscription() {
   const [teacher, setTeacher] = useState(null);
   const [loading, setLoading] = useState(true);
   const [renewing, setRenewing] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('premium');
 
   useEffect(() => {
     const loadTeacher = async () => {
@@ -20,6 +22,7 @@ export default function RenewSubscription() {
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (teachers.length > 0) {
           setTeacher(teachers[0]);
+          setSelectedPlan(teachers[0].subscription_plan || 'premium');
         }
       } catch (error) {
         console.error(error);
@@ -39,7 +42,8 @@ export default function RenewSubscription() {
 
       await base44.entities.Teacher.update(teacher.id, {
         subscription_active: true,
-        subscription_expires: newExpirationDate.toISOString().split('T')[0]
+        subscription_expires: newExpirationDate.toISOString().split('T')[0],
+        subscription_plan: selectedPlan
       });
 
       navigate(createPageUrl('TeacherDashboard'));
@@ -78,51 +82,112 @@ export default function RenewSubscription() {
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="bg-[#41f2c0]/10 rounded-2xl p-4 md:p-6 text-center">
-              <p className="text-xs md:text-sm text-gray-500 mb-2">Renovación mensual</p>
-              <div className="flex items-baseline justify-center gap-2 mb-4">
-                <span className="text-3xl md:text-5xl font-bold text-[#404040]">29€</span>
-                <span className="text-sm md:text-base text-gray-500">/mes</span>
-              </div>
-              <ul className="text-left space-y-2 max-w-sm mx-auto mb-6">
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="text-[#41f2c0] mt-0.5" size={16} />
-                  <span>Acceso completo a la plataforma</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="text-[#41f2c0] mt-0.5" size={16} />
-                  <span>Sin límite de alumnos ni clases</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="text-[#41f2c0] mt-0.5" size={16} />
-                  <span>Herramientas de gestión avanzadas</span>
-                </li>
-                <li className="flex items-start gap-2 text-sm">
-                  <Check className="text-[#41f2c0] mt-0.5" size={16} />
-                  <span>Soporte prioritario</span>
-                </li>
-              </ul>
-
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
-                <div className="flex items-start gap-3">
-                  <CreditCard className="text-yellow-600 mt-0.5" size={20} />
+            <div className="space-y-4">
+              <label className="block text-sm font-medium text-[#404040] text-center mb-4">
+                Selecciona tu plan de renovación
+              </label>
+              
+              <div 
+                onClick={() => setSelectedPlan('basic')}
+                className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
+                  selectedPlan === 'basic' 
+                    ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
-                    <p className="text-sm text-gray-600 text-left">
-                      En esta versión demo, la renovación es automática. En producción, aquí se procesaría el pago.
-                    </p>
+                    <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
+                    <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
+                  {selectedPlan === 'basic' && (
+                    <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                      <Check className="text-white" size={16} />
+                    </div>
+                  )}
+                </div>
+                <ul className="text-sm text-gray-600 space-y-1 mt-3">
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Gestión de clases y calendario
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Chat con alumnos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Gestión de disponibilidad
+                  </li>
+                  <li className="flex items-center gap-2 text-gray-400">
+                    <X size={14} />
+                    Sin grabación de clases
+                  </li>
+                </ul>
+              </div>
+
+              <div 
+                onClick={() => setSelectedPlan('premium')}
+                className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
+                  selectedPlan === 'premium' 
+                    ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
+                      <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
+                    </div>
+                    <p className="text-2xl font-bold text-[#404040] mt-1">19,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                  </div>
+                  {selectedPlan === 'premium' && (
+                    <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
+                      <Check className="text-white" size={16} />
+                    </div>
+                  )}
+                </div>
+                <ul className="text-sm text-gray-600 space-y-1 mt-3">
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Gestión de clases y calendario
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Chat con alumnos
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="text-[#41f2c0]" />
+                    Gestión de disponibilidad
+                  </li>
+                  <li className="flex items-center gap-2 font-medium text-[#41f2c0]">
+                    <Video size={14} />
+                    Grabación y almacenamiento de clases
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <CreditCard className="text-yellow-600 mt-0.5" size={20} />
+                <div>
+                  <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
+                  <p className="text-sm text-gray-600 text-left">
+                    En esta versión demo, la renovación es automática. En producción, aquí se procesaría el pago.
+                  </p>
                 </div>
               </div>
-
-              <Button
-                onClick={handleRenew}
-                disabled={renewing}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
-              >
-                {renewing ? <Loader2 className="animate-spin" /> : 'Renovar Suscripción'}
-              </Button>
             </div>
+
+            <Button
+              onClick={handleRenew}
+              disabled={renewing}
+              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
+            >
+              {renewing ? <Loader2 className="animate-spin" /> : `Renovar con Plan ${selectedPlan === 'basic' ? 'Básico' : 'Premium'}`}
+            </Button>
 
             <div className="text-center">
               <Button
