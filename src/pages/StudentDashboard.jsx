@@ -15,7 +15,8 @@ import {
   Star,
   DollarSign,
   Play,
-  ExternalLink
+  ExternalLink,
+  Video
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -297,11 +298,19 @@ export default function StudentDashboard() {
                             <h3 className="font-semibold text-[#404040] truncate">
                               {teacher.full_name}
                             </h3>
-                            <div className="flex items-center gap-1 mt-1">
-                              <Star className="text-yellow-400 fill-yellow-400" size={12} />
-                              <span className="text-sm text-gray-500">
-                                {teacher.rating?.toFixed(1) || '5.0'}
-                              </span>
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <div className="flex items-center gap-1">
+                                <Star className="text-yellow-400 fill-yellow-400" size={12} />
+                                <span className="text-sm text-gray-500">
+                                  {teacher.rating?.toFixed(1) || '5.0'}
+                                </span>
+                              </div>
+                              {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') && (
+                                <Badge className="bg-green-100 text-green-700 border border-green-200 text-xs flex items-center gap-1">
+                                  <Video size={10} />
+                                  <span>Grabación</span>
+                                </Badge>
+                              )}
                             </div>
                           </div>
                           

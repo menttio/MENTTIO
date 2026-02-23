@@ -1,8 +1,14 @@
 import React from 'react';
-import { Star, User, Clock, BookOpen, Mail, Phone, GraduationCap, Award } from 'lucide-react';
+import { Star, User, Clock, BookOpen, Mail, Phone, GraduationCap, Award, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import TeacherAvailability from './TeacherAvailability';
 
 export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
@@ -50,6 +56,50 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
                 </Badge>
               ))}
             </div>
+
+            {/* Recording Badge */}
+            <TooltipProvider>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <div className="w-fit">
+                    {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? (
+                      <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 cursor-help">
+                        <Video size={14} />
+                        <span className="font-medium">Grabación disponible</span>
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 cursor-help">
+                        <Video size={14} className="opacity-50" />
+                        <span>Sin grabación</span>
+                      </Badge>
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent 
+                  className="max-w-xs bg-white border-2 border-[#41f2c0] shadow-xl rounded-xl p-4" 
+                  side="top"
+                  sideOffset={8}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? 'bg-green-100' : 'bg-gray-100'
+                    }`}>
+                      <Video size={20} className={teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? 'text-green-600' : 'text-gray-400'} />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[#404040] mb-1.5">
+                        {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? '✓ Grabación disponible' : '✗ Sin grabación'}
+                      </p>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com')
+                          ? 'Las clases con este profesor se graban automáticamente. Podrás verlas repetidas desde la plataforma todas las veces que quieras.'
+                          : 'Las clases con este profesor no se graban. Solo podrás asistir en vivo a la clase.'}
+                      </p>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
 
