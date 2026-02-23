@@ -11,7 +11,8 @@ import {
   GraduationCap,
   Briefcase,
   Edit,
-  Loader2
+  Loader2,
+  Video
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -137,16 +138,20 @@ export default function TeacherProfile() {
                 ))}
               </div>
 
-              {teacher.subscription_plan && (
-                <div className="mt-4 flex items-center gap-2">
-                  <Badge className={teacher.subscription_plan === 'premium' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-700'}>
-                    Plan {teacher.subscription_plan === 'premium' ? 'Premium' : 'Básico'}
+              {/* Recording Badge */}
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? (
+                  <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5">
+                    <Video size={14} />
+                    <span>Grabación disponible</span>
                   </Badge>
-                  {teacher.subscription_plan === 'premium' && (
-                    <span className="text-sm text-gray-500">• Incluye grabación de clases</span>
-                  )}
-                </div>
-              )}
+                ) : (
+                  <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5">
+                    <Video size={14} className="opacity-50" />
+                    <span>Sin grabación</span>
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>

@@ -142,35 +142,35 @@ export default function TeacherCard({
           </div>
 
           {/* Recording Badge - Prominent */}
-          <div className="mt-2 mb-1">
-            <TooltipProvider>
-              <Tooltip delayDuration={200}>
-                <TooltipTrigger asChild>
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <div className="mt-2 mb-1 w-fit">
                   {hasRecording ? (
-                    <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 w-fit cursor-default pointer-events-auto">
+                    <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 cursor-help">
                       <Video size={14} />
                       <span className="font-medium">Grabación disponible</span>
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 w-fit cursor-default pointer-events-auto">
+                    <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 cursor-help">
                       <Video size={14} className="opacity-50" />
                       <span>Sin grabación</span>
                     </Badge>
                   )}
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p className="font-medium mb-1">
-                    {hasRecording ? '✓ Grabación disponible' : '✗ Sin grabación'}
-                  </p>
-                  <p className="text-sm">
-                    {hasRecording 
-                      ? 'Las clases con este profesor se graban automáticamente. Podrás verlas repetidas desde la plataforma todas las veces que quieras.'
-                      : 'Las clases con este profesor no se graban. Solo podrás asistir en vivo a la clase.'}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs" side="top">
+                <p className="font-medium mb-1">
+                  {hasRecording ? '✓ Grabación disponible' : '✗ Sin grabación'}
+                </p>
+                <p className="text-sm">
+                  {hasRecording 
+                    ? 'Las clases con este profesor se graban automáticamente. Podrás verlas repetidas desde la plataforma todas las veces que quieras.'
+                    : 'Las clases con este profesor no se graban. Solo podrás asistir en vivo a la clase.'}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           {/* Subjects */}
           <div className="flex flex-wrap gap-2 mt-2">

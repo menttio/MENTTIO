@@ -78,10 +78,10 @@ import TeacherClassHistory from './pages/TeacherClassHistory';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import TeacherSignup from './pages/TeacherSignup';
+import TeacherSignupComplete from './pages/TeacherSignupComplete';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
-import TeacherSignupComplete from './pages/TeacherSignupComplete';
 import __Layout from './Layout.jsx';
 
 
@@ -117,10 +117,10 @@ export const PAGES = {
     "TeacherDashboard": TeacherDashboard,
     "TeacherProfile": TeacherProfile,
     "TeacherSignup": TeacherSignup,
+    "TeacherSignupComplete": TeacherSignupComplete,
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
-    "TeacherSignupComplete": TeacherSignupComplete,
 }
 
 export const pagesConfig = {
