@@ -81,6 +81,7 @@ import TeacherSignup from './pages/TeacherSignup';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
+import TeacherSignupComplete from './pages/TeacherSignupComplete';
 import __Layout from './Layout.jsx';
 
 
@@ -119,6 +120,7 @@ export const PAGES = {
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
+    "TeacherSignupComplete": TeacherSignupComplete,
 }
 
 export const pagesConfig = {

@@ -23,64 +23,16 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 1);
-
-    // Plan BÁSICO: Registro con cuenta personal (sin webhook)
+    // Plan BÁSICO: No se debe usar esta función, se hace directo en frontend
     if (subscription_plan === 'basic') {
-      // Obtener usuario autenticado actual
-      const currentUser = await base44.auth.me();
-      
-      if (!currentUser) {
-        return Response.json({ 
-          error: 'Debes estar autenticado para registrarte con el plan básico' 
-        }, { status: 401 });
-      }
-
-      // Crear registro de profesor con la cuenta personal
-      await base44.asServiceRole.entities.Teacher.create({
-        user_email: currentUser.email,
-        full_name: `${nombre} ${apellidos}`,
-        phone: phone,
-        education: education,
-        experience_years: experience_years,
-        bio: '',
-        subjects: subjects || [],
-        rating: 0,
-        total_classes: 0,
-        subscription_active: true,
-        subscription_expires: expirationDate.toISOString().split('T')[0],
-        subscription_plan: 'basic',
-        trial_used: true,
-        tour_completed: false
-      });
-
-      // Enviar email de notificación a menttio
-      try {
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: 'menttio@menttio.com',
-          subject: 'Nuevo Profesor Registrado (Plan Básico) - Menttio',
-          body: `
-            <h2>Nuevo Profesor Registrado - Plan Básico</h2>
-            <p><strong>Nombre:</strong> ${nombre} ${apellidos}</p>
-            <p><strong>Email:</strong> ${currentUser.email}</p>
-            <p><strong>Teléfono:</strong> ${phone}</p>
-            <p><strong>Formación:</strong> ${education}</p>
-            <p><strong>Años de experiencia:</strong> ${experience_years || 'No especificado'}</p>
-            <p><strong>Plan:</strong> Básico (sin grabaciones)</p>
-          `
-        });
-      } catch (emailError) {
-        console.error('Error enviando email de notificación:', emailError);
-      }
-
       return Response.json({
-        status: 'ok',
-        plan: 'basic'
-      });
+        error: 'El plan básico no debe usar esta función'
+      }, { status: 400 });
     }
 
     // Plan PREMIUM: Registro con cuenta corporativa (con webhook)
+    const expirationDate = new Date();
+    expirationDate.setMonth(expirationDate.getMonth() + 1);
     const webhookUrl = Deno.env.get('N8N_CREATE_USER_WEBHOOK_URL');
     
     if (!webhookUrl) {

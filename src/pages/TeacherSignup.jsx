@@ -142,9 +142,26 @@ export default function TeacherSignup() {
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
+    if (formData.subscription_plan === 'basic') {
+      // Plan básico: guardar datos y redirigir a login (igual que estudiantes)
+      sessionStorage.setItem('teacher_signup_data', JSON.stringify({
+        nombre: formData.nombre,
+        apellidos: formData.apellidos,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects,
+        subscription_plan: 'basic'
+      }));
+      
+      // Redirigir a login y después a completar registro
+      base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
+      return;
+    }
+
+    // Plan premium: flujo con backend function
     setSaving(true);
     try {
-      // Registrar profesor usando la función backend
       const response = await base44.functions.invoke('registerTeacher', {
         nombre: formData.nombre,
         apellidos: formData.apellidos,
@@ -162,13 +179,6 @@ export default function TeacherSignup() {
         throw new Error(response.data?.error || 'Error al crear la cuenta');
       }
 
-      // Plan básico: redirigir directamente al dashboard
-      if (formData.subscription_plan === 'basic') {
-        window.location.href = createPageUrl('TeacherDashboard');
-        return;
-      }
-
-      // Plan premium: mostrar credenciales corporativas
       const { email, password } = response.data;
 
       if (!email || !password) {
