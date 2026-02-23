@@ -97,12 +97,12 @@ export default function Pricing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="relative h-[700px] lg:h-[750px]"
+            className="relative h-[700px] lg:h-[750px] pr-32"
           >
             {/* Switch Button */}
             <button
               onClick={switchPlan}
-              className="absolute top-1/2 -translate-y-1/2 -right-6 z-20 w-12 h-12 bg-[#41f2c0] hover:bg-[#35d4a7] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+              className="absolute top-1/2 -translate-y-1/2 right-8 z-20 w-12 h-12 bg-[#41f2c0] hover:bg-[#35d4a7] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
             >
               <ChevronRight className="text-white" size={24} />
             </button>
@@ -174,11 +174,10 @@ export default function Pricing() {
                   {/* Basic Plan - Back */}
                   <motion.div
                     key="basic-back"
-                    initial={{ x: 50, opacity: 0.3, scale: 0.85 }}
-                    animate={{ x: 30, opacity: 0.4, scale: 0.9, zIndex: 5 }}
+                    initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
+                    animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
                     transition={{ duration: 0.5 }}
                     className="absolute inset-0 bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-200 pointer-events-none"
-                    style={{ transform: 'translateX(30px)' }}
                   />
                 </>
               )}
@@ -252,11 +251,10 @@ export default function Pricing() {
                   {/* Premium Plan - Back */}
                   <motion.div
                     key="premium-back"
-                    initial={{ x: 50, opacity: 0.3, scale: 0.85 }}
-                    animate={{ x: 30, opacity: 0.4, scale: 0.9, zIndex: 5 }}
+                    initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
+                    animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
                     transition={{ duration: 0.5 }}
                     className="absolute inset-0 bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-lg p-8 border-2 border-[#41f2c0] pointer-events-none"
-                    style={{ transform: 'translateX(30px)' }}
                   />
                 </>
               )}
