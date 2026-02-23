@@ -18,7 +18,9 @@ import {
   BarChart3,
   Library,
   Settings,
-  ArrowLeft
+  ArrowLeft,
+  AlertCircle,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -33,6 +35,8 @@ export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unpaidBookings, setUnpaidBookings] = useState([]);
+  const [showPaymentReminder, setShowPaymentReminder] = useState(false);
 
   useEffect(() => {
     console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
@@ -133,6 +137,17 @@ export default function Layout({ children, currentPageName }) {
             // Load unread messages
             loadUnreadMessages(currentUser.email, 'student', students[0].id);
             
+            // Check for unpaid bookings
+            const studentBookings = await base44.entities.Booking.filter({ 
+              student_id: students[0].id,
+              status: 'completed',
+              payment_status: 'pending'
+            });
+            if (studentBookings.length > 0) {
+              setUnpaidBookings(studentBookings);
+              setShowPaymentReminder(true);
+            }
+            
             // Block access to teacher pages
             if (teacherPages.includes(currentPageName)) {
               console.log('🚫 Estudiante intentando acceder a página de profesor, redirigiendo...');
@@ -223,6 +238,65 @@ export default function Layout({ children, currentPageName }) {
           --light: #f2f2f2;
         }
       `}</style>
+
+      {/* Payment Reminder Dialog for Students */}
+      {userRole === 'student' && (
+        <Dialog open={showPaymentReminder} onOpenChange={setShowPaymentReminder}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                  <AlertCircle className="text-orange-500" size={24} />
+                </div>
+                <DialogTitle className="text-xl">Recordatorio de Pago</DialogTitle>
+              </div>
+              <DialogDescription>
+                Tienes clases completadas pendientes de pago. ¡No olvides realizar el pago para mantener tu cuenta al día!
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 max-h-60 overflow-y-auto py-2">
+              {unpaidBookings.map((booking) => (
+                <div 
+                  key={booking.id} 
+                  className="flex items-center justify-between p-3 bg-orange-50 border border-orange-200 rounded-lg"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-[#404040] truncate">{booking.subject_name}</p>
+                    <p className="text-sm text-gray-500">
+                      {format(new Date(booking.date), "d 'de' MMM", { locale: es })} · {booking.start_time}
+                    </p>
+                    <p className="text-xs text-gray-400">con {booking.teacher_name}</p>
+                  </div>
+                  <div className="text-right ml-3">
+                    <p className="font-bold text-orange-600">{booking.price}€</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowPaymentReminder(false)}
+                className="w-full sm:w-auto"
+              >
+                Cerrar
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowPaymentReminder(false);
+                  navigate(createPageUrl('MyClasses'));
+                }}
+                className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7]"
+              >
+                <CreditCard size={16} className="mr-2" />
+                Ver mis clases
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 px-4 py-3">
