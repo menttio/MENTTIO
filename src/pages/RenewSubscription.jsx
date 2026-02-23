@@ -43,7 +43,9 @@ export default function RenewSubscription() {
       await base44.entities.Teacher.update(teacher.id, {
         subscription_active: true,
         subscription_expires: newExpirationDate.toISOString().split('T')[0],
-        subscription_plan: selectedPlan
+        subscription_plan: selectedPlan,
+        trial_active: false,
+        trial_used: true
       });
 
       navigate(createPageUrl('TeacherDashboard'));
@@ -75,10 +77,12 @@ export default function RenewSubscription() {
               <AlertCircle className="text-orange-500" size={40} />
             </div>
             <CardTitle className="text-2xl md:text-3xl font-bold text-[#404040]">
-              Suscripción Expirada
+              {teacher?.trial_active ? 'Período de Prueba Expirado' : 'Suscripción Expirada'}
             </CardTitle>
             <p className="text-sm md:text-base text-gray-500 mt-2">
-              Tu suscripción ha caducado. Renuévala para seguir ofreciendo tus clases.
+              {teacher?.trial_active 
+                ? 'Tu período de prueba gratuito de 14 días ha finalizado. Selecciona un plan para continuar.'
+                : 'Tu suscripción ha caducado. Renuévala para seguir ofreciendo tus clases.'}
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -98,6 +102,9 @@ export default function RenewSubscription() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
+                    {!teacher?.trial_used && (
+                      <Badge className="bg-green-500 text-white text-xs mb-1">14 días gratis</Badge>
+                    )}
                     <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
                   {selectedPlan === 'basic' && (

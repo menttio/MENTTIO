@@ -204,6 +204,9 @@ export default function Pricing() {
                     </div>
 
                     <div className="mb-8">
+                      <div className="inline-block bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
+                        ✨ 14 días gratis
+                      </div>
                       <div className="flex items-baseline gap-2">
                         <span className="text-5xl font-bold text-white">9,99€</span>
                         <span className="text-white/80">/mes</span>
