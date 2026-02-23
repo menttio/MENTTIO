@@ -12,7 +12,8 @@ Deno.serve(async (req) => {
       phone, 
       education, 
       experience_years,
-      subjects 
+      subjects,
+      subscription_plan
     } = payload;
 
     // Validaciones
@@ -77,6 +78,7 @@ Deno.serve(async (req) => {
       total_classes: 0,
       subscription_active: true,
       subscription_expires: expirationDate.toISOString().split('T')[0],
+      subscription_plan: subscription_plan || 'premium',
       trial_used: true,
       tour_completed: false,
       corporate_email: corporateData.email
