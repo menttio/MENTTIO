@@ -102,6 +102,30 @@ export default function Layout({ children, currentPageName }) {
           const teacher = teachers[0];
           console.log('👨‍🏫 Perfil profesor:', teacher);
           setProfile(teacher);
+          
+          // Check if trial has expired for basic plan
+          if (teacher.trial_active && teacher.trial_end_date) {
+            const trialEndDate = new Date(teacher.trial_end_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (trialEndDate < today) {
+              console.log('⏰ Período de prueba expirado');
+              // Mark trial as inactive
+              await base44.entities.Teacher.update(teacher.id, {
+                trial_active: false,
+                trial_used: true,
+                subscription_active: false
+              });
+              setUserRole('expired_teacher');
+              if (currentPageName !== 'RenewSubscription') {
+                console.log('➡️ Redirigiendo a renovación por trial expirado...');
+                window.location.href = createPageUrl('RenewSubscription');
+              }
+              return;
+            }
+          }
+          
           // Verify subscription is active
           if (teacher.subscription_active && teacher.subscription_expires) {
             const expirationDate = new Date(teacher.subscription_expires);

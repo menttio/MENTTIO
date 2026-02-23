@@ -21,8 +21,10 @@ export default function TeacherSignupComplete() {
 
         const data = JSON.parse(signupData);
         
-        const expirationDate = new Date();
-        expirationDate.setMonth(expirationDate.getMonth() + 1);
+        // Plan básico: 14 días de prueba gratuita
+        const trialStartDate = new Date();
+        const trialEndDate = new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 14);
         
         await base44.entities.Teacher.create({
           user_email: user.email,
@@ -35,9 +37,12 @@ export default function TeacherSignupComplete() {
           rating: 0,
           total_classes: 0,
           subscription_active: true,
-          subscription_expires: expirationDate.toISOString().split('T')[0],
+          subscription_expires: trialEndDate.toISOString().split('T')[0],
           subscription_plan: 'basic',
-          trial_used: true,
+          trial_used: false,
+          trial_active: true,
+          trial_start_date: trialStartDate.toISOString().split('T')[0],
+          trial_end_date: trialEndDate.toISOString().split('T')[0],
           tour_completed: false
         });
 
@@ -53,6 +58,7 @@ export default function TeacherSignupComplete() {
               <p><strong>Formación:</strong> ${data.education}</p>
               <p><strong>Años de experiencia:</strong> ${data.experience_years || 'No especificado'}</p>
               <p><strong>Plan:</strong> Básico (sin grabaciones)</p>
+              <p><strong>Período de prueba:</strong> 14 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
             `
           });
         } catch (emailError) {
