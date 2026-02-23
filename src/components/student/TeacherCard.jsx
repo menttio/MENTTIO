@@ -31,6 +31,9 @@ export default function TeacherCard({
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
     : teacher.subjects?.[0];
 
+  // Check if teacher has recording capability (corporate email with @menttio.com)
+  const hasRecording = teacher.corporate_email && teacher.corporate_email.includes('@menttio.com');
+
   // Calculate price display
   const priceDisplay = selectedSubject && subjectInfo
     ? `${subjectInfo.price_per_hour}€`
@@ -134,7 +137,7 @@ export default function TeacherCard({
 
           {/* Recording Badge - Prominent */}
           <div className="mt-2 mb-1">
-            {teacher.subscription_plan === 'premium' ? (
+            {hasRecording ? (
               <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 w-fit">
                 <Video size={14} />
                 <span className="font-medium">Grabación disponible</span>
