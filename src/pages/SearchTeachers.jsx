@@ -48,6 +48,7 @@ export default function SearchTeachers() {
   const [selectedSubject, setSelectedSubject] = useState('all');
   const [selectedLevel, setSelectedLevel] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
+  const [recordingFilter, setRecordingFilter] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
   
   const [showAssignDialog, setShowAssignDialog] = useState(false);
@@ -131,6 +132,13 @@ export default function SearchTeachers() {
           if (priceRange === 'low' && avgPrice > 20) return false;
           if (priceRange === 'medium' && (avgPrice < 20 || avgPrice > 40)) return false;
           if (priceRange === 'high' && avgPrice < 40) return false;
+        }
+        
+        // Recording filter
+        if (recordingFilter !== 'all') {
+          const hasRecording = teacher.corporate_email && teacher.corporate_email.includes('@menttio.com');
+          if (recordingFilter === 'with' && !hasRecording) return false;
+          if (recordingFilter === 'without' && hasRecording) return false;
         }
         
         return true;
@@ -244,10 +252,11 @@ export default function SearchTeachers() {
     setSelectedSubject('all');
     setSelectedLevel('all');
     setPriceRange('all');
+    setRecordingFilter('all');
     setSortBy('rating');
   };
 
-  const hasActiveFilters = searchQuery || selectedSubject !== 'all' || selectedLevel !== 'all' || priceRange !== 'all';
+  const hasActiveFilters = searchQuery || selectedSubject !== 'all' || selectedLevel !== 'all' || priceRange !== 'all' || recordingFilter !== 'all';
 
   if (loading) {
     return (
@@ -279,7 +288,7 @@ export default function SearchTeachers() {
             />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           {/* Subject Filter */}
           <Select value={selectedSubject} onValueChange={setSelectedSubject}>
             <SelectTrigger className="w-full">
@@ -318,6 +327,18 @@ export default function SearchTeachers() {
               <SelectItem value="low">Hasta 20€/h</SelectItem>
               <SelectItem value="medium">20€ - 40€/h</SelectItem>
               <SelectItem value="high">Más de 40€/h</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Recording Filter */}
+          <Select value={recordingFilter} onValueChange={setRecordingFilter}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Grabación" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas</SelectItem>
+              <SelectItem value="with">Con grabación</SelectItem>
+              <SelectItem value="without">Sin grabación</SelectItem>
             </SelectContent>
           </Select>
 
