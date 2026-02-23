@@ -150,7 +150,6 @@ export default function Layout({ children, currentPageName }) {
             // Check for unpaid bookings
             const studentBookings = await base44.entities.Booking.filter({ 
               student_id: students[0].id,
-              status: 'completed',
               payment_status: 'pending'
             });
             if (studentBookings.length > 0) {
