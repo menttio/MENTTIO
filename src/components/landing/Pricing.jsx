@@ -177,7 +177,7 @@ export default function Pricing() {
                     initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
                     animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
                     transition={{ duration: 0.5 }}
-                    className="absolute inset-0 bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-200 pointer-events-none"
+                    className="absolute inset-0 bg-[#404040] rounded-3xl shadow-lg p-8 border-2 border-[#404040] pointer-events-none"
                   />
                 </>
               )}
@@ -191,24 +191,24 @@ export default function Pricing() {
                     animate={{ x: 0, opacity: 1, scale: 1, rotateY: 0, zIndex: 10 }}
                     exit={{ x: -100, opacity: 0, scale: 0.9, rotateY: 10 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-100 overflow-hidden"
+                    className="absolute inset-0 bg-[#404040] rounded-3xl shadow-lg p-8 border-2 border-[#404040] overflow-hidden"
                   >
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-[#41f2c0] rounded-xl flex items-center justify-center">
                         <Crown className="text-white" size={24} />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-[#404040]">Plan Básico</h3>
-                        <p className="text-gray-500">Para profesores</p>
+                        <h3 className="text-2xl font-bold text-white">Plan Básico</h3>
+                        <p className="text-white/80">Para profesores</p>
                       </div>
                     </div>
 
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-[#404040]">14,99€</span>
-                        <span className="text-gray-500">/mes</span>
+                        <span className="text-5xl font-bold text-white">9,99€</span>
+                        <span className="text-white/80">/mes</span>
                       </div>
-                      <p className="text-sm text-gray-600 mt-2">Funcionalidades esenciales</p>
+                      <p className="text-sm text-white/80 mt-2">Funcionalidades esenciales</p>
                     </div>
 
                     <ul className="space-y-4 mb-8">
@@ -225,15 +225,15 @@ export default function Pricing() {
                       ].map((feature, idx) => (
                         <li key={idx} className="flex items-center gap-3">
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            feature.included ? 'bg-gray-100' : 'bg-red-50'
+                            feature.included ? 'bg-white' : 'bg-red-200'
                           }`}>
                             {feature.included ? (
-                              <Check className="text-gray-600" size={14} />
+                              <Check className="text-[#404040]" size={14} />
                             ) : (
-                              <X className="text-red-400" size={14} />
+                              <X className="text-red-600" size={14} />
                             )}
                           </div>
-                          <span className={feature.included ? 'text-gray-700' : 'text-gray-400 line-through'}>
+                          <span className={feature.included ? 'text-white font-medium' : 'text-white/40 line-through'}>
                             {feature.text}
                           </span>
                         </li>
@@ -242,7 +242,7 @@ export default function Pricing() {
 
                     <Button 
                       onClick={handleGetStartedTeacher}
-                      className="w-full bg-gray-600 hover:bg-gray-700 text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
+                      className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl font-semibold shadow-xl"
                     >
                       Comenzar ahora
                     </Button>
