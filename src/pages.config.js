@@ -68,6 +68,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Profile from './pages/Profile';
 import RenewSubscription from './pages/RenewSubscription';
 import ReviewsHistory from './pages/ReviewsHistory';
+import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
 import StudentSignup from './pages/StudentSignup';
@@ -81,7 +82,6 @@ import TeacherSignupComplete from './pages/TeacherSignupComplete';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
-import SearchTeachers from './pages/SearchTeachers';
 import __Layout from './Layout.jsx';
 
 
@@ -107,6 +107,7 @@ export const PAGES = {
     "Profile": Profile,
     "RenewSubscription": RenewSubscription,
     "ReviewsHistory": ReviewsHistory,
+    "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
     "StudentSignup": StudentSignup,
@@ -120,7 +121,6 @@ export const PAGES = {
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
-    "SearchTeachers": SearchTeachers,
 }
 
 export const pagesConfig = {

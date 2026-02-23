@@ -103,7 +103,7 @@ export default function Layout({ children, currentPageName }) {
           console.log('👨‍🏫 Perfil profesor:', teacher);
           setProfile(teacher);
           
-          // Check if trial has expired for basic plan
+          // Check if trial is active (has access during trial period)
           if (teacher.trial_active && teacher.trial_end_date) {
             const trialEndDate = new Date(teacher.trial_end_date);
             const today = new Date();
@@ -123,17 +123,10 @@ export default function Layout({ children, currentPageName }) {
                 window.location.href = createPageUrl('RenewSubscription');
               }
               return;
-            }
-          }
-          
-          // Verify subscription is active
-          if (teacher.subscription_active && teacher.subscription_expires) {
-            const expirationDate = new Date(teacher.subscription_expires);
-            if (expirationDate > new Date()) {
-              console.log('✅ Profesor con suscripción activa');
+            } else {
+              // Trial is still active - grant access
+              console.log('✅ Profesor en período de prueba activo');
               setUserRole('teacher');
-              
-              // Load unread messages
               loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
               
               // Block access to student pages
@@ -142,13 +135,49 @@ export default function Layout({ children, currentPageName }) {
                 window.location.href = createPageUrl('TeacherDashboard');
                 return;
               }
+              setLoading(false);
+              return;
+            }
+          }
+          
+          // Verify subscription is active (for non-trial users)
+          if (teacher.subscription_active) {
+            // Check expiration date if it exists
+            if (teacher.subscription_expires) {
+              const expirationDate = new Date(teacher.subscription_expires);
+              if (expirationDate > new Date()) {
+                console.log('✅ Profesor con suscripción activa');
+                setUserRole('teacher');
+                
+                // Load unread messages
+                loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
+                
+                // Block access to student pages
+                if (studentPages.includes(currentPageName)) {
+                  console.log('🚫 Profesor intentando acceder a página de estudiante, redirigiendo...');
+                  window.location.href = createPageUrl('TeacherDashboard');
+                  return;
+                }
+              } else {
+                console.log('⏰ Suscripción expirada');
+                // Subscription expired - redirect to renewal
+                setUserRole('expired_teacher');
+                if (currentPageName !== 'RenewSubscription') {
+                  console.log('➡️ Redirigiendo a renovación...');
+                  window.location.href = createPageUrl('RenewSubscription');
+                }
+              }
             } else {
-              console.log('⏰ Suscripción expirada');
-              // Subscription expired - redirect to renewal
-              setUserRole('expired_teacher');
-              if (currentPageName !== 'RenewSubscription') {
-                console.log('➡️ Redirigiendo a renovación...');
-                window.location.href = createPageUrl('RenewSubscription');
+              // subscription_active is true but no expiration date - grant access
+              console.log('✅ Profesor con suscripción activa (sin fecha de expiración)');
+              setUserRole('teacher');
+              loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
+              
+              // Block access to student pages
+              if (studentPages.includes(currentPageName)) {
+                console.log('🚫 Profesor intentando acceder a página de estudiante, redirigiendo...');
+                window.location.href = createPageUrl('TeacherDashboard');
+                return;
               }
             }
           } else {
