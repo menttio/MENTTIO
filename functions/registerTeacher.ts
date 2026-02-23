@@ -23,7 +23,64 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // 1. Crear usuario corporativo en Google Workspace (vía N8N)
+    const expirationDate = new Date();
+    expirationDate.setMonth(expirationDate.getMonth() + 1);
+
+    // Plan BÁSICO: Registro con cuenta personal (sin webhook)
+    if (subscription_plan === 'basic') {
+      // Obtener usuario autenticado actual
+      const currentUser = await base44.auth.me();
+      
+      if (!currentUser) {
+        return Response.json({ 
+          error: 'Debes estar autenticado para registrarte con el plan básico' 
+        }, { status: 401 });
+      }
+
+      // Crear registro de profesor con la cuenta personal
+      await base44.asServiceRole.entities.Teacher.create({
+        user_email: currentUser.email,
+        full_name: `${nombre} ${apellidos}`,
+        phone: phone,
+        education: education,
+        experience_years: experience_years,
+        bio: '',
+        subjects: subjects || [],
+        rating: 0,
+        total_classes: 0,
+        subscription_active: true,
+        subscription_expires: expirationDate.toISOString().split('T')[0],
+        subscription_plan: 'basic',
+        trial_used: true,
+        tour_completed: false
+      });
+
+      // Enviar email de notificación a menttio
+      try {
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: 'menttio@menttio.com',
+          subject: 'Nuevo Profesor Registrado (Plan Básico) - Menttio',
+          body: `
+            <h2>Nuevo Profesor Registrado - Plan Básico</h2>
+            <p><strong>Nombre:</strong> ${nombre} ${apellidos}</p>
+            <p><strong>Email:</strong> ${currentUser.email}</p>
+            <p><strong>Teléfono:</strong> ${phone}</p>
+            <p><strong>Formación:</strong> ${education}</p>
+            <p><strong>Años de experiencia:</strong> ${experience_years || 'No especificado'}</p>
+            <p><strong>Plan:</strong> Básico (sin grabaciones)</p>
+          `
+        });
+      } catch (emailError) {
+        console.error('Error enviando email de notificación:', emailError);
+      }
+
+      return Response.json({
+        status: 'ok',
+        plan: 'basic'
+      });
+    }
+
+    // Plan PREMIUM: Registro con cuenta corporativa (con webhook)
     const webhookUrl = Deno.env.get('N8N_CREATE_USER_WEBHOOK_URL');
     
     if (!webhookUrl) {
@@ -62,10 +119,7 @@ Deno.serve(async (req) => {
       }, { status: 500 });
     }
 
-    // 2. Crear registro de profesor con Service Role (vinculado al email corporativo)
-    const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 1);
-
+    // Crear registro de profesor con Service Role (vinculado al email corporativo)
     await base44.asServiceRole.entities.Teacher.create({
       user_email: corporateData.email, // Email corporativo
       full_name: `${nombre} ${apellidos}`,
@@ -84,7 +138,7 @@ Deno.serve(async (req) => {
       corporate_email: corporateData.email
     });
 
-    // 3. Invitar al usuario a Base44 para que pueda usar email+password además de Google OAuth
+    // Invitar al usuario a Base44 para que pueda usar email+password además de Google OAuth
     try {
       await base44.asServiceRole.users.inviteUser(corporateData.email, 'user');
       console.log('Usuario invitado correctamente a Base44');
@@ -93,7 +147,7 @@ Deno.serve(async (req) => {
       // No fallar el registro si ya existe el usuario
     }
 
-    // 4. Enviar email de notificación a menttio
+    // Enviar email de notificación a menttio
     try {
       await base44.asServiceRole.integrations.Core.SendEmail({
         to: 'menttio@menttio.com',
@@ -114,7 +168,7 @@ Deno.serve(async (req) => {
       // No fallar el registro si falla el email
     }
 
-    // 5. Devolver datos de la cuenta corporativa
+    // Devolver datos de la cuenta corporativa
     return Response.json({
       status: 'ok',
       email: corporateData.email,

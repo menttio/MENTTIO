@@ -47,26 +47,6 @@ export default function TeacherSignup() {
       try {
         const allSubjects = await base44.entities.Subject.list();
         setSubjects(allSubjects);
-        
-        // Recuperar datos de registro si viene de login (solo para plan básico)
-        const savedData = sessionStorage.getItem('teacher_signup_data');
-        if (savedData) {
-          const data = JSON.parse(savedData);
-          setFormData({
-            nombre: data.nombre,
-            apellidos: data.apellidos,
-            phone: data.phone,
-            email_personal: data.email_personal,
-            education: data.education,
-            experience_years: data.experience_years,
-            subscription_plan: data.subscription_plan
-          });
-          setTeacherSubjects(data.subjects || []);
-          setStep(3); // Ir al último paso
-          setAcceptedTerms(true); // Ya había aceptado antes
-          sessionStorage.removeItem('teacher_signup_data');
-        }
-        
         setLoading(false);
       } catch (error) {
         console.error('Error loading teacher signup:', error);
@@ -164,97 +144,39 @@ export default function TeacherSignup() {
   const handleFinalize = async () => {
     setSaving(true);
     try {
-      if (formData.subscription_plan === 'basic') {
-        // Plan Básico: Registro directo sin cuenta corporativa
-        const currentUser = await base44.auth.me();
-        
-        if (!currentUser) {
-          // Si no está autenticado, redirigir a login y volver aquí después
-          sessionStorage.setItem('teacher_signup_data', JSON.stringify({
-            nombre: formData.nombre,
-            apellidos: formData.apellidos,
-            email_personal: formData.email_personal,
-            phone: formData.phone,
-            education: formData.education,
-            experience_years: formData.experience_years,
-            subjects: teacherSubjects,
-            subscription_plan: formData.subscription_plan
-          }));
-          window.location.href = `/login?from_url=${encodeURIComponent(window.location.href)}`;
-          return;
-        }
+      // Registrar profesor usando la función backend
+      const response = await base44.functions.invoke('registerTeacher', {
+        nombre: formData.nombre,
+        apellidos: formData.apellidos,
+        email_personal: formData.email_personal,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects,
+        subscription_plan: formData.subscription_plan
+      });
 
-        // Usuario ya autenticado - crear perfil de profesor directamente
-        const expirationDate = new Date();
-        expirationDate.setMonth(expirationDate.getMonth() + 1);
+      console.log('Respuesta completa:', response);
 
-        await base44.entities.Teacher.create({
-          user_email: currentUser.email,
-          full_name: `${formData.nombre} ${formData.apellidos}`,
-          phone: formData.phone,
-          education: formData.education,
-          experience_years: formData.experience_years,
-          bio: '',
-          subjects: teacherSubjects,
-          rating: 0,
-          total_classes: 0,
-          subscription_active: true,
-          subscription_expires: expirationDate.toISOString().split('T')[0],
-          subscription_plan: 'basic',
-          trial_used: true,
-          tour_completed: false
-        });
-
-        // Notificar a menttio
-        try {
-          await base44.integrations.Core.SendEmail({
-            to: 'menttio@menttio.com',
-            subject: 'Nuevo Profesor Registrado (Plan Básico) - Menttio',
-            body: `
-              <h2>Nuevo Profesor Registrado - Plan Básico</h2>
-              <p><strong>Nombre:</strong> ${formData.nombre} ${formData.apellidos}</p>
-              <p><strong>Email:</strong> ${currentUser.email}</p>
-              <p><strong>Teléfono:</strong> ${formData.phone}</p>
-              <p><strong>Formación:</strong> ${formData.education}</p>
-              <p><strong>Años de experiencia:</strong> ${formData.experience_years || 'No especificado'}</p>
-              <p><strong>Plan:</strong> Básico (sin grabaciones)</p>
-            `
-          });
-        } catch (emailError) {
-          console.error('Error enviando email de notificación:', emailError);
-        }
-
-        // Redirigir al dashboard
-        window.location.href = createPageUrl('TeacherDashboard');
-      } else {
-        // Plan Premium: Registro con cuenta corporativa (flujo original)
-        const response = await base44.functions.invoke('registerTeacher', {
-          nombre: formData.nombre,
-          apellidos: formData.apellidos,
-          email_personal: formData.email_personal,
-          phone: formData.phone,
-          education: formData.education,
-          experience_years: formData.experience_years,
-          subjects: teacherSubjects,
-          subscription_plan: formData.subscription_plan
-        });
-
-        console.log('Respuesta completa:', response);
-
-        if (!response.data || response.data.error) {
-          throw new Error(response.data?.error || 'Error al crear la cuenta');
-        }
-
-        const { email, password } = response.data;
-
-        if (!email || !password) {
-          throw new Error('No se recibieron las credenciales corporativas');
-        }
-
-        // Guardar datos corporativos para mostrar
-        setCorporateAccount({ email, password });
-        setShowSuccess(true);
+      if (!response.data || response.data.error) {
+        throw new Error(response.data?.error || 'Error al crear la cuenta');
       }
+
+      // Plan básico: redirigir directamente al dashboard
+      if (formData.subscription_plan === 'basic') {
+        window.location.href = createPageUrl('TeacherDashboard');
+        return;
+      }
+
+      // Plan premium: mostrar credenciales corporativas
+      const { email, password } = response.data;
+
+      if (!email || !password) {
+        throw new Error('No se recibieron las credenciales corporativas');
+      }
+
+      setCorporateAccount({ email, password });
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error completo:', error);
       alert(`Error al crear la cuenta: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
