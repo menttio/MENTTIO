@@ -56,6 +56,8 @@ export default function Layout({ children, currentPageName }) {
     
     if (publicPages.includes(currentPageName)) {
       console.log('✅ Página pública detectada:', currentPageName);
+      // Clear the payment reminder flag when user leaves dashboard
+      sessionStorage.removeItem('payment_reminder_shown_this_session');
       setLoading(false);
       return;
     }
@@ -147,17 +149,22 @@ export default function Layout({ children, currentPageName }) {
             // Load unread messages
             loadUnreadMessages(currentUser.email, 'student', students[0].id);
             
-            // Check for unpaid bookings
-            const studentBookings = await base44.entities.Booking.filter({ 
-              student_id: students[0].id,
-              payment_status: 'pending'
-            });
-            // Filter out cancelled bookings
-            const unpaidNonCancelled = studentBookings.filter(b => b.status !== 'cancelled');
+            // Check for unpaid bookings - only show on StudentDashboard and once per session
+            const hasShownInThisSession = sessionStorage.getItem('payment_reminder_shown_this_session');
             
-            if (unpaidNonCancelled.length > 0) {
-              setUnpaidBookings(unpaidNonCancelled);
-              setShowPaymentReminder(true);
+            if (currentPageName === 'StudentDashboard' && !hasShownInThisSession) {
+              const studentBookings = await base44.entities.Booking.filter({ 
+                student_id: students[0].id,
+                payment_status: 'pending'
+              });
+              // Filter out cancelled bookings
+              const unpaidNonCancelled = studentBookings.filter(b => b.status !== 'cancelled');
+              
+              if (unpaidNonCancelled.length > 0) {
+                setUnpaidBookings(unpaidNonCancelled);
+                setShowPaymentReminder(true);
+                sessionStorage.setItem('payment_reminder_shown_this_session', 'true');
+              }
             }
             
             // Block access to teacher pages
