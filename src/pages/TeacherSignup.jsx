@@ -143,19 +143,17 @@ export default function TeacherSignup() {
 
   const handleFinalize = async () => {
     if (formData.subscription_plan === 'basic') {
-      // Plan básico: guardar datos y redirigir a login (igual que estudiantes)
+      // Plan básico: igual que alumnos - guardar y redirigir
       sessionStorage.setItem('teacher_signup_data', JSON.stringify({
-        nombre: formData.nombre,
-        apellidos: formData.apellidos,
+        first_name: formData.nombre,
+        last_name: formData.apellidos,
         phone: formData.phone,
         education: formData.education,
         experience_years: formData.experience_years,
-        subjects: teacherSubjects,
-        subscription_plan: 'basic'
+        subjects: teacherSubjects
       }));
-      
-      // Redirigir a login y después a completar registro
-      base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
+      setLoading(false);
+      setShowSuccess(true);
       return;
     }
 
@@ -198,6 +196,47 @@ export default function TeacherSignup() {
     return (
       <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
         <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+      </div>
+    );
+  }
+
+  const handleGoToLogin = () => {
+    base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
+  };
+
+  // Success screen for basic plan (similar to students)
+  if (showSuccess && !corporateAccount) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md"
+        >
+          <Card className="shadow-xl">
+            <CardContent className="p-12 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <Check className="text-green-600" size={40} />
+              </div>
+              
+              <h2 className="text-3xl font-bold text-[#404040] mb-2">
+                ¡Datos Guardados!
+              </h2>
+              
+              <p className="text-gray-600 mb-8">
+                Ya puedes iniciar sesión con tu cuenta de Google para completar el registro
+              </p>
+
+              <Button
+                onClick={handleGoToLogin}
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
+              >
+                Ir a Iniciar Sesión
+                <ArrowRight size={18} className="ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }

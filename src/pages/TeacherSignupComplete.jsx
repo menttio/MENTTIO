@@ -21,13 +21,12 @@ export default function TeacherSignupComplete() {
 
         const data = JSON.parse(signupData);
         
-        // Crear perfil de profesor
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 1);
-
+        
         await base44.entities.Teacher.create({
           user_email: user.email,
-          full_name: `${data.nombre} ${data.apellidos}`,
+          full_name: `${data.first_name} ${data.last_name}`,
           phone: data.phone,
           education: data.education,
           experience_years: data.experience_years,
@@ -42,14 +41,13 @@ export default function TeacherSignupComplete() {
           tour_completed: false
         });
 
-        // Enviar email de notificación a menttio
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
             subject: 'Nuevo Profesor Registrado (Plan Básico) - Menttio',
             body: `
               <h2>Nuevo Profesor Registrado - Plan Básico</h2>
-              <p><strong>Nombre:</strong> ${data.nombre} ${data.apellidos}</p>
+              <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
               <p><strong>Email:</strong> ${user.email}</p>
               <p><strong>Teléfono:</strong> ${data.phone}</p>
               <p><strong>Formación:</strong> ${data.education}</p>
