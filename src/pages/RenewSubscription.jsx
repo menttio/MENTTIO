@@ -98,7 +98,7 @@ export default function RenewSubscription() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
-                    <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                    <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
                   {selectedPlan === 'basic' && (
                     <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">

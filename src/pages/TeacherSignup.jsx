@@ -474,7 +474,7 @@ export default function TeacherSignup() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
-                          <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                          <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                         </div>
                         {formData.subscription_plan === 'basic' && (
                           <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
@@ -688,7 +688,7 @@ export default function TeacherSignup() {
                     <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                     <div className="flex items-baseline justify-center gap-2">
                       <span className="text-5xl font-bold text-[#404040]">
-                        {formData.subscription_plan === 'basic' ? '14,99€' : '19,99€'}
+                        {formData.subscription_plan === 'basic' ? '9,99€' : '19,99€'}
                       </span>
                       <span className="text-gray-500">/mes</span>
                     </div>
@@ -705,7 +705,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 19,99€/mes</p>
+                      <p>- La suscripción tiene un coste de 9,99€/mes (Plan Básico) o 19,99€/mes (Plan Premium)</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
