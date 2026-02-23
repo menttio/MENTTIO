@@ -132,8 +132,23 @@ export default function TeacherCard({
             </span>
           </div>
 
+          {/* Recording Badge - Prominent */}
+          <div className="mt-2 mb-1">
+            {teacher.subscription_plan === 'premium' ? (
+              <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 w-fit">
+                <Video size={14} />
+                <span className="font-medium">Grabación disponible</span>
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200 flex items-center gap-1.5 w-fit">
+                <Video size={14} className="opacity-50" />
+                <span>Sin grabación</span>
+              </Badge>
+            )}
+          </div>
+
           {/* Subjects */}
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="flex flex-wrap gap-2 mt-2">
             {teacher.subjects?.slice(0, 3).map((subject, idx) => (
               <Badge 
                 key={idx} 
@@ -150,12 +165,6 @@ export default function TeacherCard({
                 onClick={() => setShowAllSubjects(true)}
               >
                 +{teacher.subjects.length - 3} más
-              </Badge>
-            )}
-            {teacher.subscription_plan === 'premium' && (
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700 flex items-center gap-1">
-                <Video size={12} />
-                Grabación
               </Badge>
             )}
           </div>
