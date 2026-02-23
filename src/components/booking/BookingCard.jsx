@@ -268,9 +268,12 @@ export default function BookingCard({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap justify-end">
-            <Badge className={status.color}>{status.label}</Badge>
+            <Badge className={cn(status.color, "pointer-events-none")}>{status.label}</Badge>
             {isCompleted && !isCancelled && (
-              <Badge className={booking.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}>
+              <Badge className={cn(
+                booking.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700',
+                "pointer-events-none"
+              )}>
                 {booking.payment_status === 'paid' ? 'Pagado' : 'No Pagado'}
               </Badge>
             )}
@@ -353,7 +356,7 @@ export default function BookingCard({
               {booking.price}€
             </div>
             {booking.payment_status === 'paid' && (
-              <Badge className="bg-green-100 text-green-700">
+              <Badge className="bg-green-100 text-green-700 pointer-events-none">
                 <CreditCard size={12} className="mr-1" />
                 Pagado
               </Badge>
