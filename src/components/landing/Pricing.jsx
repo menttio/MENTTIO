@@ -177,7 +177,7 @@ export default function Pricing() {
                     initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
                     animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
                     transition={{ duration: 0.5 }}
-                    className="absolute inset-0 bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-200 pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-50 rounded-3xl shadow-lg p-8 border-2 border-gray-200 pointer-events-none"
                   />
                 </>
               )}
@@ -191,7 +191,7 @@ export default function Pricing() {
                     animate={{ x: 0, opacity: 1, scale: 1, rotateY: 0, zIndex: 10 }}
                     exit={{ x: -100, opacity: 0, scale: 0.9, rotateY: 10 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-100 overflow-hidden"
+                    className="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-50 rounded-3xl shadow-lg p-8 border-2 border-gray-200 overflow-hidden"
                   >
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
@@ -205,7 +205,7 @@ export default function Pricing() {
 
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-[#404040]">14,99€</span>
+                        <span className="text-5xl font-bold text-[#404040]">9,99€</span>
                         <span className="text-gray-500">/mes</span>
                       </div>
                       <p className="text-sm text-gray-600 mt-2">Funcionalidades esenciales</p>
