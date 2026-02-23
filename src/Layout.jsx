@@ -147,25 +147,14 @@ export default function Layout({ children, currentPageName }) {
             // Load unread messages
             loadUnreadMessages(currentUser.email, 'student', students[0].id);
             
-            // Check for unpaid bookings (completed or past scheduled classes)
-            const allStudentBookings = await base44.entities.Booking.filter({ 
+            // Check for unpaid bookings
+            const studentBookings = await base44.entities.Booking.filter({ 
               student_id: students[0].id,
+              status: 'completed',
               payment_status: 'pending'
             });
-            
-            // Filter for completed or past classes
-            const now = new Date();
-            const unpaidClasses = allStudentBookings.filter(booking => {
-              if (booking.status === 'cancelled') return false;
-              if (booking.status === 'completed') return true;
-              
-              // Check if scheduled class has passed
-              const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
-              return bookingEndDateTime < now;
-            });
-            
-            if (unpaidClasses.length > 0) {
-              setUnpaidBookings(unpaidClasses);
+            if (studentBookings.length > 0) {
+              setUnpaidBookings(studentBookings);
               setShowPaymentReminder(true);
             }
             
