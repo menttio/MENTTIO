@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, Sparkles, Crown } from 'lucide-react';
+import { Check, Sparkles, Crown, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
@@ -31,7 +31,7 @@ export default function Pricing() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Student Plan */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -85,7 +85,70 @@ export default function Pricing() {
             </Button>
           </motion.div>
 
-          {/* Teacher Plan */}
+          {/* Teacher Basic Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.05 }}
+            className="bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-100 hover:border-[#41f2c0] transition-all"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gray-400 rounded-xl flex items-center justify-center">
+                <Crown className="text-white" size={24} />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-[#404040]">Plan Básico</h3>
+                <p className="text-gray-500">Para profesores</p>
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <div className="flex items-baseline gap-2">
+                <span className="text-5xl font-bold text-[#404040]">14,99€</span>
+                <span className="text-gray-500">/mes</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">Funcionalidades esenciales</p>
+            </div>
+
+            <ul className="space-y-4 mb-8">
+              {[
+                { text: 'Gestión automática de reservas', included: true },
+                { text: 'Calendario inteligente', included: true },
+                { text: 'Grabación de clases en la nube', included: false },
+                { text: 'Chat con alumnos ilimitado', included: true },
+                { text: 'Estadísticas y análisis detallados', included: true },
+                { text: 'Procesamiento de pagos automático', included: true },
+                { text: 'Notificaciones en tiempo real', included: true },
+                { text: 'Sin comisiones por clase', included: true },
+                { text: 'Soporte estándar', included: true }
+              ].map((feature, idx) => (
+                <li key={idx} className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    feature.included ? 'bg-gray-100' : 'bg-red-50'
+                  }`}>
+                    {feature.included ? (
+                      <Check className="text-gray-600" size={14} />
+                    ) : (
+                      <X className="text-red-400" size={14} />
+                    )}
+                  </div>
+                  <span className={feature.included ? 'text-gray-700' : 'text-gray-400 line-through'}>
+                    {feature.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <Button 
+              onClick={handleGetStartedTeacher}
+              className="w-full bg-gray-600 hover:bg-gray-700 text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
+            >
+              Comenzar
+            </Button>
+          </motion.div>
+
+          {/* Teacher Premium Plan */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -104,8 +167,8 @@ export default function Pricing() {
                 <Crown className="text-white" size={24} />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">Para Profesores</h3>
-                <p className="text-white/80">Empieza a enseñar</p>
+                <h3 className="text-2xl font-bold text-white">Plan Premium</h3>
+                <p className="text-white/80">Para profesores</p>
               </div>
             </div>
 
@@ -114,6 +177,7 @@ export default function Pricing() {
                 <span className="text-5xl font-bold text-white">19,99€</span>
                 <span className="text-white/80">/mes</span>
               </div>
+              <p className="text-sm text-white/80 mt-2">Todas las funcionalidades</p>
             </div>
 
             <ul className="space-y-4 mb-8">
