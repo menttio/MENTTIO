@@ -158,6 +158,9 @@ export default function Layout({ children, currentPageName }) {
                   window.location.href = createPageUrl('TeacherDashboard');
                   return;
                 }
+                
+                setLoading(false);
+                return;
               } else {
                 console.log('⏰ Suscripción expirada');
                 // Subscription expired - redirect to renewal
@@ -166,6 +169,7 @@ export default function Layout({ children, currentPageName }) {
                   console.log('➡️ Redirigiendo a renovación...');
                   window.location.href = createPageUrl('RenewSubscription');
                 }
+                return;
               }
             } else {
               // subscription_active is true but no expiration date - grant access
@@ -179,6 +183,9 @@ export default function Layout({ children, currentPageName }) {
                 window.location.href = createPageUrl('TeacherDashboard');
                 return;
               }
+              
+              setLoading(false);
+              return;
             }
           } else {
             console.log('❌ Sin suscripción activa');
@@ -187,6 +194,7 @@ export default function Layout({ children, currentPageName }) {
               console.log('➡️ Redirigiendo a renovación...');
               window.location.href = createPageUrl('RenewSubscription');
             }
+            return;
           }
         } else {
           // Check if user is a student
