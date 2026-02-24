@@ -135,8 +135,6 @@ export default function Layout({ children, currentPageName }) {
                 window.location.href = createPageUrl('TeacherDashboard');
                 return;
               }
-              setLoading(false);
-              return;
             }
           }
           
@@ -158,9 +156,6 @@ export default function Layout({ children, currentPageName }) {
                   window.location.href = createPageUrl('TeacherDashboard');
                   return;
                 }
-                
-                setLoading(false);
-                return;
               } else {
                 console.log('⏰ Suscripción expirada');
                 // Subscription expired - redirect to renewal
@@ -183,9 +178,6 @@ export default function Layout({ children, currentPageName }) {
                 window.location.href = createPageUrl('TeacherDashboard');
                 return;
               }
-              
-              setLoading(false);
-              return;
             }
           } else {
             console.log('❌ Sin suscripción activa');
@@ -234,9 +226,6 @@ export default function Layout({ children, currentPageName }) {
               window.location.href = createPageUrl('StudentDashboard');
               return;
             }
-            
-            setLoading(false);
-            return;
           } else {
             console.log('⚠️ Usuario no registrado como profesor ni estudiante');
             setUserRole('new');
@@ -251,8 +240,6 @@ export default function Layout({ children, currentPageName }) {
               }
               window.location.href = createPageUrl('UserNotRegistered');
             }
-            setLoading(false);
-            return;
           }
         }
       } catch (error) {
