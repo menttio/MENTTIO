@@ -234,6 +234,9 @@ export default function Layout({ children, currentPageName }) {
               window.location.href = createPageUrl('StudentDashboard');
               return;
             }
+            
+            setLoading(false);
+            return;
           } else {
             console.log('⚠️ Usuario no registrado como profesor ni estudiante');
             setUserRole('new');
@@ -248,6 +251,8 @@ export default function Layout({ children, currentPageName }) {
               }
               window.location.href = createPageUrl('UserNotRegistered');
             }
+            setLoading(false);
+            return;
           }
         }
       } catch (error) {
