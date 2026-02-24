@@ -46,19 +46,25 @@ export default function TeacherClassHistory() {
 
   const loadBookings = async () => {
     try {
+      console.log('📚 Cargando clases...');
       const user = await base44.auth.me();
+      console.log('👤 Usuario:', user.email);
+      
       const allBookings = await base44.entities.Booking.filter({ 
         teacher_email: user.email 
       });
+      console.log('📋 Clases encontradas:', allBookings.length);
       setBookings(allBookings);
 
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+      console.log('👨‍🏫 Profesores encontrados:', teachers.length);
       if (teachers.length > 0) {
         setTeacher(teachers[0]);
       }
     } catch (error) {
-      console.error(error);
+      console.error('❌ Error cargando clases:', error);
     } finally {
+      console.log('✅ Carga finalizada');
       setLoading(false);
     }
   };
