@@ -10,7 +10,21 @@ export default function AuthRedirect() {
   useEffect(() => {
     const determineRedirect = async () => {
       try {
-        console.log('🔵 AuthRedirect - Iniciando...');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🔵 AuthRedirect INICIADO');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🌐 URL actual:', window.location.href);
+        console.log('🌐 URL params:', window.location.search);
+        
+        // Verificar sessionStorage COMPLETO al llegar
+        console.log('📦 Estado COMPLETO de sessionStorage AL LLEGAR:');
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          const value = sessionStorage.getItem(key);
+          console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
+        }
+        
+        console.log('👤 Obteniendo usuario autenticado...');
         const user = await base44.auth.me();
         
         if (!user) {
@@ -20,23 +34,42 @@ export default function AuthRedirect() {
         }
 
         console.log('👤 Usuario autenticado:', user.email);
+        console.log('👤 Usuario ID:', user.id);
 
-        // Check if this is a teacher signup in progress
+        // CRITICAL: Check if this is a teacher signup in progress
         const teacherSignupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
         const teacherSignupData = sessionStorage.getItem('teacher_signup_data');
         
-        console.log('🔍 Verificando signup en progreso:');
+        console.log('🔍 VERIFICANDO SIGNUP EN PROGRESO:');
         console.log('  - teacher_signup_in_progress:', teacherSignupInProgress);
         console.log('  - teacher_signup_data exists:', teacherSignupData ? 'SÍ' : 'NO');
         
+        if (teacherSignupData) {
+          console.log('  - teacher_signup_data content (100 chars):', teacherSignupData.substring(0, 100));
+        }
+        
         if (teacherSignupInProgress === 'true' && teacherSignupData) {
-          console.log('✅ Signup de profesor en progreso detectado, redirigiendo a TeacherSignupComplete');
+          console.log('✅✅✅ SIGNUP DE PROFESOR EN PROGRESO DETECTADO ✅✅✅');
+          console.log('➡️ Redirigiendo a TeacherSignupComplete para crear el profesor...');
           console.log('🔗 URL destino:', createPageUrl('TeacherSignupComplete'));
+          
+          // NO borrar teacher_signup_data, solo el flag de in_progress
           sessionStorage.removeItem('teacher_signup_in_progress');
+          console.log('🗑️ Flag teacher_signup_in_progress eliminado');
+          console.log('✅ teacher_signup_data MANTENIDO en sessionStorage');
+          
+          console.log('═══════════════════════════════════════════════════════');
           window.location.href = createPageUrl('TeacherSignupComplete');
           return;
         } else {
-          console.log('❌ NO hay signup en progreso, continuando con flujo normal');
+          console.log('❌ NO hay signup en progreso');
+          if (!teacherSignupInProgress) {
+            console.log('❌ Razón: teacher_signup_in_progress no existe o no es "true"');
+          }
+          if (!teacherSignupData) {
+            console.log('❌ Razón: teacher_signup_data no existe');
+          }
+          console.log('➡️ Continuando con flujo normal de redirección...');
         }
 
         // Check if there's a selected role from SelectRole page

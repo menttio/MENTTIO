@@ -142,9 +142,14 @@ export default function TeacherSignup() {
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
-    console.log('🔵 handleFinalize - Plan:', formData.subscription_plan);
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('🔵 handleFinalize INICIADO');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('📋 Plan seleccionado:', formData.subscription_plan);
+    console.log('📋 Datos del formulario completos:', formData);
+    console.log('📋 Asignaturas del profesor:', teacherSubjects);
+    
     if (formData.subscription_plan === 'basic') {
-      // Plan básico: igual que alumnos - guardar y redirigir
       const signupData = {
         first_name: formData.nombre,
         last_name: formData.apellidos,
@@ -153,15 +158,29 @@ export default function TeacherSignup() {
         experience_years: formData.experience_years,
         subjects: teacherSubjects
       };
-      console.log('💾 Guardando datos en sessionStorage:', signupData);
+      
+      console.log('💾 GUARDANDO datos en sessionStorage...');
+      console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
+      
       sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
       
-      // Verificar que se guardó
+      // Verificación inmediata
       const saved = sessionStorage.getItem('teacher_signup_data');
-      console.log('✅ Datos guardados correctamente:', saved ? 'Sí' : 'No');
+      console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
+      if (saved) {
+        console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
+        try {
+          const parsed = JSON.parse(saved);
+          console.log('✅ Datos parseables correctamente:', parsed);
+        } catch (e) {
+          console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
+        }
+      }
       
+      console.log('✅ Mostrando pantalla de éxito...');
       setLoading(false);
       setShowSuccess(true);
+      console.log('═══════════════════════════════════════════════════════');
       return;
     }
 
@@ -209,18 +228,50 @@ export default function TeacherSignup() {
   }
 
   const handleGoToLogin = () => {
-    console.log('➡️ handleGoToLogin - Redirigiendo a login...');
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('🔵 handleGoToLogin INICIADO');
+    console.log('═══════════════════════════════════════════════════════');
     
-    // Verificar que los datos siguen en sessionStorage
+    // Verificar sessionStorage completo ANTES de marcar signup
+    console.log('📦 Estado COMPLETO de sessionStorage ANTES:');
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
+      console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
+    }
+    
     const signupData = sessionStorage.getItem('teacher_signup_data');
-    console.log('📋 Datos en sessionStorage antes de login:', signupData ? 'Sí existen' : 'NO existen');
+    console.log('📋 teacher_signup_data existe:', signupData ? 'SÍ' : 'NO');
     
-    // Mark that this is a teacher signup in progress
+    if (!signupData) {
+      console.error('❌ ¡ERROR CRÍTICO! No hay teacher_signup_data en sessionStorage');
+      console.error('❌ Esto impedirá que se cree el profesor después del login');
+      alert('ERROR: Los datos no se guardaron correctamente. Por favor, vuelve a intentarlo.');
+      return;
+    }
+    
+    // Marcar que hay un signup de profesor en progreso
+    console.log('✅ Marcando teacher_signup_in_progress...');
     sessionStorage.setItem('teacher_signup_in_progress', 'true');
-    console.log('✅ Marcado como teacher_signup_in_progress');
     
-    console.log('🚀 Llamando a redirectToLogin con nextUrl...');
-    base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
+    // Verificar que se marcó correctamente
+    const marked = sessionStorage.getItem('teacher_signup_in_progress');
+    console.log('✅ teacher_signup_in_progress marcado:', marked);
+    
+    // Mostrar estado final de sessionStorage
+    console.log('📦 Estado COMPLETO de sessionStorage DESPUÉS:');
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
+      console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
+    }
+    
+    const nextUrl = createPageUrl('TeacherSignupComplete');
+    console.log('🔗 URL de redirección tras login:', nextUrl);
+    console.log('🚀 Llamando a base44.auth.redirectToLogin...');
+    console.log('═══════════════════════════════════════════════════════');
+    
+    base44.auth.redirectToLogin(nextUrl);
   };
 
   // Success screen for basic plan (similar to students)

@@ -11,39 +11,65 @@ export default function TeacherSignupComplete() {
   useEffect(() => {
     const completeSignup = async () => {
       try {
-        console.log('🔵 TeacherSignupComplete - Componente montado');
-        console.log('🔵 URL actual:', window.location.href);
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🔵 TeacherSignupComplete INICIADO');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🌐 URL actual:', window.location.href);
+        console.log('🌐 Timestamp:', new Date().toISOString());
         
-        // Verificar sessionStorage completo
-        console.log('📦 Contenido de sessionStorage:');
-        for (let i = 0; i < sessionStorage.length; i++) {
-          const key = sessionStorage.key(i);
-          console.log(`  - ${key}:`, sessionStorage.getItem(key));
+        // Verificar sessionStorage COMPLETO
+        console.log('📦 Contenido COMPLETO de sessionStorage AL INICIAR:');
+        if (sessionStorage.length === 0) {
+          console.error('❌ ¡sessionStorage está VACÍO!');
+        } else {
+          console.log('✅ sessionStorage tiene', sessionStorage.length, 'elementos:');
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            const value = sessionStorage.getItem(key);
+            console.log(`  ${i + 1}. ${key} (${value?.length} chars):`, value);
+          }
         }
         
         console.log('👤 Obteniendo usuario autenticado...');
         const user = await base44.auth.me();
-        console.log('👤 Usuario autenticado:', user.email);
-        console.log('👤 Usuario completo:', user);
+        console.log('✅ Usuario autenticado:');
+        console.log('  - Email:', user.email);
+        console.log('  - ID:', user.id);
+        console.log('  - Full Name:', user.full_name);
+        console.log('  - Usuario completo:', user);
         
         const signupData = sessionStorage.getItem('teacher_signup_data');
-        console.log('📋 Datos de signup encontrados:', signupData ? 'SÍ' : 'NO');
-        console.log('📋 Datos raw:', signupData);
+        console.log('🔍 Verificando teacher_signup_data...');
+        console.log('📋 teacher_signup_data encontrado:', signupData ? 'SÍ' : 'NO');
         
         if (!signupData) {
-          console.log('❌ No hay datos de signup, redirigiendo a TeacherSignup');
+          console.error('❌❌❌ ERROR CRÍTICO: NO HAY teacher_signup_data ❌❌❌');
+          console.error('❌ No se puede crear el profesor sin estos datos');
+          console.error('❌ Redirigiendo de vuelta a TeacherSignup...');
           navigate(createPageUrl('TeacherSignup'));
           return;
         }
 
-        console.log('📄 Parseando datos...');
-        const data = JSON.parse(signupData);
-        console.log('📄 Datos parseados:', data);
+        console.log('📋 Datos raw encontrados (completos):', signupData);
+        console.log('📄 Parseando datos JSON...');
+        
+        let data;
+        try {
+          data = JSON.parse(signupData);
+          console.log('✅ Datos parseados exitosamente:', data);
+        } catch (parseError) {
+          console.error('❌ ERROR al parsear JSON:', parseError);
+          console.error('❌ Contenido que falló:', signupData);
+          throw parseError;
+        }
         
         // Plan básico: 14 días de prueba gratuita
+        console.log('📅 Calculando fechas de prueba...');
         const trialStartDate = new Date();
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
+        console.log('✅ Trial start:', trialStartDate.toISOString().split('T')[0]);
+        console.log('✅ Trial end:', trialEndDate.toISOString().split('T')[0]);
         
         const teacherData = {
           user_email: user.email,
@@ -65,14 +91,34 @@ export default function TeacherSignupComplete() {
           tour_completed: false
         };
         
-        console.log('🔨 Datos de Teacher a crear:', teacherData);
+        console.log('🔨 Preparando creación de Teacher...');
+        console.log('🔨 Datos completos a enviar:', JSON.stringify(teacherData, null, 2));
         console.log('✅ Llamando a base44.entities.Teacher.create...');
+        console.log('⏳ ESPERANDO RESPUESTA DEL SERVIDOR...');
         
         const teacher = await base44.entities.Teacher.create(teacherData);
         
-        console.log('✅ Profesor creado exitosamente!');
-        console.log('✅ ID del profesor:', teacher.id);
-        console.log('✅ Datos completos del profesor:', teacher);
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('✅ ID del profesor creado:', teacher.id);
+        console.log('✅ Email del profesor:', teacher.user_email);
+        console.log('✅ Nombre completo:', teacher.full_name);
+        console.log('✅ Plan:', teacher.subscription_plan);
+        console.log('✅ Trial activo:', teacher.trial_active);
+        console.log('✅ Datos COMPLETOS del profesor creado:', JSON.stringify(teacher, null, 2));
+        console.log('═══════════════════════════════════════════════════════');
+        
+        console.log('🔍 VERIFICANDO EN BASE DE DATOS...');
+        console.log('🔍 Buscando profesor con email:', user.email);
+        const verifyTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
+        console.log('🔍 Profesores encontrados en verificación:', verifyTeachers.length);
+        if (verifyTeachers.length > 0) {
+          console.log('✅ CONFIRMADO: Profesor existe en base de datos');
+          console.log('✅ Datos encontrados:', verifyTeachers[0]);
+        } else {
+          console.error('❌ ERROR: Profesor NO encontrado en base de datos tras creación');
+        }
 
         console.log('📧 Enviando email de notificación...');
         try {
@@ -99,15 +145,28 @@ export default function TeacherSignupComplete() {
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('post_login_redirect');
         sessionStorage.removeItem('teacher_signup_in_progress');
+        console.log('✅ sessionStorage limpiado');
         
-        console.log('➡️ Redirigiendo a TeacherDashboard...');
-        window.location.href = createPageUrl('TeacherDashboard');
+        console.log('➡️ Preparando redirección a TeacherDashboard...');
+        const dashboardUrl = createPageUrl('TeacherDashboard');
+        console.log('🔗 URL destino:', dashboardUrl);
+        console.log('🚀 Redirigiendo...');
+        console.log('═══════════════════════════════════════════════════════');
+        
+        window.location.href = dashboardUrl;
       } catch (error) {
-        console.error('❌ Error completing signup:', error);
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌❌❌ ERROR COMPLETANDO SIGNUP ❌❌❌');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ Mensaje de error:', error.message);
+        console.error('❌ Error completo:', error);
+        console.error('❌ Stack trace:', error.stack);
+        console.error('═══════════════════════════════════════════════════════');
         setError(error.message);
       }
     };
 
+    console.log('🚀 Ejecutando completeSignup...');
     completeSignup();
   }, [navigate]);
 
