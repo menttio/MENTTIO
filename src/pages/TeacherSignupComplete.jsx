@@ -11,12 +11,24 @@ export default function TeacherSignupComplete() {
   useEffect(() => {
     const completeSignup = async () => {
       try {
-        console.log('🔵 TeacherSignupComplete - Iniciando...');
+        console.log('🔵 TeacherSignupComplete - Componente montado');
+        console.log('🔵 URL actual:', window.location.href);
+        
+        // Verificar sessionStorage completo
+        console.log('📦 Contenido de sessionStorage:');
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          console.log(`  - ${key}:`, sessionStorage.getItem(key));
+        }
+        
+        console.log('👤 Obteniendo usuario autenticado...');
         const user = await base44.auth.me();
         console.log('👤 Usuario autenticado:', user.email);
+        console.log('👤 Usuario completo:', user);
         
         const signupData = sessionStorage.getItem('teacher_signup_data');
-        console.log('📋 Datos de signup encontrados:', signupData ? 'Sí' : 'No');
+        console.log('📋 Datos de signup encontrados:', signupData ? 'SÍ' : 'NO');
+        console.log('📋 Datos raw:', signupData);
         
         if (!signupData) {
           console.log('❌ No hay datos de signup, redirigiendo a TeacherSignup');
@@ -24,6 +36,7 @@ export default function TeacherSignupComplete() {
           return;
         }
 
+        console.log('📄 Parseando datos...');
         const data = JSON.parse(signupData);
         console.log('📄 Datos parseados:', data);
         
@@ -32,8 +45,7 @@ export default function TeacherSignupComplete() {
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
         
-        console.log('✅ Creando entidad Teacher...');
-        const teacher = await base44.entities.Teacher.create({
+        const teacherData = {
           user_email: user.email,
           full_name: `${data.first_name} ${data.last_name}`,
           phone: data.phone,
@@ -51,9 +63,18 @@ export default function TeacherSignupComplete() {
           trial_start_date: trialStartDate.toISOString().split('T')[0],
           trial_end_date: trialEndDate.toISOString().split('T')[0],
           tour_completed: false
-        });
-        console.log('✅ Profesor creado con ID:', teacher.id);
+        };
+        
+        console.log('🔨 Datos de Teacher a crear:', teacherData);
+        console.log('✅ Llamando a base44.entities.Teacher.create...');
+        
+        const teacher = await base44.entities.Teacher.create(teacherData);
+        
+        console.log('✅ Profesor creado exitosamente!');
+        console.log('✅ ID del profesor:', teacher.id);
+        console.log('✅ Datos completos del profesor:', teacher);
 
+        console.log('📧 Enviando email de notificación...');
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
@@ -69,8 +90,9 @@ export default function TeacherSignupComplete() {
               <p><strong>Período de prueba:</strong> 14 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
             `
           });
+          console.log('✅ Email enviado correctamente');
         } catch (emailError) {
-          console.error('Error enviando email de notificación:', emailError);
+          console.error('❌ Error enviando email de notificación:', emailError);
         }
 
         console.log('🗑️ Limpiando sessionStorage...');

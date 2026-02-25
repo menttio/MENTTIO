@@ -142,16 +142,24 @@ export default function TeacherSignup() {
   const canFinalize = acceptedTerms;
 
   const handleFinalize = async () => {
+    console.log('🔵 handleFinalize - Plan:', formData.subscription_plan);
     if (formData.subscription_plan === 'basic') {
       // Plan básico: igual que alumnos - guardar y redirigir
-      sessionStorage.setItem('teacher_signup_data', JSON.stringify({
+      const signupData = {
         first_name: formData.nombre,
         last_name: formData.apellidos,
         phone: formData.phone,
         education: formData.education,
         experience_years: formData.experience_years,
         subjects: teacherSubjects
-      }));
+      };
+      console.log('💾 Guardando datos en sessionStorage:', signupData);
+      sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
+      
+      // Verificar que se guardó
+      const saved = sessionStorage.getItem('teacher_signup_data');
+      console.log('✅ Datos guardados correctamente:', saved ? 'Sí' : 'No');
+      
       setLoading(false);
       setShowSuccess(true);
       return;
@@ -201,8 +209,18 @@ export default function TeacherSignup() {
   }
 
   const handleGoToLogin = () => {
+    console.log('➡️ handleGoToLogin - Redirigiendo a login...');
+    
+    // Verificar que los datos siguen en sessionStorage
+    const signupData = sessionStorage.getItem('teacher_signup_data');
+    console.log('📋 Datos en sessionStorage antes de login:', signupData ? 'Sí existen' : 'NO existen');
+    
     // Save the redirect URL in sessionStorage
-    sessionStorage.setItem('post_login_redirect', createPageUrl('TeacherSignupComplete'));
+    const redirectUrl = createPageUrl('TeacherSignupComplete');
+    sessionStorage.setItem('post_login_redirect', redirectUrl);
+    console.log('🔗 URL de redirección guardada:', redirectUrl);
+    
+    console.log('🚀 Llamando a redirectToLogin...');
     base44.auth.redirectToLogin();
   };
 
