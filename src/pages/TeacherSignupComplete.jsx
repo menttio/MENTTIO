@@ -39,8 +39,10 @@ export default function TeacherSignupComplete() {
         console.log('  - Usuario completo:', user);
         
         const signupData = sessionStorage.getItem('teacher_signup_data');
+        const subscriptionPlan = sessionStorage.getItem('subscription_plan') || 'basic';
         console.log('🔍 Verificando teacher_signup_data...');
         console.log('📋 teacher_signup_data encontrado:', signupData ? 'SÍ' : 'NO');
+        console.log('📋 Plan seleccionado:', subscriptionPlan);
         
         if (!signupData) {
           console.error('❌❌❌ ERROR CRÍTICO: NO HAY teacher_signup_data ❌❌❌');
@@ -63,7 +65,7 @@ export default function TeacherSignupComplete() {
           throw parseError;
         }
         
-        // Plan básico: 14 días de prueba gratuita
+        // Calcular fechas de prueba (14 días)
         console.log('📅 Calculando fechas de prueba...');
         const trialStartDate = new Date();
         const trialEndDate = new Date();
@@ -83,7 +85,7 @@ export default function TeacherSignupComplete() {
           total_classes: 0,
           subscription_active: true,
           subscription_expires: trialEndDate.toISOString().split('T')[0],
-          subscription_plan: 'basic',
+          subscription_plan: subscriptionPlan,
           trial_used: false,
           trial_active: true,
           trial_start_date: trialStartDate.toISOString().split('T')[0],
@@ -143,6 +145,7 @@ export default function TeacherSignupComplete() {
 
         console.log('🗑️ Limpiando sessionStorage...');
         sessionStorage.removeItem('teacher_signup_data');
+        sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('post_login_redirect');
         sessionStorage.removeItem('teacher_signup_in_progress');
         console.log('✅ sessionStorage limpiado');
