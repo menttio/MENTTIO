@@ -25,11 +25,18 @@ export default function AuthRedirect() {
         const teacherSignupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
         const teacherSignupData = sessionStorage.getItem('teacher_signup_data');
         
+        console.log('🔍 Verificando signup en progreso:');
+        console.log('  - teacher_signup_in_progress:', teacherSignupInProgress);
+        console.log('  - teacher_signup_data exists:', teacherSignupData ? 'SÍ' : 'NO');
+        
         if (teacherSignupInProgress === 'true' && teacherSignupData) {
           console.log('✅ Signup de profesor en progreso detectado, redirigiendo a TeacherSignupComplete');
+          console.log('🔗 URL destino:', createPageUrl('TeacherSignupComplete'));
           sessionStorage.removeItem('teacher_signup_in_progress');
           window.location.href = createPageUrl('TeacherSignupComplete');
           return;
+        } else {
+          console.log('❌ NO hay signup en progreso, continuando con flujo normal');
         }
 
         // Check if there's a selected role from SelectRole page
@@ -73,19 +80,27 @@ export default function AuthRedirect() {
         }
         
         // No role selected or old flow - check what account type exists
+        console.log('🔍 Buscando perfiles existentes para:', user.email);
         const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+        console.log('📋 Profesores encontrados:', teachers.length);
+        
         if (teachers.length > 0) {
+          console.log('✅ Profesor encontrado, redirigiendo a TeacherDashboard');
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
         const students = await base44.entities.Student.filter({ user_email: user.email });
+        console.log('📋 Estudiantes encontrados:', students.length);
+        
         if (students.length > 0) {
+          console.log('✅ Estudiante encontrado, redirigiendo a StudentDashboard');
           window.location.href = createPageUrl('StudentDashboard');
           return;
         }
 
         // New user - redirect to warning page
+        console.log('❌ No se encontró ningún perfil, redirigiendo a UserNotRegistered');
         window.location.href = createPageUrl('UserNotRegistered');
       } catch (error) {
         console.error('Error determining redirect:', error);

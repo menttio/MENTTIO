@@ -247,7 +247,15 @@ export default function TeacherSignup() {
               </p>
 
               <Button
-                onClick={handleGoToLogin}
+                onClick={() => {
+                  console.log('🔵 Botón "Ir a Iniciar Sesión" clickeado');
+                  console.log('📦 Estado actual de sessionStorage:');
+                  for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    console.log(`  - ${key}:`, sessionStorage.getItem(key)?.substring(0, 100));
+                  }
+                  handleGoToLogin();
+                }}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
               >
                 Ir a Iniciar Sesión
