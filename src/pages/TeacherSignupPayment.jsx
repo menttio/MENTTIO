@@ -118,8 +118,14 @@ export default function TeacherSignupPayment() {
           }
         }
       } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Error al crear el perfil. Por favor, contacta con soporte.');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ ERROR AL CREAR PERFIL');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ Error completo:', error);
+        console.error('❌ Mensaje:', error.message);
+        console.error('❌ Stack:', error.stack);
+        console.error('═══════════════════════════════════════════════════════');
+        alert(`Error al crear el perfil: ${error.message}\n\nRevisa la consola para más detalles.`);
         setLoading(false);
       }
     };
