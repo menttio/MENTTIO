@@ -83,6 +83,7 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
 import TeacherSignupSuccess from './pages/TeacherSignupSuccess';
+import TeacherSignupPayment from './pages/TeacherSignupPayment';
 import __Layout from './Layout.jsx';
 
 
@@ -123,6 +124,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
     "TeacherSignupSuccess": TeacherSignupSuccess,
+    "TeacherSignupPayment": TeacherSignupPayment,
 }
 
 export const pagesConfig = {

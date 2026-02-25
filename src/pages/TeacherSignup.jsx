@@ -179,19 +179,11 @@ export default function TeacherSignup() {
       }
     }
     
-    console.log('✅ Redirigiendo directamente a login...');
+    console.log('✅ Redirigiendo a página de configuración de pago...');
     console.log('═══════════════════════════════════════════════════════');
     
-    // Marcar que hay un signup de profesor en progreso
-    console.log('✅ Marcando teacher_signup_in_progress...');
-    sessionStorage.setItem('teacher_signup_in_progress', 'true');
-    
-    const nextUrl = createPageUrl('TeacherSignupComplete');
-    console.log('🔗 URL de redirección tras login:', nextUrl);
-    console.log('🚀 Llamando a base44.auth.redirectToLogin...');
-    console.log('═══════════════════════════════════════════════════════');
-    
-    base44.auth.redirectToLogin(nextUrl);
+    // Redirect to payment setup page
+    navigate(createPageUrl('TeacherSignupPayment'));
     return;
 
     // Plan premium: flujo con backend function
