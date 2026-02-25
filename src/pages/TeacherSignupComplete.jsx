@@ -98,6 +98,7 @@ export default function TeacherSignupComplete() {
         console.log('🗑️ Limpiando sessionStorage...');
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('post_login_redirect');
+        sessionStorage.removeItem('teacher_signup_in_progress');
         
         console.log('➡️ Redirigiendo a TeacherDashboard...');
         window.location.href = createPageUrl('TeacherDashboard');

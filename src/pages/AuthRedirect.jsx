@@ -10,16 +10,32 @@ export default function AuthRedirect() {
   useEffect(() => {
     const determineRedirect = async () => {
       try {
+        console.log('🔵 AuthRedirect - Iniciando...');
         const user = await base44.auth.me();
         
         if (!user) {
+          console.log('❌ No hay usuario, redirigiendo a Home');
           window.location.href = createPageUrl('Home');
+          return;
+        }
+
+        console.log('👤 Usuario autenticado:', user.email);
+
+        // Check if this is a teacher signup in progress
+        const teacherSignupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
+        const teacherSignupData = sessionStorage.getItem('teacher_signup_data');
+        
+        if (teacherSignupInProgress === 'true' && teacherSignupData) {
+          console.log('✅ Signup de profesor en progreso detectado, redirigiendo a TeacherSignupComplete');
+          sessionStorage.removeItem('teacher_signup_in_progress');
+          window.location.href = createPageUrl('TeacherSignupComplete');
           return;
         }
 
         // Check if there's a selected role from SelectRole page
         const selectedRole = sessionStorage.getItem('selected_role');
         const roleAction = sessionStorage.getItem('role_action');
+        console.log('🔍 Selected role:', selectedRole, '- Action:', roleAction);
         
         if (selectedRole && roleAction === 'login') {
           // User is trying to login with a specific role

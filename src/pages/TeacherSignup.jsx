@@ -215,13 +215,12 @@ export default function TeacherSignup() {
     const signupData = sessionStorage.getItem('teacher_signup_data');
     console.log('📋 Datos en sessionStorage antes de login:', signupData ? 'Sí existen' : 'NO existen');
     
-    // Save the redirect URL in sessionStorage
-    const redirectUrl = createPageUrl('TeacherSignupComplete');
-    sessionStorage.setItem('post_login_redirect', redirectUrl);
-    console.log('🔗 URL de redirección guardada:', redirectUrl);
+    // Mark that this is a teacher signup in progress
+    sessionStorage.setItem('teacher_signup_in_progress', 'true');
+    console.log('✅ Marcado como teacher_signup_in_progress');
     
-    console.log('🚀 Llamando a redirectToLogin...');
-    base44.auth.redirectToLogin();
+    console.log('🚀 Llamando a redirectToLogin con nextUrl...');
+    base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
   };
 
   // Success screen for basic plan (similar to students)
