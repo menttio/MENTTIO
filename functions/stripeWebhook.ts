@@ -23,52 +23,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
-    console.log('═══════════════════════════════════════════════════════');
-    console.log('🔵 Webhook Stripe - Evento recibido:', event.type);
-    console.log('═══════════════════════════════════════════════════════');
-
-    // Handle subscription invoice payment (after trial period)
-    if (event.type === 'invoice.payment_succeeded') {
-      const invoice = event.data.object;
-      const subscription = invoice.subscription;
-      const subscriptionObj = invoice.subscription_details || {};
-      
-      console.log('💳💳💳 PAGO DE SUSCRIPCIÓN EXITOSO 💳💳💳');
-      console.log('═══════════════════════════════════════════════════════');
-      console.log('✅ COBRO REALIZADO DESPUÉS DEL PERÍODO DE PRUEBA');
-      console.log('✅ Invoice ID:', invoice.id);
-      console.log('✅ Subscription ID:', subscription);
-      console.log('✅ Amount paid:', invoice.amount_paid / 100, 'EUR');
-      console.log('✅ Customer email:', invoice.customer_email);
-      console.log('✅ Billing reason:', invoice.billing_reason);
-      console.log('✅ Period start:', new Date(invoice.period_start * 1000).toISOString());
-      console.log('✅ Period end:', new Date(invoice.period_end * 1000).toISOString());
-      
-      // Get subscription metadata to find teacher
-      if (invoice.lines?.data?.[0]?.metadata) {
-        const metadata = invoice.lines.data[0].metadata;
-        console.log('✅ Teacher ID:', metadata.teacher_id);
-        console.log('✅ Plan:', metadata.plan);
-        
-        // Update teacher subscription status
-        if (metadata.teacher_id) {
-          try {
-            await base44.asServiceRole.entities.Teacher.update(metadata.teacher_id, {
-              subscription_active: true,
-              trial_active: false,
-              trial_used: true,
-            });
-            console.log('✅ Profesor actualizado: suscripción activa, trial finalizado');
-          } catch (updateError) {
-            console.error('❌ Error actualizando profesor:', updateError);
-          }
-        }
-      }
-      console.log('═══════════════════════════════════════════════════════');
-      
-      return Response.json({ received: true });
-    }
-
     // Handle checkout completed
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
