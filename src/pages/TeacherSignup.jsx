@@ -141,7 +141,7 @@ export default function TeacherSignup() {
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
-  const handleFinalize = async () => {
+  const handleFinalize = () => {
     console.log('═══════════════════════════════════════════════════════');
     console.log('🔵 handleFinalize INICIADO');
     console.log('═══════════════════════════════════════════════════════');
@@ -186,37 +186,6 @@ export default function TeacherSignup() {
 
     // Plan premium: flujo con backend function
     setSaving(true);
-    try {
-      const response = await base44.functions.invoke('registerTeacher', {
-        nombre: formData.nombre,
-        apellidos: formData.apellidos,
-        email_personal: formData.email_personal,
-        phone: formData.phone,
-        education: formData.education,
-        experience_years: formData.experience_years,
-        subjects: teacherSubjects,
-        subscription_plan: formData.subscription_plan
-      });
-
-      console.log('Respuesta completa:', response);
-
-      if (!response.data || response.data.error) {
-        throw new Error(response.data?.error || 'Error al crear la cuenta');
-      }
-
-      const { email, password } = response.data;
-
-      if (!email || !password) {
-        throw new Error('No se recibieron las credenciales corporativas');
-      }
-
-      setCorporateAccount({ email, password });
-      setShowSuccess(true);
-    } catch (error) {
-      console.error('Error completo:', error);
-      alert(`Error al crear la cuenta: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
-      setSaving(false);
-    }
   };
 
   if (loading) {
