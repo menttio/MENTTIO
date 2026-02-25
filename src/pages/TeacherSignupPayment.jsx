@@ -10,7 +10,7 @@ export default function TeacherSignupPayment() {
   const [loading, setLoading] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
-  // Verificar si el usuario ya está autenticado y crear sesión de checkout O crear profesor directamente
+  // Verificar si el usuario ya está autenticado y crear profesor + sesión de pago
   React.useEffect(() => {
     const checkAuthAndCreateSession = async () => {
       try {
@@ -24,17 +24,85 @@ export default function TeacherSignupPayment() {
           const signupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
           
           if (signupInProgress === 'true') {
+            console.log('═══════════════════════════════════════════════════════');
+            console.log('🔵 CREANDO PERFIL DE PROFESOR');
+            console.log('═══════════════════════════════════════════════════════');
+            
+            setLoading(true);
+
+            const signupData = sessionStorage.getItem('teacher_signup_data');
             const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
-            console.log('📋 Plan seleccionado:', subscription_plan);
+            
+            if (!signupData) {
+              console.error('❌ No hay datos de signup');
+              alert('Error: Datos de registro no encontrados');
+              return;
+            }
+
+            const data = JSON.parse(signupData);
+            console.log('📋 Datos parseados:', data);
+            console.log('📋 Plan:', subscription_plan);
+
+            // Calcular fechas de prueba
+            const trialStartDate = new Date();
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 14);
+
+            const teacherData = {
+              user_email: user.email,
+              full_name: `${data.first_name} ${data.last_name}`,
+              phone: data.phone,
+              education: data.education,
+              experience_years: data.experience_years,
+              bio: '',
+              subjects: data.subjects || [],
+              rating: 0,
+              total_classes: 0,
+              subscription_active: true,
+              subscription_expires: trialEndDate.toISOString().split('T')[0],
+              subscription_plan: subscription_plan,
+              trial_used: false,
+              trial_active: true,
+              trial_start_date: trialStartDate.toISOString().split('T')[0],
+              trial_end_date: trialEndDate.toISOString().split('T')[0],
+              tour_completed: false
+            };
+
+            console.log('🔨 Creando profesor en BD...');
+            const teacher = await base44.entities.Teacher.create(teacherData);
+            console.log('✅ Profesor creado:', teacher.id);
+
+            // Enviar email de notificación
+            try {
+              await base44.integrations.Core.SendEmail({
+                to: 'menttio@menttio.com',
+                subject: `Nuevo Profesor Registrado (Plan ${subscription_plan === 'basic' ? 'Básico' : 'Premium'}) - Menttio`,
+                body: `
+                  <h2>Nuevo Profesor Registrado - Plan ${subscription_plan === 'basic' ? 'Básico' : 'Premium'}</h2>
+                  <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
+                  <p><strong>Email:</strong> ${user.email}</p>
+                  <p><strong>Teléfono:</strong> ${data.phone}</p>
+                  <p><strong>Formación:</strong> ${data.education}</p>
+                  <p><strong>Plan:</strong> ${subscription_plan === 'basic' ? 'Básico (sin grabaciones)' : 'Premium (con grabaciones)'}</p>
+                `
+              });
+              console.log('✅ Email enviado');
+            } catch (emailError) {
+              console.error('❌ Error enviando email:', emailError);
+            }
 
             if (subscription_plan === 'basic') {
-              // Plan básico: crear profesor directamente sin pasar por Stripe
-              console.log('🔵 Plan básico - Creando profesor directamente...');
-              window.location.href = createPageUrl('TeacherSignupComplete');
+              // Plan básico: ir directo al dashboard
+              console.log('✅ Plan básico - Redirigiendo a dashboard...');
+              
+              sessionStorage.removeItem('teacher_signup_data');
+              sessionStorage.removeItem('subscription_plan');
+              sessionStorage.removeItem('teacher_signup_in_progress');
+              
+              window.location.href = createPageUrl('TeacherDashboard');
             } else {
               // Plan premium: crear sesión de Stripe
-              console.log('🔵 Plan premium - Creando sesión de Stripe Checkout...');
-              setLoading(true);
+              console.log('🔵 Plan premium - Creando sesión de Stripe...');
 
               const response = await base44.functions.invoke('createTeacherSubscription', {
                 subscription_plan
@@ -44,14 +112,15 @@ export default function TeacherSignupPayment() {
                 throw new Error(response.data.error);
               }
 
-              console.log('✅ Sesión creada, redirigiendo a Stripe...');
+              console.log('✅ Redirigiendo a Stripe...');
               window.location.href = response.data.url;
             }
           }
         }
       } catch (error) {
-        console.error('Error:', error);
-        // Usuario no autenticado, mostrar la pantalla normal
+        console.error('❌ Error:', error);
+        alert('Error al crear el perfil. Por favor, contacta con soporte.');
+        setLoading(false);
       }
     };
 
