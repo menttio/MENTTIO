@@ -901,7 +901,8 @@ export default function TeacherSignup() {
                     disabled={!canFinalize || saving}
                     className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
                   >
-                    {saving ? <Loader2 className="animate-spin" /> : 'Activar Cuenta de Profesor'}
+                    {saving ? <Loader2 className="animate-spin" /> : 'Configurar Método de Pago'}
+                    {!saving && <ArrowRight size={18} className="ml-2" />}
                   </Button>
                 </motion.div>
               )}
