@@ -149,40 +149,41 @@ export default function TeacherSignup() {
     console.log('📋 Datos del formulario completos:', formData);
     console.log('📋 Asignaturas del profesor:', teacherSubjects);
     
-    if (formData.subscription_plan === 'basic') {
-      const signupData = {
-        first_name: formData.nombre,
-        last_name: formData.apellidos,
-        phone: formData.phone,
-        education: formData.education,
-        experience_years: formData.experience_years,
-        subjects: teacherSubjects
-      };
-      
-      console.log('💾 GUARDANDO datos en sessionStorage...');
-      console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
-      
-      sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
-      
-      // Verificación inmediata
-      const saved = sessionStorage.getItem('teacher_signup_data');
-      console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
-      if (saved) {
-        console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
-        try {
-          const parsed = JSON.parse(saved);
-          console.log('✅ Datos parseables correctamente:', parsed);
-        } catch (e) {
-          console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
-        }
+    // Save signup data for both plans
+    const signupData = {
+      first_name: formData.nombre,
+      last_name: formData.apellidos,
+      phone: formData.phone,
+      education: formData.education,
+      experience_years: formData.experience_years,
+      subjects: teacherSubjects,
+      plan: formData.subscription_plan
+    };
+    
+    console.log('💾 GUARDANDO datos en sessionStorage...');
+    console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
+    
+    sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
+    sessionStorage.setItem('teacher_signup_plan', formData.subscription_plan);
+    
+    // Verificación inmediata
+    const saved = sessionStorage.getItem('teacher_signup_data');
+    console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
+    if (saved) {
+      console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
+      try {
+        const parsed = JSON.parse(saved);
+        console.log('✅ Datos parseables correctamente:', parsed);
+      } catch (e) {
+        console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
       }
-      
-      console.log('✅ Mostrando pantalla de éxito...');
-      setLoading(false);
-      setShowSuccess(true);
-      console.log('═══════════════════════════════════════════════════════');
-      return;
     }
+    
+    console.log('✅ Mostrando pantalla de éxito...');
+    setLoading(false);
+    setShowSuccess(true);
+    console.log('═══════════════════════════════════════════════════════');
+    return;
 
     // Plan premium: flujo con backend function
     setSaving(true);
@@ -820,16 +821,17 @@ export default function TeacherSignup() {
                   className="space-y-4"
                 >
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
-                    <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
+                    <p className="text-sm text-gray-500 mb-2">Precio de prueba - Suscripción mensual</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-[#404040]">
-                        {formData.subscription_plan === 'basic' ? '9,99€' : '19,99€'}
-                      </span>
+                      <span className="text-5xl font-bold text-[#404040]">1€</span>
                       <span className="text-gray-500">/mes</span>
                     </div>
                     <p className="text-sm text-gray-600 mt-2">
                       Plan {formData.subscription_plan === 'basic' ? 'Básico' : 'Premium'}
                       {formData.subscription_plan === 'premium' && ' (con grabación de clases)'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      (Precio promocional para testing - En producción: {formData.subscription_plan === 'basic' ? '9,99€' : '19,99€'}/mes)
                     </p>
                   </div>
 
@@ -848,7 +850,7 @@ export default function TeacherSignup() {
                             </p>
                             <p className="flex items-start gap-2">
                               <span className="text-green-600 mt-0.5">•</span>
-                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 9,99€ automáticamente mediante el método de pago que registres.</span>
+                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 1€ (precio de prueba) automáticamente mediante el método de pago que registres.</span>
                             </p>
                             <p className="flex items-start gap-2">
                               <span className="text-green-600 mt-0.5">•</span>
@@ -867,9 +869,11 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 9,99€/mes (Plan Básico) o 19,99€/mes (Plan Premium)</p>
+                      <p>- Período de prueba: 14 días GRATIS sin ningún cargo</p>
+                      <p>- Precio de prueba: 1€/mes (precio promocional para testing - en producción: 9,99€/mes Plan Básico o 19,99€/mes Plan Premium)</p>
+                      <p>- El primer cobro se realizará automáticamente al finalizar los 14 días de prueba</p>
                       <p>- Se cobrará de forma automática cada mes</p>
-                      <p>- Puedes cancelar tu suscripción en cualquier momento</p>
+                      <p>- Puedes cancelar tu suscripción en cualquier momento antes de los 14 días sin ningún cargo</p>
                       <p>- No hay reembolsos por periodos parciales</p>
                       
                       <p><strong>3. Responsabilidades del profesor</strong></p>
@@ -913,15 +917,15 @@ export default function TeacherSignup() {
                     </label>
                   </div>
 
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <div className="flex items-start gap-3">
-                      <CreditCard className="text-yellow-600 mt-0.5" size={20} />
+                      <CreditCard className="text-blue-600 mt-0.5" size={20} />
                       <div>
-                        <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
+                        <h4 className="font-semibold text-[#404040] mb-1 text-left">Registro de método de pago</h4>
                         <p className="text-sm text-gray-600 text-left">
                           {formData.subscription_plan === 'basic' 
-                            ? 'En esta versión demo, el registro se activa automáticamente. En producción, tras completar este formulario serás redirigido a un proceso de pago seguro donde registrarás tu método de pago para cuando finalice el período de prueba de 14 días.'
-                            : 'En esta versión demo, el registro se activa automáticamente. En producción, aquí se procesaría el pago con Stripe o PayPal.'}
+                            ? 'Tras completar este formulario serás redirigido a un proceso de pago seguro donde registrarás tu método de pago. NO se realizará ningún cargo durante los 14 días de prueba. El primer cobro de 1€ se realizará automáticamente al finalizar el período de prueba.'
+                            : 'Tras completar este formulario serás redirigido a un proceso de pago seguro para completar tu suscripción premium.'}
                         </p>
                       </div>
                     </div>

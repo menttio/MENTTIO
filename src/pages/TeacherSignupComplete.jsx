@@ -52,7 +52,7 @@ export default function TeacherSignupComplete() {
 
         console.log('📋 Datos raw encontrados (completos):', signupData);
         console.log('📄 Parseando datos JSON...');
-        
+
         let data;
         try {
           data = JSON.parse(signupData);
@@ -62,7 +62,10 @@ export default function TeacherSignupComplete() {
           console.error('❌ Contenido que falló:', signupData);
           throw parseError;
         }
-        
+
+        const selectedPlan = data.plan || 'basic';
+        console.log('📋 Plan seleccionado:', selectedPlan);
+
         // Plan básico: 14 días de prueba gratuita
         console.log('📅 Calculando fechas de prueba...');
         const trialStartDate = new Date();
@@ -83,7 +86,7 @@ export default function TeacherSignupComplete() {
           total_classes: 0,
           subscription_active: true,
           subscription_expires: trialEndDate.toISOString().split('T')[0],
-          subscription_plan: 'basic',
+          subscription_plan: selectedPlan,
           trial_used: false,
           trial_active: true,
           trial_start_date: trialStartDate.toISOString().split('T')[0],
@@ -141,10 +144,43 @@ export default function TeacherSignupComplete() {
           console.error('❌ Error enviando email de notificación:', emailError);
         }
 
+        // Create Stripe subscription with 14-day trial
+        console.log('💳 Creando sesión de pago en Stripe con trial de 14 días...');
+        try {
+          const subscriptionResponse = await base44.functions.invoke('createTeacherSubscription', {
+            teacher_id: teacher.id,
+            plan: selectedPlan,
+            success_url: window.location.origin + createPageUrl('TeacherDashboard') + '?payment=success',
+            cancel_url: window.location.origin + createPageUrl('TeacherSignupComplete') + '?payment=cancel'
+          });
+          
+          console.log('✅ Respuesta de Stripe:', subscriptionResponse.data);
+          
+          if (subscriptionResponse.data.checkout_url) {
+            console.log('🔗 Redirigiendo a Stripe Checkout...');
+            console.log('🔗 URL:', subscriptionResponse.data.checkout_url);
+            console.log('═══════════════════════════════════════════════════════');
+            
+            // Clean sessionStorage before redirect
+            sessionStorage.removeItem('teacher_signup_data');
+            sessionStorage.removeItem('post_login_redirect');
+            sessionStorage.removeItem('teacher_signup_in_progress');
+            sessionStorage.removeItem('teacher_signup_plan');
+            
+            // Redirect to Stripe
+            window.location.href = subscriptionResponse.data.checkout_url;
+            return;
+          }
+        } catch (stripeError) {
+          console.error('❌ Error creando suscripción en Stripe:', stripeError);
+          // Continue to dashboard even if Stripe fails
+        }
+        
         console.log('🗑️ Limpiando sessionStorage...');
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('post_login_redirect');
         sessionStorage.removeItem('teacher_signup_in_progress');
+        sessionStorage.removeItem('teacher_signup_plan');
         console.log('✅ sessionStorage limpiado');
         
         console.log('➡️ Preparando redirección a TeacherDashboard...');
