@@ -313,12 +313,14 @@ export default function TeacherClassHistory() {
       )}
 
       {/* Create Booking Dialog */}
-      <CreateBookingDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        teacher={teacher}
-        onSuccess={loadBookings}
-      />
+      {teacher && (
+        <CreateBookingDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          teacher={teacher}
+          onSuccess={loadBookings}
+        />
+      )}
     </div>
   );
 }
