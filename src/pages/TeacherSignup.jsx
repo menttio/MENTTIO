@@ -201,7 +201,9 @@ export default function TeacherSignup() {
   }
 
   const handleGoToLogin = () => {
-    base44.auth.redirectToLogin(createPageUrl('TeacherSignupComplete'));
+    // Save the redirect URL in sessionStorage
+    sessionStorage.setItem('post_login_redirect', createPageUrl('TeacherSignupComplete'));
+    base44.auth.redirectToLogin();
   };
 
   // Success screen for basic plan (similar to students)

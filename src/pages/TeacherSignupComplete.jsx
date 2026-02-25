@@ -11,22 +11,29 @@ export default function TeacherSignupComplete() {
   useEffect(() => {
     const completeSignup = async () => {
       try {
+        console.log('🔵 TeacherSignupComplete - Iniciando...');
         const user = await base44.auth.me();
+        console.log('👤 Usuario autenticado:', user.email);
+        
         const signupData = sessionStorage.getItem('teacher_signup_data');
+        console.log('📋 Datos de signup encontrados:', signupData ? 'Sí' : 'No');
         
         if (!signupData) {
+          console.log('❌ No hay datos de signup, redirigiendo a TeacherSignup');
           navigate(createPageUrl('TeacherSignup'));
           return;
         }
 
         const data = JSON.parse(signupData);
+        console.log('📄 Datos parseados:', data);
         
         // Plan básico: 14 días de prueba gratuita
         const trialStartDate = new Date();
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
         
-        await base44.entities.Teacher.create({
+        console.log('✅ Creando entidad Teacher...');
+        const teacher = await base44.entities.Teacher.create({
           user_email: user.email,
           full_name: `${data.first_name} ${data.last_name}`,
           phone: data.phone,
@@ -45,6 +52,7 @@ export default function TeacherSignupComplete() {
           trial_end_date: trialEndDate.toISOString().split('T')[0],
           tour_completed: false
         });
+        console.log('✅ Profesor creado con ID:', teacher.id);
 
         try {
           await base44.integrations.Core.SendEmail({
@@ -65,10 +73,14 @@ export default function TeacherSignupComplete() {
           console.error('Error enviando email de notificación:', emailError);
         }
 
+        console.log('🗑️ Limpiando sessionStorage...');
         sessionStorage.removeItem('teacher_signup_data');
+        sessionStorage.removeItem('post_login_redirect');
+        
+        console.log('➡️ Redirigiendo a TeacherDashboard...');
         window.location.href = createPageUrl('TeacherDashboard');
       } catch (error) {
-        console.error('Error completing signup:', error);
+        console.error('❌ Error completing signup:', error);
         setError(error.message);
       }
     };
