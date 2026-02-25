@@ -8,10 +8,52 @@ import { motion } from 'framer-motion';
 
 export default function TeacherSignupPayment() {
   const [loading, setLoading] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  // Verificar si el usuario ya está autenticado y crear sesión de checkout
+  React.useEffect(() => {
+    const checkAuthAndCreateSession = async () => {
+      try {
+        const user = await base44.auth.me();
+        
+        if (user) {
+          console.log('✅ Usuario autenticado:', user.email);
+          setAuthenticated(true);
+
+          // Verificar si acabamos de volver del login
+          const signupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
+          
+          if (signupInProgress === 'true') {
+            console.log('🔵 Creando sesión de Stripe Checkout...');
+            setLoading(true);
+
+            const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
+            
+            const response = await base44.functions.invoke('createTeacherSubscription', {
+              subscription_plan
+            });
+
+            if (response.data.error) {
+              throw new Error(response.data.error);
+            }
+
+            console.log('✅ Sesión creada, redirigiendo a Stripe...');
+            // Redirigir directamente a Stripe Checkout
+            window.location.href = response.data.url;
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Usuario no autenticado, mostrar la pantalla normal
+      }
+    };
+
+    checkAuthAndCreateSession();
+  }, []);
 
   const handleContinue = async () => {
     console.log('═══════════════════════════════════════════════════════');
-    console.log('🔵 TeacherSignupPayment - Botón Continuar clickeado');
+    console.log('🔵 TeacherSignupPayment - Iniciando flujo de pago');
     console.log('═══════════════════════════════════════════════════════');
     
     // Verificar que los datos estén guardados
@@ -24,32 +66,25 @@ export default function TeacherSignupPayment() {
       return;
     }
 
+    // Marcar que hay un signup en progreso
+    sessionStorage.setItem('teacher_signup_in_progress', 'true');
+
     try {
       setLoading(true);
       
-      const data = JSON.parse(signupData);
       const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
       console.log('📋 Plan:', subscription_plan);
+      console.log('🔐 Iniciando sesión con Google primero...');
 
-      // Crear sesión de Stripe Checkout
-      console.log('💳 Creando sesión de Stripe Checkout...');
-      const response = await base44.functions.invoke('createTeacherSubscription', {
-        subscription_plan
-      });
-
-      if (response.data.error) {
-        throw new Error(response.data.error);
-      }
-
-      console.log('✅ Sesión creada:', response.data.sessionId);
-      console.log('🔗 Redirigiendo a Stripe Checkout...');
+      // Redirigir al login de Google con URL de retorno a esta misma página
+      const nextUrl = window.location.href;
+      console.log('🔗 URL de retorno:', nextUrl);
       
-      // Redirigir a Stripe Checkout
-      window.location.href = response.data.url;
+      base44.auth.redirectToLogin(nextUrl);
       
     } catch (error) {
       console.error('❌ Error:', error);
-      alert('Error al crear la sesión de pago. Por favor, inténtalo de nuevo.');
+      alert('Error al iniciar el proceso. Por favor, inténtalo de nuevo.');
       setLoading(false);
     }
   };
@@ -103,19 +138,13 @@ export default function TeacherSignupPayment() {
               </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
               <div className="flex items-start gap-3">
-                <div className="text-yellow-600 mt-0.5">💳</div>
+                <div className="text-blue-600 mt-0.5">💳</div>
                 <div>
-                  <h4 className="font-semibold text-[#404040] mb-1 text-left">Tarjeta de prueba para testing</h4>
-                  <p className="text-sm text-gray-600 text-left mb-2">
-                    Estamos en modo de prueba. Usa esta tarjeta:
-                  </p>
-                  <div className="bg-white rounded p-2 text-sm font-mono">
-                    <strong>4242 4242 4242 4242</strong>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2 text-left">
-                    Fecha: cualquier fecha futura | CVC: cualquier 3 dígitos
+                  <h4 className="font-semibold text-[#404040] mb-1 text-left">Precio de Prueba</h4>
+                  <p className="text-sm text-gray-600 text-left">
+                    Para propósitos de testing, el precio está configurado en <strong>1€/mes</strong> en lugar del precio real. Puedes usar tu tarjeta real para probar el flujo completo de pago.
                   </p>
                 </div>
               </div>
