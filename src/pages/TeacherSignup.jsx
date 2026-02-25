@@ -149,43 +149,38 @@ export default function TeacherSignup() {
     console.log('📋 Datos del formulario completos:', formData);
     console.log('📋 Asignaturas del profesor:', teacherSubjects);
     
-    if (formData.subscription_plan === 'basic') {
-      const signupData = {
-        first_name: formData.nombre,
-        last_name: formData.apellidos,
-        phone: formData.phone,
-        education: formData.education,
-        experience_years: formData.experience_years,
-        subjects: teacherSubjects
-      };
-      
-      console.log('💾 GUARDANDO datos en sessionStorage...');
-      console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
-      
-      sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
-      
-      // Verificación inmediata
-      const saved = sessionStorage.getItem('teacher_signup_data');
-      console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
-      if (saved) {
-        console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
-        try {
-          const parsed = JSON.parse(saved);
-          console.log('✅ Datos parseables correctamente:', parsed);
-        } catch (e) {
-          console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
-        }
+    const signupData = {
+      first_name: formData.nombre,
+      last_name: formData.apellidos,
+      phone: formData.phone,
+      education: formData.education,
+      experience_years: formData.experience_years,
+      subjects: teacherSubjects
+    };
+    
+    console.log('💾 GUARDANDO datos en sessionStorage...');
+    console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
+    
+    sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
+    sessionStorage.setItem('subscription_plan', formData.subscription_plan);
+    
+    // Verificación inmediata
+    const saved = sessionStorage.getItem('teacher_signup_data');
+    console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
+    if (saved) {
+      console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
+      try {
+        const parsed = JSON.parse(saved);
+        console.log('✅ Datos parseables correctamente:', parsed);
+      } catch (e) {
+        console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
       }
-      
-      console.log('✅ Mostrando pantalla de éxito...');
-      setLoading(false);
-      setShowSuccess(true);
-      console.log('═══════════════════════════════════════════════════════');
-      return;
     }
-
-    // Plan premium: flujo con backend function
-    setSaving(true);
+    
+    console.log('✅ Redirigiendo a TeacherSignupPayment...');
+    console.log('═══════════════════════════════════════════════════════');
+    
+    navigate(createPageUrl('TeacherSignupPayment'));
   };
 
   if (loading) {
