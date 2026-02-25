@@ -10,7 +10,7 @@ export default function TeacherSignupPayment() {
   const [loading, setLoading] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
-  // Verificar si el usuario ya está autenticado y crear sesión de checkout
+  // Verificar si el usuario ya está autenticado y crear sesión de checkout O crear profesor directamente
   React.useEffect(() => {
     const checkAuthAndCreateSession = async () => {
       try {
@@ -24,22 +24,29 @@ export default function TeacherSignupPayment() {
           const signupInProgress = sessionStorage.getItem('teacher_signup_in_progress');
           
           if (signupInProgress === 'true') {
-            console.log('🔵 Creando sesión de Stripe Checkout...');
-            setLoading(true);
-
             const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
-            
-            const response = await base44.functions.invoke('createTeacherSubscription', {
-              subscription_plan
-            });
+            console.log('📋 Plan seleccionado:', subscription_plan);
 
-            if (response.data.error) {
-              throw new Error(response.data.error);
+            if (subscription_plan === 'basic') {
+              // Plan básico: crear profesor directamente sin pasar por Stripe
+              console.log('🔵 Plan básico - Creando profesor directamente...');
+              window.location.href = createPageUrl('TeacherSignupComplete');
+            } else {
+              // Plan premium: crear sesión de Stripe
+              console.log('🔵 Plan premium - Creando sesión de Stripe Checkout...');
+              setLoading(true);
+
+              const response = await base44.functions.invoke('createTeacherSubscription', {
+                subscription_plan
+              });
+
+              if (response.data.error) {
+                throw new Error(response.data.error);
+              }
+
+              console.log('✅ Sesión creada, redirigiendo a Stripe...');
+              window.location.href = response.data.url;
             }
-
-            console.log('✅ Sesión creada, redirigiendo a Stripe...');
-            // Redirigir directamente a Stripe Checkout
-            window.location.href = response.data.url;
           }
         }
       } catch (error) {

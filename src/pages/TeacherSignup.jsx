@@ -177,17 +177,11 @@ export default function TeacherSignup() {
       }
     }
     
-    // Plan básico: mostrar pantalla de login
-    if (formData.subscription_plan === 'basic') {
-      console.log('✅ Plan básico - Mostrando pantalla de éxito...');
-      console.log('═══════════════════════════════════════════════════════');
-      setShowSuccess(true);
-    } else {
-      // Plan premium: ir a pago de Stripe
-      console.log('✅ Plan premium - Redirigiendo a TeacherSignupPayment...');
-      console.log('═══════════════════════════════════════════════════════');
-      navigate(createPageUrl('TeacherSignupPayment'));
-    }
+    // Ambos planes van a TeacherSignupPayment, que maneja el flujo según el plan
+    console.log('✅ Redirigiendo a TeacherSignupPayment...');
+    console.log('═══════════════════════════════════════════════════════');
+    
+    setShowSuccess(true);
   };
 
   if (loading) {
@@ -237,7 +231,7 @@ export default function TeacherSignup() {
       console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
     }
     
-    const nextUrl = createPageUrl('TeacherSignupComplete');
+    const nextUrl = createPageUrl('TeacherSignupPayment');
     console.log('🔗 URL de redirección tras login:', nextUrl);
     console.log('🚀 Llamando a base44.auth.redirectToLogin...');
     console.log('═══════════════════════════════════════════════════════');
