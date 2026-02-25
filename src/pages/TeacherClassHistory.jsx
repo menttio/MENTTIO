@@ -296,6 +296,7 @@ export default function TeacherClassHistory() {
               </motion.div>
             );
           })}
+        </div>
       ) : (
         <div className="text-center py-12">
           <Calendar className="mx-auto text-gray-300 mb-4" size={48} />
@@ -320,17 +321,14 @@ export default function TeacherClassHistory() {
       )}
 
       {/* Create Booking Dialog */}
-      {(() => {
-        console.log('🔍 Evaluando CreateBookingDialog - teacher existe?', !!teacher, 'showCreateDialog:', showCreateDialog);
-        return teacher ? (
-          <CreateBookingDialog
-            open={showCreateDialog}
-            onOpenChange={setShowCreateDialog}
-            teacher={teacher}
-            onSuccess={loadBookings}
-          />
-        ) : null;
-      })()}
+      {teacher && (
+        <CreateBookingDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+          teacher={teacher}
+          onSuccess={loadBookings}
+        />
+      )}
     </div>
   );
 }
