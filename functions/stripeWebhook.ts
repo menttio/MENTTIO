@@ -4,13 +4,13 @@ import Stripe from 'npm:stripe';
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
-  
   try {
+    // IMPORTANTE: Obtener body y signature PRIMERO
     const body = await req.text();
     const signature = req.headers.get('stripe-signature');
     const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
 
+    // Verificar firma ANTES de inicializar Base44
     let event;
     try {
       event = await stripe.webhooks.constructEventAsync(
@@ -22,6 +22,9 @@ Deno.serve(async (req) => {
       console.error('Webhook signature verification failed:', err.message);
       return Response.json({ error: 'Invalid signature' }, { status: 400 });
     }
+
+    // AHORA inicializar Base44
+    const base44 = createClientFromRequest(req);
 
     // Handle checkout completed (setup subscription)
     if (event.type === 'checkout.session.completed') {
@@ -243,7 +246,8 @@ Deno.serve(async (req) => {
 
     return Response.json({ received: true });
   } catch (error) {
-    console.error('Webhook error:', error);
+    console.error('❌ Webhook error:', error.message);
+    console.error('Stack:', error.stack);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
