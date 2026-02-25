@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
     if (event.type === 'update' && data.payment_status === 'paid' && old_data?.payment_status !== 'paid') {
       console.log('💰 Clase marcada como pagada:', data.id);
       
-      const webhookUrl = 'https://raulng16.app.n8n.cloud/webhook/clase_pagada';
+      const webhookUrl = 'https://raulng16.app.n8n.cloud/webhook-test/clase_pagada';
       
       // Send webhook to N8N
       const webhookResponse = await fetch(webhookUrl, {
