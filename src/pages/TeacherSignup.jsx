@@ -177,10 +177,17 @@ export default function TeacherSignup() {
       }
     }
     
-    console.log('✅ Redirigiendo a TeacherSignupPayment...');
-    console.log('═══════════════════════════════════════════════════════');
-    
-    navigate(createPageUrl('TeacherSignupPayment'));
+    // Plan básico: mostrar pantalla de login
+    if (formData.subscription_plan === 'basic') {
+      console.log('✅ Plan básico - Mostrando pantalla de éxito...');
+      console.log('═══════════════════════════════════════════════════════');
+      setShowSuccess(true);
+    } else {
+      // Plan premium: ir a pago de Stripe
+      console.log('✅ Plan premium - Redirigiendo a TeacherSignupPayment...');
+      console.log('═══════════════════════════════════════════════════════');
+      navigate(createPageUrl('TeacherSignupPayment'));
+    }
   };
 
   if (loading) {
