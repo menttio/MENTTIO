@@ -142,13 +142,18 @@ export default function TeacherClassHistory() {
       return 0;
     });
 
+  console.log('🔍 Estado antes de renderizar - loading:', loading, 'teacher:', teacher, 'bookings:', bookings.length);
+
   if (loading) {
+    console.log('⏳ Mostrando loading...');
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
       </div>
     );
   }
+
+  console.log('✅ Renderizando contenido principal');
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -273,22 +278,24 @@ export default function TeacherClassHistory() {
       {/* Classes List */}
       {filteredBookings.length > 0 ? (
         <div className="space-y-4">
-          {filteredBookings.map((booking, idx) => (
-            <motion.div
-              key={booking.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-            >
-              <BookingCard
-                booking={booking}
-                userRole="teacher"
-                onEdit={(b) => setEditingBooking(b)}
-                onRefresh={loadBookings}
-              />
-            </motion.div>
-          ))}
-        </div>
+          {filteredBookings.map((booking, idx) => {
+            console.log(`📋 Renderizando BookingCard ${idx + 1}/${filteredBookings.length}`, booking.id);
+            return (
+              <motion.div
+                key={booking.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <BookingCard
+                  booking={booking}
+                  userRole="teacher"
+                  onEdit={(b) => setEditingBooking(b)}
+                  onRefresh={loadBookings}
+                />
+              </motion.div>
+            );
+          })}
       ) : (
         <div className="text-center py-12">
           <Calendar className="mx-auto text-gray-300 mb-4" size={48} />
@@ -313,14 +320,17 @@ export default function TeacherClassHistory() {
       )}
 
       {/* Create Booking Dialog */}
-      {teacher ? (
-        <CreateBookingDialog
-          open={showCreateDialog}
-          onOpenChange={setShowCreateDialog}
-          teacher={teacher}
-          onSuccess={loadBookings}
-        />
-      ) : null}
+      {(() => {
+        console.log('🔍 Evaluando CreateBookingDialog - teacher existe?', !!teacher, 'showCreateDialog:', showCreateDialog);
+        return teacher ? (
+          <CreateBookingDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            teacher={teacher}
+            onSuccess={loadBookings}
+          />
+        ) : null;
+      })()}
     </div>
   );
 }
