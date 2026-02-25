@@ -56,6 +56,7 @@ export default function BookingCard({
   const [cancelling, setCancelling] = useState(false);
   const [review, setReview] = useState(null);
   const [loadingReview, setLoadingReview] = useState(false);
+  const [teacher, setTeacher] = useState(null);
 
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
