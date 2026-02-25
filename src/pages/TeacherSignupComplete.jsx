@@ -150,7 +150,7 @@ export default function TeacherSignupComplete() {
           const subscriptionResponse = await base44.functions.invoke('createTeacherSubscription', {
             teacher_id: teacher.id,
             plan: selectedPlan,
-            success_url: window.location.origin + createPageUrl('TeacherDashboard') + '?payment=success',
+            success_url: window.location.origin + createPageUrl('TeacherSignupSuccess'),
             cancel_url: window.location.origin + createPageUrl('TeacherSignupComplete') + '?payment=cancel'
           });
           
@@ -173,23 +173,13 @@ export default function TeacherSignupComplete() {
           }
         } catch (stripeError) {
           console.error('❌ Error creando suscripción en Stripe:', stripeError);
-          // Continue to dashboard even if Stripe fails
+          setError('Error al configurar el método de pago. Por favor, inténtalo de nuevo.');
+          return;
         }
         
-        console.log('🗑️ Limpiando sessionStorage...');
-        sessionStorage.removeItem('teacher_signup_data');
-        sessionStorage.removeItem('post_login_redirect');
-        sessionStorage.removeItem('teacher_signup_in_progress');
-        sessionStorage.removeItem('teacher_signup_plan');
-        console.log('✅ sessionStorage limpiado');
-        
-        console.log('➡️ Preparando redirección a TeacherDashboard...');
-        const dashboardUrl = createPageUrl('TeacherDashboard');
-        console.log('🔗 URL destino:', dashboardUrl);
-        console.log('🚀 Redirigiendo...');
+        // If we reach here, Stripe failed
+        setError('No se pudo configurar el método de pago');
         console.log('═══════════════════════════════════════════════════════');
-        
-        window.location.href = dashboardUrl;
       } catch (error) {
         console.error('═══════════════════════════════════════════════════════');
         console.error('❌❌❌ ERROR COMPLETANDO SIGNUP ❌❌❌');

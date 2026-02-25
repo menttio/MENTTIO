@@ -179,10 +179,9 @@ export default function TeacherSignup() {
       }
     }
     
-    console.log('✅ Mostrando pantalla de éxito...');
-    setLoading(false);
-    setShowSuccess(true);
+    console.log('✅ Redirigiendo directamente a login...');
     console.log('═══════════════════════════════════════════════════════');
+    handleGoToLogin();
     return;
 
     // Plan premium: flujo con backend function
