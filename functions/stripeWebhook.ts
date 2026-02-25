@@ -23,32 +23,55 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
-    // Handle checkout completed
+    // Handle checkout completed (setup subscription)
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
       const metadata = session.metadata;
 
-      console.log('Payment successful for booking:', metadata.bookingId);
+      console.log('═══════════════════════════════════════════════════════');
+      console.log('🔵 Stripe Webhook - checkout.session.completed');
+      console.log('Session ID:', session.id);
+      console.log('Metadata:', metadata);
+      console.log('═══════════════════════════════════════════════════════');
 
-      // Check if this is a subscription payment (new teacher)
-      if (metadata.type === 'subscription' && metadata.teacher_email) {
+      // Handle teacher subscription setup
+      if (metadata.base44_user_email && metadata.subscription_plan) {
+        console.log('📋 Configuración de suscripción de profesor detectada');
+        console.log('Email:', metadata.base44_user_email);
+        console.log('Plan:', metadata.subscription_plan);
+        
         try {
-          await base44.asServiceRole.integrations.Core.SendEmail({
-            to: 'menttio@menttio.com',
-            subject: 'Nuevo profesor suscrito',
-            body: `
-              <h2>Nuevo profesor se ha suscrito</h2>
-              <p><strong>Nombre:</strong> ${metadata.teacher_name || 'No especificado'}</p>
-              <p><strong>Email:</strong> ${metadata.teacher_email}</p>
-              <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-              <p><strong>Monto:</strong> ${session.amount_total / 100}€</p>
-            `
+          const teachers = await base44.asServiceRole.entities.Teacher.filter({
+            user_email: metadata.base44_user_email
           });
-          console.log('Correo de nueva suscripción enviado a menttio@menttio.com');
-        } catch (emailError) {
-          console.error('Error enviando correo de suscripción:', emailError);
+
+          if (teachers.length > 0) {
+            const teacher = teachers[0];
+            console.log('✅ Profesor encontrado:', teacher.id);
+            console.log('📅 Trial activo hasta:', teacher.trial_end_date);
+            console.log('💳 Stripe Customer ID:', session.customer);
+            console.log('💳 Stripe Subscription ID:', session.subscription);
+
+            // Actualizar el profesor con los IDs de Stripe
+            await base44.asServiceRole.entities.Teacher.update(teacher.id, {
+              stripe_customer_id: session.customer,
+              stripe_subscription_id: session.subscription,
+            });
+
+            console.log('✅ Profesor actualizado con IDs de Stripe');
+            console.log('⏰ El cobro se realizará automáticamente después de 14 días');
+            console.log('═══════════════════════════════════════════════════════');
+          } else {
+            console.error('❌ No se encontró el profesor con email:', metadata.base44_user_email);
+          }
+        } catch (error) {
+          console.error('❌ Error actualizando profesor:', error);
         }
       }
+
+      // Check if this is a booking payment
+      if (metadata.bookingId) {
+        console.log('Payment successful for booking:', metadata.bookingId);
 
       // Update existing booking or create new one
       let booking;
@@ -137,6 +160,85 @@ Deno.serve(async (req) => {
       });
 
       console.log('Notifications created');
+      }
+    }
+
+    // Handle successful subscription payment after trial
+    if (event.type === 'invoice.payment_succeeded') {
+      const invoice = event.data.object;
+      
+      console.log('═══════════════════════════════════════════════════════');
+      console.log('🔵 Stripe Webhook - invoice.payment_succeeded');
+      console.log('💰 PAGO REALIZADO EXITOSAMENTE');
+      console.log('Invoice ID:', invoice.id);
+      console.log('Customer:', invoice.customer);
+      console.log('Subscription:', invoice.subscription);
+      console.log('Amount Paid:', invoice.amount_paid / 100, 'EUR');
+      console.log('Billing Reason:', invoice.billing_reason);
+      console.log('═══════════════════════════════════════════════════════');
+
+      // Si es el primer pago después del trial
+      if (invoice.billing_reason === 'subscription_cycle') {
+        try {
+          const teachers = await base44.asServiceRole.entities.Teacher.filter({
+            stripe_subscription_id: invoice.subscription
+          });
+
+          if (teachers.length > 0) {
+            const teacher = teachers[0];
+            console.log('✅ Profesor encontrado:', teacher.id);
+            console.log('✅ Email:', teacher.user_email);
+            console.log('✅ Plan:', teacher.subscription_plan);
+            console.log('✅ Monto cobrado:', invoice.amount_paid / 100, 'EUR');
+            console.log('');
+            console.log('🎉 FLAG DE VERIFICACIÓN: PAGO POST-TRIAL COMPLETADO');
+            console.log('🎉 El profesor ha sido cobrado exitosamente después del período de prueba');
+            console.log('═══════════════════════════════════════════════════════');
+
+            // Enviar notificación al profesor
+            await base44.asServiceRole.entities.Notification.create({
+              user_id: teacher.id,
+              user_email: teacher.user_email,
+              type: 'booking_new',
+              title: 'Pago de suscripción realizado',
+              message: `Se ha procesado el pago de tu suscripción ${teacher.subscription_plan}. Monto: ${invoice.amount_paid / 100}€`,
+              link_page: 'Profile'
+            });
+          }
+        } catch (error) {
+          console.error('❌ Error procesando pago de suscripción:', error);
+        }
+      }
+    }
+
+    // Handle subscription deleted/cancelled
+    if (event.type === 'customer.subscription.deleted') {
+      const subscription = event.data.object;
+      
+      console.log('═══════════════════════════════════════════════════════');
+      console.log('🔴 Stripe Webhook - customer.subscription.deleted');
+      console.log('Subscription ID:', subscription.id);
+      console.log('═══════════════════════════════════════════════════════');
+
+      try {
+        const teachers = await base44.asServiceRole.entities.Teacher.filter({
+          stripe_subscription_id: subscription.id
+        });
+
+        if (teachers.length > 0) {
+          const teacher = teachers[0];
+          console.log('⚠️ Desactivando suscripción del profesor:', teacher.id);
+
+          await base44.asServiceRole.entities.Teacher.update(teacher.id, {
+            subscription_active: false,
+            trial_active: false,
+          });
+
+          console.log('✅ Suscripción desactivada');
+        }
+      } catch (error) {
+        console.error('❌ Error desactivando suscripción:', error);
+      }
     }
 
     return Response.json({ received: true });
