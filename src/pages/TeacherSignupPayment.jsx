@@ -119,22 +119,20 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // 7. Redirigir según el plan
-        if (subscription_plan === 'basic') {
-          console.log('✅ Plan básico - Redirigiendo a Dashboard...');
-          window.location.href = createPageUrl('TeacherDashboard');
-        } else {
-          console.log('💳 Plan premium - Redirigiendo a Stripe...');
-          const response = await base44.functions.invoke('createTeacherSubscription', {
-            subscription_plan
-          });
-          
-          if (response.data.error) {
-            throw new Error(response.data.error);
-          }
-          
-          window.location.href = response.data.url;
+        // 7. Redirigir a Stripe para configurar método de pago
+        console.log('💳 Redirigiendo a Stripe para configurar método de pago...');
+        console.log('📋 Plan seleccionado:', subscription_plan);
+        
+        const response = await base44.functions.invoke('createTeacherSubscription', {
+          subscription_plan
+        });
+        
+        if (response.data.error) {
+          throw new Error(response.data.error);
         }
+        
+        console.log('✅ Sesión de Stripe creada, redirigiendo...');
+        window.location.href = response.data.url;
 
       } catch (error) {
         console.error('═══════════════════════════════════════════════════════');
