@@ -116,6 +116,18 @@ export default function TeacherSignupPayment() {
               window.location.href = response.data.url;
             }
           }
+        } else {
+          // Usuario NO autenticado - redirigir a login automáticamente
+          console.log('⚠️ Usuario no autenticado, redirigiendo a login...');
+          
+          // Marcar que hay un signup en progreso
+          sessionStorage.setItem('teacher_signup_in_progress', 'true');
+          
+          // Redirigir al login de Google con URL de retorno
+          const nextUrl = window.location.href;
+          console.log('🔗 URL de retorno:', nextUrl);
+          
+          base44.auth.redirectToLogin(nextUrl);
         }
       } catch (error) {
         console.error('═══════════════════════════════════════════════════════');
