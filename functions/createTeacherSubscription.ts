@@ -79,8 +79,8 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${req.headers.get('origin')}/TeacherSignupComplete?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/TeacherSignupPayment?cancelled=true`,
+      success_url: `${req.headers.get('origin')}/TeacherDashboard?setup=success`,
+      cancel_url: `${req.headers.get('origin')}/TeacherDashboard?setup=cancelled`,
     });
 
     console.log('✅ Sesión de checkout creada:', session.id);
