@@ -1,4 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import Stripe from 'npm:stripe@17.5.0';
+
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
+  apiVersion: '2024-12-18.acacia',
+});
 
 Deno.serve(async (req) => {
   try {
@@ -21,6 +26,28 @@ Deno.serve(async (req) => {
     if (teachers.length > 0) {
       const teacherId = teachers[0].id;
       const teacherData = teachers[0];
+      
+      // Cancel Stripe subscription if exists
+      if (teacherData.stripe_subscription_id) {
+        try {
+          const subscription = await stripe.subscriptions.retrieve(teacherData.stripe_subscription_id);
+          
+          // If in trial or wants immediate cancellation, cancel immediately
+          if (subscription.status === 'trialing') {
+            await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
+            console.log('Subscription cancelled immediately (trial period)');
+          } else {
+            // Cancel at end of billing period
+            await stripe.subscriptions.update(teacherData.stripe_subscription_id, {
+              cancel_at_period_end: true
+            });
+            console.log('Subscription will be cancelled at period end');
+          }
+        } catch (stripeError) {
+          console.error('Error cancelling Stripe subscription:', stripeError);
+          // Continue with account deletion even if Stripe fails
+        }
+      }
       
       // Send webhook to N8N ONLY for premium teachers (those with @menttio.com corporate email)
       console.log('Teacher data:', teacherData);

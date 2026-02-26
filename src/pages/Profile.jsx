@@ -8,12 +8,14 @@ import {
   Loader2,
   CheckCircle,
   Camera,
-  Trash2
+  Trash2,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
 import {
@@ -38,6 +40,7 @@ export default function Profile() {
   const [userRole, setUserRole] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [activeTab, setActiveTab] = useState('personal');
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -257,13 +260,22 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* Personal Information */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Información Personal</CardTitle>
-          <CardDescription>Actualiza tus datos personales</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      {/* Tabs - Only show for teachers */}
+      {userRole === 'teacher' ? (
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="personal">Información Personal</TabsTrigger>
+            <TabsTrigger value="payment">Datos de Pago</TabsTrigger>
+          </TabsList>
+
+          {/* Personal Information Tab */}
+          <TabsContent value="personal">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Información Personal</CardTitle>
+                <CardDescription>Actualiza tus datos personales</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
           {/* Full Name */}
           <div>
             <Label htmlFor="full_name">Nombre completo *</Label>
@@ -314,13 +326,13 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      {/* Google Calendar Integration */}
-      <div className="mb-6">
-        <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
-      </div>
+            {/* Google Calendar Integration */}
+            <div className="mb-6">
+              <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
+            </div>
 
-      {/* Save Button */}
-      <Button
+            {/* Save Button */}
+            <Button
         onClick={handleSave}
         disabled={saving}
         className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg mb-4"
@@ -335,8 +347,8 @@ export default function Profile() {
         )}
       </Button>
 
-      {/* Delete Account Section */}
-      <Card className="border-red-200 bg-red-50">
+            {/* Delete Account Section */}
+            <Card className="border-red-200 bg-red-50">
         <CardHeader>
           <CardTitle className="text-red-600">Eliminar Cuenta</CardTitle>
           <CardDescription>Esta acción es permanente y no se puede deshacer</CardDescription>
@@ -386,6 +398,226 @@ export default function Profile() {
           </AlertDialog>
         </CardContent>
       </Card>
+          </TabsContent>
+
+          {/* Payment Tab */}
+          <TabsContent value="payment">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Datos de Pago</CardTitle>
+                <CardDescription>Gestiona tu suscripción y método de pago</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Subscription Status */}
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-[#404040]">Estado de Suscripción</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Plan:</span>
+                      <span className="font-semibold text-[#404040] capitalize">
+                        {profile?.subscription_plan === 'basic' ? 'Básico' : 'Premium'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Estado:</span>
+                      <span className={`font-semibold ${profile?.subscription_active || profile?.trial_active ? 'text-green-600' : 'text-red-600'}`}>
+                        {profile?.trial_active ? '🎉 Período de prueba activo' : profile?.subscription_active ? '✅ Activa' : '❌ Inactiva'}
+                      </span>
+                    </div>
+                    {profile?.trial_active && profile?.trial_end_date && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Prueba gratis hasta:</span>
+                        <span className="font-semibold text-[#404040]">
+                          {new Date(profile.trial_end_date).toLocaleDateString('es-ES', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          })}
+                        </span>
+                      </div>
+                    )}
+                    {profile?.subscription_expires && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Próxima renovación:</span>
+                        <span className="font-semibold text-[#404040]">
+                          {new Date(profile.subscription_expires).toLocaleDateString('es-ES', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                          })}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Precio:</span>
+                      <span className="font-semibold text-[#404040]">1,00€ / mes</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Manage Payment Method */}
+                {profile?.stripe_customer_id && (
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-[#404040]">Método de Pago</h3>
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const response = await base44.functions.invoke('createStripePortal');
+                          if (response.data.url) {
+                            window.location.href = response.data.url;
+                          }
+                        } catch (error) {
+                          console.error('Error opening portal:', error);
+                          alert('Error al abrir el portal de pagos');
+                        }
+                      }}
+                      className="w-full bg-[#41f2c0] hover:bg-[#35d4a7]"
+                    >
+                      <CreditCard size={20} className="mr-2" />
+                      Gestionar Método de Pago
+                    </Button>
+                    <p className="text-xs text-gray-500">
+                      Podrás actualizar tu tarjeta y gestionar tu suscripción en Stripe
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      ) : (
+        /* For students - show only personal info without tabs */
+        <>
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Información Personal</CardTitle>
+              <CardDescription>Actualiza tus datos personales</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Full Name */}
+              <div>
+                <Label htmlFor="full_name">Nombre completo *</Label>
+                <div className="relative mt-1">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <Input
+                    id="full_name"
+                    value={formData.full_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
+                    className="pl-10"
+                    placeholder="Tu nombre completo"
+                  />
+                </div>
+                {errors.full_name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.full_name}</p>
+                )}
+              </div>
+
+              {/* Email (read-only) */}
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <div className="relative mt-1">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <Input
+                    id="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="pl-10 bg-gray-50"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">El email no se puede modificar</p>
+              </div>
+
+              {/* Phone */}
+              <div>
+                <Label htmlFor="phone">Teléfono</Label>
+                <div className="relative mt-1">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="pl-10"
+                    placeholder="+34 600 000 000"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Google Calendar Integration */}
+          <div className="mb-6">
+            <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
+          </div>
+
+          {/* Save Button */}
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg mb-4"
+          >
+            {saving ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <>
+                <Save size={20} className="mr-2" />
+                Guardar Cambios
+              </>
+            )}
+          </Button>
+
+          {/* Delete Account Section */}
+          <Card className="border-red-200 bg-red-50">
+            <CardHeader>
+              <CardTitle className="text-red-600">Eliminar Cuenta</CardTitle>
+              <CardDescription>Esta acción es permanente y no se puede deshacer</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    disabled={deleting}
+                    className="w-full bg-red-600 hover:bg-red-700"
+                  >
+                    {deleting ? (
+                      <Loader2 className="animate-spin" size={20} />
+                    ) : (
+                      <>
+                        <Trash2 size={20} className="mr-2" />
+                        Eliminar mi cuenta
+                      </>
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Estás completamente seguro?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta acción no se puede deshacer. Se eliminarán permanentemente:
+                      <ul className="list-disc ml-6 mt-2 space-y-1">
+                        <li>Tu perfil de {userRole === 'teacher' ? 'profesor' : 'alumno'}</li>
+                        <li>Todas tus reservas de clases</li>
+                        <li>Tus conversaciones y mensajes</li>
+                        <li>Tus notificaciones</li>
+                        <li>Toda tu información personal</li>
+                      </ul>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Sí, eliminar mi cuenta
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 }
