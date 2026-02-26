@@ -52,7 +52,7 @@ export default function Layout({ children, currentPageName }) {
     console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
     
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
     
     if (publicPages.includes(currentPageName)) {
       console.log('✅ Página pública detectada:', currentPageName);
@@ -293,7 +293,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
   
   if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
