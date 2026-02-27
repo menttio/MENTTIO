@@ -66,7 +66,8 @@ Deno.serve(async (req) => {
         },
       ],
       subscription_data: {
-        trial_period_days: subscription_plan === 'basic' ? 14 : undefined,
+        // TEMPORAL: Trial desactivado para pruebas - se cobra inmediatamente
+        // trial_period_days: 14,
         metadata: {
           base44_user_email: user.email,
           subscription_plan: subscription_plan,
@@ -84,13 +85,8 @@ Deno.serve(async (req) => {
 
     console.log('✅ Sesión de checkout creada:', session.id);
     console.log('🔗 URL de checkout:', session.url);
-    if (subscription_plan === 'basic') {
-      console.log('⚡ Plan Básico: 14 días de prueba gratis');
-      console.log('💰 Después del trial: 1.00 EUR/mes');
-    } else {
-      console.log('⚡ Plan Premium: Cobro inmediato');
-      console.log('💰 Precio: 1.00 EUR/mes');
-    }
+    console.log('⚡ MODO PRUEBA: Sin trial - cobro inmediato');
+    console.log('💰 Precio: 1.00 EUR/mes (se cobra ahora mismo)');
     console.log('═══════════════════════════════════════════════════════');
 
     return Response.json({
