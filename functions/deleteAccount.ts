@@ -91,37 +91,49 @@ Deno.serve(async (req) => {
       }
       
       // Cancel Stripe subscription if exists
+      console.log('═══ STRIPE CANCELLATION ═══');
+      console.log('stripe_subscription_id:', teacherData.stripe_subscription_id || 'NOT SET');
+      console.log('stripe_customer_id:', teacherData.stripe_customer_id || 'NOT SET');
+
       if (teacherData.stripe_subscription_id) {
         try {
-          await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
-          console.log(`Cancelled Stripe subscription: ${teacherData.stripe_subscription_id}`);
+          console.log(`Cancelling subscription by ID: ${teacherData.stripe_subscription_id}`);
+          const cancelled = await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
+          console.log(`✅ Cancelled Stripe subscription: ${teacherData.stripe_subscription_id}, status: ${cancelled.status}`);
         } catch (stripeError) {
-          console.error('Error cancelling Stripe subscription:', stripeError.message);
+          console.error('❌ Error cancelling Stripe subscription by ID:', stripeError.message);
+          console.error('Stripe error code:', stripeError.code);
         }
       } else if (teacherData.stripe_customer_id) {
-        // Try to find and cancel active subscriptions by customer ID
+        console.log(`No subscription ID, searching by customer: ${teacherData.stripe_customer_id}`);
         try {
-          const subscriptions = await stripe.subscriptions.list({
+          const activeSubscriptions = await stripe.subscriptions.list({
             customer: teacherData.stripe_customer_id,
             status: 'active',
           });
-          for (const sub of subscriptions.data) {
+          console.log(`Found ${activeSubscriptions.data.length} active subscriptions`);
+          for (const sub of activeSubscriptions.data) {
             await stripe.subscriptions.cancel(sub.id);
-            console.log(`Cancelled Stripe subscription: ${sub.id}`);
+            console.log(`✅ Cancelled active subscription: ${sub.id}`);
           }
-          // Also cancel trialing subscriptions
+
           const trialingSubscriptions = await stripe.subscriptions.list({
             customer: teacherData.stripe_customer_id,
             status: 'trialing',
           });
+          console.log(`Found ${trialingSubscriptions.data.length} trialing subscriptions`);
           for (const sub of trialingSubscriptions.data) {
             await stripe.subscriptions.cancel(sub.id);
-            console.log(`Cancelled trialing Stripe subscription: ${sub.id}`);
+            console.log(`✅ Cancelled trialing subscription: ${sub.id}`);
           }
         } catch (stripeError) {
-          console.error('Error cancelling Stripe subscriptions by customer:', stripeError.message);
+          console.error('❌ Error cancelling Stripe subscriptions by customer:', stripeError.message);
+          console.error('Stripe error code:', stripeError.code);
         }
+      } else {
+        console.log('⚠️ No stripe_subscription_id NOR stripe_customer_id found on teacher record - cannot cancel in Stripe');
       }
+      console.log('═══ END STRIPE CANCELLATION ═══');
 
       // Delete teacher profile
       await base44.asServiceRole.entities.Teacher.delete(teacherId);
