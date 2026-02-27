@@ -32,6 +32,30 @@ Deno.serve(async (req) => {
       console.log('Corporate email:', teacherData.corporate_email);
       console.log('Subscription plan:', teacherData.subscription_plan);
       
+      // Cancel Stripe subscription if exists
+      if (teacherData.stripe_subscription_id) {
+        try {
+          const subscription = await stripe.subscriptions.retrieve(teacherData.stripe_subscription_id);
+          const now = Math.floor(Date.now() / 1000);
+          const isInTrial = subscription.status === 'trialing' && subscription.trial_end > now;
+
+          if (isInTrial) {
+            // Cancel immediately during trial
+            await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
+            console.log('✅ Suscripción Stripe cancelada inmediatamente (durante trial)');
+          } else if (subscription.status === 'active') {
+            // Cancel at end of period outside trial
+            await stripe.subscriptions.update(teacherData.stripe_subscription_id, {
+              cancel_at_period_end: true,
+            });
+            console.log('✅ Suscripción Stripe programada para cancelar al final del período');
+          }
+        } catch (stripeError) {
+          console.error('Error cancelando suscripción Stripe:', stripeError.message);
+          // Continue with deletion even if Stripe fails
+        }
+      }
+
       // Only send webhook if premium plan (corporate email with @menttio.com)
       if (teacherData.corporate_email && teacherData.corporate_email.includes('@menttio.com')) {
         try {
