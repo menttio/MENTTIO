@@ -66,8 +66,7 @@ Deno.serve(async (req) => {
         },
       ],
       subscription_data: {
-        // TEMPORAL: Trial desactivado para pruebas - se cobra inmediatamente
-        // trial_period_days: 14,
+        ...(subscription_plan === 'basic' ? { trial_period_days: 14 } : {}),
         metadata: {
           base44_user_email: user.email,
           subscription_plan: subscription_plan,
