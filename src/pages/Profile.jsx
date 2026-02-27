@@ -236,6 +236,9 @@ export default function Profile() {
       {/* Payment Tab */}
       {activeTab === 'payment' && <PaymentTab />}
 
+      {/* Profile Tab Content */}
+      {activeTab === 'profile' && <>
+
       {/* Success Message */}
       {success && (
         <motion.div
