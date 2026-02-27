@@ -425,7 +425,8 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      </> /* end profile tab */}
+      </div>
+      )} {/* end profile tab */}
     </div>
   );
 }
