@@ -1,9 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@17.5.0';
-
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
-  apiVersion: '2024-12-18.acacia',
-});
 
 Deno.serve(async (req) => {
   try {
@@ -32,44 +27,6 @@ Deno.serve(async (req) => {
       console.log('Corporate email:', teacherData.corporate_email);
       console.log('Subscription plan:', teacherData.subscription_plan);
       
-      // Cancelar suscripción en Stripe si existe
-      if (teacherData.stripe_subscription_id) {
-        try {
-          console.log('💳 Cancelando suscripción en Stripe:', teacherData.stripe_subscription_id);
-          
-          // Obtener la suscripción actual de Stripe para saber si está en trial
-          const subscription = await stripe.subscriptions.retrieve(teacherData.stripe_subscription_id);
-          console.log('📋 Estado suscripción Stripe:', subscription.status);
-          console.log('📋 Trial end:', subscription.trial_end);
-          
-          const isInTrial = subscription.status === 'trialing';
-          
-          if (isInTrial) {
-            // Durante el período de prueba: cancelar inmediatamente
-            console.log('⚡ En período de prueba - cancelando inmediatamente');
-            await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
-            console.log('✅ Suscripción cancelada inmediatamente (estaba en trial)');
-          } else {
-            // Fuera del período de prueba: cancelar al final del período actual
-            console.log('📅 Fuera del período de prueba - cancelando al final del período actual');
-            await stripe.subscriptions.update(teacherData.stripe_subscription_id, {
-              cancel_at_period_end: true,
-            });
-            console.log('✅ Suscripción programada para cancelar al fin del período');
-          }
-        } catch (stripeError) {
-          // Si el error es que la suscripción no existe, ignorar y continuar
-          if (stripeError.code === 'resource_missing') {
-            console.log('⚠️ Suscripción Stripe no encontrada (ya cancelada o inexistente)');
-          } else {
-            console.error('❌ Error cancelando suscripción en Stripe:', stripeError.message);
-            // Continuar con la eliminación aunque falle Stripe
-          }
-        }
-      } else {
-        console.log('ℹ️ Profesor sin suscripción Stripe - omitiendo cancelación');
-      }
-
       // Only send webhook if premium plan (corporate email with @menttio.com)
       if (teacherData.corporate_email && teacherData.corporate_email.includes('@menttio.com')) {
         try {
