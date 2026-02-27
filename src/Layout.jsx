@@ -95,7 +95,23 @@ export default function Layout({ children, currentPageName }) {
         
         // Check if user is a teacher
         console.log('🔍 Buscando profesor con email:', currentUser.email);
-        const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+        // Si venimos del pago de Stripe, reintentar varias veces para dar tiempo al webhook
+        const urlParams = new URLSearchParams(window.location.search);
+        const comingFromPayment = urlParams.get('setup') === 'success';
+        
+        let teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+        
+        if (comingFromPayment && teachers.length > 0 && !teachers[0].subscription_active) {
+          // Reintentar hasta 5 veces con 2s de espera
+          for (let i = 0; i < 5; i++) {
+            await new Promise(r => setTimeout(r, 2000));
+            teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+            if (teachers[0]?.subscription_active) break;
+          }
+          // Limpiar el parámetro de la URL
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+        
         console.log('📋 Profesores encontrados:', teachers.length);
         
         if (teachers.length > 0) {
