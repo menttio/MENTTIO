@@ -94,44 +94,57 @@ Deno.serve(async (req) => {
       console.log('═══ STRIPE CANCELLATION ═══');
       console.log('stripe_subscription_id:', teacherData.stripe_subscription_id || 'NOT SET');
       console.log('stripe_customer_id:', teacherData.stripe_customer_id || 'NOT SET');
+      console.log('teacher email:', teacherData.user_email);
 
+      // Collect customer IDs to search for subscriptions
+      const customerIdsToCheck = new Set();
+
+      if (teacherData.stripe_customer_id) {
+        customerIdsToCheck.add(teacherData.stripe_customer_id);
+      }
+
+      // Always search by email in Stripe to catch cases where IDs weren't saved
+      try {
+        const customersByEmail = await stripe.customers.list({ email: teacherData.user_email, limit: 10 });
+        console.log(`Found ${customersByEmail.data.length} Stripe customer(s) by email`);
+        for (const c of customersByEmail.data) {
+          customerIdsToCheck.add(c.id);
+        }
+      } catch (err) {
+        console.error('Error searching customers by email:', err.message);
+      }
+
+      console.log('Customer IDs to check:', [...customerIdsToCheck]);
+
+      // Cancel by subscription ID if we have it
       if (teacherData.stripe_subscription_id) {
         try {
-          console.log(`Cancelling subscription by ID: ${teacherData.stripe_subscription_id}`);
           const cancelled = await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
-          console.log(`✅ Cancelled Stripe subscription: ${teacherData.stripe_subscription_id}, status: ${cancelled.status}`);
+          console.log(`✅ Cancelled subscription by ID: ${teacherData.stripe_subscription_id}, status: ${cancelled.status}`);
         } catch (stripeError) {
-          console.error('❌ Error cancelling Stripe subscription by ID:', stripeError.message);
-          console.error('Stripe error code:', stripeError.code);
+          console.error('❌ Error cancelling by subscription ID:', stripeError.message);
         }
-      } else if (teacherData.stripe_customer_id) {
-        console.log(`No subscription ID, searching by customer: ${teacherData.stripe_customer_id}`);
-        try {
-          const activeSubscriptions = await stripe.subscriptions.list({
-            customer: teacherData.stripe_customer_id,
-            status: 'active',
-          });
-          console.log(`Found ${activeSubscriptions.data.length} active subscriptions`);
-          for (const sub of activeSubscriptions.data) {
-            await stripe.subscriptions.cancel(sub.id);
-            console.log(`✅ Cancelled active subscription: ${sub.id}`);
-          }
+      }
 
-          const trialingSubscriptions = await stripe.subscriptions.list({
-            customer: teacherData.stripe_customer_id,
-            status: 'trialing',
-          });
-          console.log(`Found ${trialingSubscriptions.data.length} trialing subscriptions`);
-          for (const sub of trialingSubscriptions.data) {
-            await stripe.subscriptions.cancel(sub.id);
-            console.log(`✅ Cancelled trialing subscription: ${sub.id}`);
+      // Also cancel all subscriptions found via customer IDs
+      for (const customerId of customerIdsToCheck) {
+        try {
+          for (const status of ['active', 'trialing']) {
+            const subs = await stripe.subscriptions.list({ customer: customerId, status });
+            console.log(`Customer ${customerId} - ${status} subscriptions: ${subs.data.length}`);
+            for (const sub of subs.data) {
+              if (sub.id === teacherData.stripe_subscription_id) continue; // already cancelled above
+              await stripe.subscriptions.cancel(sub.id);
+              console.log(`✅ Cancelled ${status} subscription: ${sub.id}`);
+            }
           }
         } catch (stripeError) {
-          console.error('❌ Error cancelling Stripe subscriptions by customer:', stripeError.message);
-          console.error('Stripe error code:', stripeError.code);
+          console.error(`❌ Error cancelling subscriptions for customer ${customerId}:`, stripeError.message);
         }
-      } else {
-        console.log('⚠️ No stripe_subscription_id NOR stripe_customer_id found on teacher record - cannot cancel in Stripe');
+      }
+
+      if (customerIdsToCheck.size === 0 && !teacherData.stripe_subscription_id) {
+        console.log('⚠️ No Stripe customer found for this teacher');
       }
       console.log('═══ END STRIPE CANCELLATION ═══');
 
