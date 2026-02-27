@@ -60,15 +60,25 @@ export default function TeacherSignupPayment() {
           return;
         }
 
+        // 3b. Verificar si este email ya usó el trial gratuito anteriormente
+        console.log('🔍 Verificando si ya usó el trial...');
+        const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: user.email });
+        const hasUsedTrialBefore = trialUsedRecords.length > 0;
+        console.log('Trial usado antes:', hasUsedTrialBefore);
+
         // 4. Crear profesor
         console.log('🔨 CREANDO PROFESOR EN BASE DE DATOS...');
         
         const data = JSON.parse(signupData);
         console.log('📋 Datos parseados:', data);
 
-        const trialStartDate = new Date();
+        const now = new Date();
+        const trialStartDate = now;
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
+
+        // Si ya usó el trial, no dar período de prueba - suscripción inactiva hasta pagar
+        const grantTrial = !hasUsedTrialBefore;
 
         const teacherData = {
           user_email: user.email,
@@ -80,13 +90,13 @@ export default function TeacherSignupPayment() {
           subjects: data.subjects || [],
           rating: 0,
           total_classes: 0,
-          subscription_active: true,
-          subscription_expires: trialEndDate.toISOString().split('T')[0],
+          subscription_active: grantTrial,
+          subscription_expires: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
           subscription_plan: subscription_plan,
-          trial_used: false,
-          trial_active: true,
-          trial_start_date: trialStartDate.toISOString().split('T')[0],
-          trial_end_date: trialEndDate.toISOString().split('T')[0],
+          trial_used: !grantTrial,
+          trial_active: grantTrial,
+          trial_start_date: grantTrial ? trialStartDate.toISOString().split('T')[0] : null,
+          trial_end_date: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
           tour_completed: false
         };
 
