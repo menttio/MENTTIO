@@ -172,18 +172,6 @@ export default function RenewSubscription() {
               </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-              <div className="flex items-start gap-3">
-                <CreditCard className="text-yellow-600 mt-0.5" size={20} />
-                <div>
-                  <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
-                  <p className="text-sm text-gray-600 text-left">
-                    En esta versión demo, la renovación es automática. En producción, aquí se procesaría el pago.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <Button
               onClick={handleRenew}
               disabled={renewing}
