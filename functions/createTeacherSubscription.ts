@@ -85,8 +85,8 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0, 3).join('/') || req.headers.get('x-forwarded-host') ? `https://${req.headers.get('x-forwarded-host')}` : 'https://menttio.base44.app'}/TeacherDashboard?setup=success`,
-      cancel_url: `${req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0, 3).join('/') || req.headers.get('x-forwarded-host') ? `https://${req.headers.get('x-forwarded-host')}` : 'https://menttio.base44.app'}/TeacherDashboard?setup=cancelled`,
+      success_url: `${origin}/TeacherDashboard?setup=success`,
+      cancel_url: `${origin}/TeacherDashboard?setup=cancelled`,
     });
 
     console.log('✅ Sesión de checkout creada:', session.id);
