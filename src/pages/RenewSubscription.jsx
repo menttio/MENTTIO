@@ -36,22 +36,18 @@ export default function RenewSubscription() {
   const handleRenew = async () => {
     setRenewing(true);
     try {
-      // In production, this would trigger payment gateway
-      const newExpirationDate = new Date();
-      newExpirationDate.setMonth(newExpirationDate.getMonth() + 1);
-
-      await base44.entities.Teacher.update(teacher.id, {
-        subscription_active: true,
-        subscription_expires: newExpirationDate.toISOString().split('T')[0],
-        subscription_plan: selectedPlan,
-        trial_active: false,
-        trial_used: true
+      const response = await base44.functions.invoke('createTeacherSubscription', {
+        subscription_plan: selectedPlan
       });
 
-      navigate(createPageUrl('TeacherDashboard'));
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+
+      window.location.replace(response.data.url);
     } catch (error) {
       console.error(error);
-    } finally {
+      alert('Error al procesar el pago: ' + error.message);
       setRenewing(false);
     }
   };
