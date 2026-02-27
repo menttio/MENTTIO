@@ -180,8 +180,8 @@ Deno.serve(async (req) => {
       console.log('Billing Reason:', invoice.billing_reason);
       console.log('═══════════════════════════════════════════════════════');
 
-      // Si es el primer pago después del trial
-      if (invoice.billing_reason === 'subscription_cycle') {
+      // Si es el primer pago real (tras trial o ciclo normal)
+      if (invoice.billing_reason === 'subscription_cycle' || invoice.billing_reason === 'subscription_create') {
         try {
           const teachers = await base44.asServiceRole.entities.Teacher.filter({
             stripe_subscription_id: invoice.subscription
