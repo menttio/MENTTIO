@@ -84,8 +84,10 @@ Deno.serve(async (req) => {
 
     console.log('✅ Sesión de checkout creada:', session.id);
     console.log('🔗 URL de checkout:', session.url);
-    console.log('⚡ MODO PRUEBA: Sin trial - cobro inmediato');
-    console.log('💰 Precio: 1.00 EUR/mes (se cobra ahora mismo)');
+    if (subscription_plan === 'basic') {
+      console.log('🎁 Plan básico con 14 días de prueba gratuita');
+    }
+    console.log('💰 Precio: 1.00 EUR/mes');
     console.log('═══════════════════════════════════════════════════════');
 
     return Response.json({
