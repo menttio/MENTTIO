@@ -54,13 +54,6 @@ Deno.serve(async (req) => {
       console.log('✅ Nuevo cliente creado:', customerId);
     }
 
-    // Determinar la URL base de la app
-    const origin = req.headers.get('origin') 
-      || (() => { const ref = req.headers.get('referer'); return ref ? new URL(ref).origin : null; })()
-      || (req.headers.get('x-forwarded-host') ? `https://${req.headers.get('x-forwarded-host')}` : null)
-      || 'https://menttio.base44.app';
-    console.log('🌐 Origin detectado:', origin);
-
     // Crear sesión de checkout con trial de 14 días
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -85,8 +78,8 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${origin}/TeacherDashboard?setup=success`,
-      cancel_url: `${origin}/TeacherDashboard?setup=cancelled`,
+      success_url: `${req.headers.get('origin')}/TeacherDashboard?setup=success`,
+      cancel_url: `${req.headers.get('origin')}/TeacherDashboard?setup=cancelled`,
     });
 
     console.log('✅ Sesión de checkout creada:', session.id);

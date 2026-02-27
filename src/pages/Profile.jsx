@@ -8,8 +8,7 @@ import {
   Loader2,
   CheckCircle,
   Camera,
-  Trash2,
-  CreditCard
+  Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,7 +28,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { createPageUrl } from '../utils';
-import PaymentTab from '../components/profile/PaymentTab';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -40,7 +38,6 @@ export default function Profile() {
   const [userRole, setUserRole] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
   
   const [formData, setFormData] = useState({
     full_name: '',
@@ -200,45 +197,10 @@ export default function Profile() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-8">
         <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Perfil</h1>
         <p className="text-gray-500 mt-2 text-sm">Administra tu información personal</p>
       </div>
-
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
-        <button
-          onClick={() => setActiveTab('profile')}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            activeTab === 'profile'
-              ? 'border-[#41f2c0] text-[#35d4a7]'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <User size={16} />
-          Datos personales
-        </button>
-        {userRole === 'teacher' && (
-          <button
-            onClick={() => setActiveTab('payment')}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'payment'
-                ? 'border-[#41f2c0] text-[#35d4a7]'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            <CreditCard size={16} />
-            Datos de pago
-          </button>
-        )}
-      </div>
-
-      {/* Payment Tab */}
-      {activeTab === 'payment' && <PaymentTab />}
-
-      {/* Profile Tab Content */}
-      {activeTab === 'profile' && (
-      <div>
 
       {/* Success Message */}
       {success && (
@@ -424,9 +386,6 @@ export default function Profile() {
           </AlertDialog>
         </CardContent>
       </Card>
-
-      </div>
-      )} {/* end profile tab */}
     </div>
   );
 }
