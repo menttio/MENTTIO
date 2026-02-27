@@ -237,7 +237,8 @@ export default function Profile() {
       {activeTab === 'payment' && <PaymentTab />}
 
       {/* Profile Tab Content */}
-      {activeTab === 'profile' && <>
+      {activeTab === 'profile' && (
+      <div>
 
       {/* Success Message */}
       {success && (
