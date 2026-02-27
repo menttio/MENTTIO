@@ -78,8 +78,8 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${req.headers.get('origin') || 'https://app.base44.com'}/TeacherDashboard?setup=success`,
-      cancel_url: `${req.headers.get('origin') || 'https://app.base44.com'}/TeacherDashboard?setup=cancelled`,
+      success_url: `${req.headers.get('origin') || `https://${req.headers.get('host')}`}/TeacherDashboard?setup=success`,
+      cancel_url: `${req.headers.get('origin') || `https://${req.headers.get('host')}`}/TeacherDashboard?setup=cancelled`,
     });
 
     console.log('✅ Sesión de checkout creada:', session.id);
