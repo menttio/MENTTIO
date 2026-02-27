@@ -124,8 +124,7 @@ export default function TeacherSignupPayment() {
         console.log('📋 Plan seleccionado:', subscription_plan);
         
         const response = await base44.functions.invoke('createTeacherSubscription', {
-          subscription_plan,
-          base_url: `${window.location.protocol}//${window.location.host}`
+          subscription_plan
         });
         
         if (response.data.error) {

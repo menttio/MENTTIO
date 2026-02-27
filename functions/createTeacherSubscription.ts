@@ -19,27 +19,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { subscription_plan, base_url } = body;
+    const { subscription_plan } = await req.json();
     console.log('📋 Plan seleccionado:', subscription_plan);
     console.log('👤 Usuario:', user.email);
-
-    // Determinar URL base
-    const origin = base_url 
-      || req.headers.get('origin')
-      || (() => {
-        const referer = req.headers.get('referer');
-        if (referer) {
-          const url = new URL(referer);
-          return `${url.protocol}//${url.host}`;
-        }
-        return null;
-      })();
-
-    console.log('🌐 Origin resuelto:', origin);
-    if (!origin) {
-      return Response.json({ error: 'No se pudo determinar la URL base' }, { status: 400 });
-    }
 
     // Determinar el price_id según el plan
     const priceId = subscription_plan === 'premium' 
@@ -96,8 +78,8 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${origin}/TeacherDashboard?setup=success`,
-      cancel_url: `${origin}/TeacherDashboard?setup=cancelled`,
+      success_url: `${req.headers.get('origin')}/TeacherDashboard?setup=success`,
+      cancel_url: `${req.headers.get('origin')}/TeacherDashboard?setup=cancelled`,
     });
 
     console.log('✅ Sesión de checkout creada:', session.id);
