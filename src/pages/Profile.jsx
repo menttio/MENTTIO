@@ -40,6 +40,7 @@ export default function Profile() {
   const [userRole, setUserRole] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile');
   
   const [formData, setFormData] = useState({
     full_name: '',
