@@ -90,6 +90,39 @@ Deno.serve(async (req) => {
         await base44.asServiceRole.entities.Review.delete(review.id);
       }
       
+      // Cancel Stripe subscription if exists
+      if (teacherData.stripe_subscription_id) {
+        try {
+          await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
+          console.log(`Cancelled Stripe subscription: ${teacherData.stripe_subscription_id}`);
+        } catch (stripeError) {
+          console.error('Error cancelling Stripe subscription:', stripeError.message);
+        }
+      } else if (teacherData.stripe_customer_id) {
+        // Try to find and cancel active subscriptions by customer ID
+        try {
+          const subscriptions = await stripe.subscriptions.list({
+            customer: teacherData.stripe_customer_id,
+            status: 'active',
+          });
+          for (const sub of subscriptions.data) {
+            await stripe.subscriptions.cancel(sub.id);
+            console.log(`Cancelled Stripe subscription: ${sub.id}`);
+          }
+          // Also cancel trialing subscriptions
+          const trialingSubscriptions = await stripe.subscriptions.list({
+            customer: teacherData.stripe_customer_id,
+            status: 'trialing',
+          });
+          for (const sub of trialingSubscriptions.data) {
+            await stripe.subscriptions.cancel(sub.id);
+            console.log(`Cancelled trialing Stripe subscription: ${sub.id}`);
+          }
+        } catch (stripeError) {
+          console.error('Error cancelling Stripe subscriptions by customer:', stripeError.message);
+        }
+      }
+
       // Delete teacher profile
       await base44.asServiceRole.entities.Teacher.delete(teacherId);
       console.log(`Deleted teacher profile: ${teacherId}`);
