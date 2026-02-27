@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
 
     // Verificar si ya usó el trial
     const trialUsedRecords = await base44.asServiceRole.entities.TrialUsed.filter({ email: user.email });
-    const hasUsedTrial = trialUsedRecords.length > 1; // >1 porque ya se registró uno al crear el perfil
+    const hasUsedTrial = trialUsedRecords.length >= 1;
     console.log('Trial ya usado en Stripe:', hasUsedTrial, '(registros:', trialUsedRecords.length, ')');
 
     // Crear sesión de checkout con trial de 14 días solo si no lo ha usado antes
