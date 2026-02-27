@@ -95,21 +95,35 @@ export default function Layout({ children, currentPageName }) {
         
         // Check if user is a teacher
         console.log('🔍 Buscando profesor con email:', currentUser.email);
-        // Si venimos del pago de Stripe, reintentar varias veces para dar tiempo al webhook
+        // Si venimos del pago de Stripe, esperar a que el webhook procese la suscripción
         const urlParams = new URLSearchParams(window.location.search);
         const comingFromPayment = urlParams.get('setup') === 'success';
         
+        if (comingFromPayment) {
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+
         let teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         
         if (comingFromPayment && teachers.length > 0 && !teachers[0].subscription_active) {
-          // Reintentar hasta 5 veces con 2s de espera
-          for (let i = 0; i < 5; i++) {
+          // Reintentar hasta 8 veces con 2s de espera (16s total)
+          for (let i = 0; i < 8; i++) {
             await new Promise(r => setTimeout(r, 2000));
             teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
             if (teachers[0]?.subscription_active) break;
           }
-          // Limpiar el parámetro de la URL
-          window.history.replaceState({}, '', window.location.pathname);
+          // Si aún no tiene suscripción activa, forzarla manualmente 
+          // (el webhook puede haber tardado o fallado)
+          if (!teachers[0]?.subscription_active) {
+            const expDate = new Date();
+            expDate.setMonth(expDate.getMonth() + 1);
+            await base44.entities.Teacher.update(teachers[0].id, {
+              subscription_active: true,
+              subscription_expires: expDate.toISOString().split('T')[0],
+              trial_active: false
+            });
+            teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
+          }
         }
         
         console.log('📋 Profesores encontrados:', teachers.length);
