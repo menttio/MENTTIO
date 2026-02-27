@@ -106,6 +106,19 @@ export default function TeacherSignupPayment() {
         console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
         console.log('📋 ID del profesor:', teacher.id);
 
+        // Registrar el uso del trial para este email (si aún no está registrado)
+        if (grantTrial) {
+          try {
+            await base44.entities.TrialUsed.create({
+              email: user.email,
+              used_date: now.toISOString().split('T')[0]
+            });
+            console.log('✅ Email registrado en TrialUsed');
+          } catch (trialError) {
+            console.error('⚠️ Error registrando TrialUsed:', trialError);
+          }
+        }
+
         // 5. Enviar email
         try {
           await base44.integrations.Core.SendEmail({
