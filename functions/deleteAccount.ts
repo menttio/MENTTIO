@@ -28,25 +28,48 @@ Deno.serve(async (req) => {
       const teacherData = teachers[0];
       
       // Cancel Stripe subscription if exists
-      if (teacherData.stripe_subscription_id) {
-        try {
-          const subscription = await stripe.subscriptions.retrieve(teacherData.stripe_subscription_id);
-          
-          // If in trial or wants immediate cancellation, cancel immediately
+      console.log('stripe_subscription_id:', teacherData.stripe_subscription_id);
+      console.log('stripe_customer_id:', teacherData.stripe_customer_id);
+      
+      try {
+        let subscriptionId = teacherData.stripe_subscription_id;
+
+        // If no subscription ID saved, try to find it by customer ID
+        if (!subscriptionId && teacherData.stripe_customer_id) {
+          console.log('No subscription ID, searching by customer...');
+          const subscriptions = await stripe.subscriptions.list({
+            customer: teacherData.stripe_customer_id,
+            status: 'all',
+            limit: 5
+          });
+          const active = subscriptions.data.find(s => ['active', 'trialing'].includes(s.status));
+          if (active) {
+            subscriptionId = active.id;
+            console.log('Found subscription by customer:', subscriptionId, 'status:', active.status);
+          }
+        }
+
+        if (subscriptionId) {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          console.log('Subscription status:', subscription.status);
+
           if (subscription.status === 'trialing') {
-            await stripe.subscriptions.cancel(teacherData.stripe_subscription_id);
-            console.log('Subscription cancelled immediately (trial period)');
+            // Cancel immediately during trial - no charge
+            await stripe.subscriptions.cancel(subscriptionId);
+            console.log('✅ Subscription cancelled immediately (trial period)');
           } else {
-            // Cancel at end of billing period
-            await stripe.subscriptions.update(teacherData.stripe_subscription_id, {
+            // Cancel at end of billing period (already paid)
+            await stripe.subscriptions.update(subscriptionId, {
               cancel_at_period_end: true
             });
-            console.log('Subscription will be cancelled at period end');
+            console.log('✅ Subscription will cancel at period end');
           }
-        } catch (stripeError) {
-          console.error('Error cancelling Stripe subscription:', stripeError);
-          // Continue with account deletion even if Stripe fails
+        } else {
+          console.log('No Stripe subscription found to cancel');
         }
+      } catch (stripeError) {
+        console.error('Error cancelling Stripe subscription:', stripeError);
+        // Continue with account deletion even if Stripe fails
       }
       
       // Send webhook to N8N ONLY for premium teachers (those with @menttio.com corporate email)
