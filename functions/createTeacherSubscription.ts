@@ -54,6 +54,13 @@ Deno.serve(async (req) => {
       console.log('✅ Nuevo cliente creado:', customerId);
     }
 
+    // Determinar la URL base de la app
+    const origin = req.headers.get('origin') 
+      || (() => { const ref = req.headers.get('referer'); return ref ? new URL(ref).origin : null; })()
+      || (req.headers.get('x-forwarded-host') ? `https://${req.headers.get('x-forwarded-host')}` : null)
+      || 'https://menttio.base44.app';
+    console.log('🌐 Origin detectado:', origin);
+
     // Crear sesión de checkout con trial de 14 días
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
