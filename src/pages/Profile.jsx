@@ -423,6 +423,8 @@ export default function Profile() {
           </AlertDialog>
         </CardContent>
       </Card>
+
+      </> /* end profile tab */}
     </div>
   );
 }
