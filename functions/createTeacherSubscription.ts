@@ -54,7 +54,12 @@ Deno.serve(async (req) => {
       console.log('✅ Nuevo cliente creado:', customerId);
     }
 
-    // Crear sesión de checkout con trial de 14 días
+    // Verificar si ya usó el trial
+    const trialUsedRecords = await base44.asServiceRole.entities.TrialUsed.filter({ email: user.email });
+    const hasUsedTrial = trialUsedRecords.length > 1; // >1 porque ya se registró uno al crear el perfil
+    console.log('Trial ya usado en Stripe:', hasUsedTrial, '(registros:', trialUsedRecords.length, ')');
+
+    // Crear sesión de checkout con trial de 14 días solo si no lo ha usado antes
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -66,7 +71,7 @@ Deno.serve(async (req) => {
         },
       ],
       subscription_data: {
-        ...(subscription_plan === 'basic' ? { trial_period_days: 14 } : {}),
+        ...(subscription_plan === 'basic' && !hasUsedTrial ? { trial_period_days: 14 } : {}),
         metadata: {
           base44_user_email: user.email,
           subscription_plan: subscription_plan,
