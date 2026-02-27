@@ -54,17 +54,6 @@ export default function Layout({ children, currentPageName }) {
     // Public pages that don't require authentication
     const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered'];
     
-    // If coming back from Stripe payment, wait a moment for webhook to process
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('setup') === 'success') {
-      // Give the webhook time to update the subscription, then reload
-      setTimeout(() => {
-        window.location.href = window.location.pathname;
-      }, 3000);
-      setLoading(false);
-      return;
-    }
-
     if (publicPages.includes(currentPageName)) {
       console.log('✅ Página pública detectada:', currentPageName);
       // Clear the payment reminder flag when user leaves dashboard
