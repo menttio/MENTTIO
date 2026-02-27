@@ -8,7 +8,8 @@ import {
   Loader2,
   CheckCircle,
   Camera,
-  Trash2
+  Trash2,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +29,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { createPageUrl } from '../utils';
+import PaymentTab from '../components/profile/PaymentTab';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
