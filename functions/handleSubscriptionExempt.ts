@@ -1,7 +1,13 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@14.21.0';
+import Stripe from 'npm:stripe@17.5.0';
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), { apiVersion: '2024-06-20' });
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), { apiVersion: '2024-12-18.acacia' });
+
+// Precios a 0€ para exentos (mismo producto, cuota 0)
+const EXEMPT_PRICES = {
+  basic: 'price_1T6TtwHAmL0VZFroEzHxUnpt',
+  premium: 'price_1T6TtwHAmL0VZFroALx8VVZO',
+};
 
 Deno.serve(async (req) => {
   try {
@@ -10,7 +16,6 @@ Deno.serve(async (req) => {
 
     const { event, data, old_data } = payload;
 
-    // Solo actuar en updates donde subscription_exempt cambió a true
     if (event?.type !== 'update') {
       return Response.json({ ok: true, skipped: 'not an update' });
     }
@@ -23,30 +28,40 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, skipped: 'no change in exempt status' });
     }
 
-    console.log(`✅ Profesor ${teacher.full_name} marcado como exento. Cancelando suscripción en Stripe...`);
+    const plan = teacher.subscription_plan || 'basic';
+    const exemptPriceId = EXEMPT_PRICES[plan];
 
-    // Cancelar suscripción en Stripe si existe
+    console.log(`✅ Profesor ${teacher.full_name} marcado como exento. Migrando a plan 0€ (${plan})...`);
+
     if (teacher.stripe_subscription_id) {
       try {
-        await stripe.subscriptions.cancel(teacher.stripe_subscription_id);
-        console.log(`✅ Suscripción ${teacher.stripe_subscription_id} cancelada en Stripe`);
+        // Obtener la suscripción actual para conseguir el item id
+        const subscription = await stripe.subscriptions.retrieve(teacher.stripe_subscription_id);
+        const itemId = subscription.items.data[0]?.id;
+
+        // Cambiar el precio al plan 0€ correspondiente
+        await stripe.subscriptions.update(teacher.stripe_subscription_id, {
+          items: [{ id: itemId, price: exemptPriceId }],
+          proration_behavior: 'none',
+          trial_end: 'now', // terminar trial si lo hubiera
+        });
+
+        console.log(`✅ Suscripción migrada al precio 0€ (${exemptPriceId})`);
       } catch (stripeError) {
-        console.error('Error cancelando suscripción en Stripe:', stripeError.message);
-        // Si ya estaba cancelada, no es un error crítico
+        console.error('Error migrando suscripción en Stripe:', stripeError.message);
       }
     }
 
-    // Actualizar el profesor: suscripción activa sin fecha de expiración (acceso indefinido)
+    // Garantizar acceso activo sin expiración
     await base44.asServiceRole.entities.Teacher.update(teacher.id, {
       subscription_active: true,
       subscription_expires: null,
-      stripe_subscription_id: null,
-      trial_active: false
+      trial_active: false,
     });
 
     console.log(`✅ Profesor actualizado con acceso indefinido (exento)`);
 
-    return Response.json({ ok: true, message: 'Suscripción cancelada y acceso exento concedido' });
+    return Response.json({ ok: true, message: `Suscripción migrada a 0€ plan ${plan}` });
   } catch (error) {
     console.error('Error en handleSubscriptionExempt:', error);
     return Response.json({ error: error.message }, { status: 500 });
