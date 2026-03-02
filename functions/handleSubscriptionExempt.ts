@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
 
     const plan = teacher.subscription_plan || 'basic';
     const exemptPriceId = EXEMPT_PRICES[plan];
+    console.log(`✅ Migrando a plan 0€ (${plan}), exemptPriceId=${exemptPriceId}`);
 
     console.log(`✅ Profesor ${teacher.full_name} marcado como exento. Migrando a plan 0€ (${plan})...`);
     console.log(`🔍 stripe_subscription_id: ${teacher.stripe_subscription_id}`);
