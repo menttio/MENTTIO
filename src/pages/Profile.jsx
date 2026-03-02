@@ -383,6 +383,39 @@ export default function Profile() {
           </AlertDialog>
         </CardContent>
       </Card>
+    </>
+  );
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Perfil</h1>
+        <p className="text-gray-500 mt-2 text-sm">Administra tu información personal</p>
+      </div>
+
+      {userRole === 'teacher' ? (
+        <Tabs defaultValue="perfil">
+          <TabsList className="w-full mb-6">
+            <TabsTrigger value="perfil" className="flex-1">
+              <User size={16} className="mr-2" />
+              Perfil
+            </TabsTrigger>
+            <TabsTrigger value="pago" className="flex-1">
+              <CreditCard size={16} className="mr-2" />
+              Datos de pago
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="perfil">
+            {profileContent}
+          </TabsContent>
+          <TabsContent value="pago">
+            <SubscriptionTab profile={profile} />
+          </TabsContent>
+        </Tabs>
+      ) : (
+        profileContent
+      )}
     </div>
   );
 }
