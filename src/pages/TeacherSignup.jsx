@@ -913,11 +913,11 @@ export default function TeacherSignup() {
 
                   <Button
                     onClick={handleFinalize}
-                    disabled={!canFinalize || saving}
+                    disabled={!canFinalize || premiumLoading}
                     className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
                   >
-                    {saving ? <Loader2 className="animate-spin" /> : 'Configurar Método de Pago'}
-                    {!saving && <ArrowRight size={18} className="ml-2" />}
+                    {premiumLoading ? <Loader2 className="animate-spin" /> : (formData.subscription_plan === 'premium' ? 'Crear Cuenta Premium' : 'Configurar Método de Pago')}
+                    {!premiumLoading && <ArrowRight size={18} className="ml-2" />}
                   </Button>
                 </motion.div>
               )}
