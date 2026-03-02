@@ -142,47 +142,62 @@ export default function TeacherSignup() {
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
   const canFinalize = acceptedTerms;
 
-  const handleFinalize = () => {
-    console.log('═══════════════════════════════════════════════════════');
-    console.log('🔵 handleFinalize INICIADO');
-    console.log('═══════════════════════════════════════════════════════');
-    console.log('📋 Plan seleccionado:', formData.subscription_plan);
-    console.log('📋 Datos del formulario completos:', formData);
-    console.log('📋 Asignaturas del profesor:', teacherSubjects);
-    
-    const signupData = {
-      first_name: formData.nombre,
-      last_name: formData.apellidos,
-      phone: formData.phone,
-      education: formData.education,
-      experience_years: formData.experience_years,
-      subjects: teacherSubjects
-    };
-    
-    console.log('💾 GUARDANDO datos en sessionStorage...');
-    console.log('💾 Datos a guardar:', JSON.stringify(signupData, null, 2));
-    
-    sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
-    sessionStorage.setItem('subscription_plan', formData.subscription_plan);
-    
-    // Verificación inmediata
-    const saved = sessionStorage.getItem('teacher_signup_data');
-    console.log('✅ Verificación inmediata - Datos guardados:', saved ? 'SÍ' : 'NO');
-    if (saved) {
-      console.log('✅ Contenido guardado (primeros 200 chars):', saved.substring(0, 200));
-      try {
-        const parsed = JSON.parse(saved);
-        console.log('✅ Datos parseables correctamente:', parsed);
-      } catch (e) {
-        console.error('❌ ERROR: Datos guardados NO son JSON válido:', e);
-      }
+  const handleFinalize = async () => {
+    // Plan BASIC: flujo normal (guardar en sessionStorage, ir a login, luego pagar Stripe)
+    if (formData.subscription_plan === 'basic') {
+      const signupData = {
+        first_name: formData.nombre,
+        last_name: formData.apellidos,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects
+      };
+      sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
+      sessionStorage.setItem('subscription_plan', 'basic');
+      setShowSuccess(true);
+      return;
     }
-    
-    // Ambos planes van a TeacherSignupPayment, que maneja el flujo según el plan
-    console.log('✅ Redirigiendo a TeacherSignupPayment...');
-    console.log('═══════════════════════════════════════════════════════');
-    
-    setShowSuccess(true);
+
+    // Plan PREMIUM: enviar webhook a n8n, esperar credenciales corporativas y mostrarlas
+    setPremiumLoading(true);
+    try {
+      const response = await base44.functions.invoke('registerTeacher', {
+        nombre: formData.nombre,
+        apellidos: formData.apellidos,
+        email_personal: formData.email_personal,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects,
+        subscription_plan: 'premium'
+      });
+
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+
+      // Guardar datos en sessionStorage para el flujo posterior (pago Stripe)
+      const signupData = {
+        first_name: formData.nombre,
+        last_name: formData.apellidos,
+        phone: formData.phone,
+        education: formData.education,
+        experience_years: formData.experience_years,
+        subjects: teacherSubjects
+      };
+      sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
+      sessionStorage.setItem('subscription_plan', 'premium');
+      sessionStorage.setItem('corporate_email', response.data.email);
+
+      setCorporateAccount({ email: response.data.email, password: response.data.password });
+      setShowSuccess(true);
+    } catch (error) {
+      console.error('Error registrando profesor premium:', error);
+      alert('Error al crear la cuenta: ' + error.message);
+    } finally {
+      setPremiumLoading(false);
+    }
   };
 
   if (loading) {
