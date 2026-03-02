@@ -197,7 +197,7 @@ export default function Profile() {
     );
   }
 
-  const profileContent = (
+  const renderProfileContent = () => (
     <>
       {/* Success Message */}
       {success && (
