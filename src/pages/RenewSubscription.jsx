@@ -183,7 +183,7 @@ export default function RenewSubscription() {
             <div className="text-center">
               <Button
                 variant="ghost"
-                onClick={() => base44.auth.logout()}
+                onClick={() => base44.auth.logout(createPageUrl('Home'))}
                 className="text-gray-500"
               >
                 Cerrar Sesión
