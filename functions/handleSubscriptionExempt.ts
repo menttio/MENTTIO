@@ -20,9 +20,21 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, skipped: 'not an update' });
     }
 
-    const teacher = data;
-    const wasExemptBefore = old_data?.subscription_exempt === true;
+    // Si payload_too_large, fetchear los datos desde la BD
+    let teacher = data;
+    let previousData = old_data;
+
+    if (payload.payload_too_large) {
+      console.log('⚠️ Payload too large, fetching from DB...');
+      teacher = await base44.asServiceRole.entities.Teacher.get('Teacher', event.entity_id);
+      previousData = null; // No tenemos old_data, asumir que puede haber cambiado
+    }
+
     const isExemptNow = teacher?.subscription_exempt === true;
+    // Si no tenemos old_data, procesamos igualmente si es exento
+    const wasExemptBefore = previousData !== null ? previousData?.subscription_exempt === true : false;
+
+    console.log(`🔍 isExemptNow=${isExemptNow}, wasExemptBefore=${wasExemptBefore}, payload_too_large=${payload.payload_too_large}`);
 
     if (!isExemptNow || wasExemptBefore) {
       return Response.json({ ok: true, skipped: 'no change in exempt status' });
