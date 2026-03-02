@@ -32,24 +32,30 @@ Deno.serve(async (req) => {
     const exemptPriceId = EXEMPT_PRICES[plan];
 
     console.log(`✅ Profesor ${teacher.full_name} marcado como exento. Migrando a plan 0€ (${plan})...`);
+    console.log(`🔍 stripe_subscription_id: ${teacher.stripe_subscription_id}`);
+    console.log(`🔍 stripe_customer_id: ${teacher.stripe_customer_id}`);
+    console.log(`🔍 exemptPriceId: ${exemptPriceId}`);
 
     if (teacher.stripe_subscription_id) {
       try {
         // Obtener la suscripción actual para conseguir el item id
         const subscription = await stripe.subscriptions.retrieve(teacher.stripe_subscription_id);
+        console.log(`🔍 Suscripción obtenida de Stripe: status=${subscription.status}, items=${subscription.items.data.length}`);
         const itemId = subscription.items.data[0]?.id;
+        console.log(`🔍 Item ID: ${itemId}`);
 
         // Cambiar el precio al plan 0€ correspondiente
-        await stripe.subscriptions.update(teacher.stripe_subscription_id, {
+        const updated = await stripe.subscriptions.update(teacher.stripe_subscription_id, {
           items: [{ id: itemId, price: exemptPriceId }],
           proration_behavior: 'none',
-          trial_end: 'now', // terminar trial si lo hubiera
         });
 
-        console.log(`✅ Suscripción migrada al precio 0€ (${exemptPriceId})`);
+        console.log(`✅ Suscripción migrada al precio 0€. Nuevo item price: ${updated.items.data[0]?.price?.id}`);
       } catch (stripeError) {
-        console.error('Error migrando suscripción en Stripe:', stripeError.message);
+        console.error('❌ Error migrando suscripción en Stripe:', stripeError.message);
       }
+    } else {
+      console.log(`⚠️ No hay stripe_subscription_id, no se puede migrar en Stripe`);
     }
 
     // Garantizar acceso activo sin expiración
