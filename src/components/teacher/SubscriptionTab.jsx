@@ -166,41 +166,6 @@ export default function SubscriptionTab({ profile }) {
         </CardContent>
       </Card>
 
-      {/* Payment Method */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="text-[#41f2c0]" size={20} />
-            Método de Pago
-          </CardTitle>
-          <CardDescription>Tarjeta asociada a tu suscripción</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {data?.payment_method ? (
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-8 bg-white rounded-md border border-gray-200 flex items-center justify-center">
-                  <span className="text-xs font-bold text-gray-600 capitalize">{data.payment_method.brand}</span>
-                </div>
-                <div>
-                  <p className="font-medium text-[#404040]">
-                    {CARD_BRANDS[data.payment_method.brand] || '💳 ' + data.payment_method.brand} ···· {data.payment_method.last4}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Caduca {String(data.payment_method.exp_month).padStart(2, '0')}/{data.payment_method.exp_year}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="p-4 bg-gray-50 rounded-xl text-center">
-              <CreditCard className="mx-auto text-gray-300 mb-2" size={32} />
-              <p className="text-gray-500 text-sm">No hay método de pago configurado</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Manage via Stripe Portal */}
       {data?.portal_url && (
         <Card className="border-[#41f2c0]/30 bg-[#41f2c0]/5">
