@@ -407,14 +407,14 @@ export default function Profile() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="perfil">
-            {profileContent}
+            {renderProfileContent()}
           </TabsContent>
           <TabsContent value="pago">
             <SubscriptionTab profile={profile} />
           </TabsContent>
         </Tabs>
       ) : (
-        profileContent
+        renderProfileContent()
       )}
     </div>
   );
