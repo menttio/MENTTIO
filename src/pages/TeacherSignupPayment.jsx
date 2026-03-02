@@ -48,14 +48,25 @@ export default function TeacherSignupPayment() {
         console.log('🔍 Verificando si ya existe profesor...');
         const existingTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
         
-        if (existingTeachers.length > 0) {
-          console.log('⚠️ Ya existe un profesor con este email');
-          console.log('✅ Redirigiendo al dashboard...');
-          
+        // Si el profesor ya existe (fue creado por registerTeacher en plan premium),
+        // saltar directamente al pago en Stripe
+        if (existingTeachers.length > 0 && subscription_plan === 'premium') {
+          console.log('✅ Profesor premium ya creado, redirigiendo a Stripe...');
+          const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+          if (response.data.error) throw new Error(response.data.error);
           sessionStorage.removeItem('teacher_signup_data');
           sessionStorage.removeItem('subscription_plan');
           sessionStorage.removeItem('teacher_signup_in_progress');
-          
+          sessionStorage.removeItem('corporate_email');
+          window.location.replace(response.data.url);
+          return;
+        }
+
+        if (existingTeachers.length > 0) {
+          console.log('⚠️ Ya existe un profesor con este email');
+          sessionStorage.removeItem('teacher_signup_data');
+          sessionStorage.removeItem('subscription_plan');
+          sessionStorage.removeItem('teacher_signup_in_progress');
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
@@ -66,7 +77,7 @@ export default function TeacherSignupPayment() {
         const hasUsedTrialBefore = trialUsedRecords.length > 0;
         console.log('Trial usado antes:', hasUsedTrialBefore);
 
-        // 4. Crear profesor
+        // 4. Crear profesor (solo plan basic llega aquí)
         console.log('🔨 CREANDO PROFESOR EN BASE DE DATOS...');
         
         const data = JSON.parse(signupData);
@@ -77,7 +88,6 @@ export default function TeacherSignupPayment() {
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
 
-        // Si ya usó el trial, no dar período de prueba - suscripción inactiva hasta pagar
         const grantTrial = !hasUsedTrialBefore;
 
         const teacherData = {
@@ -100,52 +110,32 @@ export default function TeacherSignupPayment() {
           tour_completed: false
         };
 
-        console.log('💾 Datos del profesor a crear:', teacherData);
-
         const teacher = await base44.entities.Teacher.create(teacherData);
-        console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
-        console.log('📋 ID del profesor:', teacher.id);
+        console.log('✅ Profesor creado:', teacher.id);
 
-        // Registrar el uso del trial para este email (si aún no está registrado)
         if (grantTrial) {
           try {
-            await base44.entities.TrialUsed.create({
-              email: user.email,
-              used_date: now.toISOString().split('T')[0]
-            });
-            console.log('✅ Email registrado en TrialUsed');
+            await base44.entities.TrialUsed.create({ email: user.email, used_date: now.toISOString().split('T')[0] });
           } catch (trialError) {
             console.error('⚠️ Error registrando TrialUsed:', trialError);
           }
         }
 
-        // 5. Enviar email
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: `Nuevo Profesor - ${subscription_plan === 'basic' ? 'Plan Básico' : 'Plan Premium'} - Menttio`,
-            body: `
-              <h2>Nuevo Profesor Registrado</h2>
-              <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
-              <p><strong>Email:</strong> ${user.email}</p>
-              <p><strong>Teléfono:</strong> ${data.phone}</p>
-              <p><strong>Plan:</strong> ${subscription_plan}</p>
-            `
+            subject: `Nuevo Profesor - Plan Básico - Menttio`,
+            body: `<h2>Nuevo Profesor</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p>`
           });
-          console.log('✅ Email enviado');
         } catch (emailError) {
-          console.error('⚠️ Error al enviar email (no crítico):', emailError);
+          console.error('⚠️ Error email:', emailError);
         }
 
-        // 6. Limpiar sessionStorage
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // 7. Redirigir a Stripe para configurar método de pago (siempre, con o sin trial)
-        console.log('💳 Redirigiendo a Stripe para configurar método de pago...');
-        console.log('📋 Plan seleccionado:', subscription_plan);
-        console.log('🎁 ¿Con trial?', grantTrial);
+        console.log('💳 Redirigiendo a Stripe...');
         
         const response = await base44.functions.invoke('createTeacherSubscription', {
           subscription_plan
