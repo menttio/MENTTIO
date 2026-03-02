@@ -168,6 +168,19 @@ export default function Layout({ children, currentPageName }) {
             }
           }
           
+          // Si el profesor está exento, acceso libre
+          if (teacher.subscription_exempt) {
+            console.log('✅ Profesor exento de pago - acceso libre');
+            setUserRole('teacher');
+            loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
+            if (studentPages.includes(currentPageName)) {
+              window.location.href = createPageUrl('TeacherDashboard');
+              return;
+            }
+            setLoading(false);
+            return;
+          }
+
           // Verify subscription is active (for non-trial users)
           if (teacher.subscription_active) {
             // Check expiration date if it exists
