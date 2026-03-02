@@ -20,24 +20,26 @@ Deno.serve(async (req) => {
       return Response.json({ ok: true, skipped: 'not an update' });
     }
 
-    // Si payload_too_large, fetchear los datos desde la BD
-    let teacher = data;
-    let previousData = old_data;
+    // Siempre fetchear los datos frescos desde la BD para evitar problemas con old_data
+    const teacherId = event.entity_id;
+    const teacher = await base44.asServiceRole.entities.Teacher.get(teacherId);
 
-    if (payload.payload_too_large) {
-      console.log('⚠️ Payload too large, fetching from DB...');
-      teacher = await base44.asServiceRole.entities.Teacher.get('Teacher', event.entity_id);
-      previousData = null; // No tenemos old_data, asumir que puede haber cambiado
+    console.log(`🔍 Teacher: ${teacher?.full_name}, subscription_exempt=${teacher?.subscription_exempt}, stripe_subscription_id=${teacher?.stripe_subscription_id}`);
+
+    if (!teacher?.subscription_exempt) {
+      return Response.json({ ok: true, skipped: 'teacher is not exempt' });
     }
 
-    const isExemptNow = teacher?.subscription_exempt === true;
-    // Si no tenemos old_data, procesamos igualmente si es exento
-    const wasExemptBefore = previousData !== null ? previousData?.subscription_exempt === true : false;
-
-    console.log(`🔍 isExemptNow=${isExemptNow}, wasExemptBefore=${wasExemptBefore}, payload_too_large=${payload.payload_too_large}`);
-
-    if (!isExemptNow || wasExemptBefore) {
-      return Response.json({ ok: true, skipped: 'no change in exempt status' });
+    // Si ya tiene una suscripción en Stripe con precio 0€, no hacer nada
+    const exemptPriceIds = Object.values(EXEMPT_PRICES);
+    if (teacher.stripe_subscription_id) {
+      const existingSub = await stripe.subscriptions.retrieve(teacher.stripe_subscription_id);
+      const currentPriceId = existingSub.items.data[0]?.price?.id;
+      console.log(`🔍 Precio actual en Stripe: ${currentPriceId}`);
+      if (exemptPriceIds.includes(currentPriceId)) {
+        console.log('✅ Ya está en plan 0€, nada que hacer');
+        return Response.json({ ok: true, skipped: 'already on 0€ plan' });
+      }
     }
 
     const plan = teacher.subscription_plan || 'basic';
