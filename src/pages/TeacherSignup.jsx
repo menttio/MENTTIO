@@ -366,10 +366,13 @@ export default function TeacherSignup() {
               </div>
 
               <Button
-                onClick={() => window.location.href = `/login?from_url=${encodeURIComponent(window.location.origin + createPageUrl('AuthRedirect'))}`}
+                onClick={() => {
+                  sessionStorage.setItem('teacher_signup_in_progress', 'true');
+                  base44.auth.redirectToLogin(createPageUrl('TeacherSignupPayment'));
+                }}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
               >
-                Ir a Iniciar Sesión
+                Iniciar Sesión y Pagar
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </CardContent>
