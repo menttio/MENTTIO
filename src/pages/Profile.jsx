@@ -8,14 +8,17 @@ import {
   Loader2,
   CheckCircle,
   Camera,
-  Trash2
+  Trash2,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
+import SubscriptionTab from '../components/teacher/SubscriptionTab';
 import {
   AlertDialog,
   AlertDialogAction,
