@@ -28,6 +28,7 @@ export default function TeacherSignup() {
   const [showTerms, setShowTerms] = useState(false);
   const [corporateAccount, setCorporateAccount] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [premiumLoading, setPremiumLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     nombre: '',
