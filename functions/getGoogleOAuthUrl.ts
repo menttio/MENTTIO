@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     }
 
     // Use the correct function URL for callback
-    const redirectUri = 'https://menttio.base44.app/api/functions/googleOAuthCallback';
+    const redirectUri = 'https://menttio.com/api/functions/googleOAuthCallback';
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
