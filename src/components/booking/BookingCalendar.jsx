@@ -30,9 +30,7 @@ export default function BookingCalendar({
   };
 
   const isDateAvailable = (date) => {
-    const now = new Date();
-    const minBookingTime = addHours(now, 24);
-    if (isBefore(date, startOfDay(minBookingTime))) return false;
+    if (isBefore(date, startOfDay(new Date()))) return false;
     return getAvailableSlotsForDate(date).length > 0;
   };
 
