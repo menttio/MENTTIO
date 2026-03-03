@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
     const users = await base44.entities[entity].filter({ user_email: userEmail });
 
     if (users.length > 0) {
-      await base44.asServiceRole.entities[entity].update(users[0].id, {
+      await base44.entities[entity].update(users[0].id, {
         google_calendar_connected: true,
         google_calendar_tokens: tokensWithExpiry
       });
