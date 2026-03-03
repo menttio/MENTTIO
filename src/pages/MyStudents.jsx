@@ -51,18 +51,35 @@ export default function MyStudents() {
           });
           setBookings(allBookings);
 
-          // Get unique student IDs
-          const studentIds = [...new Set(allBookings.map(b => b.student_id))];
+          // Get unique student IDs from bookings
+          const studentIdsFromBookings = [...new Set(allBookings.map(b => b.student_id))];
           
-          // Get student details
-          const studentList = [];
-          for (const studentId of studentIds) {
-            const studentData = await base44.entities.Student.filter({ id: studentId });
-            if (studentData.length > 0) {
-              studentList.push(studentData[0]);
+          // Also get students assigned to this teacher via assigned_teachers
+          const allStudents = await base44.entities.Student.list();
+          const assignedStudents = allStudents.filter(s => 
+            s.assigned_teachers?.some(at => at.teacher_id === teachers[0].id)
+          );
+          
+          // Merge both sources (no duplicates)
+          const allStudentIds = [...new Set([
+            ...studentIdsFromBookings,
+            ...assignedStudents.map(s => s.id)
+          ])];
+          
+          // Build final student list
+          const studentMap = {};
+          assignedStudents.forEach(s => { studentMap[s.id] = s; });
+          
+          for (const studentId of studentIdsFromBookings) {
+            if (!studentMap[studentId]) {
+              const studentData = await base44.entities.Student.filter({ id: studentId });
+              if (studentData.length > 0) {
+                studentMap[studentId] = studentData[0];
+              }
             }
           }
-          setStudents(studentList);
+          
+          setStudents(Object.values(studentMap));
         }
       } catch (error) {
         console.error(error);
