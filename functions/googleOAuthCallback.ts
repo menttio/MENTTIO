@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
 
     // Save tokens and update connection status
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
-    const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
+    const users = await base44.entities[entity].filter({ user_email: userEmail });
 
     if (users.length > 0) {
       await base44.asServiceRole.entities[entity].update(users[0].id, {
