@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClient } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
   try {
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No authorization code' }, { status: 400 });
     }
 
-    const base44 = createClientFromRequest(req);
+    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
     const stateData = state ? JSON.parse(decodeURIComponent(state)) : {};
     const { userEmail, userType } = stateData;
 
