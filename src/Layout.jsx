@@ -316,7 +316,6 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mi Perfil', icon: User, page: 'Profile' },
-    ...(user?.role === 'admin' ? [{ name: 'Asignar Alumnos', icon: Settings, page: 'AdminAssignStudents' }] : []),
   ];
 
   const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;
