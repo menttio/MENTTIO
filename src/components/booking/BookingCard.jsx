@@ -77,9 +77,9 @@ export default function BookingCard({
   React.useEffect(() => {
     const loadData = async () => {
       try {
-        const teachers = await base44.entities.Teacher.filter({ id: booking.teacher_id });
-        if (teachers.length > 0) {
-          setTeacher(teachers[0]);
+        const teacherData = await base44.entities.Teacher.get(booking.teacher_id);
+        if (teacherData) {
+          setTeacher(teacherData);
         }
       } catch (error) {
         console.error('Error loading teacher:', error);
