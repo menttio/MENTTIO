@@ -61,6 +61,22 @@ Deno.serve(async (req) => {
               stripe_subscription_id: session.subscription,
             });
 
+            // Registrar el uso del trial para este email (si aplica)
+            if (teacher.trial_active) {
+              try {
+                const existingTrial = await base44.asServiceRole.entities.TrialUsed.filter({ email: metadata.base44_user_email });
+                if (existingTrial.length === 0) {
+                  await base44.asServiceRole.entities.TrialUsed.create({
+                    email: metadata.base44_user_email,
+                    used_date: new Date().toISOString().split('T')[0]
+                  });
+                  console.log('✅ Email registrado en TrialUsed');
+                }
+              } catch (trialErr) {
+                console.error('⚠️ Error registrando TrialUsed:', trialErr);
+              }
+            }
+
             console.log('✅ Profesor actualizado con IDs de Stripe');
             console.log('⏰ El cobro se realizará automáticamente después de 14 días');
             console.log('═══════════════════════════════════════════════════════');
