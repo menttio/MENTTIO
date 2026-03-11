@@ -50,9 +50,10 @@ Deno.serve(async (req) => {
       const now = Math.floor(Date.now() / 1000);
       const stripeStatus = subscription.status; // trialing, active, past_due, canceled, etc.
 
-      const isTrial = stripeStatus === 'trialing';
+      const isTrial = stripeStatus === 'trialing'; // SOLO si Stripe dice explícitamente que está en trial
       const isActive = stripeStatus === 'active' || stripeStatus === 'trialing';
-      const trialEnd = subscription.trial_end; // unix timestamp or null
+      // trial_end solo es relevante si realmente está en estado trialing
+      const trialEnd = isTrial ? subscription.trial_end : null;
       const periodEnd = subscription.current_period_end;
 
       result.subscription_details = {
