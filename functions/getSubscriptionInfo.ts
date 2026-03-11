@@ -40,6 +40,31 @@ Deno.serve(async (req) => {
       portal_url: null,
     };
 
+    // Si tiene customer_id pero no subscription_id, intentar recuperarlo desde Stripe
+    if (!teacher.stripe_subscription_id && teacher.stripe_customer_id) {
+      try {
+        console.log('🔍 Buscando suscripción en Stripe por customer_id:', teacher.stripe_customer_id);
+        const subscriptions = await stripe.subscriptions.list({
+          customer: teacher.stripe_customer_id,
+          limit: 1,
+          status: 'all',
+        });
+        if (subscriptions.data.length > 0) {
+          const sub = subscriptions.data[0];
+          console.log('✅ Suscripción encontrada en Stripe:', sub.id, '| status:', sub.status);
+          await base44.asServiceRole.entities.Teacher.update(teacher.id, {
+            stripe_subscription_id: sub.id,
+          });
+          teacher.stripe_subscription_id = sub.id;
+          console.log('💾 stripe_subscription_id guardado en BD');
+        } else {
+          console.log('⚠️ No hay suscripciones en Stripe para este customer');
+        }
+      } catch (lookupErr) {
+        console.error('⚠️ Error buscando suscripción por customer_id:', lookupErr.message);
+      }
+    }
+
     // Si no tiene stripe_subscription_id, usamos los datos de la entidad
     if (!teacher.stripe_subscription_id) {
       const nowDate = new Date();
