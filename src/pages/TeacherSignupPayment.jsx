@@ -8,6 +8,9 @@ import { motion } from 'framer-motion';
 
 export default function TeacherSignupPayment() {
   const [loading, setLoading] = useState(true);
+  const [corporateCredentials, setCorporateCredentials] = useState(null);
+  const [stripeUrl, setStripeUrl] = useState(null);
+  const [copied, setCopied] = useState(null);
 
   React.useEffect(() => {
     const processSignup = async () => {
