@@ -182,6 +182,41 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Handle subscription created - fallback to save Stripe IDs if checkout webhook missed them
+    if (event.type === 'customer.subscription.created') {
+      const subscription = event.data.object;
+      const userEmail = subscription.metadata?.base44_user_email;
+
+      console.log('🔵 Stripe Webhook - customer.subscription.created');
+      console.log('Subscription ID:', subscription.id);
+      console.log('Customer:', subscription.customer);
+      console.log('User email from metadata:', userEmail);
+
+      if (userEmail) {
+        try {
+          const teachers = await base44.asServiceRole.entities.Teacher.filter({ user_email: userEmail });
+          if (teachers.length > 0) {
+            const teacher = teachers[0];
+            // Solo actualizar si faltan los IDs de Stripe
+            if (!teacher.stripe_subscription_id || !teacher.stripe_customer_id) {
+              console.log('💾 Guardando IDs de Stripe en Teacher (fallback):', teacher.id);
+              await base44.asServiceRole.entities.Teacher.update(teacher.id, {
+                stripe_customer_id: subscription.customer,
+                stripe_subscription_id: subscription.id,
+              });
+              console.log('✅ IDs de Stripe guardados correctamente');
+            } else {
+              console.log('ℹ️ Teacher ya tiene IDs de Stripe, no se actualiza');
+            }
+          } else {
+            console.error('❌ No se encontró profesor con email:', userEmail);
+          }
+        } catch (err) {
+          console.error('❌ Error en customer.subscription.created:', err.message);
+        }
+      }
+    }
+
     // Handle successful subscription payment after trial
     if (event.type === 'invoice.payment_succeeded') {
       const invoice = event.data.object;
