@@ -90,9 +90,16 @@ Deno.serve(async (req) => {
       if (result.subscription_expires && teacher.subscription_expires !== result.subscription_expires) {
         updates.subscription_expires = result.subscription_expires;
       }
+      console.log('🔄 isTrial calculado:', isTrial, '| isActive calculado:', isActive);
+      console.log('🔄 trial_end_date calculado:', result.trial_end_date);
+      console.log('🔄 subscription_expires calculado:', result.subscription_expires);
+
       if (Object.keys(updates).length > 0) {
+        console.log('💾 Actualizando Teacher en BD con:', updates);
         await base44.entities.Teacher.update(teacher.id, updates);
-        console.log('✅ Teacher sincronizado con Stripe:', updates);
+        console.log('✅ Teacher sincronizado con Stripe');
+      } else {
+        console.log('ℹ️ No hay cambios que sincronizar en Teacher');
       }
 
       // Método de pago
