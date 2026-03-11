@@ -3,7 +3,7 @@ import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CreditCard, ArrowRight, Shield, Lock, Loader2 } from 'lucide-react';
+import { CreditCard, ArrowRight, Shield, Lock, Loader2, Mail, Copy, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function TeacherSignupPayment() {
