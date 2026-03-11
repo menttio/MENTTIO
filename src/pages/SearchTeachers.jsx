@@ -148,7 +148,7 @@ export default function SearchTeachers() {
         
         // Recording filter
         if (recordingFilter !== 'all') {
-          const hasRecording = teacher.corporate_email && teacher.corporate_email.includes('@menttio.com');
+          const hasRecording = teacher.subscription_plan === 'premium';
           if (recordingFilter === 'with' && !hasRecording) return false;
           if (recordingFilter === 'without' && hasRecording) return false;
         }
