@@ -140,13 +140,14 @@ export default function TeacherSignupPayment() {
               const stripeResp = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
               if (stripeResp.data.error) throw new Error(stripeResp.data.error);
 
-              setCorporateCredentials({
+              // Guardar credenciales en sessionStorage antes de ir a Stripe
+              sessionStorage.setItem('corporate_credentials', JSON.stringify({
                 email: corpResponse.data.email,
                 password: corpResponse.data.password,
-              });
-              setStripeUrl(stripeResp.data.url);
-              setLoading(false);
-              return; // No redirigir aún, mostrar credenciales primero
+              }));
+              // Redirigir directamente a Stripe
+              window.location.replace(stripeResp.data.url);
+              return;
             }
           } catch (corpError) {
             console.error('⚠️ Error creando cuenta corporativa (no crítico):', corpError);
