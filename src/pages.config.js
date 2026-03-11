@@ -84,6 +84,7 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
 import CorporateCredentials from './pages/CorporateCredentials';
+import CorporateLoginCallback from './pages/CorporateLoginCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -125,6 +126,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
     "CorporateCredentials": CorporateCredentials,
+    "CorporateLoginCallback": CorporateLoginCallback,
 }
 
 export const pagesConfig = {
