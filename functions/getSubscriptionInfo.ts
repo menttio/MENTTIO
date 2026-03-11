@@ -7,19 +7,25 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
 
 Deno.serve(async (req) => {
   try {
+    console.log('🚀 getSubscriptionInfo START');
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
+    console.log('👤 User:', user?.email);
 
     if (!user) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
+    console.log('👨‍🏫 Teachers found:', teachers.length);
     if (teachers.length === 0) {
       return Response.json({ error: 'Teacher not found' }, { status: 404 });
     }
 
     const teacher = teachers[0];
+    console.log('🆔 stripe_subscription_id:', teacher.stripe_subscription_id);
+    console.log('🆔 stripe_customer_id:', teacher.stripe_customer_id);
+    console.log('📊 BD - subscription_active:', teacher.subscription_active, '| trial_active:', teacher.trial_active);
 
     const result = {
       subscription_active: false,
