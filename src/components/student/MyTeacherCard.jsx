@@ -62,7 +62,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
               <Tooltip delayDuration={200}>
                 <TooltipTrigger asChild>
                   <div className="w-fit">
-                    {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? (
+                    {teacher.subscription_plan === 'premium' ? (
                       <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5 cursor-help">
                         <Video size={14} />
                         <span className="font-medium">Grabación disponible</span>
