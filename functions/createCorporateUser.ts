@@ -2,14 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const { nombre, apellidos } = await req.json();
+    const { nombre, apellidos, email_personal } = await req.json();
 
     if (!nombre || !apellidos) {
       return Response.json({ error: 'Nombre y apellidos son requeridos' }, { status: 400 });
@@ -21,14 +14,14 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-    console.log('Enviando datos a n8n:', { nombre, apellidos, email: user.email });
+    console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
     console.log('Webhook URL:', webhookUrl);
 
     // Enviar datos a n8n usando GET con parámetros en la URL
     const url = new URL(webhookUrl);
     url.searchParams.append('nombre', nombre);
     url.searchParams.append('apellidos', apellidos);
-    url.searchParams.append('email', user.email);
+    if (email_personal) url.searchParams.append('email', email_personal);
 
     const response = await fetch(url.toString(), {
       method: 'GET'
