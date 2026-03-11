@@ -152,6 +152,7 @@ export default function TeacherSignup() {
     const signupData = {
       first_name: formData.nombre,
       last_name: formData.apellidos,
+      email_personal: formData.email_personal,
       phone: formData.phone,
       education: formData.education,
       experience_years: formData.experience_years,
