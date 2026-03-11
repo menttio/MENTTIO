@@ -37,8 +37,8 @@ export default function TeacherCard({
     ? teacher.subjects?.find(s => s.subject_id === selectedSubject)
     : teacher.subjects?.[0];
 
-  // Check if teacher has recording capability (corporate email with @menttio.com)
-  const hasRecording = teacher.corporate_email && teacher.corporate_email.includes('@menttio.com');
+  // Check if teacher has recording capability (premium plan)
+  const hasRecording = teacher.subscription_plan === 'premium';
 
   // Calculate price display
   const priceDisplay = selectedSubject && subjectInfo
