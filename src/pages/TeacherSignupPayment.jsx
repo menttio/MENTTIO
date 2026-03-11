@@ -124,41 +124,41 @@ export default function TeacherSignupPayment() {
 
         // 5b. Si el plan es premium, crear cuenta corporativa @menttio.com
         if (subscription_plan === 'premium') {
-          try {
-            console.log('🏢 Creando cuenta corporativa @menttio.com...');
-            const corpResponse = await base44.functions.invoke('createCorporateUser', {
-              nombre: data.first_name,
-              apellidos: data.last_name
+          console.log('🏢 Creando cuenta corporativa @menttio.com...');
+          const corpResponse = await base44.functions.invoke('createCorporateUser', {
+            nombre: data.first_name,
+            apellidos: data.last_name
+          });
+          if (corpResponse.data?.email) {
+            await base44.entities.Teacher.update(teacher.id, {
+              corporate_email: corpResponse.data.email
             });
-            if (corpResponse.data?.email) {
-              await base44.entities.Teacher.update(teacher.id, {
-                corporate_email: corpResponse.data.email
-              });
-              console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
+            console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
 
-              // Preparar URL de Stripe para después
-              const stripeResp = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
-              if (stripeResp.data.error) throw new Error(stripeResp.data.error);
+            // Guardar credenciales + datos de registro para recuperar tras login corporativo
+            sessionStorage.setItem('corporate_credentials', JSON.stringify({
+              email: corpResponse.data.email,
+              password: corpResponse.data.password,
+              teacher_id: teacher.id,
+              signup_data: data,
+              subscription_plan,
+            }));
 
-              // Guardar credenciales en sessionStorage antes de ir a Stripe
-              sessionStorage.setItem('corporate_credentials', JSON.stringify({
-                email: corpResponse.data.email,
-                password: corpResponse.data.password,
-              }));
-              // Redirigir directamente a Stripe
-              window.location.replace(stripeResp.data.url);
-              return;
-            }
-          } catch (corpError) {
-            console.error('⚠️ Error creando cuenta corporativa (no crítico):', corpError);
+            // Mostrar pantalla de credenciales (el usuario debe iniciar sesión con la cuenta corporativa)
+            setCorporateCredentials({
+              email: corpResponse.data.email,
+              password: corpResponse.data.password,
+            });
+            setLoading(false);
+            return;
           }
         }
 
-        // 5. Enviar email
+        // 5. Enviar email (plan basic)
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: `Nuevo Profesor - ${subscription_plan === 'basic' ? 'Plan Básico' : 'Plan Premium'} - Menttio`,
+            subject: `Nuevo Profesor - Plan Básico - Menttio`,
             body: `
               <h2>Nuevo Profesor Registrado</h2>
               <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
@@ -167,7 +167,6 @@ export default function TeacherSignupPayment() {
               <p><strong>Plan:</strong> ${subscription_plan}</p>
             `
           });
-          console.log('✅ Email enviado');
         } catch (emailError) {
           console.error('⚠️ Error al enviar email (no crítico):', emailError);
         }
@@ -177,11 +176,10 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // 7. Redirigir a Stripe (solo plan basic, el premium ya redirige desde arriba)
-        console.log('💳 Redirigiendo a Stripe para configurar método de pago...');
+        // 7. Redirigir a Stripe (plan basic)
+        console.log('💳 Redirigiendo a Stripe...');
         const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
         if (response.data.error) throw new Error(response.data.error);
-        console.log('✅ Sesión de Stripe creada, redirigiendo...');
         window.location.replace(response.data.url);
 
       } catch (error) {
