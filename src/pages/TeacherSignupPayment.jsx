@@ -106,18 +106,8 @@ export default function TeacherSignupPayment() {
         console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
         console.log('📋 ID del profesor:', teacher.id);
 
-        // Registrar el uso del trial para este email (si aún no está registrado)
-        if (grantTrial) {
-          try {
-            await base44.entities.TrialUsed.create({
-              email: user.email,
-              used_date: now.toISOString().split('T')[0]
-            });
-            console.log('✅ Email registrado en TrialUsed');
-          } catch (trialError) {
-            console.error('⚠️ Error registrando TrialUsed:', trialError);
-          }
-        }
+        // TrialUsed se registra en el webhook de Stripe al confirmar el trial
+        console.log('ℹ️ TrialUsed se registrará cuando Stripe confirme la suscripción');
 
         // 5. Enviar email
         try {
