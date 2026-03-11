@@ -34,8 +34,19 @@ export default function MyTeachers() {
 
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
-          const teachersData = await base44.entities.Teacher.list();
-          setTeachers(teachersData.filter(t => teacherIds.includes(t.id)));
+          const [teachersData, allBookings] = await Promise.all([
+            base44.entities.Teacher.list(),
+            base44.entities.Booking.list()
+          ]);
+          const filtered = teachersData.filter(t => teacherIds.includes(t.id));
+          const teachersWithRealClasses = filtered.map(teacher => {
+            const completedCount = allBookings.filter(b => 
+              b.teacher_id === teacher.id && 
+              (b.status === 'completed' || (b.status === 'scheduled' && new Date(`${b.date}T${b.start_time}`) < new Date()))
+            ).length;
+            return { ...teacher, total_classes: completedCount };
+          });
+          setTeachers(teachersWithRealClasses);
         }
       }
     } catch (error) {
