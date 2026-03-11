@@ -176,22 +176,11 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // 7. Redirigir a Stripe para configurar método de pago (siempre, con o sin trial)
+        // 7. Redirigir a Stripe (solo plan basic, el premium ya redirige desde arriba)
         console.log('💳 Redirigiendo a Stripe para configurar método de pago...');
-        console.log('📋 Plan seleccionado:', subscription_plan);
-        console.log('🎁 ¿Con trial?', grantTrial);
-        
-        const response = await base44.functions.invoke('createTeacherSubscription', {
-          subscription_plan
-        });
-        
-        if (response.data.error) {
-          throw new Error(response.data.error);
-        }
-        
+        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+        if (response.data.error) throw new Error(response.data.error);
         console.log('✅ Sesión de Stripe creada, redirigiendo...');
-        // Redirigir directamente a Stripe sin pasar por el dashboard
-        // (evita que el Layout intercepte al profesor sin suscripción activa)
         window.location.replace(response.data.url);
 
       } catch (error) {
