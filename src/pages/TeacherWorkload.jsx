@@ -167,7 +167,14 @@ export default function TeacherWorkload() {
 
   // Payment status stats
   const paymentStats = useMemo(() => {
-    const completed = bookings.filter(b => b.status === 'completed' && b.status !== 'cancelled');
+    const now = new Date();
+    const completed = bookings.filter(b => {
+      if (b.status === 'cancelled') return false;
+      if (b.status === 'completed') return true;
+      // Scheduled but already past
+      const bookingDateTime = new Date(`${b.date}T${b.start_time}`);
+      return b.status === 'scheduled' && bookingDateTime < now;
+    });
     const paid = completed.filter(b => b.payment_status === 'paid').length;
     const pending = completed.filter(b => b.payment_status === 'pending').length;
     const paidAmount = completed.filter(b => b.payment_status === 'paid').reduce((sum, b) => sum + (b.price || 0), 0);
