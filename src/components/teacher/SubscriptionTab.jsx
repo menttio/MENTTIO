@@ -74,9 +74,11 @@ export default function SubscriptionTab({ profile }) {
       ? format(new Date(data.subscription_expires), "d 'de' MMMM 'de' yyyy", { locale: es })
       : null;
 
-  const trialEndDate = data?.trial_end_date
-    ? format(new Date(data.trial_end_date), "d 'de' MMMM 'de' yyyy", { locale: es })
-    : null;
+  const trialEndDate = data?.subscription_details?.trial_end
+    ? format(fromUnixTime(data.subscription_details.trial_end), "d 'de' MMMM 'de' yyyy", { locale: es })
+    : data?.trial_end_date
+      ? format(new Date(data.trial_end_date), "d 'de' MMMM 'de' yyyy", { locale: es })
+      : null;
 
   const startDate = details?.current_period_start
     ? format(fromUnixTime(details.current_period_start), "d 'de' MMMM 'de' yyyy", { locale: es })
