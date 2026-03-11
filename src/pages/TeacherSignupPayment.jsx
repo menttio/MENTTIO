@@ -208,6 +208,13 @@ export default function TeacherSignupPayment() {
   };
 
   if (corporateCredentials) {
+    const handleContinueWithCorporate = () => {
+      // Cerrar sesión con cuenta personal y redirigir al login con la cuenta corporativa
+      // Tras el login, se irá a CorporateLoginCallback que creará la suscripción Stripe
+      const nextUrl = createPageUrl('CorporateLoginCallback');
+      base44.auth.logout(nextUrl);
+    };
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
@@ -219,9 +226,13 @@ export default function TeacherSignupPayment() {
                 </div>
               </div>
               <h2 className="text-2xl font-bold text-center text-[#404040] mb-2">¡Tu cuenta corporativa está lista!</h2>
-              <p className="text-gray-500 text-center mb-6 text-sm">
-                Guarda estas credenciales antes de continuar. Las necesitarás para acceder a tu cuenta <strong>@menttio.com</strong>.
-              </p>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                <p className="text-blue-800 text-sm font-medium mb-1">⚠️ Importante</p>
+                <p className="text-blue-700 text-sm">
+                  Esta es tu cuenta para acceder a la plataforma Menttio. Al pulsar "Continuar", cerraremos tu sesión actual y deberás <strong>iniciar sesión con este email corporativo</strong> para completar el pago y acceder al dashboard.
+                </p>
+              </div>
 
               <div className="space-y-4 mb-8">
                 <div className="bg-gray-50 rounded-xl p-4">
@@ -245,10 +256,10 @@ export default function TeacherSignupPayment() {
               </div>
 
               <Button
-                onClick={() => window.location.replace(stripeUrl)}
+                onClick={handleContinueWithCorporate}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold h-12"
               >
-                Continuar al pago
+                Continuar e iniciar sesión
                 <ArrowRight size={18} />
               </Button>
             </CardContent>
