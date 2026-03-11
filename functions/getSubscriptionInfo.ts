@@ -45,7 +45,14 @@ Deno.serve(async (req) => {
 
     // === Obtener datos reales desde Stripe ===
     try {
+      console.log('🔍 Consultando Stripe para subscription_id:', teacher.stripe_subscription_id);
       const subscription = await stripe.subscriptions.retrieve(teacher.stripe_subscription_id);
+
+      console.log('📦 Respuesta Stripe - status:', subscription.status);
+      console.log('📦 trial_end (unix):', subscription.trial_end);
+      console.log('📦 current_period_end (unix):', subscription.current_period_end);
+      console.log('📦 cancel_at_period_end:', subscription.cancel_at_period_end);
+      console.log('📦 Teacher en BD - trial_active:', teacher.trial_active, '| subscription_active:', teacher.subscription_active);
 
       const now = Math.floor(Date.now() / 1000);
       const stripeStatus = subscription.status; // trialing, active, past_due, canceled, etc.
