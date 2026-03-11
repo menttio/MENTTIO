@@ -94,7 +94,7 @@ export default function TeacherClassHistory() {
         return booking.status === 'cancelled';
       }
       if (filter === 'unpaid') {
-        return booking.payment_status === 'pending' && booking.status !== 'cancelled';
+        return booking.payment_status === 'pending' && booking.status !== 'cancelled' && (booking.status === 'completed' || isPast);
       }
       if (filter === 'paid') {
         return booking.payment_status === 'paid';
