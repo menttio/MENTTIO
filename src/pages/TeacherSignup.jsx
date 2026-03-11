@@ -232,12 +232,17 @@ export default function TeacherSignup() {
       console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
     }
     
-    const nextUrl = createPageUrl('TeacherSignupPayment');
-    console.log('🔗 URL de redirección tras login:', nextUrl);
-    console.log('🚀 Llamando a base44.auth.redirectToLogin...');
+    if (formData.subscription_plan === 'premium') {
+      // Premium: ir directo a CorporateLoginCallback, no necesita login previo
+      console.log('🏢 Plan premium: redirigiendo a CorporateLoginCallback...');
+      window.location.href = createPageUrl('TeacherSignupPayment');
+    } else {
+      const nextUrl = createPageUrl('TeacherSignupPayment');
+      console.log('🔗 URL de redirección tras login:', nextUrl);
+      console.log('🚀 Llamando a base44.auth.redirectToLogin...');
+      base44.auth.redirectToLogin(nextUrl);
+    }
     console.log('═══════════════════════════════════════════════════════');
-    
-    base44.auth.redirectToLogin(nextUrl);
   };
 
   // Success screen for basic plan (similar to students)
