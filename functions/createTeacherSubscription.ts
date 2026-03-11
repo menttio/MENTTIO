@@ -89,11 +89,22 @@ Deno.serve(async (req) => {
 
     console.log('✅ Sesión de checkout creada:', session.id);
     console.log('🔗 URL de checkout:', session.url);
-    if (subscription_plan === 'basic') {
-      console.log('🎁 Plan básico con 14 días de prueba gratuita');
-    }
-    console.log('💰 Precio: 1.00 EUR/mes');
     console.log('═══════════════════════════════════════════════════════');
+
+    // Guardar el stripe_customer_id en el Teacher ahora mismo (no esperar al webhook)
+    try {
+      const teachers = await base44.asServiceRole.entities.Teacher.filter({ user_email: user.email });
+      if (teachers.length > 0) {
+        await base44.asServiceRole.entities.Teacher.update(teachers[0].id, {
+          stripe_customer_id: customerId,
+        });
+        console.log('✅ stripe_customer_id guardado en Teacher:', customerId);
+      } else {
+        console.warn('⚠️ No se encontró Teacher para guardar stripe_customer_id. Se guardará vía webhook.');
+      }
+    } catch (saveErr) {
+      console.error('⚠️ Error guardando stripe_customer_id (no crítico):', saveErr.message);
+    }
 
     return Response.json({
       sessionId: session.id,
