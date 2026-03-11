@@ -40,12 +40,48 @@ Deno.serve(async (req) => {
       portal_url: null,
     };
 
-    // Si no tiene stripe_subscription_id, usamos los datos de la entidad tal cual
+    // Si no tiene stripe_subscription_id, usamos los datos de la entidad
     if (!teacher.stripe_subscription_id) {
-      result.subscription_active = teacher.subscription_active || false;
-      result.trial_active = teacher.trial_active || false;
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      // Verificar si el trial ha expirado
+      let trialActive = teacher.trial_active || false;
+      if (trialActive && teacher.trial_end_date) {
+        const trialEnd = new Date(teacher.trial_end_date);
+        if (trialEnd < now) {
+          trialActive = false;
+          console.log('⏰ Trial expirado localmente, corrigiendo...');
+          await base44.entities.Teacher.update(teacher.id, {
+            trial_active: false,
+            trial_used: true,
+            subscription_active: false,
+          });
+        }
+      }
+
+      // Verificar si la suscripción ha expirado
+      let subscriptionActive = teacher.subscription_active || false;
+      if (subscriptionActive && teacher.subscription_expires && !trialActive) {
+        const expiry = new Date(teacher.subscription_expires);
+        if (expiry < now) {
+          subscriptionActive = false;
+          console.log('⏰ Suscripción expirada localmente, corrigiendo...');
+          await base44.entities.Teacher.update(teacher.id, { subscription_active: false });
+        }
+      }
+
+      // Si está exento, siempre activo
+      if (teacher.subscription_exempt) {
+        subscriptionActive = true;
+        trialActive = false;
+      }
+
+      result.subscription_active = subscriptionActive;
+      result.trial_active = trialActive;
       result.trial_end_date = teacher.trial_end_date || null;
       result.subscription_expires = teacher.subscription_expires || null;
+      console.log('📤 Resultado local (sin Stripe):', { subscriptionActive, trialActive });
       return Response.json(result);
     }
 
