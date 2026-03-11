@@ -82,16 +82,16 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? 'bg-green-100' : 'bg-gray-100'
+                      teacher.subscription_plan === 'premium' ? 'bg-green-100' : 'bg-gray-100'
                     }`}>
-                      <Video size={20} className={teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? 'text-green-600' : 'text-gray-400'} />
+                      <Video size={20} className={teacher.subscription_plan === 'premium' ? 'text-green-600' : 'text-gray-400'} />
                     </div>
                     <div>
                       <p className="font-semibold text-[#404040] mb-1.5">
-                        {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? '✓ Grabación disponible' : '✗ Sin grabación'}
+                        {teacher.subscription_plan === 'premium' ? '✓ Grabación disponible' : '✗ Sin grabación'}
                       </p>
                       <p className="text-sm text-gray-600 leading-relaxed">
-                        {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com')
+                        {teacher.subscription_plan === 'premium'
                           ? 'Las clases con este profesor se graban automáticamente. Podrás verlas repetidas desde la plataforma todas las veces que quieras.'
                           : 'Las clases con este profesor no se graban. Solo podrás asistir en vivo a la clase.'}
                       </p>
