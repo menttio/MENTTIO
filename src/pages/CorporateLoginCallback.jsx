@@ -34,18 +34,13 @@ export default function CorporateLoginCallback() {
 
         const storedData = JSON.parse(stored);
 
-        // FASE 1: pending_corporate = true → crear cuenta corporativa y mostrar credenciales
+        // FASE 1: pending_corporate = true → crear cuenta corporativa sin necesitar sesión
         if (storedData.pending_corporate) {
-          const user = await base44.auth.me();
-          if (!user) {
-            base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
-            return;
-          }
-
-          // Crear la cuenta corporativa
+          // Crear la cuenta corporativa (no requiere autenticación)
           const corpResponse = await base44.functions.invoke('createCorporateUser', {
             nombre: storedData.signup_data.first_name,
-            apellidos: storedData.signup_data.last_name
+            apellidos: storedData.signup_data.last_name,
+            email_personal: storedData.signup_data.email_personal
           });
 
           if (!corpResponse.data?.email) {
