@@ -7,11 +7,13 @@ import { motion } from 'framer-motion';
 /**
  * Esta página se ejecuta después de que el profesor premium inicia sesión
  * con su cuenta corporativa @menttio.com.
- * 
+ *
  * Flujo:
- * 1. Recuperar datos del sessionStorage (guardados antes del logout)
- * 2. Actualizar el registro Teacher para usar el email corporativo
- * 3. Crear sesión de Stripe y redirigir al pago
+ * 1. Recuperar datos del sessionStorage
+ * 2. Verificar que el usuario logueado es la cuenta corporativa
+ *    - Si no hay sesión o es la cuenta personal → cerrar sesión y redirigir al login
+ * 3. Actualizar el registro Teacher con el email corporativo
+ * 4. Crear sesión de Stripe y redirigir al pago
  */
 export default function CorporateLoginCallback() {
   const [error, setError] = useState(null);
@@ -19,27 +21,34 @@ export default function CorporateLoginCallback() {
   useEffect(() => {
     const run = async () => {
       try {
-        // Recuperar credenciales y datos guardados antes del logout
+        // Recuperar datos guardados antes del logout
         const stored = sessionStorage.getItem('corporate_credentials');
         if (!stored) {
-          throw new Error('No se encontraron datos de registro. Por favor vuelve a empezar.');
+          setError('No se encontraron datos de registro. Por favor vuelve a empezar.');
+          return;
         }
 
-        const { email: corporateEmail, teacher_id, signup_data, subscription_plan } = JSON.parse(stored);
+        const { email: corporateEmail, teacher_id, subscription_plan } = JSON.parse(stored);
 
-        // Verificar que el usuario autenticado es la cuenta corporativa
+        // Verificar si hay sesión activa
+        const isAuthenticated = await base44.auth.isAuthenticated();
+
+        if (!isAuthenticated) {
+          // No hay sesión → redirigir al login para que use la cuenta corporativa
+          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+          return;
+        }
+
+        // Hay sesión → verificar que es la cuenta corporativa
         const user = await base44.auth.me();
-        if (!user) {
-          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+
+        if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
+          // Aún con cuenta personal → cerrar sesión y redirigir al login
+          base44.auth.logout(createPageUrl('CorporateLoginCallback'));
           return;
         }
 
-        // Si el usuario no es aún el corporativo, esperar o redirigir a login
-        if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
-          // Todavía con cuenta personal - redirigir al login de nuevo
-          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
-          return;
-        }
+        // ✅ Es la cuenta corporativa → proceder
 
         // Actualizar el Teacher para que use el email corporativo
         await base44.entities.Teacher.update(teacher_id, {
