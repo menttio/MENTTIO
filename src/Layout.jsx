@@ -52,7 +52,7 @@ export default function Layout({ children, currentPageName }) {
     console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
     
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription', 'CorporateCredentials'];
     
     if (publicPages.includes(currentPageName)) {
       console.log('✅ Página pública detectada:', currentPageName);
