@@ -119,6 +119,25 @@ export default function TeacherSignupPayment() {
           }
         }
 
+        // 5b. Si el plan es premium, crear cuenta corporativa @menttio.com
+        if (subscription_plan === 'premium') {
+          try {
+            console.log('🏢 Creando cuenta corporativa @menttio.com...');
+            const corpResponse = await base44.functions.invoke('createCorporateUser', {
+              nombre: data.first_name,
+              apellidos: data.last_name
+            });
+            if (corpResponse.data?.email) {
+              await base44.entities.Teacher.update(teacher.id, {
+                corporate_email: corpResponse.data.email
+              });
+              console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
+            }
+          } catch (corpError) {
+            console.error('⚠️ Error creando cuenta corporativa (no crítico):', corpError);
+          }
+        }
+
         // 5. Enviar email
         try {
           await base44.integrations.Core.SendEmail({
