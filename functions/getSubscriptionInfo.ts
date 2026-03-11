@@ -127,7 +127,8 @@ Deno.serve(async (req) => {
       }
 
     } catch (stripeError) {
-      console.error('Stripe error:', stripeError.message);
+      console.error('❌ Stripe error:', stripeError.message);
+      console.error('❌ Stripe error completo:', stripeError);
       // Fallback a datos locales si Stripe falla
       result.subscription_active = teacher.subscription_active || false;
       result.trial_active = teacher.trial_active || false;
