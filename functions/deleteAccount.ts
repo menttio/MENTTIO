@@ -215,13 +215,6 @@ Deno.serve(async (req) => {
     }
     console.log(`Deleted ${pushSubscriptions.length} push subscriptions`);
 
-    // Delete TrialUsed records so the user can use the trial again if they re-register
-    const trialUsedRecords = await base44.asServiceRole.entities.TrialUsed.filter({ email: userEmail });
-    for (const record of trialUsedRecords) {
-      await base44.asServiceRole.entities.TrialUsed.delete(record.id);
-    }
-    console.log(`Deleted ${trialUsedRecords.length} TrialUsed records`);
-
     // Logout user
     console.log(`Account deletion completed for: ${userEmail}`);
     
