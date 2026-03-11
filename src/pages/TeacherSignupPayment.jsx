@@ -31,16 +31,15 @@ export default function TeacherSignupPayment() {
 
         const data = JSON.parse(signupData);
 
-        // ── PLAN PREMIUM: guardar datos y redirigir al login ──
-        // La cuenta corporativa se crea en CorporateLoginCallback (tras el login)
+        // ── PLAN PREMIUM: guardar datos y redirigir a CorporateLoginCallback directamente ──
+        // La cuenta corporativa se crea allí sin necesidad de login previo
         if (subscription_plan === 'premium') {
           sessionStorage.setItem('corporate_credentials', JSON.stringify({
             signup_data: data,
             subscription_plan,
             pending_corporate: true,
           }));
-          // Redirigir al login, volver a CorporateLoginCallback tras autenticarse
-          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+          window.location.href = createPageUrl('CorporateLoginCallback');
           return;
         }
 
