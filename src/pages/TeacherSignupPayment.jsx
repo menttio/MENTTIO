@@ -31,34 +31,16 @@ export default function TeacherSignupPayment() {
 
         const data = JSON.parse(signupData);
 
-        // ── PLAN PREMIUM: crear cuenta corporativa sin necesitar login personal ──
+        // ── PLAN PREMIUM: guardar datos y redirigir al login ──
+        // La cuenta corporativa se crea en CorporateLoginCallback (tras el login)
         if (subscription_plan === 'premium') {
-          console.log('🏢 Creando cuenta corporativa @menttio.com...');
-          const corpResponse = await base44.functions.invoke('createCorporateUser', {
-            nombre: data.first_name,
-            apellidos: data.last_name
-          });
-
-          if (!corpResponse.data?.email) {
-            throw new Error('No se pudo crear la cuenta corporativa. Inténtalo de nuevo.');
-          }
-
-          console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
-
-          // Guardar todos los datos necesarios para crear el profesor después del login
           sessionStorage.setItem('corporate_credentials', JSON.stringify({
-            email: corpResponse.data.email,
-            password: corpResponse.data.password,
             signup_data: data,
             subscription_plan,
+            pending_corporate: true,
           }));
-
-          // Mostrar credenciales - el usuario iniciará sesión con la cuenta corporativa
-          setCorporateCredentials({
-            email: corpResponse.data.email,
-            password: corpResponse.data.password,
-          });
-          setLoading(false);
+          // Redirigir al login, volver a CorporateLoginCallback tras autenticarse
+          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
           return;
         }
 
