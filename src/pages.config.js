@@ -54,6 +54,8 @@ import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
 import Contact from './pages/Contact';
 import CookiesPolicy from './pages/CookiesPolicy';
+import CorporateCredentials from './pages/CorporateCredentials';
+import CorporateLoginCallback from './pages/CorporateLoginCallback';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import LegalNotice from './pages/LegalNotice';
@@ -83,8 +85,6 @@ import TeacherSignupPayment from './pages/TeacherSignupPayment';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
-import CorporateCredentials from './pages/CorporateCredentials';
-import CorporateLoginCallback from './pages/CorporateLoginCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -96,6 +96,8 @@ export const PAGES = {
     "ClassRecordings": ClassRecordings,
     "Contact": Contact,
     "CookiesPolicy": CookiesPolicy,
+    "CorporateCredentials": CorporateCredentials,
+    "CorporateLoginCallback": CorporateLoginCallback,
     "Home": Home,
     "Landing": Landing,
     "LegalNotice": LegalNotice,
@@ -125,8 +127,6 @@ export const PAGES = {
     "TeacherWorkload": TeacherWorkload,
     "TermsOfService": TermsOfService,
     "UserNotRegistered": UserNotRegistered,
-    "CorporateCredentials": CorporateCredentials,
-    "CorporateLoginCallback": CorporateLoginCallback,
 }
 
 export const pagesConfig = {

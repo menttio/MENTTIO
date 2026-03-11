@@ -22,66 +22,75 @@ export default function TeacherSignupPayment() {
         // 1. Verificar datos de registro
         const signupData = sessionStorage.getItem('teacher_signup_data');
         const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
-        
-        console.log('📋 teacher_signup_data:', signupData ? 'EXISTE' : 'NO EXISTE');
-        console.log('📋 Plan:', subscription_plan);
 
         if (!signupData) {
-          console.error('❌ NO HAY DATOS DE REGISTRO');
           alert('Error: No se encontraron datos de registro. Vuelve al formulario.');
           window.location.href = createPageUrl('TeacherSignup');
           return;
         }
 
-        // 2. Verificar autenticación
-        let user;
-        try {
-          user = await base44.auth.me();
-          console.log('✅ Usuario autenticado:', user.email);
-        } catch (authError) {
-          console.log('⚠️ Usuario NO autenticado');
-          console.log('🔐 Redirigiendo a login...');
-          
-          const nextUrl = window.location.href;
-          base44.auth.redirectToLogin(nextUrl);
+        const data = JSON.parse(signupData);
+
+        // ── PLAN PREMIUM: crear cuenta corporativa sin necesitar login personal ──
+        if (subscription_plan === 'premium') {
+          console.log('🏢 Creando cuenta corporativa @menttio.com...');
+          const corpResponse = await base44.functions.invoke('createCorporateUser', {
+            nombre: data.first_name,
+            apellidos: data.last_name
+          });
+
+          if (!corpResponse.data?.email) {
+            throw new Error('No se pudo crear la cuenta corporativa. Inténtalo de nuevo.');
+          }
+
+          console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
+
+          // Guardar todos los datos necesarios para crear el profesor después del login
+          sessionStorage.setItem('corporate_credentials', JSON.stringify({
+            email: corpResponse.data.email,
+            password: corpResponse.data.password,
+            signup_data: data,
+            subscription_plan,
+          }));
+
+          // Mostrar credenciales - el usuario iniciará sesión con la cuenta corporativa
+          setCorporateCredentials({
+            email: corpResponse.data.email,
+            password: corpResponse.data.password,
+          });
+          setLoading(false);
           return;
         }
 
-        // 3. Verificar si ya existe un profesor con este email
-        console.log('🔍 Verificando si ya existe profesor...');
+        // ── PLAN BASIC: flujo normal con login personal ──
+
+        // Verificar autenticación
+        let user;
+        try {
+          user = await base44.auth.me();
+        } catch (authError) {
+          base44.auth.redirectToLogin(window.location.href);
+          return;
+        }
+
+        // Verificar si ya existe un profesor con este email
         const existingTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
-        
         if (existingTeachers.length > 0) {
-          console.log('⚠️ Ya existe un profesor con este email');
-          console.log('✅ Redirigiendo al dashboard...');
-          
           sessionStorage.removeItem('teacher_signup_data');
           sessionStorage.removeItem('subscription_plan');
           sessionStorage.removeItem('teacher_signup_in_progress');
-          
           window.location.href = createPageUrl('TeacherDashboard');
           return;
         }
 
-        // 3b. Verificar si este email ya usó el trial gratuito anteriormente
-        console.log('🔍 Verificando si ya usó el trial...');
+        // Verificar si ya usó el trial
         const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: user.email });
-        const hasUsedTrialBefore = trialUsedRecords.length > 0;
-        console.log('Trial usado antes:', hasUsedTrialBefore);
+        const grantTrial = trialUsedRecords.length === 0;
 
-        // 4. Crear profesor
-        console.log('🔨 CREANDO PROFESOR EN BASE DE DATOS...');
-        
-        const data = JSON.parse(signupData);
-        console.log('📋 Datos parseados:', data);
-
+        // Crear profesor
         const now = new Date();
-        const trialStartDate = now;
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 14);
-
-        // Si ya usó el trial, no dar período de prueba - suscripción inactiva hasta pagar
-        const grantTrial = !hasUsedTrialBefore;
 
         const teacherData = {
           user_email: user.email,
@@ -95,89 +104,37 @@ export default function TeacherSignupPayment() {
           total_classes: 0,
           subscription_active: grantTrial,
           subscription_expires: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
-          subscription_plan: subscription_plan,
+          subscription_plan,
           trial_used: !grantTrial,
           trial_active: grantTrial,
-          trial_start_date: grantTrial ? trialStartDate.toISOString().split('T')[0] : null,
+          trial_start_date: grantTrial ? now.toISOString().split('T')[0] : null,
           trial_end_date: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
           tour_completed: false
         };
 
-        console.log('💾 Datos del profesor a crear:', teacherData);
+        await base44.entities.Teacher.create(teacherData);
 
-        const teacher = await base44.entities.Teacher.create(teacherData);
-        console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
-        console.log('📋 ID del profesor:', teacher.id);
-
-        // Registrar TrialUsed inmediatamente al crear la cuenta con trial
         if (grantTrial) {
           try {
             await base44.entities.TrialUsed.create({
               email: user.email,
-              used_date: new Date().toISOString().split('T')[0]
+              used_date: now.toISOString().split('T')[0]
             });
-            console.log('✅ Email registrado en TrialUsed inmediatamente');
-          } catch (trialErr) {
-            console.error('⚠️ Error registrando TrialUsed:', trialErr);
-          }
+          } catch (e) { /* no crítico */ }
         }
 
-        // 5b. Si el plan es premium, crear cuenta corporativa @menttio.com
-        if (subscription_plan === 'premium') {
-          console.log('🏢 Creando cuenta corporativa @menttio.com...');
-          const corpResponse = await base44.functions.invoke('createCorporateUser', {
-            nombre: data.first_name,
-            apellidos: data.last_name
-          });
-          if (corpResponse.data?.email) {
-            await base44.entities.Teacher.update(teacher.id, {
-              corporate_email: corpResponse.data.email
-            });
-            console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
-
-            // Guardar credenciales + datos de registro para recuperar tras login corporativo
-            sessionStorage.setItem('corporate_credentials', JSON.stringify({
-              email: corpResponse.data.email,
-              password: corpResponse.data.password,
-              teacher_id: teacher.id,
-              signup_data: data,
-              subscription_plan,
-            }));
-
-            // Mostrar pantalla de credenciales (el usuario debe iniciar sesión con la cuenta corporativa)
-            setCorporateCredentials({
-              email: corpResponse.data.email,
-              password: corpResponse.data.password,
-            });
-            setLoading(false);
-            return;
-          }
-        }
-
-        // 5. Enviar email (plan basic)
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
             subject: `Nuevo Profesor - Plan Básico - Menttio`,
-            body: `
-              <h2>Nuevo Profesor Registrado</h2>
-              <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
-              <p><strong>Email:</strong> ${user.email}</p>
-              <p><strong>Teléfono:</strong> ${data.phone}</p>
-              <p><strong>Plan:</strong> ${subscription_plan}</p>
-            `
+            body: `<h2>Nuevo Profesor Registrado</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Teléfono:</strong> ${data.phone}</p><p><strong>Plan:</strong> ${subscription_plan}</p>`
           });
-        } catch (emailError) {
-          console.error('⚠️ Error al enviar email (no crítico):', emailError);
-        }
+        } catch (e) { /* no crítico */ }
 
-        // 6. Limpiar sessionStorage
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // 7. Redirigir a Stripe (plan basic)
-        console.log('💳 Redirigiendo a Stripe...');
         const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
         if (response.data.error) throw new Error(response.data.error);
         window.location.replace(response.data.url);
