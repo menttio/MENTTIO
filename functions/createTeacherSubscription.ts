@@ -83,7 +83,9 @@ Deno.serve(async (req) => {
         subscription_plan: subscription_plan,
         base44_app_id: Deno.env.get('BASE44_APP_ID'),
       },
-      success_url: `${req.headers.get('origin')}/TeacherDashboard?setup=success`,
+      success_url: subscription_plan === 'premium'
+        ? `${req.headers.get('origin')}/CorporateCredentials?setup=success`
+        : `${req.headers.get('origin')}/TeacherDashboard?setup=success`,
       cancel_url: `${req.headers.get('origin')}/TeacherDashboard?setup=cancelled`,
     });
 
