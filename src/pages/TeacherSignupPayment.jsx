@@ -135,6 +135,18 @@ export default function TeacherSignupPayment() {
                 corporate_email: corpResponse.data.email
               });
               console.log('✅ Cuenta corporativa creada:', corpResponse.data.email);
+
+              // Preparar URL de Stripe para después
+              const stripeResp = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+              if (stripeResp.data.error) throw new Error(stripeResp.data.error);
+
+              setCorporateCredentials({
+                email: corpResponse.data.email,
+                password: corpResponse.data.password,
+              });
+              setStripeUrl(stripeResp.data.url);
+              setLoading(false);
+              return; // No redirigir aún, mostrar credenciales primero
             }
           } catch (corpError) {
             console.error('⚠️ Error creando cuenta corporativa (no crítico):', corpError);
