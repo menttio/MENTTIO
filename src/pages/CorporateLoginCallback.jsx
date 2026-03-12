@@ -163,11 +163,11 @@ export default function CorporateLoginCallback() {
   };
 
   const handleContinue = () => {
-    // Cerrar sesión actual y volver a esta misma página (URL limpia, sin parámetros OAuth).
-    const cleanUrl = window.location.origin + window.location.pathname;
-    console.log('🔄 handleContinue logout, redirectUrl:', cleanUrl);
-    console.log('🔗 window.location completo:', window.location.href);
-    base44.auth.logout(cleanUrl);
+    // Usar la URL de la página actual sin parámetros para el redirect post-login
+    const callbackUrl = window.location.origin + window.location.pathname;
+    console.log('🔄 handleContinue - redirectToLogin con callbackUrl:', callbackUrl);
+    // Primero hacer logout sin redirect de Google, luego redirigir al login
+    base44.auth.logout(callbackUrl);
   };
 
   if (phase === 'show_credentials' && credentials) {
