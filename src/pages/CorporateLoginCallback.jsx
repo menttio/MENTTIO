@@ -47,8 +47,8 @@ export default function CorporateLoginCallback() {
             throw new Error('No se pudo crear la cuenta corporativa. Inténtalo de nuevo.');
           }
 
-          // Actualizar sessionStorage con las credenciales reales
-          sessionStorage.setItem('corporate_credentials', JSON.stringify({
+          // Actualizar localStorage con las credenciales reales
+          localStorage.setItem('corporate_credentials', JSON.stringify({
             email: corpResponse.data.email,
             password: corpResponse.data.password,
             signup_data: storedData.signup_data,
