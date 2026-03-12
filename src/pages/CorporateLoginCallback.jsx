@@ -26,7 +26,7 @@ export default function CorporateLoginCallback() {
   useEffect(() => {
     const run = async () => {
       try {
-        const stored = sessionStorage.getItem('corporate_credentials');
+        const stored = localStorage.getItem('corporate_credentials');
         if (!stored) {
           setError('No se encontraron datos de registro. Por favor vuelve a empezar.');
           return;
