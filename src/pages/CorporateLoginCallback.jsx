@@ -150,8 +150,12 @@ export default function CorporateLoginCallback() {
   };
 
   const handleContinue = () => {
-    // Cerrar sesión con la cuenta personal y redirigir al login con la cuenta corporativa
-    base44.auth.logout(createPageUrl('CorporateLoginCallback'));
+    // Cerrar sesión y redirigir a la página de login de Base44,
+    // que tras autenticarse volverá a CorporateLoginCallback
+    const callbackUrl = window.location.origin + '/' + 'CorporateLoginCallback';
+    base44.auth.logout(
+      `https://app.base44.com/login?next=${encodeURIComponent(callbackUrl)}`
+    );
   };
 
   if (phase === 'show_credentials' && credentials) {
