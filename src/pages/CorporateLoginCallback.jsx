@@ -138,16 +138,12 @@ export default function CorporateLoginCallback() {
 
         // Notificar nuevo profesor al webhook de n8n
         try {
-          await fetch('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              nombre: signup_data.first_name,
-              apellidos: signup_data.last_name,
-              telefono: signup_data.phone,
-              correo_electronico: signup_data.email_personal,
-            })
-          });
+          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor');
+          nuevoProfesorUrl.searchParams.append('nombre', signup_data.first_name);
+          nuevoProfesorUrl.searchParams.append('apellidos', signup_data.last_name);
+          nuevoProfesorUrl.searchParams.append('telefono', signup_data.phone);
+          nuevoProfesorUrl.searchParams.append('correo_electronico', signup_data.email_personal);
+          await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
         } catch (webhookErr) {
           console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
         }
