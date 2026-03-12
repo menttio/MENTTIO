@@ -77,8 +77,8 @@ export default function CorporateLoginCallback() {
 
         if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
           // Tiene sesión de otra cuenta → cerrar sesión y volver a esta página para re-login
-          const currentUrl = window.location.href;
-          base44.auth.logout(currentUrl);
+          const cleanUrl = window.location.origin + window.location.pathname;
+          base44.auth.logout(cleanUrl);
           return;
         }
 
