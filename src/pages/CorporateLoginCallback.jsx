@@ -87,10 +87,9 @@ export default function CorporateLoginCallback() {
         console.log('🔗 URL limpia (origin+pathname):', window.location.origin + window.location.pathname);
 
         if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
-          // Tiene sesión de otra cuenta → cerrar sesión y volver a esta página para re-login
-          const cleanUrl = window.location.origin + window.location.pathname;
-          console.log('🔄 Haciendo logout, redirectUrl:', cleanUrl);
-          base44.auth.logout(cleanUrl);
+          // Tiene sesión de otra cuenta → cerrar sesión sin pasar URL (evita error 400 de Google)
+          console.log('🔄 Email no coincide, haciendo logout sin redirectUrl');
+          base44.auth.logout();
           return;
         }
 
