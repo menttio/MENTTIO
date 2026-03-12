@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
 
     // Notificar nuevo profesor al webhook de n8n
     try {
-      const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor');
+      const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
       nuevoProfesorUrl.searchParams.append('nombre', nombre);
       nuevoProfesorUrl.searchParams.append('apellidos', apellidos);
       nuevoProfesorUrl.searchParams.append('telefono', phone);

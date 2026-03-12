@@ -138,7 +138,7 @@ export default function CorporateLoginCallback() {
 
         // Notificar nuevo profesor al webhook de n8n
         try {
-          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor');
+          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
           nuevoProfesorUrl.searchParams.append('nombre', signup_data.first_name);
           nuevoProfesorUrl.searchParams.append('apellidos', signup_data.last_name);
           nuevoProfesorUrl.searchParams.append('telefono', signup_data.phone);
