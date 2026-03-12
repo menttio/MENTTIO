@@ -91,6 +91,22 @@ Deno.serve(async (req) => {
     console.log('🔗 URL de checkout:', session.url);
     console.log('═══════════════════════════════════════════════════════');
 
+    // Registrar en TrialUsed en cuanto se crea la sesión de checkout (no esperar al webhook)
+    try {
+      const existingTrial = await base44.asServiceRole.entities.TrialUsed.filter({ email: user.email });
+      if (existingTrial.length === 0) {
+        await base44.asServiceRole.entities.TrialUsed.create({
+          email: user.email,
+          used_date: new Date().toISOString().split('T')[0]
+        });
+        console.log('✅ Email registrado en TrialUsed');
+      } else {
+        console.log('ℹ️ Email ya registrado en TrialUsed');
+      }
+    } catch (trialErr) {
+      console.error('⚠️ Error registrando TrialUsed (no crítico):', trialErr.message);
+    }
+
     // Guardar el stripe_customer_id en el Teacher ahora mismo (no esperar al webhook)
     try {
       const teachers = await base44.asServiceRole.entities.Teacher.filter({ user_email: user.email });
