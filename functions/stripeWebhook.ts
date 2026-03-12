@@ -61,18 +61,15 @@ Deno.serve(async (req) => {
               stripe_subscription_id: session.subscription,
             });
 
-            // Registrar el uso del trial: si la sesión de checkout tiene suscripción con trial en Stripe
+            // Registrar en TrialUsed siempre que complete el checkout (trial o no)
             try {
-              const subscription = await stripe.subscriptions.retrieve(session.subscription);
-              if (subscription.trial_end) {
-                const existingTrial = await base44.asServiceRole.entities.TrialUsed.filter({ email: metadata.base44_user_email });
-                if (existingTrial.length === 0) {
-                  await base44.asServiceRole.entities.TrialUsed.create({
-                    email: metadata.base44_user_email,
-                    used_date: new Date().toISOString().split('T')[0]
-                  });
-                  console.log('✅ Email registrado en TrialUsed');
-                }
+              const existingTrial = await base44.asServiceRole.entities.TrialUsed.filter({ email: metadata.base44_user_email });
+              if (existingTrial.length === 0) {
+                await base44.asServiceRole.entities.TrialUsed.create({
+                  email: metadata.base44_user_email,
+                  used_date: new Date().toISOString().split('T')[0]
+                });
+                console.log('✅ Email registrado en TrialUsed');
               }
             } catch (trialErr) {
               console.error('⚠️ Error registrando TrialUsed:', trialErr);
