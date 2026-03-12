@@ -121,7 +121,7 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan, grant_trial: grantTrial });
         if (response.data.error) throw new Error(response.data.error);
         window.location.replace(response.data.url);
 
