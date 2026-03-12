@@ -151,10 +151,9 @@ export default function CorporateLoginCallback() {
   };
 
   const handleContinue = () => {
-    // Cerrar sesión actual y volver a esta misma página.
-    // Base44 detectará que no hay sesión y mostrará el login.
-    const currentUrl = window.location.href;
-    base44.auth.logout(currentUrl);
+    // Cerrar sesión actual y volver a esta misma página (URL limpia, sin parámetros OAuth).
+    const cleanUrl = window.location.origin + window.location.pathname;
+    base44.auth.logout(cleanUrl);
   };
 
   if (phase === 'show_credentials' && credentials) {
