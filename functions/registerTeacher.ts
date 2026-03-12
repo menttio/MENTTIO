@@ -101,16 +101,12 @@ Deno.serve(async (req) => {
 
     // Notificar nuevo profesor al webhook de n8n
     try {
-      await fetch('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: nombre,
-          apellidos: apellidos,
-          telefono: phone,
-          correo_electronico: email_personal,
-        })
-      });
+      const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor');
+      nuevoProfesorUrl.searchParams.append('nombre', nombre);
+      nuevoProfesorUrl.searchParams.append('apellidos', apellidos);
+      nuevoProfesorUrl.searchParams.append('telefono', phone);
+      nuevoProfesorUrl.searchParams.append('correo_electronico', email_personal);
+      await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
     } catch (webhookErr) {
       console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
     }
