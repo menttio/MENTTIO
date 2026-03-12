@@ -19,10 +19,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { subscription_plan, grant_trial } = await req.json();
+    const { subscription_plan } = await req.json();
     console.log('📋 Plan seleccionado:', subscription_plan);
     console.log('👤 Usuario:', user.email);
-    console.log('🎁 grant_trial:', grant_trial);
 
     // Determinar el price_id según el plan
     const priceId = subscription_plan === 'premium' 
@@ -55,9 +54,10 @@ Deno.serve(async (req) => {
       console.log('✅ Nuevo cliente creado:', customerId);
     }
 
-    // Usar el valor grant_trial enviado desde el frontend (calculado antes de crear TrialUsed)
-    const shouldGrantTrial = subscription_plan === 'basic' && grant_trial === true;
-    console.log('🎁 shouldGrantTrial:', shouldGrantTrial);
+    // Consultar si el usuario ya usó el trial
+    const trialUsedRecords = await base44.asServiceRole.entities.TrialUsed.filter({ email: user.email });
+    const shouldGrantTrial = subscription_plan === 'basic' && trialUsedRecords.length === 0;
+    console.log('🎁 shouldGrantTrial:', shouldGrantTrial, '(registros TrialUsed:', trialUsedRecords.length, ')');
 
     // Crear sesión de checkout con trial de 14 días solo si corresponde
     const session = await stripe.checkout.sessions.create({

@@ -100,15 +100,6 @@ export default function TeacherSignupPayment() {
 
         await base44.entities.Teacher.create(teacherData);
 
-        if (grantTrial) {
-          try {
-            await base44.entities.TrialUsed.create({
-              email: user.email,
-              used_date: now.toISOString().split('T')[0]
-            });
-          } catch (e) { /* no crítico */ }
-        }
-
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
@@ -121,7 +112,7 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan, grant_trial: grantTrial });
+        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
         if (response.data.error) throw new Error(response.data.error);
         window.location.replace(response.data.url);
 
