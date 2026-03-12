@@ -188,6 +188,13 @@ export default function CorporateLoginCallback() {
                 </p>
               </div>
 
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                <p className="text-red-800 text-sm font-medium mb-1">🚫 No cambies la contraseña</p>
+                <p className="text-red-700 text-sm">
+                  Usa exactamente la contraseña que aparece arriba para iniciar sesión. <strong>No la cambies</strong> hasta haber completado el proceso de pago, o el registro fallará.
+                </p>
+              </div>
+
               <div className="space-y-4 mb-8">
                 <div className="bg-gray-50 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">Email corporativo</p>
