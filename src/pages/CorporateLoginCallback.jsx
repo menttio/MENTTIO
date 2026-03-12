@@ -125,7 +125,7 @@ export default function CorporateLoginCallback() {
           }
         }
 
-        sessionStorage.removeItem('corporate_credentials');
+        localStorage.removeItem('corporate_credentials');
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
