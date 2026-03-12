@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
       nuevoProfesorUrl.searchParams.append('nombre', nombre);
       nuevoProfesorUrl.searchParams.append('apellidos', apellidos);
       nuevoProfesorUrl.searchParams.append('telefono', phone);
-      nuevoProfesorUrl.searchParams.append('correo_electronico', email_personal);
+      nuevoProfesorUrl.searchParams.append('correo_electronico', corporateData.email);
       await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
     } catch (webhookErr) {
       console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
