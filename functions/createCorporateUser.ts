@@ -29,13 +29,18 @@ Deno.serve(async (req) => {
 
     console.log('Response status:', response.status);
     
+    const rawText = await response.text();
+    console.log('Raw response from n8n:', rawText);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error response from n8n:', errorText);
-      throw new Error(`Error en el webhook de n8n: ${response.status} - ${errorText}`);
+      throw new Error(`Error en el webhook de n8n: ${response.status} - ${rawText}`);
     }
 
-    const result = await response.json();
+    if (!rawText || rawText.trim() === '') {
+      throw new Error('n8n no devolvió datos. Comprueba que el workflow de n8n está activo y configurado para responder con las credenciales.');
+    }
+
+    const result = JSON.parse(rawText);
     console.log('Respuesta de n8n:', result);
 
     return Response.json({
