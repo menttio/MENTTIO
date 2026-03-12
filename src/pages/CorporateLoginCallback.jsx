@@ -75,9 +75,15 @@ export default function CorporateLoginCallback() {
 
         const user = await base44.auth.me();
 
+        console.log('👤 Usuario autenticado:', user.email);
+        console.log('📧 Email corporativo esperado:', corporateEmail);
+        console.log('🔗 URL actual (href):', window.location.href);
+        console.log('🔗 URL limpia (origin+pathname):', window.location.origin + window.location.pathname);
+
         if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
           // Tiene sesión de otra cuenta → cerrar sesión y volver a esta página para re-login
           const cleanUrl = window.location.origin + window.location.pathname;
+          console.log('🔄 Haciendo logout, redirectUrl:', cleanUrl);
           base44.auth.logout(cleanUrl);
           return;
         }
