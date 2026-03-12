@@ -57,11 +57,16 @@ export default function TeacherSignupPayment() {
         // Verificar si ya existe un profesor con este email
         const existingTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
         if (existingTeachers.length > 0) {
-          sessionStorage.removeItem('teacher_signup_data');
-          sessionStorage.removeItem('subscription_plan');
-          sessionStorage.removeItem('teacher_signup_in_progress');
-          window.location.href = createPageUrl('TeacherDashboard');
-          return;
+          const teacher = existingTeachers[0];
+          // Si ya tiene suscripción activa o trial, redirigir al dashboard
+          if (teacher.subscription_active || teacher.trial_active || teacher.subscription_exempt) {
+            sessionStorage.removeItem('teacher_signup_data');
+            sessionStorage.removeItem('subscription_plan');
+            sessionStorage.removeItem('teacher_signup_in_progress');
+            window.location.href = createPageUrl('TeacherDashboard');
+            return;
+          }
+          // Si existe pero no tiene suscripción activa, continuar con el pago
         }
 
         // Verificar si ya usó el trial
