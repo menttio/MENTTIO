@@ -40,8 +40,12 @@ Deno.serve(async (req) => {
       throw new Error('n8n no devolvió datos. Comprueba que el workflow de n8n está activo y configurado para responder con las credenciales.');
     }
 
-    const result = JSON.parse(rawText);
-    console.log('Respuesta de n8n:', result);
+    const parsed = JSON.parse(rawText);
+    console.log('Respuesta de n8n:', parsed);
+
+    // n8n puede devolver un array o un objeto directo
+    const result = Array.isArray(parsed) ? parsed[0] : parsed;
+    console.log('Result extraído:', result);
 
     return Response.json({
       status: result.status,
