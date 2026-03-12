@@ -163,11 +163,10 @@ export default function CorporateLoginCallback() {
   };
 
   const handleContinue = () => {
-    // Usar la URL de la página actual sin parámetros para el redirect post-login
-    const callbackUrl = window.location.origin + window.location.pathname;
-    console.log('🔄 handleContinue - redirectToLogin con callbackUrl:', callbackUrl);
-    // Primero hacer logout sin redirect de Google, luego redirigir al login
-    base44.auth.logout(callbackUrl);
+    // Hacer logout sin pasar URL (evita el error 400 de Google con redirect_uri no autorizada)
+    // base44 redirigirá a la página de login por defecto
+    console.log('🔄 handleContinue - haciendo logout sin redirect URL');
+    base44.auth.logout();
   };
 
   if (phase === 'show_credentials' && credentials) {
