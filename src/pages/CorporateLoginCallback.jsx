@@ -26,13 +26,19 @@ export default function CorporateLoginCallback() {
   useEffect(() => {
     const run = async () => {
       try {
+        console.log('🚀 CorporateLoginCallback iniciando...');
+        console.log('🔗 URL actual:', window.location.href);
+        console.log('📦 localStorage corporate_credentials:', localStorage.getItem('corporate_credentials'));
+
         const stored = localStorage.getItem('corporate_credentials');
         if (!stored) {
+          console.error('❌ No hay datos en localStorage');
           setError('No se encontraron datos de registro. Por favor vuelve a empezar.');
           return;
         }
 
         const storedData = JSON.parse(stored);
+        console.log('📋 Datos almacenados:', JSON.stringify(storedData));
 
         // FASE 1: pending_corporate = true → crear cuenta corporativa sin necesitar sesión
         if (storedData.pending_corporate) {
