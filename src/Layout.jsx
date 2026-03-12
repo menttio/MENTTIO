@@ -135,11 +135,10 @@ export default function Layout({ children, currentPageName }) {
           
           // Check if trial is active (has access during trial period)
           if (teacher.trial_active && teacher.trial_end_date) {
-            const trialEndDate = new Date(teacher.trial_end_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const trialEndDate = new Date(teacher.trial_end_date + 'T23:59:59');
+            const now = new Date();
             
-            if (trialEndDate < today) {
+            if (trialEndDate < now) {
               console.log('⏰ Período de prueba expirado');
               // Mark trial as inactive
               await base44.entities.Teacher.update(teacher.id, {
@@ -154,7 +153,7 @@ export default function Layout({ children, currentPageName }) {
               }
               return;
             } else {
-              // Trial is still active - grant access
+              // Trial is still active - grant access and RETURN
               console.log('✅ Profesor en período de prueba activo');
               setUserRole('teacher');
               loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
@@ -163,8 +162,8 @@ export default function Layout({ children, currentPageName }) {
               if (studentPages.includes(currentPageName)) {
                 console.log('🚫 Profesor intentando acceder a página de estudiante, redirigiendo...');
                 window.location.href = createPageUrl('TeacherDashboard');
-                return;
               }
+              return; // ← siempre retornar cuando el trial está activo
             }
           }
           
