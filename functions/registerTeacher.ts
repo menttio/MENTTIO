@@ -99,6 +99,22 @@ Deno.serve(async (req) => {
       // No fallar el registro si ya existe el usuario
     }
 
+    // Notificar nuevo profesor al webhook de n8n
+    try {
+      await fetch('https://raulng16.app.n8n.cloud/webhook-test/nuevo_profesor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: nombre,
+          apellidos: apellidos,
+          telefono: phone,
+          correo_electronico: email_personal,
+        })
+      });
+    } catch (webhookErr) {
+      console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
+    }
+
     // Enviar email de notificación a menttio
     try {
       await base44.asServiceRole.integrations.Core.SendEmail({
