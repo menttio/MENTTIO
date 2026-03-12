@@ -149,10 +149,11 @@ export default function CorporateLoginCallback() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const handleContinue = async () => {
-    // Primero cerrar sesión, luego redirigir al login con el callback correcto
-    await base44.auth.logout();
-    base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+  const handleContinue = () => {
+    // Redirigir al login de Base44 pasando CorporateLoginCallback como destino post-login.
+    // Base44 hará logout de la sesión actual automáticamente si hay conflicto de cuenta.
+    const nextUrl = window.location.href; // URL actual = CorporateLoginCallback
+    base44.auth.redirectToLogin(nextUrl);
   };
 
   if (phase === 'show_credentials' && credentials) {
