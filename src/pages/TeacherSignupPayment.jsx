@@ -34,7 +34,7 @@ export default function TeacherSignupPayment() {
         // ── PLAN PREMIUM: guardar datos y redirigir a CorporateLoginCallback directamente ──
         // La cuenta corporativa se crea allí sin necesidad de login previo
         if (subscription_plan === 'premium') {
-          sessionStorage.setItem('corporate_credentials', JSON.stringify({
+          localStorage.setItem('corporate_credentials', JSON.stringify({
             signup_data: data,
             subscription_plan,
             pending_corporate: true,
