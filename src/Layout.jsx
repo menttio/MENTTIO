@@ -105,7 +105,7 @@ export default function Layout({ children, currentPageName }) {
 
         let teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         
-        if (comingFromPayment && teachers.length > 0 && !teachers[0].subscription_active) {
+        if (comingFromPayment && teachers.length > 0 && !teachers[0].subscription_active && !teachers[0].trial_active) {
           // Reintentar hasta 8 veces con 2s de espera (16s total)
           for (let i = 0; i < 8; i++) {
             await new Promise(r => setTimeout(r, 2000));
