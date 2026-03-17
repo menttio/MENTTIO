@@ -21,7 +21,7 @@ const faqs = [
   },
   {
     question: '¿Puedo acceder a las grabaciones de mis clases?',
-    answer: 'Sí, pero solo con el Plan Premium. Las clases quedan grabadas automáticamente y almacenadas en la nube. Tanto el profesor como el alumno tienen acceso a las grabaciones para repasar el contenido cuando quieran.'
+    answer: 'Los alumnos pueden acceder a las grabaciones de sus clases siempre que su profesor tenga el Plan Premium activo. Al buscar profesor, podrás ver si ofrece grabación de clases. Si el profesor tiene el Plan Básico, las clases no se graban.'
   },
   {
     question: '¿Qué pasa si necesito cancelar una clase?',
