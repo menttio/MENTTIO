@@ -29,7 +29,7 @@ export default function TermsOfService() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Términos de Uso</h1>
-              <p className="text-white/90">Última actualización: 22 de enero de 2026</p>
+              <p className="text-white/90">Última actualización: 17 de marzo de 2026</p>
             </div>
           </motion.div>
         </div>
