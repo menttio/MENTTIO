@@ -25,8 +25,8 @@ Deno.serve(async (req) => {
 
     // Determinar el price_id según el plan
     const priceId = subscription_plan === 'premium' 
-      ? 'price_1T51fmHZYiECTxiy2z23bdWq'  // Premium (Live)
-      : 'price_1TA8e9HZYiECTxiyLW03IVcS';  // Básico (Live)
+      ? 'price_1TBuNwHZYiECTxiyiZ41AEcx'  // Premium (Live)
+      : 'price_1TBu8mHZYiECTxiyJ6fB9Hy3';  // Básico (Live)
 
     console.log('💳 Price ID seleccionado:', priceId);
 
