@@ -69,15 +69,15 @@ export default function CookiesPolicy() {
                 </p>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Autenticación:</strong> Mantienen tu sesión iniciada mientras navegas</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Seguridad:</strong> Protegen contra ataques y fraudes</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Preferencias:</strong> Recuerdan tu idioma y configuración regional</span>
                   </li>
                 </ul>
@@ -90,15 +90,15 @@ export default function CookiesPolicy() {
                 </p>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Preferencias de usuario:</strong> Configuraciones personalizadas</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Tours completados:</strong> Recordar qué tutoriales has visto</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Notificaciones:</strong> Gestión de permisos de notificaciones push</span>
                   </li>
                 </ul>
@@ -111,11 +111,11 @@ export default function CookiesPolicy() {
                 </p>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Estadísticas de uso:</strong> Páginas visitadas y tiempo de navegación</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Mejora del servicio:</strong> Identificar problemas y áreas de mejora</span>
                   </li>
                 </ul>
@@ -128,11 +128,11 @@ export default function CookiesPolicy() {
                 </p>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Stripe:</strong> Procesamiento seguro de pagos</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#41f2c0] mt-1">•</span>
+                    <span className="text-[#404040] mt-1">•</span>
                     <span><strong>Google Calendar:</strong> Sincronización de eventos</span>
                   </li>
                 </ul>
@@ -187,15 +187,15 @@ export default function CookiesPolicy() {
                   </p>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Bloquear todas las cookies</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Aceptar solo cookies de primera parte</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Eliminar cookies al cerrar el navegador</span>
                     </li>
                   </ul>
@@ -213,25 +213,25 @@ export default function CookiesPolicy() {
                   <h4 className="font-semibold text-[#404040] mb-2">Enlaces a Configuración de Navegadores</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
                         Google Chrome
                       </a>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <a href="https://support.mozilla.org/es/kb/cookies-informacion-que-los-sitios-web-guardan-en-" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
                         Mozilla Firefox
                       </a>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
                         Safari
                       </a>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <a href="https://support.microsoft.com/es-es/windows/eliminar-y-administrar-cookies" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
                         Microsoft Edge
                       </a>

@@ -81,19 +81,19 @@ export default function TermsOfService() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Sistema de gestión de reservas y calendario</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Herramientas de comunicación entre profesores y alumnos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Almacenamiento y acceso a grabaciones de clases</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Procesamiento de pagos entre alumnos y profesores</span>
                 </li>
               </ul>

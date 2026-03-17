@@ -70,19 +70,19 @@ export default function PrivacyPolicy() {
                   <h4 className="font-semibold text-[#404040] mb-2">Información de Registro</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Nombre completo y correo electrónico</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Número de teléfono</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Foto de perfil (opcional)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Información académica o profesional según tu rol</span>
                     </li>
                   </ul>
@@ -92,19 +92,19 @@ export default function PrivacyPolicy() {
                   <h4 className="font-semibold text-[#404040] mb-2">Información de Uso</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Registros de clases reservadas y completadas</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Mensajes y comunicaciones en la plataforma</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Grabaciones de clases (con tu consentimiento)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Valoraciones y reseñas</span>
                     </li>
                   </ul>
@@ -114,11 +114,11 @@ export default function PrivacyPolicy() {
                   <h4 className="font-semibold text-[#404040] mb-2">Información de Pago</h4>
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Datos de facturación (procesados de forma segura por Stripe)</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-[#41f2c0] mt-1">•</span>
+                      <span className="text-[#404040] mt-1">•</span>
                       <span>Historial de transacciones</span>
                     </li>
                   </ul>
