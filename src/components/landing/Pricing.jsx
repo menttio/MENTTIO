@@ -136,7 +136,7 @@ export default function Pricing() {
 
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-white">19,99€</span>
+                        <span className="text-5xl font-bold text-white">36,99€</span>
                         <span className="text-white/80">/mes</span>
                       </div>
                       <p className="text-sm text-white/80 mt-2">Todas las funcionalidades</p>
@@ -208,7 +208,7 @@ export default function Pricing() {
                         ✨ 14 días gratis
                       </div>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-white">9,99€</span>
+                        <span className="text-5xl font-bold text-white">14,99€</span>
                         <span className="text-white/80">/mes</span>
                       </div>
                       <p className="text-sm text-white/80 mt-2">Funcionalidades esenciales</p>

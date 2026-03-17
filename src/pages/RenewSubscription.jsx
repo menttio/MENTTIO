@@ -101,7 +101,7 @@ export default function RenewSubscription() {
                     {!teacher?.trial_used && (
                       <Badge className="bg-green-500 text-white text-xs mb-1">14 días gratis</Badge>
                     )}
-                    <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                    <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
                   {selectedPlan === 'basic' && (
                     <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
@@ -143,7 +143,7 @@ export default function RenewSubscription() {
                       <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
                       <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
                     </div>
-                    <p className="text-2xl font-bold text-[#404040] mt-1">19,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                    <p className="text-2xl font-bold text-[#404040] mt-1">36,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
                   {selectedPlan === 'premium' && (
                     <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">

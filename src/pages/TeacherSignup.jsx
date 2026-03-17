@@ -580,7 +580,7 @@ export default function TeacherSignup() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
-                          <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                          <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                         </div>
                         {formData.subscription_plan === 'basic' && (
                           <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
@@ -622,7 +622,7 @@ export default function TeacherSignup() {
                             <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
                             <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
                           </div>
-                          <p className="text-2xl font-bold text-[#404040] mt-1">19,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                          <p className="text-2xl font-bold text-[#404040] mt-1">36,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                         </div>
                         {formData.subscription_plan === 'premium' && (
                           <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
@@ -794,7 +794,7 @@ export default function TeacherSignup() {
                     <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                     <div className="flex items-baseline justify-center gap-2">
                       <span className="text-5xl font-bold text-[#404040]">
-                        {formData.subscription_plan === 'basic' ? '9,99€' : '19,99€'}
+                        {formData.subscription_plan === 'basic' ? '14,99€' : '36,99€'}
                       </span>
                       <span className="text-gray-500">/mes</span>
                     </div>
@@ -819,7 +819,7 @@ export default function TeacherSignup() {
                             </p>
                             <p className="flex items-start gap-2">
                               <span className="text-green-600 mt-0.5">•</span>
-                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 9,99€ automáticamente mediante el método de pago que registres.</span>
+                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 14,99€ automáticamente mediante el método de pago que registres.</span>
                             </p>
                             <p className="flex items-start gap-2">
                               <span className="text-green-600 mt-0.5">•</span>
@@ -838,7 +838,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 9,99€/mes (Plan Básico) o 19,99€/mes (Plan Premium)</p>
+                      <p>- La suscripción tiene un coste de 14,99€/mes (Plan Básico) o 36,99€/mes (Plan Premium)</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
@@ -882,20 +882,6 @@ export default function TeacherSignup() {
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                       He leído y acepto los términos y condiciones, así como la política de privacidad de Menπio
                     </label>
-                  </div>
-
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                    <div className="flex items-start gap-3">
-                      <CreditCard className="text-yellow-600 mt-0.5" size={20} />
-                      <div>
-                        <h4 className="font-semibold text-[#404040] mb-1 text-left">Nota sobre el pago</h4>
-                        <p className="text-sm text-gray-600 text-left">
-                          {formData.subscription_plan === 'basic' 
-                            ? 'En esta versión demo, el registro se activa automáticamente. En producción, tras completar este formulario serás redirigido a un proceso de pago seguro donde registrarás tu método de pago para cuando finalice el período de prueba de 14 días.'
-                            : 'En esta versión demo, el registro se activa automáticamente. En producción, aquí se procesaría el pago con Stripe o PayPal.'}
-                        </p>
-                      </div>
-                    </div>
                   </div>
 
                   <Button
