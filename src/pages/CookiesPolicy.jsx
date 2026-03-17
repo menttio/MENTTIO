@@ -263,7 +263,7 @@ export default function CookiesPolicy() {
             <p className="text-gray-600 leading-relaxed">
               Si tienes preguntas sobre nuestra Política de Cookies, puedes contactarnos en:
             </p>
-            <p className="text-[#41f2c0] font-medium mt-2">
+            <p className="text-[#404040] font-medium mt-2">
               <a href="mailto:menttio@menttio.com" className="hover:underline">
                 menttio@menttio.com
               </a>

@@ -253,7 +253,7 @@ export default function LegalNotice() {
               Para cualquier consulta relacionada con este Aviso Legal, puede contactar con nosotros 
               a través de:
             </p>
-            <p className="text-[#41f2c0] font-medium mt-2">
+            <p className="text-[#404040] font-medium mt-2">
               <a href="mailto:menttio@menttio.com" className="hover:underline">
                 menttio@menttio.com
               </a>

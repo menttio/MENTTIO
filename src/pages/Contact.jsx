@@ -160,7 +160,7 @@ export default function Contact() {
 
                 <div className="text-center text-sm text-gray-500">
                   También puedes escribirnos directamente a{' '}
-                  <a href="mailto:menttio@menttio.com" className="text-[#41f2c0] font-medium hover:underline">
+                  <a href="mailto:menttio@menttio.com" className="text-[#404040] font-medium hover:underline">
                     menttio@menttio.com
                   </a>
                 </div>

@@ -349,7 +349,7 @@ export default function PrivacyPolicy() {
               Si tienes preguntas sobre esta Política de Privacidad o deseas ejercer tus derechos, 
               puedes contactarnos en:
             </p>
-            <p className="text-[#41f2c0] font-medium">
+            <p className="text-[#404040] font-medium">
               <a href="mailto:menttio@menttio.com" className="hover:underline">
                 menttio@menttio.com
               </a>
