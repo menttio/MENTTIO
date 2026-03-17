@@ -141,27 +141,27 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Proporcionar, mantener y mejorar nuestros servicios</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Facilitar la conexión entre profesores y alumnos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Procesar pagos y gestionar suscripciones</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Enviarte notificaciones sobre tus clases y mensajes</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Mejorar la seguridad y prevenir fraudes</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Cumplir con obligaciones legales</span>
                 </li>
               </ul>
@@ -183,17 +183,17 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Entre usuarios:</strong> Información de perfil necesaria para la 
                   prestación del servicio (nombre, foto, valoraciones)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Proveedores de servicios:</strong> Como Stripe para procesamiento de 
                   pagos y Google Calendar para sincronización de eventos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Requisitos legales:</strong> Cuando sea requerido por ley o para 
                   proteger nuestros derechos</span>
                 </li>
@@ -215,19 +215,19 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Cifrado SSL/TLS para todas las transmisiones de datos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Contraseñas cifradas en nuestra base de datos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Acceso restringido a información personal</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Monitoreo continuo de seguridad</span>
                 </li>
               </ul>
@@ -248,27 +248,27 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Acceso:</strong> Solicitar una copia de tus datos personales</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Rectificación:</strong> Corregir datos inexactos o incompletos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Supresión:</strong> Solicitar la eliminación de tus datos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Portabilidad:</strong> Recibir tus datos en formato estructurado</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Oposición:</strong> Oponerte al procesamiento de tus datos</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span><strong>Limitación:</strong> Solicitar la restricción del procesamiento</span>
                 </li>
               </ul>
@@ -289,19 +289,19 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Mantener tu sesión iniciada</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Recordar tus preferencias</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Analizar el uso de la plataforma</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-[#41f2c0] mt-1">•</span>
+                  <span className="text-[#404040] mt-1">•</span>
                   <span>Mejorar la experiencia de usuario</span>
                 </li>
               </ul>
