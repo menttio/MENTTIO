@@ -220,19 +220,19 @@ export default function CookiesPolicy() {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#404040] mt-1">•</span>
-                      <a href="https://support.mozilla.org/es/kb/cookies-informacion-que-los-sitios-web-guardan-en-" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
+                      <a href="https://support.mozilla.org/es/kb/cookies-informacion-que-los-sitios-web-guardan-en-" target="_blank" rel="noopener noreferrer" className="text-[#404040] font-medium hover:underline">
                         Mozilla Firefox
                       </a>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#404040] mt-1">•</span>
-                      <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
+                      <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer" className="text-[#404040] font-medium hover:underline">
                         Safari
                       </a>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-[#404040] mt-1">•</span>
-                      <a href="https://support.microsoft.com/es-es/windows/eliminar-y-administrar-cookies" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
+                      <a href="https://support.microsoft.com/es-es/windows/eliminar-y-administrar-cookies" target="_blank" rel="noopener noreferrer" className="text-[#404040] font-medium hover:underline">
                         Microsoft Edge
                       </a>
                     </li>
