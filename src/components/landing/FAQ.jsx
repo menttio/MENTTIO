@@ -5,26 +5,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 const faqs = [
   {
     question: '¿Cuánto cuesta la suscripción para profesores?',
-    answer: 'La suscripción para profesores cuesta 19,99€/mes. No se requiere tarjeta de crédito para registrarse. Puedes cancelar en cualquier momento desde tu panel de control.'
+    answer: 'Ofrecemos dos planes: Plan Básico por 14,99€/mes (gestión de clases, calendario, chat y disponibilidad) y Plan Premium por 36,99€/mes (todo lo anterior más grabación y almacenamiento de clases en la nube). Puedes cancelar en cualquier momento desde tu panel de control.'
   },
   {
     question: '¿Los alumnos tienen que pagar algo?',
-    answer: 'No. El registro y uso de la plataforma es 100% gratuito para alumnos. Solo pagas las clases que tomes directamente a través de Stripe, sin comisiones adicionales de Menttio.'
+    answer: 'No. El registro y uso de la plataforma es 100% gratuito para alumnos. Solo pagas las clases que tomes directamente al profesor, sin comisiones adicionales de Menttio.'
+  },
+  {
+    question: '¿Hay período de prueba gratuito para profesores?',
+    answer: 'Sí. Al contratar el Plan Básico, disfrutas de 14 días de prueba completamente gratuitos. Puedes cancelar antes de que finalicen sin ningún cargo. Una vez pasado el período de prueba, se realizará el cobro mensual automáticamente.'
   },
   {
     question: '¿Cómo se gestionan los pagos de las clases?',
-    answer: 'Todos los pagos se procesan de forma segura a través de Stripe. Los alumnos pagan después de cada clase completada. Los profesores reciben el dinero automáticamente en su cuenta, sin preocuparse de gestiones.'
+    answer: 'Los alumnos pagan las clases directamente al profesor. Menttio no interviene ni cobra comisiones por las clases. La suscripción mensual del profesor es lo único que se factura a través de la plataforma.'
   },
   {
     question: '¿Puedo acceder a las grabaciones de mis clases?',
-    answer: 'Sí, todas las clases quedan grabadas automáticamente y almacenadas en la nube de forma segura. Tanto profesores como alumnos tienen acceso ilimitado a las grabaciones para repasar el contenido cuando quieran.'
+    answer: 'Sí, pero solo con el Plan Premium. Las clases quedan grabadas automáticamente y almacenadas en la nube. Tanto el profesor como el alumno tienen acceso a las grabaciones para repasar el contenido cuando quieran.'
   },
   {
     question: '¿Qué pasa si necesito cancelar una clase?',
     answer: 'Puedes cancelar o modificar una clase hasta 24 horas antes sin ningún problema. El sistema notifica automáticamente a la otra parte y libera el horario. Si cancelas con menos de 24h, se aplicarán las políticas del profesor.'
   },
   {
-    question: '¿Cómo me comunico con mi profesor/alumno?',
+    question: '¿Cómo me comunico con mi profesor o alumno?',
     answer: 'Menttio incluye un sistema de chat integrado donde puedes comunicarte directamente con tus profesores o alumnos, compartir archivos, resolver dudas y coordinar las clases.'
   },
   {
@@ -32,16 +36,12 @@ const faqs = [
     answer: 'Sí, tanto profesores como alumnos pueden subir archivos, ejercicios y materiales de estudio. Todo queda organizado por clase y accesible desde cualquier dispositivo.'
   },
   {
-    question: '¿Hay límite de clases o profesores?',
+    question: '¿Hay límite de clases o alumnos?',
     answer: 'No hay límites. Los alumnos pueden reservar con tantos profesores como quieran y los profesores pueden tener tantos alumnos como puedan gestionar. La plataforma escala contigo.'
   },
   {
     question: '¿Qué soporte ofrecen?',
-    answer: 'Ofrecemos soporte prioritario por email y chat. Los profesores con suscripción activa tienen soporte premium 24/7. También tenemos una base de conocimiento completa con tutoriales y guías.'
-  },
-  {
-    question: '¿Puedo probar la plataforma antes de decidirme?',
-    answer: 'Por supuesto. Los alumnos pueden registrarse y explorar la plataforma sin costo. Los profesores pueden registrarse para activar su suscripción y comenzar a recibir alumnos inmediatamente.'
+    answer: 'Ofrecemos soporte por email y chat para todos los usuarios. Los profesores con suscripción activa tienen soporte prioritario. También disponemos de tutoriales y guías para sacar el máximo partido a la plataforma.'
   }
 ];
 
