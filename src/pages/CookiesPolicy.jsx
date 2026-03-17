@@ -214,7 +214,7 @@ export default function CookiesPolicy() {
                   <ul className="space-y-2 text-gray-600">
                     <li className="flex items-start gap-2">
                       <span className="text-[#404040] mt-1">•</span>
-                      <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="text-[#41f2c0] hover:underline">
+                      <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="text-[#404040] font-medium hover:underline">
                         Google Chrome
                       </a>
                     </li>
