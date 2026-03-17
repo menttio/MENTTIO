@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-4"
           >
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-[#404040]/80 rounded-2xl flex items-center justify-center">
               <Lock size={32} />
             </div>
             <div>
