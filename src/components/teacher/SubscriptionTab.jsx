@@ -65,6 +65,7 @@ export default function SubscriptionTab({ profile }) {
   const isActive = data?.subscription_active;
   const isTrial = data?.trial_active;
   const plan = data?.subscription_plan || profile?.subscription_plan || 'basic';
+  const planPrice = plan === 'premium' ? '36,99€' : '14,99€';
   const details = data?.subscription_details;
 
   // Dates
