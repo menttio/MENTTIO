@@ -4,44 +4,54 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
   {
+    question: '¿Para quién está pensada Menttio?',
+    // CAMBIO: más directo, elimina la parte de alumnos que diluye el mensaje
+    answer: 'Menttio está diseñada para profesores particulares que quieren dejar de perder tiempo organizando sus clases. Si das clases de forma independiente y quieres gestionar horarios, alumnos, pagos y contenido desde un solo lugar, Menttio es para ti. Los alumnos también pueden registrarse y reservar clases, pero el núcleo de la plataforma está pensado para el profesor.'
+  },
+  {
     question: '¿Cuánto cuesta la suscripción para profesores?',
     answer: 'Ofrecemos dos planes: Plan Básico por 14,99€/mes (gestión de clases, calendario, chat y disponibilidad) y Plan Premium por 36,99€/mes (todo lo anterior más grabación y almacenamiento de clases en la nube). Puedes cancelar en cualquier momento desde tu panel de control.'
   },
   {
-    question: '¿Los alumnos tienen que pagar algo?',
-    answer: 'No. El registro y uso de la plataforma es 100% gratuito para alumnos. Solo pagas las clases que tomes directamente al profesor, sin comisiones adicionales de Menttio.'
+    question: '¿Hay período de prueba gratuito?',
+    // CAMBIO: título más corto y directo. Respuesta añade urgencia suave
+    answer: 'Sí. Al contratar el Plan Básico tienes 14 días de prueba completamente gratuitos, sin compromiso. Puedes cancelar antes de que terminen sin ningún cargo. Es la forma más rápida de ver si Menttio encaja con tu forma de trabajar.'
   },
   {
-    question: '¿Hay período de prueba gratuito para profesores?',
-    answer: 'Sí. Al contratar el Plan Básico, disfrutas de 14 días de prueba completamente gratuitos. Puedes cancelar antes de que finalicen sin ningún cargo. Una vez pasado el período de prueba, se realizará el cobro mensual automáticamente.'
+    question: '¿Cómo evito que mis alumnos reserven clases que se solapen?',
+    // CAMBIO: pregunta reformulada desde el punto de vista del problema real del profesor
+    answer: 'Tú defines tu disponibilidad en la agenda y los alumnos solo pueden reservar en los huecos que tú has abierto. Sin solapamientos, sin malentendidos, sin tener que gestionar nada a mano.'
   },
   {
-    question: '¿Cómo se gestionan los pagos de las clases?',
-    answer: 'Los alumnos pagan las clases directamente al profesor. Menttio no interviene ni cobra comisiones por las clases. La suscripción mensual del profesor es lo único que se factura a través de la plataforma.'
+    question: '¿Cómo funcionan los pagos?',
+    // CAMBIO: título más natural. Respuesta más clara sobre el modelo
+    answer: 'Los alumnos pagan directamente a ti, sin comisiones de la plataforma. Menttio te da visibilidad sobre tus ingresos y el historial de pagos, pero el dinero es tuyo desde el primer momento.'
   },
   {
-    question: '¿Puedo acceder a las grabaciones de mis clases?',
-    answer: 'Los alumnos pueden acceder a las grabaciones de sus clases siempre que su profesor tenga el Plan Premium activo. Al buscar profesor, podrás ver si ofrece grabación de clases. Si el profesor tiene el Plan Básico, las clases no se graban.'
+    question: '¿Puedo grabar mis clases y que mis alumnos las revisen después?',
+    // CAMBIO: pregunta más orientada al beneficio para el alumno, que es la razón real por la que el profesor quiere grabar
+    answer: 'Sí, con el Plan Premium. Las clases quedan grabadas automáticamente y tus alumnos pueden acceder a ellas cuando quieran desde la plataforma. Es una de las funciones que más valoran tanto profesores como alumnos.'
   },
   {
-    question: '¿Qué pasa si necesito cancelar una clase?',
-    answer: 'Puedes cancelar o modificar una clase hasta 24 horas antes sin ningún problema. El sistema notifica automáticamente a la otra parte y libera el horario. Si cancelas con menos de 24h, se aplicarán las políticas del profesor.'
+    question: '¿Tengo todos mis alumnos centralizados en un solo lugar?',
+    answer: 'Sí. Desde tu panel puedes ver todos tus alumnos, sus clases, historial y comunicaciones. Sin hojas de cálculo, sin agendas de papel, sin depender de WhatsApp para organizarte.'
   },
   {
-    question: '¿Cómo me comunico con mi profesor o alumno?',
-    answer: 'Menttio incluye un sistema de chat integrado donde puedes comunicarte directamente con tus profesores o alumnos, compartir archivos, resolver dudas y coordinar las clases.'
+    question: '¿Puedo subir apuntes, ejercicios y materiales?',
+    answer: 'Sí. Puedes subir materiales para cada clase y tus alumnos los encuentran organizados directamente en la plataforma. Sin reenviar archivos por correo ni por WhatsApp cada vez.'
   },
   {
-    question: '¿Puedo subir materiales y ejercicios?',
-    answer: 'Sí, tanto profesores como alumnos pueden subir archivos, ejercicios y materiales de estudio. Todo queda organizado por clase y accesible desde cualquier dispositivo.'
+    question: '¿Los alumnos tienen que pagar por usar la plataforma?',
+    answer: 'No. El registro y el uso de la plataforma es completamente gratuito para los alumnos. Solo pagan las clases directamente al profesor.'
   },
   {
-    question: '¿Hay límite de clases o alumnos?',
-    answer: 'No hay límites. Los alumnos pueden reservar con tantos profesores como quieran y los profesores pueden tener tantos alumnos como puedan gestionar. La plataforma escala contigo.'
+    // CAMBIO: pregunta nueva muy relevante para profesores que están valorando registrarse
+    question: '¿Cuánto tiempo tarda configurar mi perfil y empezar a recibir alumnos?',
+    answer: 'Menos de 5 minutos. Rellenas tu perfil, defines tu disponibilidad y ya estás listo para recibir reservas. No necesitas instalar nada ni tener conocimientos técnicos.'
   },
   {
-    question: '¿Qué soporte ofrecen?',
-    answer: 'Ofrecemos soporte por email y chat para todos los usuarios. Los profesores con suscripción activa tienen soporte prioritario. También disponemos de tutoriales y guías para sacar el máximo partido a la plataforma.'
+    question: '¿Qué soporte ofrece Menttio?',
+    answer: 'Soporte por email y chat para todos los usuarios. Los profesores con suscripción activa tienen soporte prioritario, además de acceso a guías y recursos para sacar el máximo partido a la plataforma.'
   }
 ];
 
@@ -60,8 +70,9 @@ export default function FAQ() {
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
             Preguntas frecuentes
           </h2>
+          {/* CAMBIO: subtítulo más directo, elimina "si eres profesor" que es redundante */}
           <p className="text-xl text-gray-600">
-            Todo lo que necesitas saber sobre Menttio
+            Todo lo que necesitas saber antes de empezar
           </p>
         </motion.div>
 
