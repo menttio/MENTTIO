@@ -24,7 +24,6 @@ export default function Hero() {
       try {
         const currentUser = await base44.auth.me();
         
-        // Only show user as logged in if they have a profile in the database
         const teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         if (teachers.length > 0) {
           setUser(currentUser);
@@ -35,7 +34,6 @@ export default function Hero() {
             setUser(currentUser);
             setProfile(students[0]);
           } else {
-            // User is authenticated but not registered - don't show as logged in
             setUser(null);
             setProfile(null);
           }
@@ -76,7 +74,6 @@ export default function Hero() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-4 md:px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {/* Mobile Menu Button - Left Side */}
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -114,9 +111,7 @@ export default function Hero() {
               Blog
             </a>
             <a href="/Contact">
-              <Button 
-                className="bg-white text-[#404040] hover:bg-gray-100 shadow-lg"
-              >
+              <Button className="bg-white text-[#404040] hover:bg-gray-100 shadow-lg">
                 Contáctanos
               </Button>
             </a>
@@ -235,76 +230,42 @@ export default function Hero() {
             >
               <div className="py-4 space-y-2 bg-white/95 backdrop-blur-md rounded-lg mt-4 shadow-xl">
                 <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                  }} 
+                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Características
                 </button>
                 <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                  }} 
+                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   ¿Cómo funciona?
                 </button>
                 <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                  }} 
+                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Precios
                 </button>
                 <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                  }} 
+                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   Testimonios
                 </button>
                 <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setTimeout(() => {
-                      document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-                    }, 300);
-                  }} 
+                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
                   FAQ
                 </button>
-                <a 
-                  href="/AboutUs" 
-                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
-                >
+                <a href="/AboutUs" className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors">
                   Sobre nosotros
                 </a>
-                <a 
-                  href="/Blog" 
-                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
-                >
+                <a href="/Blog" className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors">
                   Blog
                 </a>
-                <a 
-                  href="/Contact"
-                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
-                >
+                <a href="/Contact" className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors">
                   Contáctanos
                 </a>
               </div>
@@ -324,17 +285,20 @@ export default function Hero() {
           >
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
               <Sparkles className="text-white" size={16} />
-              <span className="text-white text-sm font-medium">Únete a miles de profesores y alumnos que ya confían en Menttio</span>
+              {/* CAMBIO: badge más directo al dolor */}
+              <span className="text-white text-sm font-medium">Para profesores que quieren dejar de perder tiempo</span>
             </div>
             
+            {/* CAMBIO: titular usando el gancho elegido, con más punch */}
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Tu plataforma de clases
-              <span className="block text-[#404040]"> sola plataforma</span>
+              Deja de perder tiempo
+              <span className="block text-[#404040]">organizando tus clases.</span>
             </h1>
             
+            {/* CAMBIO: subtítulo más orientado al problema resuelto, no a features */}
             <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
-              Conecta con profesores expertos, gestiona tus clases, accede a grabaciones y materiales. 
-              Todo automatizado en una sola plataforma.
+              Reservas automáticas, pagos centralizados, materiales siempre accesibles y clases grabadas.
+              Todo lo que necesitas para gestionar tu trabajo como profesor, en un solo lugar.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-12">
@@ -343,7 +307,8 @@ export default function Hero() {
                 size="lg" 
                 className="bg-[#404040] hover:bg-[#303030] text-white px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
               >
-                Comenzar gratis
+                {/* CAMBIO: CTA más específico */}
+                Crea tu perfil gratis
                 <ArrowRight className="ml-2" size={18} />
               </Button>
               <Button 
@@ -355,19 +320,19 @@ export default function Hero() {
               </Button>
             </div>
 
-            {/* Key Features */}
+            {/* CAMBIO: los 3 bloques ahora describen resultados, no features */}
             <div className="grid grid-cols-3 gap-3 md:gap-6">
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Calendar className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Gestión de calendario</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Sin solapamientos ni WhatsApps</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Video className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Grabaciones disponibles</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Grabaciones y materiales incluidos</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Users className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Profesores expertos</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Alumnos y pagos en un solo lugar</div>
               </div>
             </div>
           </motion.div>
@@ -387,18 +352,20 @@ export default function Hero() {
                     <Calendar className="text-white" size={24} />
                   </div>
                   <div>
+                    {/* CAMBIO: copy de la card más realista */}
                     <div className="font-semibold text-[#404040]">Próxima clase</div>
-                    <div className="text-sm text-gray-500">Matemáticas · 16:00</div>
+                    <div className="text-sm text-gray-500">Matemáticas · Hoy 16:00</div>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                     <Users className="text-[#41f2c0]" size={20} />
-                    <span className="text-sm text-gray-600">Con Prof. García</span>
+                    {/* CAMBIO: más concreto */}
+                    <span className="text-sm text-gray-600">Reservada por el alumno automáticamente</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                     <Video className="text-[#41f2c0]" size={20} />
-                    <span className="text-sm text-gray-600">Grabación disponible</span>
+                    <span className="text-sm text-gray-600">Grabación y materiales listos para compartir</span>
                   </div>
                 </div>
               </div>
@@ -411,7 +378,8 @@ export default function Hero() {
               >
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-gray-700">En línea ahora</span>
+                  {/* CAMBIO: mensaje flotante más específico */}
+                  <span className="text-sm font-medium text-gray-700">Nueva reserva recibida</span>
                 </div>
               </motion.div>
 
@@ -420,8 +388,9 @@ export default function Hero() {
                 transition={{ duration: 4, repeat: Infinity }}
                 className="absolute -bottom-4 -left-4 bg-[#404040] text-white rounded-2xl shadow-lg p-4 z-20"
               >
-                <div className="text-2xl font-bold">95%</div>
-                <div className="text-xs opacity-90">Satisfacción</div>
+                {/* CAMBIO: más orientado al beneficio */}
+                <div className="text-2xl font-bold">0 caos</div>
+                <div className="text-xs opacity-90">todo bajo control</div>
               </motion.div>
             </div>
           </motion.div>
