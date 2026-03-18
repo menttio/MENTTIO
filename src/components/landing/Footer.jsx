@@ -13,19 +13,22 @@ export default function Footer() {
       {/* CTA Section */}
       <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
+          {/* CAMBIO: titular orientado al dolor, no a la aspiración genérica */}
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-            ¿Listo para empezar?
+            Deja de perder tiempo organizando tus clases
           </h2>
+          {/* CAMBIO: subtítulo más directo, menciona el resultado inmediato */}
           <p className="text-xl text-white/90 mb-8">
-            Únete a miles de profesores y alumnos que ya usan Menttio
+            Crea tu perfil en 5 minutos y empieza a gestionar reservas, alumnos y pagos desde un solo lugar. Sin complicaciones.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
+            {/* CAMBIO: CTA principal más específico para profesores */}
             <Button
               onClick={handleGetStarted}
               size="lg"
               className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
             >
-              Comenzar gratis ahora
+              Crea tu perfil gratis
             </Button>
             <Button
               onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
@@ -49,8 +52,9 @@ export default function Footer() {
               </div>
               <h3 className="text-xl font-bold">Men<span className="text-[#41f2c0]">π</span>io</h3>
             </div>
+            {/* CAMBIO: descripción de marca más concisa y orientada al profesor como usuario */}
             <p className="text-gray-400 text-sm leading-relaxed">
-              La plataforma todo en uno para profesores y alumnos. Gestión automatizada de clases particulares.
+              La herramienta todo en uno para profesores particulares. Gestiona horarios, alumnos, pagos y contenido sin depender de múltiples apps ni perder tiempo en tareas administrativas.
             </p>
           </div>
 
@@ -60,8 +64,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li><button onClick={() => document.querySelector('section')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#41f2c0] transition-colors">Características</button></li>
               <li><button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-[#41f2c0] transition-colors">Precios</button></li>
-              <li><a href="/TeacherSignup" className="hover:text-[#41f2c0] transition-colors">Para Profesores</a></li>
-              <li><a href="/SelectRole?role=student" className="hover:text-[#41f2c0] transition-colors">Para Alumnos</a></li>
+              <li><a href="/TeacherSignup" className="hover:text-[#41f2c0] transition-colors">Para profesores</a></li>
+              <li><a href="/SelectRole?role=student" className="hover:text-[#41f2c0] transition-colors">Acceso alumnos</a></li>
             </ul>
           </div>
 
@@ -71,7 +75,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li><a href="/AboutUs" className="hover:text-[#41f2c0] transition-colors">Sobre nosotros</a></li>
               <li><a href="/Blog" className="hover:text-[#41f2c0] transition-colors">Blog</a></li>
-              <li><button className="hover:text-[#41f2c0] transition-colors">Careers</button></li>
+              <li><button className="hover:text-[#41f2c0] transition-colors">Trabaja con nosotros</button></li>
               <li><a href="/Contact" className="hover:text-[#41f2c0] transition-colors">Contacto</a></li>
             </ul>
           </div>
