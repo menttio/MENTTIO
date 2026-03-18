@@ -1,55 +1,55 @@
 import React from 'react';
-import { Calendar, Video, Cloud, MessageCircle, BarChart3, Lock, Zap, Users } from 'lucide-react';
+import { Calendar, Video, Cloud, MessageCircle, BarChart3, CreditCard, Zap, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const features = [
   {
     icon: Calendar,
-    title: 'Reserva en segundos',
-    description: 'Sistema de calendario inteligente que muestra solo los horarios disponibles. Reserva tu clase en menos de 1 minuto.',
+    title: 'Agenda inteligente',
+    description: 'Define tu disponibilidad y olvídate de gestionar huecos manualmente. Tus alumnos solo ven los horarios que tú tienes libres, sin solapamientos ni confusiones.',
     color: 'bg-blue-500'
   },
   {
-    icon: Video,
-    title: 'Grabaciones en la nube',
-    description: 'Todas tus clases grabadas y accesibles para siempre. Repasa el contenido cuando quieras, desde cualquier dispositivo.',
-    color: 'bg-purple-500'
-  },
-  {
-    icon: MessageCircle,
-    title: 'Chat integrado',
-    description: 'Comunícate directamente con tus profesores o alumnos. Comparte archivos, dudas y materiales de forma instantánea.',
-    color: 'bg-pink-500'
-  },
-  {
-    icon: BarChart3,
-    title: 'Estadísticas detalladas',
-    description: 'Para profesores: seguimiento de horas, ingresos y alumnos. Para alumnos: progreso y clases completadas.',
-    color: 'bg-orange-500'
-  },
-  {
     icon: Users,
-    title: 'Red de profesores expertos',
-    description: 'Accede a cientos de profesores especializados en todas las materias. Elige el que mejor se adapte a ti.',
+    title: 'Gestión de alumnos',
+    description: 'Ten a todos tus alumnos organizados en un solo lugar. Consulta su historial, seguimiento y progreso sin depender de hojas de cálculo ni notas sueltas.',
     color: 'bg-green-500'
   },
   {
-    icon: Lock,
-    title: 'Pagos seguros',
-    description: 'Integración con Stripe para pagos seguros. Los alumnos pagan solo las clases realizadas.',
+    icon: CreditCard,
+    title: 'Pagos integrados',
+    description: 'Cobra tus clases de forma automática y centralizada. Sin perseguir transferencias ni recordar quién te debe qué. Todo registrado y controlado desde la plataforma.',
     color: 'bg-red-500'
   },
   {
     icon: Zap,
-    title: 'Notificaciones automáticas',
-    description: 'Recordatorios de clases, nuevas reservas y mensajes. Nunca te pierdas nada importante.',
+    title: 'Reservas automáticas',
+    description: 'Tus alumnos reservan, confirman y cancelan sin que tú tengas que intervenir. Menos WhatsApps, menos interrupciones, más tiempo para enseñar.',
     color: 'bg-yellow-500'
   },
   {
+    icon: Video,
+    title: 'Clases grabadas',
+    description: 'Graba tus sesiones automáticamente y deja que tus alumnos las reposen cuando quieran. Tú no haces nada extra — la plataforma lo gestiona por ti.',
+    color: 'bg-purple-500'
+  },
+  {
     icon: Cloud,
-    title: 'Almacenamiento ilimitado',
-    description: 'Sube y comparte materiales, ejercicios y apuntes sin límite. Todo organizado por clase.',
+    title: 'Materiales siempre accesibles',
+    description: 'Sube apuntes, ejercicios y recursos una sola vez y olvídate. Tus alumnos los encuentran organizados sin que tengas que reenviar nada por correo o WhatsApp.',
     color: 'bg-cyan-500'
+  },
+  {
+    icon: MessageCircle,
+    title: 'Comunicación centralizada',
+    description: 'Habla con tus alumnos, resuelve dudas y comparte archivos desde un solo sitio. Sin saltar entre apps ni perder mensajes importantes.',
+    color: 'bg-pink-500'
+  },
+  {
+    icon: BarChart3,
+    title: 'Panel de control de tu negocio',
+    description: 'Visualiza tus ingresos, horas impartidas y actividad por alumno. Toma decisiones con datos reales sobre cómo está funcionando tu trabajo como profesor.',
+    color: 'bg-orange-500'
   }
 ];
 
@@ -64,13 +64,12 @@ export default function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
-            Todo lo que necesitas en un solo lugar
+            Deja de perder tiempo organizando tus clases
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Menttio automatiza todo el proceso de gestión de clases particulares para que te centres en lo importante: enseñar y aprender.
+            Menttio es la plataforma todo en uno para profesores particulares: gestiona horarios, alumnos, pagos, grabaciones y materiales desde un solo lugar.
           </p>
         </motion.div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <motion.div
