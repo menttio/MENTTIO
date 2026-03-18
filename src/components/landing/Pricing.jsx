@@ -102,7 +102,7 @@ export default function Pricing() {
             {/* Switch Button */}
             <button
               onClick={switchPlan}
-              className="absolute top-1/2 -translate-y-1/2 right-8 z-20 w-12 h-12 bg-[#41f2c0] hover:bg-[#35d4a7] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+              className="absolute top-1/2 -translate-y-1/2 right-8 z-20 w-12 h-12 bg-[#404040] hover:bg-[#35d4a7] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
             >
               <ChevronRight className="text-white" size={24} />
             </button>
