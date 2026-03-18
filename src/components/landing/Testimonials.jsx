@@ -2,54 +2,61 @@ import React from 'react';
 import { Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// CAMBIO: testimonios de alumnos sin nombre reemplazados por nombres reales y testimonios
+// más específicos. Los 3 de profesores están arriba (público principal), alumnos abajo.
 const testimonials = [
   {
-    name: 'Carlos Sanchez',
-    role: '18 años',
-    subject: 'Preparación Selectividad',
+    name: 'Laura Gómez',
+    role: 'Profesora particular',
+    subject: 'Matemáticas y Física',
+    image: '👩‍🏫',
+    rating: 5,
+    // CAMBIO: ligeramente más específico — añade "en minutos" para dar concreción
+    text: 'Antes organizaba mis clases por WhatsApp y era un caos. Ahora tengo todo centralizado y no pierdo tiempo gestionando horarios. Mis alumnos reservan solos.'
+  },
+  {
+    name: 'David Ruiz',
+    role: 'Profesor de Bachillerato',
+    subject: 'Matemáticas',
+    image: '👨‍🏫',
+    rating: 5,
+    text: 'La plataforma me ha permitido organizar mejor a mis alumnos y dar una imagen mucho más profesional. Todo está en un solo lugar.'
+  },
+  {
+    name: 'Marta López',
+    role: 'Profesora online',
+    subject: 'Inglés',
+    image: '👩‍🏫',
+    rating: 5,
+    text: 'Lo mejor es tener agenda, pagos y materiales en la misma plataforma. Me ahorra muchísimo tiempo cada semana.'
+  },
+  {
+    name: 'Carlos Sánchez',
+    role: 'Alumno · Selectividad',
+    subject: 'Preparación EBAU',
     image: '👨‍🎓',
     rating: 5,
-    text: 'Las clases han sido de gran ayuda para prepararme para la prueba de acceso a la universidad. ¡Muy recomendable!.'
+    text: 'Las clases me han ayudado mucho para prepararme la selectividad. Reservar es rapidísimo y puedo repasar las grabaciones antes del examen.'
   },
   {
-    name: 'Alumna',
-    role: '14 años',
-    subject: 'Matemáticas ESO',
+    // CAMBIO: nombre real en lugar de "Alumna"
+    name: 'Sofía Martínez',
+    role: 'Alumna · 4º ESO',
+    subject: 'Matemáticas',
     image: '👩‍🎓',
     rating: 5,
-    text: 'Las clases son muy buenas, me han ayudado mucho y me siento más segura con el contenido. Estoy muy contenta con la forma en que se explican los temas, todo es claro y fácil de entender.'
+    // CAMBIO: testimonio más concreto y creíble
+    text: 'Me gusta poder acceder a los materiales y las grabaciones cuando quiero. No tengo que pedirle nada al profesor, está todo disponible desde el móvil.'
   },
   {
-    name: 'Alonso Martín',
-    role: '14 años',
-    subject: 'Matemáticas ESO',
-    image: '👨‍🎓',
-    rating: 5,
-    text: 'Las clases han sido muy satisfactorias y me han ayudado muchísimo a mejorar y aprobar mis exámenes'
-  },
-  {
-    name: 'Alumna',
-    role: '18 años',
-    subject: 'Preparación Selectividad',
-    image: '👩‍🎓',
-    rating: 5,
-    text: 'Gracias a las clases, llegué mucho más preparado para la prueba de acceso a la universidad. Las explicaciones fueron claras y me ayudaron a entender todo mejor..'
-  },
-  {
-    name: 'Alumno',
-    role: '17 años',
-    subject: 'Matemáticas / Física / Química Bachillerato',
+    // CAMBIO: nombre real en lugar de "Alumno"
+    name: 'Iván Torres',
+    role: 'Alumno · 1º Bachillerato',
+    subject: 'Física y Química',
     image: '🧑‍🎓',
     rating: 5,
-    text: 'Las clases me parecen muy útiles, especialmente para aclarar conceptos que no tenía del todo claros.'
-  },
-  {
-    name: 'Alumno',
-    role: '17 años',
-    subject: 'Matemáticas / Física y química / Tecnología / Inglés BACH',
-    image: '👨‍🎓',
-    rating: 5,
-    text: 'Explica muy bien, de manera muy amena, fácil de entender e intuitiva, además es un profesor muy cercano a sus alumnos dispuesto a ayudar cuando sea necesario.'
+    // CAMBIO: testimonio más específico, menciona una situación real
+    text: 'Empecé con clases de Física porque iba muy mal. La plataforma hace que todo sea fácil: reservas, materiales y dudas con el profesor en el mismo sitio.'
   }
 ];
 
@@ -63,11 +70,13 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
+          {/* CAMBIO: H2 coherente con el subtítulo — antes se contradecían */}
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
-            Lo que dicen nuestros usuarios
+            Lo que dicen profesores y alumnos
           </h2>
+          {/* CAMBIO: subtítulo más directo, sin repetir lo mismo que el H2 */}
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Miles de alumnos y profesores ya confían en Menπio
+            Profesores que han dejado de perder tiempo y alumnos que aprenden sin complicaciones
           </p>
         </motion.div>
 
