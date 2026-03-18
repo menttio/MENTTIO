@@ -329,7 +329,7 @@ export default function Hero() {
             
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               Tu plataforma de clases
-              <span className="block text-[#404040]">todo en uno</span>
+              <span className="block text-[#404040]"> sola plataforma</span>
             </h1>
             
             <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
