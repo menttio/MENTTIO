@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         },
       ],
       subscription_data: {
-        ...(shouldGrantTrial ? { trial_period_days: 14 } : {}),
+        ...(shouldGrantTrial ? { trial_period_days: 30 } : {}),
         metadata: {
           base44_user_email: user.email,
           subscription_plan: subscription_plan,
