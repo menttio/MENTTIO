@@ -52,7 +52,7 @@ export default function Layout({ children, currentPageName }) {
     console.log('🔵 Layout useEffect - currentPageName:', currentPageName);
     
     // Public pages that don't require authentication
-    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription', 'CorporateCredentials', 'CorporateLoginCallback'];
+    const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription', 'CorporateCredentials', 'CorporateLoginCallback', 'BetaTeacherSignup', 'BetaTeacherSignupPayment'];
     
     if (publicPages.includes(currentPageName)) {
       console.log('✅ Página pública detectada:', currentPageName);
@@ -335,7 +335,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Public pages without layout
-  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription', 'CorporateCredentials', 'CorporateLoginCallback'];
+  const publicPages = ['SelectRole', 'Landing', 'Home', 'TeacherSignup', 'TeacherSignupPayment', 'TeacherSignupComplete', 'StudentSignup', 'StudentSignupComplete', 'Contact', 'AboutUs', 'Blog', 'TermsOfService', 'PrivacyPolicy', 'CookiesPolicy', 'LegalNotice', 'AuthRedirect', 'UserNotRegistered', 'RenewSubscription', 'CorporateCredentials', 'CorporateLoginCallback', 'BetaTeacherSignup', 'BetaTeacherSignupPayment'];
   
   if (publicPages.includes(currentPageName)) {
     return <div className="min-h-screen bg-[#f2f2f2]">{children}</div>;
