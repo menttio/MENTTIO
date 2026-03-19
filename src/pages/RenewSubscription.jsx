@@ -77,7 +77,7 @@ export default function RenewSubscription() {
             </CardTitle>
             <p className="text-sm md:text-base text-gray-500 mt-2">
               {teacher?.trial_active 
-                ? 'Tu período de prueba gratuito de 14 días ha finalizado. Selecciona un plan para continuar.'
+                ? 'Tu período de prueba gratuito de 30 días ha finalizado. Selecciona un plan para continuar.'
                 : 'Tu suscripción ha caducado. Renuévala para seguir ofreciendo tus clases.'}
             </p>
           </CardHeader>
