@@ -812,21 +812,21 @@ export default function TeacherSignup() {
                           <Check className="text-white" size={20} />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 14 días</h4>
-                          <div className="text-sm text-gray-700 space-y-2 text-left">
-                            <p className="flex items-start gap-2">
-                              <span className="text-green-600 mt-0.5">•</span>
-                              <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 14 días son completamente gratis, sin cargos.</span>
-                            </p>
-                            <p className="flex items-start gap-2">
-                              <span className="text-green-600 mt-0.5">•</span>
-                              <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 14,99€ automáticamente mediante el método de pago que registres.</span>
-                            </p>
-                            <p className="flex items-start gap-2">
-                              <span className="text-green-600 mt-0.5">•</span>
-                              <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 14 días de forma totalmente gratuita, sin ningún cargo.</span>
-                            </p>
-                          </div>
+                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 30 días</h4>
+                           <div className="text-sm text-gray-700 space-y-2 text-left">
+                             <p className="flex items-start gap-2">
+                               <span className="text-green-600 mt-0.5">•</span>
+                               <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 30 días son completamente gratis, sin cargos.</span>
+                             </p>
+                             <p className="flex items-start gap-2">
+                               <span className="text-green-600 mt-0.5">•</span>
+                               <span><strong>Después de 30 días:</strong> Se procederá al cobro mensual de 14,99€ automáticamente mediante el método de pago que registres.</span>
+                             </p>
+                             <p className="flex items-start gap-2">
+                               <span className="text-green-600 mt-0.5">•</span>
+                               <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 30 días de forma totalmente gratuita, sin ningún cargo.</span>
+                             </p>
+                           </div>
                         </div>
                       </div>
                     </div>
