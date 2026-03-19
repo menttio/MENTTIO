@@ -96,7 +96,7 @@ export default function BetaTeacherSignupPayment() {
         if (grantTrial) {
           window.location.href = createPageUrl('TeacherDashboard');
         } else {
-          const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan: 'basic' });
+          const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan: 'basic', is_beta: true });
           if (response.data.error) throw new Error(response.data.error);
           window.location.replace(response.data.url);
         }
