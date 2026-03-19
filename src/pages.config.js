@@ -92,6 +92,8 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "AboutUs": AboutUs,
+    "BetaTeacherSignup": BetaTeacherSignup,
+    "BetaTeacherSignupPayment": BetaTeacherSignupPayment,
     "AuthRedirect": AuthRedirect,
     "Blog": Blog,
     "BookClass": BookClass,
