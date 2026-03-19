@@ -48,6 +48,8 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AboutUs from './pages/AboutUs';
+import BetaTeacherSignup from './pages/BetaTeacherSignup';
+import BetaTeacherSignupPayment from './pages/BetaTeacherSignupPayment';
 import AuthRedirect from './pages/AuthRedirect';
 import Blog from './pages/Blog';
 import BookClass from './pages/BookClass';
