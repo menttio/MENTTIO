@@ -99,7 +99,7 @@ export default function RenewSubscription() {
                   <div>
                     <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
                     {!teacher?.trial_used && (
-                      <Badge className="bg-green-500 text-white text-xs mb-1">14 días gratis</Badge>
+                      <Badge className="bg-green-500 text-white text-xs mb-1">30 días gratis</Badge>
                     )}
                     <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                   </div>
