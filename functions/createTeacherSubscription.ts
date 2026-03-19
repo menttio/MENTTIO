@@ -19,14 +19,20 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { subscription_plan } = await req.json();
+    const { subscription_plan, is_beta } = await req.json();
     console.log('📋 Plan seleccionado:', subscription_plan);
+    console.log('🧪 Es beta:', is_beta);
     console.log('👤 Usuario:', user.email);
 
     // Determinar el price_id según el plan
-    const priceId = subscription_plan === 'premium' 
-      ? 'price_1TBuNwHZYiECTxiyiZ41AEcx'  // Premium (Live)
-      : 'price_1TBu8mHZYiECTxiyJ6fB9Hy3';  // Básico (Live)
+    let priceId;
+    if (is_beta) {
+      priceId = 'price_1TCi4RHZYiECTxiyb6PQ8haP'; // Básico Beta (Live)
+    } else if (subscription_plan === 'premium') {
+      priceId = 'price_1TBuNwHZYiECTxiyiZ41AEcx'; // Premium (Live)
+    } else {
+      priceId = 'price_1TBu8mHZYiECTxiyJ6fB9Hy3'; // Básico (Live)
+    }
 
     console.log('💳 Price ID seleccionado:', priceId);
 
