@@ -69,7 +69,7 @@ export default function TeacherSignupComplete() {
         console.log('📅 Calculando fechas de prueba...');
         const trialStartDate = new Date();
         const trialEndDate = new Date();
-        trialEndDate.setDate(trialEndDate.getDate() + 14);
+        trialEndDate.setDate(trialEndDate.getDate() + 30);
         console.log('✅ Trial start:', trialStartDate.toISOString().split('T')[0]);
         console.log('✅ Trial end:', trialEndDate.toISOString().split('T')[0]);
         
