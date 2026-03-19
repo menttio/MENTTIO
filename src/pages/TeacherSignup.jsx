@@ -581,6 +581,7 @@ export default function TeacherSignup() {
                         <div>
                           <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
                           <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                          <p className="text-sm text-green-600 font-semibold mt-1">✨ 30 días de prueba gratis</p>
                         </div>
                         {formData.subscription_plan === 'basic' && (
                           <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
