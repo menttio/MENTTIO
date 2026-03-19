@@ -15,7 +15,7 @@ import {
   Crown,
   Zap
 } from 'lucide-react';
-import { format, fromUnixTime, differenceInDays } from 'date-fns';
+import { format, fromUnixTime } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const CARD_BRANDS = {
