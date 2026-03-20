@@ -93,7 +93,7 @@ export default function ChatWidget() {
         .join('\n');
 
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `Historial de conversación:\n${conversationHistory}\n\nResponde al último mensaje del usuario de forma breve y conversacional.`,
+        prompt: `${SYSTEM_PROMPT}\n\nHistorial de conversación:\n${conversationHistory}\n\nResponde al último mensaje del usuario de forma breve y conversacional.`,
         add_context_from_internet: false,
       });
 
