@@ -60,6 +60,7 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      <Route path="/beta" element={<BetaChat />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
