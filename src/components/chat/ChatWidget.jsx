@@ -200,8 +200,8 @@ export default function ChatWidget() {
                     exit={{ opacity: 0 }}
                     className="flex justify-start items-end gap-1.5"
                   >
-                    <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
-                      M
+                    <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+                      <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
                     </div>
                     <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 shadow-sm">
                       <div className="flex gap-1 items-center h-3">
