@@ -88,18 +88,12 @@ export default function ChatWidget() {
 
     try {
       const allMessages = [...messages.filter(m => m.id !== 'welcome'), userMessage];
-      const conversationHistory = allMessages
-        .map(m => `${m.role === 'user' ? 'Usuario' : 'Asistente'}: ${m.content}`)
-        .join('\n');
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `${SYSTEM_PROMPT}\n\nHistorial de conversación:\n${conversationHistory}\n\nResponde al último mensaje del usuario de forma breve y conversacional.`,
-        add_context_from_internet: false,
+      const response = await base44.functions.invoke('chatAssistant', {
+        messages: allMessages,
       });
 
-      const content = typeof response === 'string' 
-        ? response 
-        : (response?.text || response?.content || response?.message || JSON.stringify(response));
+      const content = response?.data?.content || '';
 
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
