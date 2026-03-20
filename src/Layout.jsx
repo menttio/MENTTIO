@@ -544,6 +544,8 @@ export default function Layout({ children, currentPageName }) {
         />
       )}
 
+      <ChatWidget />
+
       {/* Main Content */}
       <main className="lg:ml-64 min-h-screen pt-16 lg:pt-16">
         <div className="p-4 lg:p-8">
