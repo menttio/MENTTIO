@@ -65,19 +65,24 @@ export default function BetaChat() {
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `${SYSTEM_PROMPT}\n\nHistorial de conversación:\n${conversationHistory}\n\nResponde al último mensaje del usuario de forma breve y conversacional.`,
+        add_context_from_internet: false,
       });
 
-      const assistantMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: typeof response === 'string' ? response : response?.text || 'Lo siento, no pude procesar tu mensaje. ¿Puedes repetirlo?',
-      };
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch {
+      const content = typeof response === 'string'
+        ? response
+        : (response?.text || response?.content || response?.message || JSON.stringify(response));
+
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'Ups, algo falló por mi parte. ¡Prueba de nuevo en un momento!',
+        content: content || 'No pude generar una respuesta. ¿Puedes repetirlo?',
+      }]);
+    } catch (err) {
+      console.error('Chat error:', err);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'En este momento no puedo responder. ¡Prueba de nuevo en un momento!',
       }]);
     } finally {
       setIsTyping(false);
