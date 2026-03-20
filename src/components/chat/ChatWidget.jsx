@@ -141,9 +141,9 @@ export default function ChatWidget() {
             }}
           >
             {/* Header */}
-            <div className="bg-[#41f2c0] px-4 py-3 flex items-center gap-3 flex-shrink-0">
-              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                <span className="text-[#41f2c0] font-bold text-sm" translate="no">M</span>
+            <div className="bg-[#404040] px-4 py-3 flex items-center gap-3 flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#41f2c0] flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-sm" translate="no">M</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-white text-sm leading-tight">Asistente Menttio</p>
