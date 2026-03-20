@@ -276,8 +276,8 @@ export default function ChatWidget() {
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.5 }}
         onClick={() => setIsOpen(prev => !prev)}
-        className="w-14 h-14 rounded-full bg-[#41f2c0] hover:bg-[#35d4a7] shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-white"
-        style={{ boxShadow: '0 4px 20px rgba(65, 242, 192, 0.4)' }}
+        className="w-14 h-14 rounded-full bg-[#404040] hover:bg-[#303030] shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-white"
+        style={{ boxShadow: '0 4px 20px rgba(64, 64, 64, 0.4)' }}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
