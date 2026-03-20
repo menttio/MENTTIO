@@ -133,8 +133,8 @@ export default function BetaChat() {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-[#41f2c0] flex items-center justify-center text-white font-bold text-sm mr-2 mt-1 flex-shrink-0">
-                    M
+                  <div className="w-8 h-8 rounded-full overflow-hidden mr-2 mt-1 flex-shrink-0">
+                    <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
                   </div>
                 )}
                 <div
