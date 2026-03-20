@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import PushNotificationSetup from '@/components/notifications/PushNotificationSetup';
+import ChatWidget from '@/components/chat/ChatWidget';
 import {
   Dialog,
   DialogContent,
