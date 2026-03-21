@@ -78,6 +78,11 @@ export default function BookingCard({
   React.useEffect(() => {
     const loadData = async () => {
       try {
+        const user = await base44.auth.me();
+        setCurrentUserEmail(user?.email || null);
+      } catch {}
+
+      try {
         const teacherData = await base44.entities.Teacher.get(booking.teacher_id);
         if (teacherData) {
           setTeacher(teacherData);
