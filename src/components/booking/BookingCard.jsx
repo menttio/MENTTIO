@@ -116,17 +116,22 @@ export default function BookingCard({
 
     setUploading(true);
     try {
-      const uploadPromises = files.map(file => 
-        base44.integrations.Core.UploadFile({ file })
-      );
-      const results = await Promise.all(uploadPromises);
-      
-      const newFiles = results.map((result, idx) => ({
+      const toBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const user = await base44.auth.me();
+      const base64Results = await Promise.all(files.map(toBase64));
+
+      const newFiles = base64Results.map((dataUrl, idx) => ({
         name: files[idx].name,
-        url: result.file_url,
-        uploaded_by: userRole
+        url: dataUrl,
+        uploaded_by: user?.email || userRole
       }));
-      
+
       const updatedFiles = [...(booking.files || []), ...newFiles];
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
       
