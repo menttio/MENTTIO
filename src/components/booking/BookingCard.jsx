@@ -433,6 +433,13 @@ export default function BookingCard({
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={(e) => {
+                      const isPdf = file.name?.toLowerCase().endsWith('.pdf') || file.url?.toLowerCase().includes('.pdf');
+                      if (isPdf) {
+                        e.preventDefault();
+                        window.open(file.url, '_blank', 'noopener,noreferrer');
+                      }
+                    }}
                     className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
                   >
                     <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
