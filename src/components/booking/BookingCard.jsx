@@ -117,9 +117,18 @@ export default function BookingCard({
     setUploading(true);
     try {
       const uploadPromises = files.map(async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await base44.functions.invoke('uploadBookingFile', formData);
+        // Convert file to base64
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const response = await base44.functions.invoke('uploadBookingFile', {
+          fileBase64: base64,
+          fileName: file.name,
+          fileType: file.type,
+        });
         return response.data;
       });
       const results = await Promise.all(uploadPromises);
