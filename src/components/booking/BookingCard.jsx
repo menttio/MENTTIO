@@ -448,7 +448,7 @@ export default function BookingCard({
                     <span className="truncate">{file.name}</span>
                     <ExternalLink size={12} className="text-gray-400 flex-shrink-0" />
                   </a>
-                  {file.uploaded_by === userRole && (
+                  {(file.uploaded_by === userRole || file.uploaded_by === currentUserEmail) && (
                     <button
                       onClick={() => handleDeleteFile(idx)}
                       className="ml-1 p-1 hover:bg-red-100 rounded transition-colors"
