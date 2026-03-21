@@ -435,8 +435,7 @@ export default function BookingCard({
                 <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
                   <a
                     href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    download={file.name}
                     className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
                   >
                     <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
