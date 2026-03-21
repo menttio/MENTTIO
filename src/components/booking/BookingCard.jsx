@@ -116,10 +116,9 @@ export default function BookingCard({
 
     setUploading(true);
     try {
-      const uploadPromises = files.map(async (file) => {
-        const response = await base44.functions.invoke('uploadBookingFile', { file });
-        return response.data;
-      });
+      const uploadPromises = files.map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
       const results = await Promise.all(uploadPromises);
       
       const newFiles = results.map((result, idx) => ({
@@ -433,13 +432,6 @@ export default function BookingCard({
                     href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => {
-                      const isPdf = file.name?.toLowerCase().endsWith('.pdf') || file.url?.toLowerCase().includes('.pdf');
-                      if (isPdf) {
-                        e.preventDefault();
-                        window.open(file.url, '_blank', 'noopener,noreferrer');
-                      }
-                    }}
                     className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
                   >
                     <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
