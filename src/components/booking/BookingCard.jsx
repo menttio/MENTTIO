@@ -430,7 +430,7 @@ export default function BookingCard({
               {booking.files.map((file, idx) => (
                 <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
                   <a
-                    href={file.url.endsWith('.pdf') || file.name?.endsWith('.pdf') ? `https://docs.google.com/viewer?url=${encodeURIComponent(file.url)}&embedded=true` : file.url}
+                    href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
