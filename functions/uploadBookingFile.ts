@@ -28,17 +28,16 @@ Deno.serve(async (req) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Upload to Cloudinary
+    // Upload to Cloudinary as 'raw' for PDFs so they are served correctly
     const uploadForm = new FormData();
     uploadForm.append('file', file);
     uploadForm.append('api_key', apiKey);
     uploadForm.append('timestamp', timestamp.toString());
     uploadForm.append('signature', signature);
     uploadForm.append('folder', folder);
-    uploadForm.append('resource_type', 'auto');
 
     const uploadRes = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+      `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`,
       { method: 'POST', body: uploadForm }
     );
 
@@ -49,7 +48,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: result.error?.message || 'Upload failed' }, { status: 500 });
     }
 
-    return Response.json({ file_url: result.secure_url });
+    // Use fl_attachment:false via Cloudinary URL transformation to force inline open
+    const fileUrl = result.secure_url;
+
+    return Response.json({ file_url: fileUrl });
   } catch (error) {
     console.error('uploadBookingFile error:', error);
     return Response.json({ error: error.message }, { status: 500 });
