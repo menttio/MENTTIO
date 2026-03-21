@@ -18,30 +18,29 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('CLOUDINARY_API_KEY');
     const apiSecret = Deno.env.get('CLOUDINARY_API_SECRET');
 
-    // Determine resource type based on file mime type
-    const mimeType = file.type || '';
-    let resourceType = 'raw'; // default for docs, pdfs, etc.
-    if (mimeType.startsWith('image/')) resourceType = 'image';
-    if (mimeType.startsWith('video/')) resourceType = 'video';
-
-    // Generate signature
     const timestamp = Math.round(Date.now() / 1000);
     const folder = 'menttio_bookings';
-    const stringToSign = `folder=${folder}&resource_type=${resourceType}&timestamp=${timestamp}${apiSecret}`;
+
+    // String to sign: ONLY the params included in the upload form, sorted alphabetically, NO resource_type
+    const stringToSign = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
     
     const msgBuffer = new TextEncoder().encode(stringToSign);
     const hashBuffer = await crypto.subtle.digest('SHA-1', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Upload to Cloudinary using the correct resource type endpoint
+    // Determine resource type from mime type (not included in signature)
+    const mimeType = file.type || '';
+    let resourceType = 'raw';
+    if (mimeType.startsWith('image/')) resourceType = 'image';
+    if (mimeType.startsWith('video/')) resourceType = 'video';
+
     const uploadForm = new FormData();
     uploadForm.append('file', file);
     uploadForm.append('api_key', apiKey);
     uploadForm.append('timestamp', timestamp.toString());
     uploadForm.append('signature', signature);
     uploadForm.append('folder', folder);
-    uploadForm.append('resource_type', resourceType);
 
     const uploadRes = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
