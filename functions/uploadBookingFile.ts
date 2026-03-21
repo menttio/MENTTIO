@@ -48,12 +48,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: result.error?.message || 'Upload failed' }, { status: 500 });
     }
 
-    // Insert fl_attachment:false flag so PDFs open inline in the browser instead of downloading
-    // Cloudinary raw URL pattern: https://res.cloudinary.com/<cloud>/raw/upload/<public_id>
-    // We insert the flag after /upload/
-    const fileUrl = result.secure_url.replace('/upload/', '/upload/fl_attachment:false/');
-
-    return Response.json({ file_url: fileUrl });
+    return Response.json({ file_url: result.secure_url });
   } catch (error) {
     console.error('uploadBookingFile error:', error);
     return Response.json({ error: error.message }, { status: 500 });
