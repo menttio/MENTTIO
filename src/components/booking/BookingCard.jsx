@@ -117,9 +117,7 @@ export default function BookingCard({
     setUploading(true);
     try {
       const uploadPromises = files.map(async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await base44.functions.invokeRaw('uploadBookingFile', formData);
+        const response = await base44.functions.invoke('uploadBookingFile', { file });
         return response.data;
       });
       const results = await Promise.all(uploadPromises);
