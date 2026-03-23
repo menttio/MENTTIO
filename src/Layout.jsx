@@ -104,6 +104,10 @@ export default function Layout({ children, currentPageName }) {
           window.history.replaceState({}, '', window.location.pathname);
         }
 
+        // Use cached profile to reduce token usage
+        const cachedRole = sessionStorage.getItem('menttio_user_role');
+        const cachedProfileId = sessionStorage.getItem('menttio_profile_id');
+
         let teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
         
         if (comingFromPayment && teachers.length > 0 && !teachers[0].subscription_active && !teachers[0].trial_active) {
