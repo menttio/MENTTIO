@@ -93,11 +93,19 @@ export default function StripeConnectCard() {
         {/* Info box about Stripe fee */}
         <div className="flex items-start gap-2 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
           <Info size={16} className="shrink-0 mt-0.5" />
-          <p>
-            Stripe cobra una comisión de aprox. <strong>1,5% + 0,25€</strong> por cada pago con tarjeta (tarjetas europeas).
-            El alumno paga el importe completo de la clase, y tú recibes ese importe <strong>menos la comisión de Stripe</strong>.
-            Menttio no aplica ninguna comisión adicional.
-          </p>
+          <div className="space-y-1">
+            <p>
+              Stripe cobra una comisión de aprox. <strong>1,5% + 0,25€</strong> por cada pago con tarjeta (tarjetas europeas).
+              El alumno paga el importe completo de la clase, y tú recibes ese importe <strong>menos la comisión de Stripe</strong>.
+              Menttio no aplica ninguna comisión adicional.
+            </p>
+            <p className="text-blue-700">
+              Ejemplo: clase de <strong>20€</strong> → tú recibes <strong>19,45€</strong> (20€ − 0,30€ − 0,25€).
+            </p>
+            <p className="text-blue-600 text-xs mt-1">
+              ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas. Si cobras de manera informal, Bizum puede ser suficiente.
+            </p>
+          </div>
         </div>
 
         {!isConnected && (
