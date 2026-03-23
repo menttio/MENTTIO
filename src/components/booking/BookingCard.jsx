@@ -446,32 +446,43 @@ export default function BookingCard({
         )}
 
         {/* Files */}
-        {booking.files && booking.files.length > 0 && (
+        {localFiles && localFiles.length > 0 && (
           <div className="border-t border-gray-100 pt-4 mt-4">
             <h4 className="text-sm font-medium text-gray-500 mb-2">Archivos adjuntos</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {booking.files.map((file, idx) => (
-                <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
-                  <a
-                    href={file.url}
-                    download={file.name}
-                    className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
-                  >
-                    <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
-                    <span className="truncate">{file.name}</span>
-                    <ExternalLink size={12} className="text-gray-400 flex-shrink-0" />
-                  </a>
-                  {(file.uploaded_by === userRole || file.uploaded_by === currentUserEmail) && (
-                    <button
-                      onClick={() => handleDeleteFile(idx)}
-                      className="ml-1 p-1 hover:bg-red-100 rounded transition-colors"
-                      title="Eliminar archivo"
-                    >
-                      <Trash2 size={12} className="text-red-500" />
-                    </button>
-                  )}
-                </div>
-              ))}
+              {localFiles.map((file, idx) => {
+                const isBase64 = file.url?.startsWith('data:');
+                return (
+                  <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
+                    {isBase64 || file.url ? (
+                      <a
+                        href={file.url}
+                        download={file.name}
+                        className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
+                        title={`Descargar ${file.name}`}
+                      >
+                        <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
+                        <span className="truncate">{file.name}</span>
+                        <ExternalLink size={12} className="text-gray-400 flex-shrink-0" />
+                      </a>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <FileText size={14} className="text-gray-400 flex-shrink-0" />
+                        <span className="truncate text-gray-400">{file.name}</span>
+                      </div>
+                    )}
+                    {(file.uploaded_by === userRole || file.uploaded_by === currentUserEmail) && (
+                      <button
+                        onClick={() => handleDeleteFile(idx)}
+                        className="ml-1 p-1 hover:bg-red-100 rounded transition-colors"
+                        title="Eliminar archivo"
+                      >
+                        <Trash2 size={12} className="text-red-500" />
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
