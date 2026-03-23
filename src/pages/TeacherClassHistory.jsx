@@ -50,9 +50,9 @@ export default function TeacherClassHistory() {
       const user = await base44.auth.me();
       console.log('👤 Usuario:', user.email);
       
-      const allBookings = await base44.entities.Booking.filter({ 
-        teacher_email: user.email 
-      });
+      const scheduled = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'scheduled' });
+      const completed = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'completed' });
+      const allBookings = [...scheduled, ...completed];
       console.log('📋 Clases encontradas:', allBookings.length);
       setBookings(allBookings);
 
