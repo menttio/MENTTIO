@@ -29,7 +29,7 @@ export default function NotificationBell({ userEmail }) {
       const cleanup = async () => {
         try {
           const cutoff = new Date();
-          cutoff.setDate(cutoff.getDate() - 30);
+          cutoff.setDate(cutoff.getDate() - 7);
           const old = await base44.entities.Notification.filter({ user_email: userEmail, is_read: true });
           const toDelete = old.filter(n => new Date(n.created_date) < cutoff);
           await Promise.all(toDelete.map(n => base44.entities.Notification.delete(n.id)));
@@ -42,7 +42,7 @@ export default function NotificationBell({ userEmail }) {
   const loadNotifications = async () => {
     try {
       const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - 30);
+      cutoff.setDate(cutoff.getDate() - 7);
 
       const allNotifications = await base44.entities.Notification.filter(
         { user_email: userEmail },
