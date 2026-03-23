@@ -106,7 +106,7 @@ export default function BookingCard({
     };
 
     loadData();
-  }, [booking.id, booking.teacher_id, isCompleted, isCancelled]);
+  }, [booking.id, booking.teacher_id, isCompleted]);
 
   const statusConfig = {
     scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-white' },
