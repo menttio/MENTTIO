@@ -122,6 +122,19 @@ export default function TeacherSignupComplete() {
           console.error('❌ ERROR: Profesor NO encontrado en base de datos tras creación');
         }
 
+        // Notificar nuevo profesor a n8n (plan básico)
+        try {
+          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
+          nuevoProfesorUrl.searchParams.append('nombre', data.first_name);
+          nuevoProfesorUrl.searchParams.append('apellidos', data.last_name);
+          nuevoProfesorUrl.searchParams.append('telefono', data.phone);
+          nuevoProfesorUrl.searchParams.append('correo_electronico', user.email);
+          await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
+          console.log('✅ Webhook nuevo_profesor enviado');
+        } catch (webhookErr) {
+          console.error('Error enviando webhook nuevo_profesor:', webhookErr.message);
+        }
+
         console.log('📧 Enviando email de notificación...');
         try {
           await base44.integrations.Core.SendEmail({
