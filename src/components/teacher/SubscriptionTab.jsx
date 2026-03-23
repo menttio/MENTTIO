@@ -196,6 +196,9 @@ export default function SubscriptionTab({ profile }) {
         </Card>
       )}
 
+      {/* Stripe Connect - cobros de clases */}
+      <StripeConnectCard />
+
       {!isActive && (
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-5 flex items-center justify-between gap-4">
