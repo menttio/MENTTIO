@@ -70,15 +70,17 @@ export default function TeacherCalendar() {
           }
         }
 
-        const allBookings = await base44.entities.Booking.filter({ 
-          teacher_email: user.email,
-          status: 'scheduled'
-        });
-        const completedBookings = await base44.entities.Booking.filter({ 
-          teacher_email: user.email,
-          status: 'completed'
-        });
-        setBookings([...allBookings, ...completedBookings]);
+        // Only load bookings for current month ± 1 month to reduce token usage
+        const monthStart = format(startOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd');
+        const monthEnd = format(endOfMonth(addMonths(new Date(), 2)), 'yyyy-MM-dd');
+
+        const [allBookings, completedBookings] = await Promise.all([
+          base44.entities.Booking.filter({ teacher_email: user.email, status: 'scheduled' }, 'date', 200),
+          base44.entities.Booking.filter({ teacher_email: user.email, status: 'completed' }, '-date', 100)
+        ]);
+        // Filter to relevant date range for calendar display
+        const relevantBookings = [...allBookings, ...completedBookings].filter(b => b.date >= monthStart && b.date <= monthEnd);
+        setBookings(relevantBookings);
 
         const allAvailabilities = await base44.entities.Availability.filter({
           teacher_id: teacherData.id

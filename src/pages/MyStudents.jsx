@@ -45,34 +45,28 @@ export default function MyStudents() {
             setShowTour(true);
           }
 
-          // Get all bookings for this teacher (excluding cancelled)
-          const scheduledBookings = await base44.entities.Booking.filter({ 
-            teacher_id: teachers[0].id, status: 'scheduled'
-          });
-          const completedBookings = await base44.entities.Booking.filter({ 
-            teacher_id: teachers[0].id, status: 'completed'
-          });
-          setBookings([...scheduledBookings, ...completedBookings]);
+          // Load bookings with limit to reduce token usage
+          const [scheduledBookings, completedBookings] = await Promise.all([
+            base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'scheduled' }, 'date', 100),
+            base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'completed' }, '-date', 50)
+          ]);
+          const allBookings = [...scheduledBookings, ...completedBookings];
+          setBookings(allBookings);
 
           // Get unique student IDs from bookings
           const studentIdsFromBookings = [...new Set(allBookings.map(b => b.student_id))];
           
-          // Also get students assigned to this teacher via assigned_teachers
-          const allStudents = await base44.entities.Student.list();
-          const assignedStudents = allStudents.filter(s => 
+          // Get students assigned to this teacher via assigned_teachers (filtered server-side)
+          const assignedStudents = await base44.entities.Student.filter({});
+          const filteredAssigned = assignedStudents.filter(s => 
             s.assigned_teachers?.some(at => at.teacher_id === teachers[0].id)
           );
           
-          // Merge both sources (no duplicates)
-          const allStudentIds = [...new Set([
-            ...studentIdsFromBookings,
-            ...assignedStudents.map(s => s.id)
-          ])];
-          
-          // Build final student list
+          // Build final student map (no duplicates)
           const studentMap = {};
-          assignedStudents.forEach(s => { studentMap[s.id] = s; });
+          filteredAssigned.forEach(s => { studentMap[s.id] = s; });
           
+          // Add students from bookings not already in map
           for (const studentId of studentIdsFromBookings) {
             if (!studentMap[studentId]) {
               const studentData = await base44.entities.Student.filter({ id: studentId });
