@@ -126,16 +126,16 @@ export default function TeacherSignupComplete() {
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: 'Nuevo Profesor Registrado (Plan Básico) - Menttio',
+            subject: `Nuevo Profesor Registrado (Plan ${subscriptionPlan === 'premium' ? 'Premium' : 'Básico'}) - Menttio`,
             body: `
-              <h2>Nuevo Profesor Registrado - Plan Básico</h2>
+              <h2>Nuevo Profesor Registrado</h2>
               <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
               <p><strong>Email:</strong> ${user.email}</p>
               <p><strong>Teléfono:</strong> ${data.phone}</p>
               <p><strong>Formación:</strong> ${data.education}</p>
               <p><strong>Años de experiencia:</strong> ${data.experience_years || 'No especificado'}</p>
-              <p><strong>Plan:</strong> Básico (sin grabaciones)</p>
-              <p><strong>Período de prueba:</strong> 14 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
+              <p><strong>Plan:</strong> ${subscriptionPlan === 'premium' ? 'Premium (con grabaciones)' : 'Básico (sin grabaciones)'}</p>
+              <p><strong>Período de prueba:</strong> 30 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
             `
           });
           console.log('✅ Email enviado correctamente');
