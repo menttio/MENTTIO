@@ -45,11 +45,14 @@ export default function MyStudents() {
             setShowTour(true);
           }
 
-          // Get all bookings for this teacher
-          const allBookings = await base44.entities.Booking.filter({ 
-            teacher_id: teachers[0].id 
+          // Get all bookings for this teacher (excluding cancelled)
+          const scheduledBookings = await base44.entities.Booking.filter({ 
+            teacher_id: teachers[0].id, status: 'scheduled'
           });
-          setBookings(allBookings);
+          const completedBookings = await base44.entities.Booking.filter({ 
+            teacher_id: teachers[0].id, status: 'completed'
+          });
+          setBookings([...scheduledBookings, ...completedBookings]);
 
           // Get unique student IDs from bookings
           const studentIdsFromBookings = [...new Set(allBookings.map(b => b.student_id))];

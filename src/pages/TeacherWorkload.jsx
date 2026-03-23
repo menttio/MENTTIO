@@ -60,10 +60,15 @@ export default function TeacherWorkload() {
           setShowTour(true);
         }
         
-        const allBookings = await base44.entities.Booking.filter({ 
-          teacher_id: teachers[0].id 
+        const scheduledBookings = await base44.entities.Booking.filter({ 
+          teacher_id: teachers[0].id,
+          status: 'scheduled'
         });
-        setBookings(allBookings);
+        const completedBookings = await base44.entities.Booking.filter({ 
+          teacher_id: teachers[0].id,
+          status: 'completed'
+        });
+        setBookings([...scheduledBookings, ...completedBookings]);
       }
     } catch (error) {
       console.error(error);

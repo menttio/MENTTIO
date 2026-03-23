@@ -71,9 +71,14 @@ export default function TeacherCalendar() {
         }
 
         const allBookings = await base44.entities.Booking.filter({ 
-          teacher_email: user.email 
+          teacher_email: user.email,
+          status: 'scheduled'
         });
-        setBookings(allBookings);
+        const completedBookings = await base44.entities.Booking.filter({ 
+          teacher_email: user.email,
+          status: 'completed'
+        });
+        setBookings([...allBookings, ...completedBookings]);
 
         const allAvailabilities = await base44.entities.Availability.filter({
           teacher_id: teacherData.id

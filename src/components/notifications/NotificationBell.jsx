@@ -18,26 +18,45 @@ export default function NotificationBell({ userEmail }) {
   useEffect(() => {
     if (userEmail) {
       loadNotifications();
-      // Refresh every 30 seconds
       const interval = setInterval(loadNotifications, 30000);
       return () => clearInterval(interval);
     }
   }, [userEmail]);
 
+  // Lazy cleanup: delete read notifications older than 30 days
+  useEffect(() => {
+    if (isOpen && userEmail) {
+      const cleanup = async () => {
+        try {
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 30);
+          const old = await base44.entities.Notification.filter({ user_email: userEmail, is_read: true });
+          const toDelete = old.filter(n => new Date(n.created_date) < cutoff);
+          await Promise.all(toDelete.map(n => base44.entities.Notification.delete(n.id)));
+        } catch {}
+      };
+      cleanup();
+    }
+  }, [isOpen]);
+
   const loadNotifications = async () => {
     try {
-      const allNotifications = await base44.entities.Notification.filter({ 
-        user_email: userEmail 
-      });
-      
-      const sorted = allNotifications.sort((a, b) => 
-        new Date(b.created_date) - new Date(a.created_date)
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 30);
+
+      const allNotifications = await base44.entities.Notification.filter(
+        { user_email: userEmail },
+        '-created_date',
+        50
       );
-      
-      // Calculate unread count from ALL notifications
-      const totalUnread = sorted.filter(n => !n.is_read).length;
-      
-      setNotifications(sorted.slice(0, 10)); // Show last 10
+
+      // Filter out read notifications older than 30 days
+      const filtered = allNotifications.filter(n => 
+        !n.is_read || new Date(n.created_date) >= cutoff
+      );
+
+      const totalUnread = filtered.filter(n => !n.is_read).length;
+      setNotifications(filtered);
       setUnreadCount(totalUnread);
     } catch (error) {
       console.error(error);

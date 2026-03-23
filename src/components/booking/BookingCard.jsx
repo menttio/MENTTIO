@@ -186,7 +186,8 @@ export default function BookingCard({
   const handleCancel = async () => {
     setCancelling(true);
     try {
-      await base44.entities.Booking.update(booking.id, { status: 'cancelled' });
+      // Delete booking directly instead of marking as cancelled
+      await base44.entities.Booking.delete(booking.id);
 
       // Create notifications for both student and teacher
       await base44.entities.Notification.create({
