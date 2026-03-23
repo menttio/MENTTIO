@@ -19,7 +19,7 @@ import {
   addMonths, 
   subMonths, 
   startOfMonth, 
-  endOfMonth, 
+  endOfMonth,
   eachDayOfInterval, 
   isSameDay, 
   isToday,
