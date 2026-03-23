@@ -90,9 +90,6 @@ export default function TeacherClassHistory() {
       if (filter === 'completed') {
         return booking.status === 'completed' || (booking.status === 'scheduled' && isPast);
       }
-      if (filter === 'cancelled') {
-        return booking.status === 'cancelled';
-      }
       if (filter === 'unpaid') {
         return booking.payment_status === 'pending' && booking.status !== 'cancelled' && (booking.status === 'completed' || isPast);
       }
@@ -253,7 +250,6 @@ export default function TeacherClassHistory() {
               <TabsTrigger value="completed" className="text-xs sm:text-sm whitespace-nowrap">Completadas</TabsTrigger>
               <TabsTrigger value="paid" className="text-xs sm:text-sm whitespace-nowrap">Pagadas</TabsTrigger>
               <TabsTrigger value="unpaid" className="text-xs sm:text-sm whitespace-nowrap">No Pagadas</TabsTrigger>
-              <TabsTrigger value="cancelled" className="text-xs sm:text-sm whitespace-nowrap">Canceladas</TabsTrigger>
             </TabsList>
           </Tabs>
 

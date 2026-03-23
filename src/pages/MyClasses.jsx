@@ -91,9 +91,6 @@ export default function MyClasses() {
       if (filter === 'completed') {
         return booking.status === 'completed' || (booking.status === 'scheduled' && isPast);
       }
-      if (filter === 'cancelled') {
-        return booking.status === 'cancelled';
-      }
       if (filter === 'unpaid') {
         const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
         const isPast = isBefore(bookingDateTime, now);
@@ -156,7 +153,6 @@ export default function MyClasses() {
                 <TabsTrigger value="all" className="text-xs md:text-sm">Todas</TabsTrigger>
                 <TabsTrigger value="upcoming" className="text-xs md:text-sm">Próximas</TabsTrigger>
                 <TabsTrigger value="completed" className="text-xs md:text-sm">Completadas</TabsTrigger>
-                <TabsTrigger value="cancelled" className="text-xs md:text-sm">Canceladas</TabsTrigger>
                 <TabsTrigger value="unpaid" className="text-xs md:text-sm">No Pagadas</TabsTrigger>
               </TabsList>
             </Tabs>
