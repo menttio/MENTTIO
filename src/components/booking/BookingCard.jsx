@@ -60,6 +60,11 @@ export default function BookingCard({
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [localFiles, setLocalFiles] = useState(booking?.files || []);
 
+  // Sincronizar localFiles cuando cambia el booking
+  React.useEffect(() => {
+    setLocalFiles(booking?.files || []);
+  }, [booking?.id, booking?.files]);
+
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
   const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
