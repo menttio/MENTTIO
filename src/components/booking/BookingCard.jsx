@@ -186,7 +186,8 @@ export default function BookingCard({
 
   const handleDeleteFile = async (fileIndex) => {
     try {
-      const updatedFiles = booking.files.filter((_, idx) => idx !== fileIndex);
+      const updatedFiles = localFiles.filter((_, idx) => idx !== fileIndex);
+      setLocalFiles(updatedFiles);
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
       onRefresh?.();
     } catch (error) {
