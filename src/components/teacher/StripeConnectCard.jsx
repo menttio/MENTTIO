@@ -103,7 +103,7 @@ export default function StripeConnectCard() {
               Ejemplo: clase de <strong>20€</strong> → tú recibes <strong>19,45€</strong> (20€ − 0,30€ − 0,25€).
             </p>
             <p className="text-blue-600 text-xs mt-1">
-              ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas. Si cobras de manera informal, Bizum puede ser suficiente.
+              ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas.
             </p>
           </div>
         </div>
