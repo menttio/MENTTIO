@@ -28,6 +28,18 @@ export default function StudentSignupComplete() {
           assigned_teachers: []
         });
 
+        // Notificar nuevo alumno a n8n
+        try {
+          const nuevoAlumnoUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_alumno');
+          nuevoAlumnoUrl.searchParams.append('nombre', data.first_name);
+          nuevoAlumnoUrl.searchParams.append('apellidos', data.last_name);
+          nuevoAlumnoUrl.searchParams.append('telefono', data.phone);
+          nuevoAlumnoUrl.searchParams.append('correo_electronico', user.email);
+          await fetch(nuevoAlumnoUrl.toString(), { method: 'GET' });
+        } catch (webhookErr) {
+          console.error('Error enviando webhook nuevo_alumno:', webhookErr.message);
+        }
+
         // Enviar email de notificación a menttio
         try {
           await base44.integrations.Core.SendEmail({
