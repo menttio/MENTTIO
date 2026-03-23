@@ -145,7 +145,11 @@ export default function BookingCard({
         uploaded_by: user?.email || userRole
       }));
 
-      const updatedFiles = [...(booking.files || []), ...newFiles];
+      const updatedFiles = [...localFiles, ...newFiles];
+      
+      // Actualizar localFiles inmediatamente para refrescar UI sin esperar la BD
+      setLocalFiles(updatedFiles);
+      
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
       
       // Notify n8n if student uploaded files
