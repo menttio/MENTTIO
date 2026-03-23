@@ -33,8 +33,15 @@ Deno.serve(async (req) => {
     }
     const student = students[0];
 
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create({
+    // Get teacher info to check Stripe Connect
+    const teachers = await base44.entities.Teacher.filter({ id: teacherId });
+    const teacher = teachers[0] || null;
+
+    const amountCents = Math.round(price * 100);
+
+    // Stripe fee: ~1.5% + 0.25€ for EU cards. We pass the full amount to the teacher.
+    // Application fee: 0 (Menttio does not take a cut from class payments)
+    const sessionParams = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -44,7 +51,7 @@ Deno.serve(async (req) => {
               name: `Clase de ${subjectName}`,
               description: `Con ${teacherName} - ${date} a las ${startTime}`,
             },
-            unit_amount: Math.round(price * 100), // Convert to cents
+            unit_amount: amountCents,
           },
           quantity: 1,
         },
@@ -69,7 +76,18 @@ Deno.serve(async (req) => {
         duration_minutes: duration.toString(),
         price: price.toString()
       },
-    });
+    };
+
+    // If teacher has Stripe Connect enabled, transfer directly to their account
+    if (teacher?.stripe_connect_account_id && teacher?.stripe_connect_enabled) {
+      sessionParams.payment_intent_data = {
+        transfer_data: {
+          destination: teacher.stripe_connect_account_id,
+        },
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     return Response.json({ url: session.url });
   } catch (error) {
