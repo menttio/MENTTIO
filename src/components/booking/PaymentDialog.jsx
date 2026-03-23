@@ -98,20 +98,34 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
 
         {!selectedMethod ? (
           <div className="space-y-3 py-4">
-            <button
-              onClick={() => setSelectedMethod('stripe')}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#41f2c0] transition-all text-left"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <CreditCard className="text-purple-600" size={24} />
+            {booking?.teacher_stripe_enabled ? (
+              <button
+                onClick={() => setSelectedMethod('stripe')}
+                className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#41f2c0] transition-all text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                    <CreditCard className="text-purple-600" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#404040]">Tarjeta de crédito/débito</h3>
+                    <p className="text-sm text-gray-500">Pago seguro con Stripe</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-[#404040]">Tarjeta de crédito/débito</h3>
-                  <p className="text-sm text-gray-500">Pago seguro con Stripe</p>
+              </button>
+            ) : (
+              <div className="w-full p-4 border-2 border-gray-100 rounded-xl bg-gray-50 text-left opacity-60 cursor-not-allowed">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center">
+                    <CreditCard className="text-gray-400" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-400">Tarjeta de crédito/débito</h3>
+                    <p className="text-xs text-gray-400">El profesor aún no ha configurado los cobros con Stripe</p>
+                  </div>
                 </div>
               </div>
-            </button>
+            )}
 
             <button
               onClick={() => setSelectedMethod('bizum')}
