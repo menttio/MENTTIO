@@ -342,7 +342,7 @@ export default function Layout({ children, currentPageName }) {
     return (
       <div className="min-h-screen bg-[#f2f2f2]">
         {children}
-        <ChatWidget />
+        {/* <ChatWidget /> */}
       </div>
     );
   }
