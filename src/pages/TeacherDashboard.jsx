@@ -41,10 +41,14 @@ export default function TeacherDashboard() {
           setShowTour(true);
         }
 
-        const allBookings = await base44.entities.Booking.filter({ 
-          teacher_email: user.email 
-        });
-        setBookings(allBookings);
+        // Only fetch scheduled (for upcoming) + this month completed (for earnings stats)
+        const today = new Date().toISOString().split('T')[0];
+        const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+        const [scheduledBookings, completedBookings] = await Promise.all([
+          base44.entities.Booking.filter({ teacher_email: user.email, status: 'scheduled' }, 'date', 50),
+          base44.entities.Booking.filter({ teacher_email: user.email, status: 'completed' }, '-date', 200)
+        ]);
+        setBookings([...scheduledBookings, ...completedBookings]);
       }
     } catch (error) {
       console.error(error);

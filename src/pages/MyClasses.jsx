@@ -45,22 +45,11 @@ export default function MyClasses() {
   const loadBookings = async () => {
     try {
       const user = await base44.auth.me();
-      const allBookings = await base44.entities.Booking.filter({ 
-        student_email: user.email 
-      });
-      
-      // Enrich bookings with teacher data if missing
-      const teachers = await base44.entities.Teacher.list();
-      const enrichedBookings = allBookings.map(booking => {
-        const teacher = teachers.find(t => t.id === booking.teacher_id);
-        return {
-          ...booking,
-          teacher_phone: booking.teacher_phone || teacher?.phone || '',
-          teacher_stripe_enabled: teacher?.stripe_connect_enabled || false,
-        };
-      });
-      
-      setBookings(enrichedBookings);
+      const [scheduledBookings, completedBookings] = await Promise.all([
+        base44.entities.Booking.filter({ student_email: user.email, status: 'scheduled' }, 'date', 100),
+        base44.entities.Booking.filter({ student_email: user.email, status: 'completed' }, '-date', 200)
+      ]);
+      setBookings([...scheduledBookings, ...completedBookings]);
 
       const students = await base44.entities.Student.filter({ user_email: user.email });
       if (students.length > 0) {

@@ -51,16 +51,19 @@ export default function StudentDashboard() {
       if (students.length > 0) {
         setStudent(students[0]);
 
-        const allBookings = await base44.entities.Booking.filter({ 
-          student_email: currentUser.email 
-        });
-        setBookings(allBookings);
+        const [scheduledBookings, completedBookings] = await Promise.all([
+          base44.entities.Booking.filter({ student_email: currentUser.email, status: 'scheduled' }, 'date', 50),
+          base44.entities.Booking.filter({ student_email: currentUser.email, status: 'completed' }, '-date', 100)
+        ]);
+        setBookings([...scheduledBookings, ...completedBookings]);
 
-        // Load assigned teachers details
+        // Load only the specific assigned teachers instead of all teachers
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
-          const teachersData = await base44.entities.Teacher.list();
-          setTeachers(teachersData.filter(t => teacherIds.includes(t.id)));
+          const teachersData = await Promise.all(
+            teacherIds.map(id => base44.entities.Teacher.get(id))
+          );
+          setTeachers(teachersData.filter(Boolean));
         }
       }
     } catch (error) {

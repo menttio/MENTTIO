@@ -82,13 +82,14 @@ export default function BookingCard({
         setCurrentUserEmail(user?.email || null);
       } catch {}
 
-      try {
-        const teacherData = await base44.entities.Teacher.get(booking.teacher_id);
-        if (teacherData) {
-          setTeacher(teacherData);
+      // Only load teacher data if needed for recording/plan display
+      if (isCompleted) {
+        try {
+          const teacherData = await base44.entities.Teacher.get(booking.teacher_id);
+          if (teacherData) setTeacher(teacherData);
+        } catch (error) {
+          console.error('Error loading teacher:', error);
         }
-      } catch (error) {
-        console.error('Error loading teacher:', error);
       }
 
       if (isCompleted && !isCancelled) {
