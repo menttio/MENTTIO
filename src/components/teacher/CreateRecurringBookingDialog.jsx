@@ -609,5 +609,47 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         )}
       </DialogContent>
     </Dialog>
+
+    {/* Calendar conflict popup */}
+    <Dialog open={showConflictPopup} onOpenChange={(v) => {
+      setShowConflictPopup(v);
+      if (!v) onOpenChange(false);
+    }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-orange-600">
+            <AlertTriangle size={20} />
+            Clases no creadas por conflicto
+          </DialogTitle>
+          <DialogDescription>
+            Las siguientes clases no se han creado porque coinciden con eventos ya existentes en tu Google Calendar:
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-2 max-h-64 overflow-y-auto py-2">
+          {calendarConflicts.map((b, idx) => (
+            <div key={idx} className="flex items-center justify-between px-3 py-2 bg-orange-50 border border-orange-200 rounded-lg text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar size={13} className="text-orange-500" />
+                <span className="capitalize font-medium">
+                  {format(b.date, "EEEE d MMM", { locale: es })}
+                </span>
+              </div>
+              <span className="text-gray-600">{b.time} - {calculateEndTime(b.time)}</span>
+            </div>
+          ))}
+        </div>
+        <div className="pt-2">
+          <Button
+            onClick={() => {
+              setShowConflictPopup(false);
+              onOpenChange(false);
+            }}
+            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7]"
+          >
+            Entendido
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
