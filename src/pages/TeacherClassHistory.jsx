@@ -31,6 +31,7 @@ import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
 import CreateBookingDialog from '../components/teacher/CreateBookingDialog';
+import CreateRecurringBookingDialog from '../components/teacher/CreateRecurringBookingDialog';
 
 export default function TeacherClassHistory() {
   const [bookings, setBookings] = useState([]);
