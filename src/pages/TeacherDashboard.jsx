@@ -270,12 +270,23 @@ export default function TeacherDashboard() {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
-          <Link 
-            to={createPageUrl('TeacherCalendar')}
-            className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
-          >
-            Ver calendario <ChevronRight size={16} />
-          </Link>
+          <div className="flex items-center gap-3">
+            <Button
+              size="sm"
+              onClick={() => setShowRecurringDialog(true)}
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white gap-1.5"
+            >
+              <Repeat size={15} />
+              <span className="hidden sm:inline">Clases recurrentes</span>
+              <span className="sm:hidden">Recurrentes</span>
+            </Button>
+            <Link 
+              to={createPageUrl('TeacherCalendar')}
+              className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
+            >
+              Ver calendario <ChevronRight size={16} />
+            </Link>
+          </div>
         </div>
 
         {upcomingBookings.length > 0 ? (
