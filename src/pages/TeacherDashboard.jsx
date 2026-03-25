@@ -20,6 +20,7 @@ import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import ManageSubjectsCard from '../components/teacher/ManageSubjectsCard';
+import CreateRecurringBookingDialog from '../components/teacher/CreateRecurringBookingDialog';
 
 export default function TeacherDashboard() {
   const [teacher, setTeacher] = useState(null);
