@@ -163,13 +163,23 @@ export default function TeacherClassHistory() {
           <h1 className="text-3xl font-bold text-[#404040]">Historial de Clases</h1>
           <p className="text-gray-500 mt-2">Todas tus clases con filtros avanzados</p>
         </div>
-        <Button
-          onClick={() => setShowCreateDialog(true)}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-        >
-          <Plus size={18} className="mr-2" />
-          Crear Reserva
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowRecurringDialog(true)}
+            className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+          >
+            <Repeat size={16} className="mr-2" />
+            Recurrentes
+          </Button>
+          <Button
+            onClick={() => setShowCreateDialog(true)}
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+          >
+            <Plus size={18} className="mr-2" />
+            Crear Reserva
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
