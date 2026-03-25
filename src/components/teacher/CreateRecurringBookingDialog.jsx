@@ -609,12 +609,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         )}
       </DialogContent>
     </Dialog>
-    </>
-  );
-}
 
-function ConflictPopup({ open, onOpenChange, calendarConflicts, calculateEndTime, duration }) {
-  return (
     <Dialog open={showConflictPopup} onOpenChange={(v) => {
       setShowConflictPopup(v);
       if (!v) onOpenChange(false);
@@ -655,5 +650,6 @@ function ConflictPopup({ open, onOpenChange, calendarConflicts, calculateEndTime
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
