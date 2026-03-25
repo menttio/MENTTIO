@@ -44,6 +44,7 @@ export default function TeacherClassHistory() {
   const [editingBooking, setEditingBooking] = useState(null);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showRecurringDialog, setShowRecurringDialog] = useState(false);
 
   const loadBookings = async () => {
     try {
