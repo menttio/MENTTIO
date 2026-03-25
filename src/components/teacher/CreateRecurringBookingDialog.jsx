@@ -321,6 +321,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
   const stepLabels = ['Alumno', 'Asignatura', 'Recurrencia', 'Confirmar'];
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
