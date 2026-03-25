@@ -311,6 +311,14 @@ export default function TeacherDashboard() {
         )}
       </motion.div>
     </div>
+      {teacher && (
+        <CreateRecurringBookingDialog
+          open={showRecurringDialog}
+          onOpenChange={setShowRecurringDialog}
+          teacher={teacher}
+          onSuccess={loadData}
+        />
+      )}
     </>
   );
 }
