@@ -72,6 +72,8 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
   const [addingTime, setAddingTime] = useState('');
   const [weeks, setWeeks] = useState(4);
   const [existingBookings, setExistingBookings] = useState([]);
+  const [calendarConflicts, setCalendarConflicts] = useState([]); // clases bloqueadas por Google Calendar tras confirmar
+  const [showConflictPopup, setShowConflictPopup] = useState(false);
 
   const duration = 60;
 
