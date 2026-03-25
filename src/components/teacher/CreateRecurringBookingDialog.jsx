@@ -248,7 +248,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         return;
       }
 
-      // Create all bookings in parallel (batch)
+      // Create all non-conflicting bookings in parallel (batch)
       const createdBookings = await Promise.all(
         bookingsToCreate.map(b =>
           base44.entities.Booking.create({
@@ -285,7 +285,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         link_page: 'MyClasses'
       });
 
-      // Sync Google Calendar for teacher (first booking only to avoid rate limits)
+      // Sync Google Calendar for teacher
       if (teacher.google_calendar_connected) {
         for (const b of createdBookings) {
           try {
@@ -301,7 +301,15 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       }
 
       onSuccess?.();
-      onOpenChange(false);
+
+      // If some classes were blocked by Google Calendar, show popup before closing
+      if (calendarBlocked.length > 0) {
+        setCalendarConflicts(calendarBlocked);
+        setShowConflictPopup(true);
+        // Don't close yet — user will close popup
+      } else {
+        onOpenChange(false);
+      }
     } catch (error) {
       console.error('Error creating recurring bookings:', error);
       alert('Error al crear las reservas recurrentes. Inténtalo de nuevo.');
