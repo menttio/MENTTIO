@@ -198,9 +198,59 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       const studentObj = students.find(s => s.id === selectedStudent);
       const price = calculatePrice();
 
+      // Fetch Google Calendar events for the full range if teacher has it connected
+      let googleEvents = [];
+      if (teacher.google_calendar_connected && validBookings.length > 0) {
+        try {
+          const minDate = validBookings[0].dateStr;
+          const maxDate = validBookings[validBookings.length - 1].dateStr;
+          const resp = await base44.functions.invoke('getGoogleCalendarEvents', {
+            startDate: minDate,
+            endDate: maxDate,
+            userType: 'teacher',
+            userEmail: teacher.user_email
+          });
+          googleEvents = resp.data?.events || [];
+        } catch (e) {
+          console.error('Error fetching Google Calendar events:', e);
+        }
+      }
+
+      // Filter out classes that conflict with Google Calendar events
+      const hasGoogleConflict = (b) => {
+        if (!googleEvents.length) return false;
+        const [rH, rM] = b.time.split(':').map(Number);
+        const rStart = rH * 60 + rM;
+        const rEnd = rStart + duration; // always 60 min
+
+        return googleEvents.some(ev => {
+          if (!ev.start || !ev.end) return false;
+          // ev.start and ev.end are ISO strings like "2026-03-25T10:00:00"
+          const evStartDate = ev.start.substring(0, 10);
+          if (evStartDate !== b.dateStr) return false;
+          const evStartTime = ev.start.substring(11, 16); // "HH:MM"
+          const evEndTime = ev.end.substring(11, 16);
+          const [eH, eM] = evStartTime.split(':').map(Number);
+          const [eEH, eEM] = evEndTime.split(':').map(Number);
+          const eStart = eH * 60 + eM;
+          const eEnd = eEH * 60 + eEM;
+          return rStart < eEnd && rEnd > eStart;
+        });
+      };
+
+      const calendarBlocked = validBookings.filter(hasGoogleConflict);
+      const bookingsToCreate = validBookings.filter(b => !hasGoogleConflict(b));
+
+      if (bookingsToCreate.length === 0) {
+        setCalendarConflicts(calendarBlocked);
+        setShowConflictPopup(true);
+        setSaving(false);
+        return;
+      }
+
       // Create all bookings in parallel (batch)
       const createdBookings = await Promise.all(
-        validBookings.map(b =>
+        bookingsToCreate.map(b =>
           base44.entities.Booking.create({
             student_id: studentObj.id,
             student_name: studentObj.full_name,
