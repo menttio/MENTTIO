@@ -27,6 +27,7 @@ export default function TeacherDashboard() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTour, setShowTour] = useState(false);
+  const [showRecurringDialog, setShowRecurringDialog] = useState(false);
 
   const loadData = async () => {
     try {
