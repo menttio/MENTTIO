@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { User, BookOpen, Loader2, Check, Plus, X, Repeat, Calendar } from 'lucide-react';
+import { User, BookOpen, Loader2, Check, Plus, X, Repeat, Calendar, AlertTriangle } from 'lucide-react';
 import { format, addDays, addWeeks, getDay, nextDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
