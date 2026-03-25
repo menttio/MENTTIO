@@ -338,6 +338,16 @@ export default function TeacherClassHistory() {
           onSuccess={loadBookings}
         />
       )}
+
+      {/* Recurring Booking Dialog */}
+      {teacher && (
+        <CreateRecurringBookingDialog
+          open={showRecurringDialog}
+          onOpenChange={setShowRecurringDialog}
+          teacher={teacher}
+          onSuccess={loadBookings}
+        />
+      )}
     </div>
   );
 }
