@@ -61,15 +61,6 @@ export default function TeacherCalendar() {
           setShowTour(true);
         }
 
-        // Sync bookings with Google Calendar on page load
-        if (teacherData.google_calendar_connected) {
-          try {
-            await base44.functions.invoke('syncAllBookings', {});
-          } catch (syncError) {
-            console.error('Error syncing bookings:', syncError);
-          }
-        }
-
         // Only load bookings for current month ± 1 month to reduce token usage
         const monthStart = format(startOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd');
         const monthEnd = format(endOfMonth(addMonths(new Date(), 2)), 'yyyy-MM-dd');
@@ -100,17 +91,8 @@ export default function TeacherCalendar() {
               userEmail: user.email
             });
             
-            if (response.data.error) {
-              console.error('Error de Google Calendar:', response.data.error);
-              // Reset connection status if there's a persistent error
-              await base44.entities.Teacher.update(teacherData.id, {
-                google_calendar_connected: false,
-                google_calendar_tokens: null
-              });
-              alert('Tu conexión con Google Calendar ha expirado. Por favor, vuelve a conectar.');
-              window.location.reload();
-            } else {
-              setGoogleCalendarEvents(response.data.events || []);
+            if (response.data?.events) {
+              setGoogleCalendarEvents(response.data.events);
             }
           } catch (error) {
             console.error('Error loading Google Calendar events:', error);
