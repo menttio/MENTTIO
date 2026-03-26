@@ -26,7 +26,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/notifications/NotificationBell';
 import PushNotificationSetup from '@/components/notifications/PushNotificationSetup';
-import ChatWidget from '@/components/chat/ChatWidget';
 import {
   Dialog,
   DialogContent,
@@ -544,7 +543,7 @@ export default function Layout({ children, currentPageName }) {
         />
       )}
 
-      <ChatWidget />
+
 
       {/* Main Content */}
       <main className="lg:ml-64 min-h-screen pt-16 lg:pt-16">
