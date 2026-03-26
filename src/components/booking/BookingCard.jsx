@@ -4,7 +4,8 @@ import { es } from 'date-fns/locale';
 import { 
   Calendar, 
   Clock, 
-  User, 
+  User,
+  Users,
   BookOpen, 
   MoreVertical, 
   Edit, 
@@ -65,6 +66,7 @@ export default function BookingCard({
     setLocalFiles(booking?.files || []);
   }, [booking?.id, booking?.files]);
 
+  const isGroup = booking.class_type === 'group';
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
   const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
@@ -198,6 +200,27 @@ export default function BookingCard({
   const handleCancel = async () => {
     setCancelling(true);
     try {
+      // For group bookings where student is cancelling: just remove from enrolled list
+      if (isGroup && userRole === 'student') {
+        const updatedEnrolled = (booking.enrolled_students || []).filter(
+          s => s.student_email !== booking.student_email && s.student_id !== currentUserEmail
+        );
+        // Try to find current student email
+        const user = await base44.auth.me();
+        const filtered = (booking.enrolled_students || []).filter(s => s.student_email !== user.email);
+        
+        if (filtered.length === 0) {
+          // Last student leaving — delete the booking
+          await base44.entities.Booking.delete(booking.id);
+        } else {
+          await base44.entities.Booking.update(booking.id, { enrolled_students: filtered });
+        }
+        onRefresh?.();
+        setShowCancelDialog(false);
+        setCancelling(false);
+        return;
+      }
+
       // Delete booking directly instead of marking as cancelled
       await base44.entities.Booking.delete(booking.id);
 
@@ -291,15 +314,26 @@ export default function BookingCard({
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center">
-              <BookOpen className="text-[#41f2c0]" size={24} />
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isGroup ? 'bg-purple-100' : 'bg-[#41f2c0]/10'}`}>
+              {isGroup ? <Users className="text-purple-500" size={24} /> : <BookOpen className="text-[#41f2c0]" size={24} />}
             </div>
             <div>
-              <h3 className="font-semibold text-[#404040]">{booking.subject_name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-[#404040]">{booking.subject_name}</h3>
+                {isGroup && (
+                  <Badge className="bg-purple-100 text-purple-700 text-xs">
+                    Grupal {(booking.enrolled_students?.length || 0)}/{booking.max_students || 4}
+                  </Badge>
+                )}
+              </div>
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <User size={14} />
                 <span>
-                  {userRole === 'student' ? booking.teacher_name : booking.student_name}
+                  {userRole === 'student'
+                    ? booking.teacher_name
+                    : isGroup
+                      ? (booking.enrolled_students?.map(s => s.student_name).join(', ') || 'Sin alumnos')
+                      : booking.student_name}
                 </span>
               </div>
             </div>

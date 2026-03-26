@@ -240,28 +240,32 @@ export default function TeacherCalendar() {
             </Button>
           </div>
           {showLegend && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#41f2c0]" />
-                <span className="text-gray-600">Clases reservadas</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-orange-500" />
-                <span className="text-gray-600">Eventos personales</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-400" />
-                <span className="text-gray-600">Disponible (regular)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-purple-400" />
-                <span className="text-gray-600">Disponible (excepción)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <span className="text-gray-600">No disponible</span>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#41f2c0]" />
+              <span className="text-gray-600">Clase individual</span>
             </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-purple-500" />
+              <span className="text-gray-600">Clase grupal</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-orange-500" />
+              <span className="text-gray-600">Eventos personales</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-blue-400" />
+              <span className="text-gray-600">Disponible (regular)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-sky-300" />
+              <span className="text-gray-600">Disponible (excepción)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-400" />
+              <span className="text-gray-600">No disponible</span>
+            </div>
+          </div>
           )}
         </CardContent>
       </Card>
@@ -341,9 +345,13 @@ export default function TeacherCalendar() {
                       </span>
                       
                       <div className="mt-1 flex flex-wrap gap-0.5 justify-center">
-                        {/* Bookings */}
-                        {hasBookings && dayBookings.slice(0, 2).map((_, idx) => (
+                        {/* Individual Bookings */}
+                        {dayBookings.filter(b => b.class_type !== 'group').slice(0, 2).map((_, idx) => (
                           <div key={`booking-${idx}`} className="w-1.5 h-1.5 rounded-full bg-[#41f2c0]" />
+                        ))}
+                        {/* Group Bookings */}
+                        {dayBookings.filter(b => b.class_type === 'group').slice(0, 2).map((_, idx) => (
+                          <div key={`group-${idx}`} className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                         ))}
                         
                         {/* Google Calendar Events */}
@@ -426,21 +434,26 @@ export default function TeacherCalendar() {
                 <div className="mb-4">
                   <h4 className="text-xs font-semibold text-gray-500 mb-2 uppercase">Clases Reservadas</h4>
                   <div className="space-y-2">
-                    {selectedDateBookings.map((booking) => (
-                      <motion.div
+                    {selectedDateBookings.map((booking) => {
+                      const isGroup = booking.class_type === 'group';
+                      const enrolled = booking.enrolled_students?.length || 0;
+                      return (<motion.div
                         key={booking.id}
                         initial={{ opacity: 0, x: 10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="p-3 rounded-xl bg-[#41f2c0]/10 border border-[#41f2c0]/20 hover:bg-[#41f2c0]/20 transition-colors cursor-pointer"
+                        className={cn(
+                          "p-3 rounded-xl border transition-colors cursor-pointer",
+                          isGroup
+                            ? "bg-purple-50 border-purple-200 hover:bg-purple-100"
+                            : "bg-[#41f2c0]/10 border-[#41f2c0]/20 hover:bg-[#41f2c0]/20"
+                        )}
                         onClick={() => setEditingBooking(booking)}
                       >
                         <div className="flex items-center gap-2 mb-2">
-                          <Clock className="text-[#41f2c0]" size={14} />
-                          <span className="font-medium text-sm">
-                            {booking.start_time} - {booking.end_time}
-                          </span>
-                          <Badge className="ml-auto bg-[#41f2c0] text-white text-xs">
-                            {booking.status === 'scheduled' ? 'Programada' : booking.status}
+                          <Clock className={isGroup ? "text-purple-500" : "text-[#41f2c0]"} size={14} />
+                          <span className="font-medium text-sm">{booking.start_time} - {booking.end_time}</span>
+                          <Badge className={cn("ml-auto text-xs", isGroup ? "bg-purple-500 text-white" : "bg-[#41f2c0] text-white")}>
+                            {isGroup ? `Grupal ${enrolled}/${booking.max_students || 4}` : 'Individual'}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 mb-1">
@@ -449,10 +462,15 @@ export default function TeacherCalendar() {
                         </div>
                         <div className="flex items-center gap-2">
                           <User className="text-gray-500" size={14} />
-                          <span className="text-sm text-gray-600">{booking.student_name}</span>
+                          <span className="text-sm text-gray-600">
+                            {isGroup
+                              ? (booking.enrolled_students?.map(s => s.student_name).join(', ') || 'Sin alumnos aún')
+                              : booking.student_name}
+                          </span>
                         </div>
                       </motion.div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
