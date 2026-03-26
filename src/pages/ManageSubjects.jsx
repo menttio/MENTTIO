@@ -34,6 +34,8 @@ export default function ManageSubjects() {
   const [price, setPrice] = useState('');
   const [customSubjectName, setCustomSubjectName] = useState('');
   const [saving, setSaving] = useState(false);
+  const [maxGroupStudents, setMaxGroupStudents] = useState('');
+  const [groupPrices, setGroupPrices] = useState({ 2: '', 3: '', 4: '' });
   const [showTour, setShowTour] = useState(false);
 
   useEffect(() => {
@@ -70,6 +72,8 @@ export default function ManageSubjects() {
     setSelectedLevel('');
     setPrice('');
     setCustomSubjectName('');
+    setMaxGroupStudents('');
+    setGroupPrices({ 2: '', 3: '', 4: '' });
     setShowDialog(true);
   };
 
@@ -79,6 +83,12 @@ export default function ManageSubjects() {
     setSelectedLevel(subject.level || '');
     setPrice(subject.price_per_hour.toString());
     setCustomSubjectName(subject.subject_id ? '' : subject.subject_name);
+    setMaxGroupStudents(subject.max_group_students?.toString() || '');
+    setGroupPrices({
+      2: subject.group_prices?.[2]?.toString() || '',
+      3: subject.group_prices?.[3]?.toString() || '',
+      4: subject.group_prices?.[4]?.toString() || '',
+    });
     setShowDialog(true);
   };
 
@@ -110,12 +120,21 @@ export default function ManageSubjects() {
         updatedSubjects = currentSubjects.map(s => {
           const currentIdentifier = s.subject_id || s.subject_name;
           if (currentIdentifier === oldSubjectIdentifier && s.level === editingSubject.level) {
-            return { 
+            const entry = { 
               subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
               subject_name: subjectName, 
               level: selectedLevel, 
-              price_per_hour: parseFloat(price) 
+              price_per_hour: parseFloat(price)
             };
+            if (maxGroupStudents) {
+              entry.max_group_students = parseInt(maxGroupStudents);
+              const gp = {};
+              for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
+                if (groupPrices[n]) gp[n] = parseFloat(groupPrices[n]);
+              }
+              if (Object.keys(gp).length) entry.group_prices = gp;
+            }
+            return entry;
           }
           return s;
         });
@@ -134,15 +153,21 @@ export default function ManageSubjects() {
         }
 
         // Add new
-        updatedSubjects = [
-          ...currentSubjects,
-          {
-            subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
-            subject_name: subjectName,
-            level: selectedLevel,
-            price_per_hour: parseFloat(price)
+        const newEntry = {
+          subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+          subject_name: subjectName,
+          level: selectedLevel,
+          price_per_hour: parseFloat(price)
+        };
+        if (maxGroupStudents) {
+          newEntry.max_group_students = parseInt(maxGroupStudents);
+          const gp = {};
+          for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
+            if (groupPrices[n]) gp[n] = parseFloat(groupPrices[n]);
           }
-        ];
+          if (Object.keys(gp).length) newEntry.group_prices = gp;
+        }
+        updatedSubjects = [...currentSubjects, newEntry];
       }
 
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
@@ -302,9 +327,21 @@ export default function ManageSubjects() {
                     <DollarSign className="text-[#41f2c0]" size={20} />
                     <div>
                       <p className="text-2xl font-bold text-[#41f2c0]">{subject.price_per_hour}€</p>
-                      <p className="text-xs text-gray-600">por hora</p>
+                      <p className="text-xs text-gray-600">por hora (individual)</p>
                     </div>
                   </div>
+                  {subject.max_group_students && (
+                    <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                      <p className="text-xs font-semibold text-purple-700 mb-2">Grupal · máx. {subject.max_group_students} alumnos</p>
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(subject.group_prices || {}).map(([n, p]) => (
+                          <span key={n} className="text-xs px-2 py-1 bg-white border border-purple-200 rounded-md text-purple-700">
+                            {n} alumnos: <strong>{p}€/h</strong>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </motion.div>
@@ -397,7 +434,7 @@ export default function ManageSubjects() {
             </div>
 
             <div>
-              <Label>Precio por hora (€)</Label>
+              <Label>Precio por hora individual (€)</Label>
               <Input
                 type="number"
                 value={price}
@@ -407,6 +444,46 @@ export default function ManageSubjects() {
                 min="0"
                 step="0.5"
               />
+            </div>
+
+            {/* Group config */}
+            <div className="border-t pt-4">
+              <Label className="text-sm font-semibold text-[#404040]">Configuración de clases grupales (opcional)</Label>
+              <p className="text-xs text-gray-500 mb-3 mt-1">Si no configuras esto, no se ofrecerán clases grupales para esta asignatura.</p>
+              <div className="mb-3">
+                <Label className="text-xs">Máximo de alumnos por grupo</Label>
+                <Select value={maxGroupStudents} onValueChange={setMaxGroupStudents}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Sin clases grupales" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={null}>Sin clases grupales</SelectItem>
+                    <SelectItem value="2">2 alumnos</SelectItem>
+                    <SelectItem value="3">3 alumnos</SelectItem>
+                    <SelectItem value="4">4 alumnos</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {maxGroupStudents && (
+                <div className="space-y-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                  <p className="text-xs font-medium text-purple-700">Precio por persona según nº de alumnos en la clase:</p>
+                  {Array.from({ length: parseInt(maxGroupStudents) - 1 }, (_, i) => i + 2).map(n => (
+                    <div key={n} className="flex items-center gap-3">
+                      <span className="text-xs text-gray-600 w-24 shrink-0">{n} alumnos:</span>
+                      <Input
+                        type="number"
+                        value={groupPrices[n] || ''}
+                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [n]: e.target.value }))}
+                        placeholder="€/hora por persona"
+                        className="h-8 text-sm"
+                        min="0"
+                        step="0.5"
+                      />
+                      <span className="text-xs text-gray-400 shrink-0">€/h por persona</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
