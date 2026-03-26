@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
     // Send webhooks sequentially with 100ms delay between each
     const results = [];
     for (let i = 0; i < bookingsList.length; i++) {
-      if (i > 0) await new Promise(r => setTimeout(r, 100));
+      if (i > 0) await new Promise(r => setTimeout(r, 1000));
       const [result] = await Promise.allSettled([sendToN8N(bookingsList[i])]);
       results.push(result);
     }
