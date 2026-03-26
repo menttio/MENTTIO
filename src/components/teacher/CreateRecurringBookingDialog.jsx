@@ -274,29 +274,27 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         )
       );
 
-      // Notify n8n for each created booking (new booking webhook)
-      for (const b of createdBookings) {
-        try {
-          await base44.functions.invoke('notifyN8N', {
-            bookingData: {
-              booking_id: b.id,
-              student_id: studentObj.id,
-              student_name: studentObj.full_name,
-              student_email: studentObj.user_email,
-              student_phone: studentObj.phone || '',
-              teacher_name: teacher.full_name,
-              teacher_email: teacher.user_email,
-              teacher_phone: teacher.phone || '',
-              subject_name: selectedSubject.subject_name,
-              price,
-              date: b.date,
-              start_time: b.start_time,
-              status: 'new'
-            }
-          });
-        } catch (e) {
-          console.error('Error notifying n8n for booking:', b.id, e);
-        }
+      // Notify n8n for all created bookings in a single bulk call
+      try {
+        await base44.functions.invoke('notifyN8NBulk', {
+          bookings: createdBookings.map(b => ({
+            booking_id: b.id,
+            student_id: studentObj.id,
+            student_name: studentObj.full_name,
+            student_email: studentObj.user_email,
+            student_phone: studentObj.phone || '',
+            teacher_name: teacher.full_name,
+            teacher_email: teacher.user_email,
+            teacher_phone: teacher.phone || '',
+            subject_name: selectedSubject.subject_name,
+            price,
+            date: b.date,
+            start_time: b.start_time,
+            status: 'new'
+          }))
+        });
+      } catch (e) {
+        console.error('Error notifying n8n bulk:', e);
       }
 
       // Single notification to student summarizing all classes
