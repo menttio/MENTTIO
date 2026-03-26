@@ -25,7 +25,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import NotificationBell from '@/components/notifications/NotificationBell';
-import PushNotificationSetup from '@/components/notifications/PushNotificationSetup';
 import {
   Dialog,
   DialogContent,
@@ -348,7 +347,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-[#f2f2f2]">
-      <PushNotificationSetup userEmail={user?.email} />
+
       <style>{`
         :root {
           --primary: #41f2c0;
