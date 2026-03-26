@@ -88,9 +88,9 @@ export default function ManageSubjects() {
     setMaxGroupStudents(subject.max_group_students?.toString() || '');
     const gp = subject.group_prices || {};
     setGroupPrices({
-      2: (gp[2] ?? gp['2'] ?? '').toString(),
-      3: (gp[3] ?? gp['3'] ?? '').toString(),
-      4: (gp[4] ?? gp['4'] ?? '').toString(),
+      2: (gp['2'] ?? gp[2] ?? '').toString(),
+      3: (gp['3'] ?? gp[3] ?? '').toString(),
+      4: (gp['4'] ?? gp[4] ?? '').toString(),
     });
     setShowDialog(true);
   };
@@ -133,9 +133,12 @@ export default function ManageSubjects() {
               entry.max_group_students = parseInt(maxGroupStudents);
               const gp = {};
               for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-                if (groupPrices[n]) gp[n] = parseFloat(groupPrices[n]);
+                if (groupPrices[n] !== '' && groupPrices[n] !== undefined) gp[String(n)] = parseFloat(groupPrices[n]);
               }
-              if (Object.keys(gp).length) entry.group_prices = gp;
+              entry.group_prices = gp;
+            } else {
+              entry.max_group_students = null;
+              entry.group_prices = null;
             }
             return entry;
           }
@@ -166,9 +169,9 @@ export default function ManageSubjects() {
           newEntry.max_group_students = parseInt(maxGroupStudents);
           const gp = {};
           for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-            if (groupPrices[n]) gp[n] = parseFloat(groupPrices[n]);
+            if (groupPrices[n] !== '' && groupPrices[n] !== undefined) gp[String(n)] = parseFloat(groupPrices[n]);
           }
-          if (Object.keys(gp).length) newEntry.group_prices = gp;
+          newEntry.group_prices = gp;
         }
         updatedSubjects = [...currentSubjects, newEntry];
       }
@@ -365,7 +368,7 @@ export default function ManageSubjects() {
                           <div className="space-y-1.5">
                             {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
                               const gp = subject.group_prices || {};
-                              const priceVal = gp[n] ?? gp[String(n)];
+                              const priceVal = gp[String(n)] ?? gp[n];
                               return (
                               <div key={n} className="flex items-center justify-between text-xs">
                                 <span className="text-gray-600 flex items-center gap-1"><Users size={11} /> {n} alumnos en clase:</span>
