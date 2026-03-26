@@ -87,10 +87,13 @@ Deno.serve(async (req) => {
 
     console.log(`📤 Enviando ${bookingsList.length} webhooks a n8n en paralelo...`);
 
-    // Send all webhooks in parallel
-    const results = await Promise.allSettled(
-      bookingsList.map(b => sendToN8N(b))
-    );
+    // Send webhooks sequentially with 100ms delay between each
+    const results = [];
+    for (let i = 0; i < bookingsList.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 100));
+      const [result] = await Promise.allSettled([sendToN8N(bookingsList[i])]);
+      results.push(result);
+    }
 
     const successes = results.filter(r => r.status === 'fulfilled').length;
     const failures = results.filter(r => r.status === 'rejected');
