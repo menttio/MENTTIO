@@ -176,20 +176,20 @@ export default function TeacherClassHistory() {
         if (i > 0) await new Promise(r => setTimeout(r, 2000));
         const booking = toDelete[i];
 
-        await base44.entities.Booking.delete(booking.id);
-
-        // Eliminar del Google Calendar del profesor si está conectado
-        if (teacher?.google_calendar_connected) {
+        // Eliminar del Google Calendar del profesor ANTES de borrar el booking
+        if (teacher?.google_calendar_connected && booking.google_event_id_teacher) {
           try {
             await base44.functions.invoke('deleteGoogleCalendarEvent', {
-              bookingId: booking.id,
               userType: 'teacher',
-              userEmail: booking.teacher_email
+              userEmail: booking.teacher_email,
+              eventId: booking.google_event_id_teacher
             });
           } catch (e) {
             console.error('Error eliminando evento de Google Calendar:', booking.id, e);
           }
         }
+
+        await base44.entities.Booking.delete(booking.id);
 
         try {
           await base44.functions.invoke('notifyN8N', {

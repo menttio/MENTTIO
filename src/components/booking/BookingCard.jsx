@@ -77,9 +77,9 @@ export default function BookingCard({
   const isCancelled = booking.status === 'cancelled';
   const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
 
-  // Students need 24h advance, teachers can always modify
+  // Students need 24h advance; teachers can always delete (even past classes)
   const canModify = userRole === 'teacher' 
-    ? !isCompleted && !isCancelled
+    ? !isCancelled
     : is24HoursBefore && !isCompleted && !isCancelled;
 
   // Load teacher info and review for completed classes
@@ -221,24 +221,20 @@ export default function BookingCard({
         return;
       }
 
-      // Delete from Google Calendar BEFORE deleting the booking (needs google_event_id from booking)
+      // Delete from Google Calendar BEFORE deleting the booking
       try {
-        const teachers = await base44.entities.Teacher.filter({ user_email: booking.teacher_email });
-        const students = await base44.entities.Student.filter({ user_email: booking.student_email });
-        
-        if (teachers.length > 0 && teachers[0].google_calendar_connected) {
+        if (booking.google_event_id_teacher) {
           await base44.functions.invoke('deleteGoogleCalendarEvent', { 
-            bookingId: booking.id,
             userType: 'teacher',
-            userEmail: booking.teacher_email
+            userEmail: booking.teacher_email,
+            eventId: booking.google_event_id_teacher
           });
         }
-        
-        if (students.length > 0 && students[0].google_calendar_connected) {
+        if (booking.google_event_id_student) {
           await base44.functions.invoke('deleteGoogleCalendarEvent', { 
-            bookingId: booking.id,
             userType: 'student',
-            userEmail: booking.student_email
+            userEmail: booking.student_email,
+            eventId: booking.google_event_id_student
           });
         }
       } catch (deleteError) {
