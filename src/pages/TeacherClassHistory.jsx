@@ -8,7 +8,11 @@ import {
   Loader2,
   User,
   Plus,
-  Repeat
+  Repeat,
+  Trash2,
+  CheckSquare,
+  Square,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,6 +50,9 @@ export default function TeacherClassHistory() {
   const [dateRange, setDateRange] = useState({ from: null, to: null });
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showRecurringDialog, setShowRecurringDialog] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   const loadBookings = async () => {
     try {
@@ -142,6 +149,61 @@ export default function TeacherClassHistory() {
       return 0;
     });
 
+  const toggleSelection = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredBookings.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredBookings.map(b => b.id)));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedIds.size) return;
+    const toDelete = bookings.filter(b => selectedIds.has(b.id));
+    if (!window.confirm(`¿Eliminar ${toDelete.length} clase${toDelete.length > 1 ? 's' : ''}? Esta acción no se puede deshacer.`)) return;
+
+    setDeleting(true);
+    try {
+      for (const booking of toDelete) {
+        await base44.entities.Booking.delete(booking.id);
+        try {
+          await base44.functions.invoke('notifyN8N', {
+            bookingData: {
+              booking_id: booking.id,
+              student_id: booking.student_id,
+              student_name: booking.student_name,
+              student_email: booking.student_email,
+              student_phone: booking.student_phone || '',
+              teacher_name: booking.teacher_name,
+              teacher_email: booking.teacher_email,
+              teacher_phone: booking.teacher_phone || '',
+              subject_name: booking.subject_name,
+              price: booking.price,
+              date: booking.date,
+              start_time: booking.start_time,
+              status: 'cancelled'
+            }
+          });
+        } catch (e) {
+          console.error('Error notifying n8n for deleted booking:', booking.id, e);
+        }
+      }
+      setSelectedIds(new Set());
+      setSelectionMode(false);
+      await loadBookings();
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   console.log('🔍 Estado antes de renderizar - loading:', loading, 'teacher:', teacher, 'bookings:', bookings.length);
 
   if (loading) {
@@ -163,22 +225,53 @@ export default function TeacherClassHistory() {
           <h1 className="text-3xl font-bold text-[#404040]">Historial de Clases</h1>
           <p className="text-gray-500 mt-2">Todas tus clases con filtros avanzados</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setShowRecurringDialog(true)}
-            className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
-          >
-            <Repeat size={16} className="mr-2" />
-            Recurrentes
-          </Button>
-          <Button
-            onClick={() => setShowCreateDialog(true)}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
-          >
-            <Plus size={18} className="mr-2" />
-            Crear Reserva
-          </Button>
+        <div className="flex gap-2 flex-wrap justify-end">
+          {selectionMode ? (
+            <>
+              <Button variant="outline" size="sm" onClick={toggleSelectAll}>
+                {selectedIds.size === filteredBookings.length ? <CheckSquare size={16} className="mr-1" /> : <Square size={16} className="mr-1" />}
+                {selectedIds.size === filteredBookings.length ? 'Deseleccionar todo' : 'Seleccionar todo'}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={selectedIds.size === 0 || deleting}
+                onClick={handleBulkDelete}
+              >
+                {deleting ? <Loader2 size={16} className="animate-spin mr-1" /> : <Trash2 size={16} className="mr-1" />}
+                Eliminar ({selectedIds.size})
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => { setSelectionMode(false); setSelectedIds(new Set()); }}>
+                <X size={16} className="mr-1" /> Cancelar
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setSelectionMode(true)}
+                className="border-gray-300 text-gray-600 hover:border-red-400 hover:text-red-500"
+              >
+                <CheckSquare size={16} className="mr-2" />
+                Seleccionar
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowRecurringDialog(true)}
+                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+              >
+                <Repeat size={16} className="mr-2" />
+                Recurrentes
+              </Button>
+              <Button
+                onClick={() => setShowCreateDialog(true)}
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              >
+                <Plus size={18} className="mr-2" />
+                Crear Reserva
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -288,20 +381,37 @@ export default function TeacherClassHistory() {
       {filteredBookings.length > 0 ? (
         <div className="space-y-4">
           {filteredBookings.map((booking, idx) => {
-            console.log(`📋 Renderizando BookingCard ${idx + 1}/${filteredBookings.length}`, booking.id);
+            const isSelected = selectedIds.has(booking.id);
             return (
               <motion.div
                 key={booking.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
+                className="flex gap-3 items-start"
               >
-                <BookingCard
-                  booking={booking}
-                  userRole="teacher"
-                  onEdit={(b) => setEditingBooking(b)}
-                  onRefresh={loadBookings}
-                />
+                {selectionMode && (
+                  <button
+                    onClick={() => toggleSelection(booking.id)}
+                    className={`mt-5 flex-shrink-0 w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
+                      isSelected ? 'bg-red-500 border-red-500' : 'border-gray-300 hover:border-red-400 bg-white'
+                    }`}
+                  >
+                    {isSelected && <X size={14} className="text-white" />}
+                  </button>
+                )}
+                <div
+                  className={`flex-1 transition-all ${selectionMode && isSelected ? 'ring-2 ring-red-400 rounded-xl' : ''}`}
+                  onClick={selectionMode ? () => toggleSelection(booking.id) : undefined}
+                  style={selectionMode ? { cursor: 'pointer' } : {}}
+                >
+                  <BookingCard
+                    booking={booking}
+                    userRole="teacher"
+                    onEdit={(b) => setEditingBooking(b)}
+                    onRefresh={loadBookings}
+                  />
+                </div>
               </motion.div>
             );
           })}
