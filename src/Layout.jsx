@@ -14,7 +14,6 @@ import {
   Home,
   User,
   MessageCircle,
-  Bell,
   BarChart3,
   Library,
   Settings,
@@ -24,7 +23,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import NotificationBell from '@/components/notifications/NotificationBell';
 import {
   Dialog,
   DialogContent,
@@ -429,7 +427,6 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <h1 className="text-lg font-semibold text-[#404040]" translate="no">Men<span className="text-[#41f2c0]">π</span>io</h1>
           <div className="flex items-center gap-2">
-            <NotificationBell userEmail={user?.email} />
             {profile?.profile_photo ? (
               <img 
                 src={profile.profile_photo} 
@@ -520,7 +517,6 @@ export default function Layout({ children, currentPageName }) {
                 </p>
                 <p className="text-xs text-gray-500 truncate break-all">{user?.email}</p>
               </div>
-              <NotificationBell userEmail={user?.email} />
             </div>
             <Button
               variant="ghost"
