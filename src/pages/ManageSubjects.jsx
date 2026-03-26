@@ -83,14 +83,15 @@ export default function ManageSubjects() {
     setEditingSubject(subject);
     setSelectedSubjectId(subject.subject_id || 'custom');
     setSelectedLevel(subject.level || '');
-    setPrice(subject.price_per_hour.toString());
+    setPrice((subject.price_per_hour ?? '').toString());
     setCustomSubjectName(subject.subject_id ? '' : subject.subject_name);
-    setMaxGroupStudents(subject.max_group_students?.toString() || '');
+    const maxG = subject.max_group_students?.toString() || '';
+    setMaxGroupStudents(maxG);
     const gp = subject.group_prices || {};
     setGroupPrices({
-      2: (gp['2'] ?? gp[2] ?? '').toString(),
-      3: (gp['3'] ?? gp[3] ?? '').toString(),
-      4: (gp['4'] ?? gp[4] ?? '').toString(),
+      2: (gp['2'] !== undefined ? gp['2'] : (gp[2] !== undefined ? gp[2] : '')).toString(),
+      3: (gp['3'] !== undefined ? gp['3'] : (gp[3] !== undefined ? gp[3] : '')).toString(),
+      4: (gp['4'] !== undefined ? gp['4'] : (gp[4] !== undefined ? gp[4] : '')).toString(),
     });
     setShowDialog(true);
   };
@@ -118,32 +119,33 @@ export default function ManageSubjects() {
 
       let updatedSubjects;
       if (editingSubject) {
-        // Update existing
-        const oldSubjectIdentifier = editingSubject.subject_id || editingSubject.subject_name;
-        updatedSubjects = currentSubjects.map(s => {
-          const currentIdentifier = s.subject_id || s.subject_name;
-          if (currentIdentifier === oldSubjectIdentifier && s.level === editingSubject.level) {
-            const entry = { 
-              subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
-              subject_name: subjectName, 
-              level: selectedLevel, 
-              price_per_hour: parseFloat(price)
-            };
-            if (maxGroupStudents) {
-              entry.max_group_students = parseInt(maxGroupStudents);
-              const gp = {};
-              for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-                if (groupPrices[n] !== '' && groupPrices[n] !== undefined) gp[String(n)] = parseFloat(groupPrices[n]);
-              }
-              entry.group_prices = gp;
-            } else {
-              entry.max_group_students = null;
-              entry.group_prices = null;
-            }
-            return entry;
+        // Update existing — find exact index by matching all key fields
+        const editIdx = currentSubjects.findIndex(s =>
+          s.subject_name === editingSubject.subject_name &&
+          s.level === editingSubject.level &&
+          (s.subject_id || null) === (editingSubject.subject_id || null)
+        );
+        const entry = {
+          subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+          subject_name: subjectName,
+          level: selectedLevel,
+          price_per_hour: parseFloat(price)
+        };
+        if (maxGroupStudents) {
+          entry.max_group_students = parseInt(maxGroupStudents);
+          const gp = {};
+          for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
+            const val = groupPrices[n] !== undefined ? groupPrices[n] : groupPrices[String(n)];
+            if (val !== '' && val !== undefined) gp[String(n)] = parseFloat(val);
           }
-          return s;
-        });
+          entry.group_prices = gp;
+        } else {
+          entry.max_group_students = null;
+          entry.group_prices = null;
+        }
+        updatedSubjects = editIdx >= 0
+          ? currentSubjects.map((s, i) => i === editIdx ? entry : s)
+          : [...currentSubjects, entry];
       } else {
         // Check for duplicates
         const isDuplicate = currentSubjects.some(s => {
@@ -354,33 +356,24 @@ export default function ManageSubjects() {
                     </div>
                   </div>
                   {subject.max_group_students && (
-                    <div className="mt-3">
-                      <button
-                        onClick={() => setExpandedGroupPrices(prev => ({ ...prev, [`${subject.subject_id}-${subject.level}`]: !prev[`${subject.subject_id}-${subject.level}`] }))}
-                        className="flex items-center gap-1.5 text-xs text-purple-600 hover:text-purple-800 font-medium transition-colors"
-                      >
-                        <Users size={13} />
-                        Ver precios clases grupales (máx. {subject.max_group_students} alumnos)
-                        {expandedGroupPrices[`${subject.subject_id}-${subject.level}`] ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                      </button>
-                      {expandedGroupPrices[`${subject.subject_id}-${subject.level}`] && (
-                        <div className="mt-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                          <div className="space-y-1.5">
-                            {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
-                              const gp = subject.group_prices || {};
-                              const priceVal = gp[String(n)] ?? gp[n];
-                              return (
-                              <div key={n} className="flex items-center justify-between text-xs">
-                                <span className="text-gray-600 flex items-center gap-1"><Users size={11} /> {n} alumnos en clase:</span>
-                                <span className="font-semibold text-purple-700">
-                                  {priceVal ? `${priceVal}€/h por persona` : <span className="text-gray-400">No configurado</span>}
-                                </span>
-                              </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
+                    <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                      <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1">
+                        <Users size={12} /> Clases grupales (máx. {subject.max_group_students} alumnos)
+                      </p>
+                      <div className="space-y-1">
+                        {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
+                          const gp = subject.group_prices || {};
+                          const priceVal = gp[String(n)] ?? gp[n];
+                          return (
+                            <div key={n} className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">{n} alumnos:</span>
+                              <span className="font-semibold text-purple-700">
+                                {priceVal != null && priceVal !== '' ? `${priceVal}€/h por persona` : <span className="text-gray-400">No configurado</span>}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -513,8 +506,8 @@ export default function ManageSubjects() {
                       <span className="text-xs text-gray-600 w-24 shrink-0">{n} alumnos:</span>
                       <Input
                         type="number"
-                        value={groupPrices[n] || ''}
-                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [n]: e.target.value }))}
+                        value={groupPrices[n] !== undefined ? groupPrices[n] : (groupPrices[String(n)] || '')}
+                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [n]: e.target.value, [String(n)]: e.target.value }))}
                         placeholder="€/hora por persona"
                         className="h-8 text-sm"
                         min="0"
