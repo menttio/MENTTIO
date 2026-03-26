@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import SubjectsTour from '../components/teacher/SubjectsTour';
@@ -37,6 +37,8 @@ export default function ManageSubjects() {
   const [maxGroupStudents, setMaxGroupStudents] = useState('');
   const [groupPrices, setGroupPrices] = useState({ 2: '', 3: '', 4: '' });
   const [showTour, setShowTour] = useState(false);
+  const [levelFilter, setLevelFilter] = useState('all');
+  const [expandedGroupPrices, setExpandedGroupPrices] = useState({});
 
   useEffect(() => {
     loadData();
@@ -265,26 +267,43 @@ export default function ManageSubjects() {
 
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <div className="mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
             <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Asignaturas</h1>
-            <p className="text-gray-500 mt-2 text-sm">Gestiona las materias que impartes y sus precios</p>
+            <p className="text-gray-500 mt-1 text-sm">Gestiona las materias que impartes y sus precios</p>
           </div>
-          <div className="w-full">
-            <Button
-              onClick={handleAdd}
-              className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
-            >
-              <Plus size={18} className="mr-2" />
-              Añadir Asignatura
-            </Button>
+          <Button
+            onClick={handleAdd}
+            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
+          >
+            <Plus size={18} className="mr-2" />
+            Añadir Asignatura
+          </Button>
+        </div>
+
+        {/* Level filter tabs */}
+        {teacher?.subjects?.length > 0 && (
+          <div className="flex gap-2 mb-5 flex-wrap">
+            {['all', 'ESO', 'Bachillerato', 'Universidad'].map(lvl => (
+              <button
+                key={lvl}
+                onClick={() => setLevelFilter(lvl)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
+                  levelFilter === lvl
+                    ? 'bg-[#41f2c0] text-white border-[#41f2c0]'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-[#41f2c0]'
+                }`}
+              >
+                {lvl === 'all' ? 'Todas' : lvl}
+              </button>
+            ))}
           </div>
-          </div>
+        )}
 
       {/* Subjects Grid */}
       {teacher?.subjects?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 subjects-management">
-          {teacher.subjects.map((subject, idx) => (
+          {teacher.subjects.filter(s => levelFilter === 'all' || s.level === levelFilter).map((subject, idx) => (
             <motion.div
               key={`${subject.subject_id}-${subject.level}`}
               initial={{ opacity: 0, y: 20 }}
@@ -331,15 +350,29 @@ export default function ManageSubjects() {
                     </div>
                   </div>
                   {subject.max_group_students && (
-                    <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                      <p className="text-xs font-semibold text-purple-700 mb-2">Grupal · máx. {subject.max_group_students} alumnos</p>
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(subject.group_prices || {}).map(([n, p]) => (
-                          <span key={n} className="text-xs px-2 py-1 bg-white border border-purple-200 rounded-md text-purple-700">
-                            {n} alumnos: <strong>{p}€/h</strong>
-                          </span>
-                        ))}
-                      </div>
+                    <div className="mt-3">
+                      <button
+                        onClick={() => setExpandedGroupPrices(prev => ({ ...prev, [`${subject.subject_id}-${subject.level}`]: !prev[`${subject.subject_id}-${subject.level}`] }))}
+                        className="flex items-center gap-1.5 text-xs text-purple-600 hover:text-purple-800 font-medium transition-colors"
+                      >
+                        <Users size={13} />
+                        Ver precios clases grupales (máx. {subject.max_group_students} alumnos)
+                        {expandedGroupPrices[`${subject.subject_id}-${subject.level}`] ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                      </button>
+                      {expandedGroupPrices[`${subject.subject_id}-${subject.level}`] && (
+                        <div className="mt-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                          <div className="space-y-1.5">
+                            {Array.from({ length: subject.max_group_students - 1 }, (_, i) => i + 2).map(n => (
+                              <div key={n} className="flex items-center justify-between text-xs">
+                                <span className="text-gray-600 flex items-center gap-1"><Users size={11} /> {n} alumnos en clase:</span>
+                                <span className="font-semibold text-purple-700">
+                                  {subject.group_prices?.[n] ? `${subject.group_prices[n]}€/h por persona` : <span className="text-gray-400">No configurado</span>}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -452,12 +485,12 @@ export default function ManageSubjects() {
               <p className="text-xs text-gray-500 mb-3 mt-1">Si no configuras esto, no se ofrecerán clases grupales para esta asignatura.</p>
               <div className="mb-3">
                 <Label className="text-xs">Máximo de alumnos por grupo</Label>
-                <Select value={maxGroupStudents} onValueChange={setMaxGroupStudents}>
+                <Select value={maxGroupStudents || 'none'} onValueChange={(v) => setMaxGroupStudents(v === 'none' ? '' : v)}>
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Sin clases grupales" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={null}>Sin clases grupales</SelectItem>
+                    <SelectItem value="none">Sin clases grupales</SelectItem>
                     <SelectItem value="2">2 alumnos</SelectItem>
                     <SelectItem value="3">3 alumnos</SelectItem>
                     <SelectItem value="4">4 alumnos</SelectItem>
