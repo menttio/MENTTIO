@@ -86,10 +86,11 @@ export default function ManageSubjects() {
     setPrice(subject.price_per_hour.toString());
     setCustomSubjectName(subject.subject_id ? '' : subject.subject_name);
     setMaxGroupStudents(subject.max_group_students?.toString() || '');
+    const gp = subject.group_prices || {};
     setGroupPrices({
-      2: subject.group_prices?.[2]?.toString() || '',
-      3: subject.group_prices?.[3]?.toString() || '',
-      4: subject.group_prices?.[4]?.toString() || '',
+      2: (gp[2] ?? gp['2'] ?? '').toString(),
+      3: (gp[3] ?? gp['3'] ?? '').toString(),
+      4: (gp[4] ?? gp['4'] ?? '').toString(),
     });
     setShowDialog(true);
   };
@@ -362,14 +363,18 @@ export default function ManageSubjects() {
                       {expandedGroupPrices[`${subject.subject_id}-${subject.level}`] && (
                         <div className="mt-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
                           <div className="space-y-1.5">
-                            {Array.from({ length: subject.max_group_students - 1 }, (_, i) => i + 2).map(n => (
+                            {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
+                              const gp = subject.group_prices || {};
+                              const priceVal = gp[n] ?? gp[String(n)];
+                              return (
                               <div key={n} className="flex items-center justify-between text-xs">
                                 <span className="text-gray-600 flex items-center gap-1"><Users size={11} /> {n} alumnos en clase:</span>
                                 <span className="font-semibold text-purple-700">
-                                  {subject.group_prices?.[n] ? `${subject.group_prices[n]}€/h por persona` : <span className="text-gray-400">No configurado</span>}
+                                  {priceVal ? `${priceVal}€/h por persona` : <span className="text-gray-400">No configurado</span>}
                                 </span>
                               </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
                       )}
