@@ -97,123 +97,90 @@ export default function ManageSubjects() {
   };
 
   const handleSave = async () => {
-    // Validate custom subject name if "Otro" is selected
     if (selectedSubjectId === 'custom' && !customSubjectName.trim()) {
       alert('Por favor, escribe el nombre de la asignatura');
       return;
     }
-    
     if (!selectedSubjectId || !selectedLevel || !price) return;
 
     setSaving(true);
     try {
-      const selectedSubject = selectedSubjectId !== 'custom' 
+      // Fetch fresh teacher data to avoid stale closure
+      const user = await base44.auth.me();
+      const freshTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
+      if (!freshTeachers.length) return;
+      const freshTeacher = freshTeachers[0];
+
+      const selectedSubject = selectedSubjectId !== 'custom'
         ? allSubjects.find(s => s.id === selectedSubjectId)
         : null;
-      
-      const subjectName = selectedSubjectId === 'custom' 
+      const subjectName = selectedSubjectId === 'custom'
         ? customSubjectName.trim()
         : selectedSubject.name;
 
-      const currentSubjects = teacher.subjects || [];
+      // Build group prices object
+      const buildGroupPrices = () => {
+        if (!maxGroupStudents) return null;
+        const gp = {};
+        for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
+          const val = groupPrices[n] !== undefined ? groupPrices[n] : groupPrices[String(n)];
+          if (val !== '' && val != null) gp[String(n)] = parseFloat(val);
+        }
+        return gp;
+      };
 
+      const entry = {
+        subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+        subject_name: subjectName,
+        level: selectedLevel,
+        price_per_hour: parseFloat(price),
+        max_group_students: maxGroupStudents ? parseInt(maxGroupStudents) : null,
+        group_prices: buildGroupPrices(),
+      };
+
+      const currentSubjects = freshTeacher.subjects || [];
       let updatedSubjects;
+
       if (editingSubject) {
-        // Update existing — find exact index by matching all key fields
+        // Find by exact reference match
         const editIdx = currentSubjects.findIndex(s =>
           s.subject_name === editingSubject.subject_name &&
-          s.level === editingSubject.level &&
-          (s.subject_id || null) === (editingSubject.subject_id || null)
+          s.level === editingSubject.level
         );
-        const entry = {
-          subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
-          subject_name: subjectName,
-          level: selectedLevel,
-          price_per_hour: parseFloat(price)
-        };
-        if (maxGroupStudents) {
-          entry.max_group_students = parseInt(maxGroupStudents);
-          const gp = {};
-          for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-            const val = groupPrices[n] !== undefined ? groupPrices[n] : groupPrices[String(n)];
-            if (val !== '' && val !== undefined) gp[String(n)] = parseFloat(val);
-          }
-          entry.group_prices = gp;
+        if (editIdx >= 0) {
+          updatedSubjects = currentSubjects.map((s, i) => i === editIdx ? entry : s);
         } else {
-          entry.max_group_students = null;
-          entry.group_prices = null;
+          updatedSubjects = [...currentSubjects, entry];
         }
-        updatedSubjects = editIdx >= 0
-          ? currentSubjects.map((s, i) => i === editIdx ? entry : s)
-          : [...currentSubjects, entry];
       } else {
-        // Check for duplicates
-        const isDuplicate = currentSubjects.some(s => {
-          const sIdentifier = s.subject_id || s.subject_name;
-          const newIdentifier = selectedSubjectId !== 'custom' ? selectedSubjectId : subjectName;
-          return sIdentifier === newIdentifier && s.level === selectedLevel;
-        });
-
+        const isDuplicate = currentSubjects.some(s =>
+          (s.subject_id ? s.subject_id === entry.subject_id : s.subject_name === subjectName) &&
+          s.level === selectedLevel
+        );
         if (isDuplicate) {
-          alert('Ya tienes esta asignatura con este nivel. Por favor, edita la existente o elige un nivel diferente.');
+          alert('Ya tienes esta asignatura con este nivel.');
           setSaving(false);
           return;
         }
-
-        // Add new
-        const newEntry = {
-          subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
-          subject_name: subjectName,
-          level: selectedLevel,
-          price_per_hour: parseFloat(price)
-        };
-        if (maxGroupStudents) {
-          newEntry.max_group_students = parseInt(maxGroupStudents);
-          const gp = {};
-          for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-            if (groupPrices[n] !== '' && groupPrices[n] !== undefined) gp[String(n)] = parseFloat(groupPrices[n]);
-          }
-          newEntry.group_prices = gp;
-        }
-        updatedSubjects = [...currentSubjects, newEntry];
+        updatedSubjects = [...currentSubjects, entry];
       }
 
-      await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+      await base44.entities.Teacher.update(freshTeacher.id, { subjects: updatedSubjects });
 
       // Update all students that have this teacher assigned
-      const user = await base44.auth.me();
       const allStudents = await base44.entities.Student.list();
-      
       for (const student of allStudents) {
-        if (student.assigned_teachers?.length > 0) {
-          const hasThisTeacher = student.assigned_teachers.some(at => at.teacher_id === teacher.id);
-          
-          if (hasThisTeacher) {
-            // Update student's assigned_teachers array to match teacher's current subjects
-            const updatedAssignedTeachers = student.assigned_teachers.map(at => {
-              if (at.teacher_id === teacher.id) {
-                // Check if this subject still exists in teacher's subjects
-                const teacherSubject = updatedSubjects.find(s => s.subject_id === at.subject_id);
-                if (teacherSubject) {
-                  return {
-                    ...at,
-                    subject_name: teacherSubject.subject_name
-                  };
-                }
-                return null; // Mark for removal
-              }
-              return at;
-            }).filter(at => at !== null); // Remove marked entries
-
-            await base44.entities.Student.update(student.id, {
-              assigned_teachers: updatedAssignedTeachers
-            });
-          }
-        }
+        if (!student.assigned_teachers?.some(at => at.teacher_id === freshTeacher.id)) continue;
+        const updatedAssignedTeachers = student.assigned_teachers.map(at => {
+          if (at.teacher_id !== freshTeacher.id) return at;
+          const teacherSubject = updatedSubjects.find(s => s.subject_id === at.subject_id);
+          return teacherSubject ? { ...at, subject_name: teacherSubject.subject_name } : null;
+        }).filter(Boolean);
+        await base44.entities.Student.update(student.id, { assigned_teachers: updatedAssignedTeachers });
       }
 
-      await loadData();
       setShowDialog(false);
+      await loadData();
     } catch (error) {
       console.error(error);
     } finally {
@@ -221,9 +188,11 @@ export default function ManageSubjects() {
     }
   };
 
-  const handleDelete = async (subjectId, level) => {
+  const handleDelete = async (subjectId, subjectName, level) => {
     try {
-      const updatedSubjects = (teacher.subjects || []).filter(s => !(s.subject_id === subjectId && s.level === level));
+      const updatedSubjects = (teacher.subjects || []).filter(s =>
+        !(s.level === level && (subjectId ? s.subject_id === subjectId : s.subject_name === subjectName))
+      );
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
 
       // Remove this subject from all students that have this teacher assigned
@@ -341,7 +310,7 @@ export default function ManageSubjects() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                        onClick={() => handleDelete(subject.subject_id, subject.level)}
+                        onClick={() => handleDelete(subject.subject_id, subject.subject_name, subject.level)}
                       >
                         <Trash2 size={14} />
                       </Button>
