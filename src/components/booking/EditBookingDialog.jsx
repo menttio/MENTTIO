@@ -297,16 +297,21 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
 
       // Notificar a n8n sobre la modificación
       try {
+        // Fetch phones from Teacher/Student profiles since Booking doesn't store them
+        const [teacherProfiles, studentProfiles] = await Promise.all([
+          base44.entities.Teacher.filter({ user_email: booking.teacher_email }),
+          base44.entities.Student.filter({ user_email: booking.student_email })
+        ]);
         await base44.functions.invoke('notifyN8N', {
           bookingData: {
             booking_id: booking.id,
             student_id: booking.student_id,
             student_name: booking.student_name,
             student_email: booking.student_email,
-            student_phone: booking.student_phone || '',
+            student_phone: studentProfiles[0]?.phone || '',
             teacher_name: booking.teacher_name,
             teacher_email: booking.teacher_email,
-            teacher_phone: booking.teacher_phone || '',
+            teacher_phone: teacherProfiles[0]?.phone || '',
             subject_name: booking.subject_name,
             price: booking.price,
             date: newDateStr,
