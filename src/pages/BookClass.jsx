@@ -193,13 +193,19 @@ export default function BookClass() {
   // Open group bookings for the selected teacher+subject (not full yet)
   const openGroupBookings = useMemo(() => {
     if (!selectedTeacher || !selectedSubject) return [];
-    return allScheduledBookings.filter(b =>
+    const result = allScheduledBookings.filter(b =>
       b.class_type === 'group' &&
       b.teacher_id === selectedTeacher.id &&
       b.subject_id === selectedSubject &&
       (b.enrolled_students?.length || 0) < (b.max_students || 4) &&
       !b.enrolled_students?.some(s => s.student_id === student?.id)
     );
+    console.log('🟣 openGroupBookings:', result);
+    console.log('🔍 selectedTeacher.id:', selectedTeacher?.id, 'selectedSubject:', selectedSubject);
+    console.log('📋 allScheduledBookings group:', allScheduledBookings.filter(b => b.class_type === 'group').map(b => ({
+      id: b.id, teacher_id: b.teacher_id, subject_id: b.subject_id, enrolled: b.enrolled_students?.length
+    })));
+    return result;
   }, [selectedTeacher, selectedSubject, allScheduledBookings, student]);
 
   // For a given date+time, find the open group booking if it exists
