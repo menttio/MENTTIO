@@ -104,6 +104,10 @@ export default function ManageSubjects() {
     if (!selectedSubjectId || !selectedLevel || !price) return;
 
     setSaving(true);
+    console.log('🔵 handleSave called');
+    console.log('🔵 maxGroupStudents:', maxGroupStudents, typeof maxGroupStudents);
+    console.log('🔵 groupPrices:', JSON.stringify(groupPrices));
+    console.log('🔵 price:', price, 'selectedLevel:', selectedLevel, 'selectedSubjectId:', selectedSubjectId);
     try {
       // Fetch fresh teacher data to avoid stale closure
       const user = await base44.auth.me();
@@ -132,6 +136,7 @@ export default function ManageSubjects() {
       };
 
       const builtGroupPrices = buildGroupPrices();
+      console.log('🔵 builtGroupPrices:', JSON.stringify(builtGroupPrices));
 
       const entry = {
         subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
@@ -169,7 +174,10 @@ export default function ManageSubjects() {
         updatedSubjects = [...currentSubjects, entry];
       }
 
+      console.log('🔵 entry to save:', JSON.stringify(entry));
+      console.log('🔵 updatedSubjects:', JSON.stringify(updatedSubjects));
       await base44.entities.Teacher.update(freshTeacher.id, { subjects: updatedSubjects });
+      console.log('✅ Teacher updated successfully');
 
       // Update all students that have this teacher assigned
       const allStudents = await base44.entities.Student.list();
