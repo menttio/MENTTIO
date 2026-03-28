@@ -69,9 +69,12 @@ export default function BookingCard({
 
   const isGroup = booking.class_type === 'group';
   const enrolledCount = isGroup ? (booking.enrolled_students?.length || 1) : 1;
-  const displayPrice = isGroup
+  const pricePerStudent = isGroup
     ? (getGroupPrice(enrolledCount, (booking.duration_minutes || 60) / 60) || booking.price)
     : booking.price;
+  const displayPrice = isGroup && userRole === 'teacher'
+    ? pricePerStudent * enrolledCount
+    : pricePerStudent;
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
   const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
@@ -452,7 +455,8 @@ export default function BookingCard({
           <div className="flex items-center justify-between mb-4">
             <div className="text-lg font-semibold text-[#41f2c0]">
               {displayPrice}€
-              {isGroup && <span className="text-xs text-gray-400 font-normal ml-1">/ alumno</span>}
+              {isGroup && userRole === 'student' && <span className="text-xs text-gray-400 font-normal ml-1">/ alumno</span>}
+              {isGroup && userRole === 'teacher' && <span className="text-xs text-gray-400 font-normal ml-1">total ({enrolledCount} alumnos)</span>}
             </div>
             {booking.payment_status === 'paid' && (
               <Badge className="bg-green-100 text-green-700 pointer-events-none">
