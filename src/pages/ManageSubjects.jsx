@@ -35,7 +35,7 @@ export default function ManageSubjects() {
   const [customSubjectName, setCustomSubjectName] = useState('');
   const [saving, setSaving] = useState(false);
   const [maxGroupStudents, setMaxGroupStudents] = useState('');
-  const [groupPrices, setGroupPrices] = useState({ 2: '', 3: '', 4: '' });
+  const [groupPrices, setGroupPrices] = useState({ '2': '', '3': '', '4': '' });
   const [showTour, setShowTour] = useState(false);
   const [levelFilter, setLevelFilter] = useState('all');
   const [expandedGroupPrices, setExpandedGroupPrices] = useState({});
@@ -75,7 +75,7 @@ export default function ManageSubjects() {
     setPrice('');
     setCustomSubjectName('');
     setMaxGroupStudents('');
-    setGroupPrices({ 2: '', 3: '', 4: '' });
+    setGroupPrices({ '2': '', '3': '', '4': '' });
     setShowDialog(true);
   };
 
@@ -89,9 +89,9 @@ export default function ManageSubjects() {
     setMaxGroupStudents(maxG);
     const gp = subject.group_prices || {};
     setGroupPrices({
-      2: (gp['2'] !== undefined ? gp['2'] : (gp[2] !== undefined ? gp[2] : '')).toString(),
-      3: (gp['3'] !== undefined ? gp['3'] : (gp[3] !== undefined ? gp[3] : '')).toString(),
-      4: (gp['4'] !== undefined ? gp['4'] : (gp[4] !== undefined ? gp[4] : '')).toString(),
+      '2': (gp['2'] ?? gp[2] ?? '').toString(),
+      '3': (gp['3'] ?? gp[3] ?? '').toString(),
+      '4': (gp['4'] ?? gp[4] ?? '').toString(),
     });
     setShowDialog(true);
   };
@@ -121,13 +121,17 @@ export default function ManageSubjects() {
       // Build group prices object
       const buildGroupPrices = () => {
         if (!maxGroupStudents) return null;
+        const max = parseInt(maxGroupStudents);
+        if (isNaN(max) || max < 2) return null;
         const gp = {};
-        for (let n = 2; n <= parseInt(maxGroupStudents); n++) {
-          const val = groupPrices[n] !== undefined ? groupPrices[n] : groupPrices[String(n)];
+        for (let n = 2; n <= max; n++) {
+          const val = groupPrices[String(n)];
           if (val !== '' && val != null) gp[String(n)] = parseFloat(val);
         }
-        return gp;
+        return Object.keys(gp).length > 0 ? gp : null;
       };
+
+      const builtGroupPrices = buildGroupPrices();
 
       const entry = {
         subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
@@ -135,7 +139,7 @@ export default function ManageSubjects() {
         level: selectedLevel,
         price_per_hour: parseFloat(price),
         max_group_students: maxGroupStudents ? parseInt(maxGroupStudents) : null,
-        group_prices: buildGroupPrices(),
+        group_prices: builtGroupPrices,
       };
 
       const currentSubjects = freshTeacher.subjects || [];
@@ -475,8 +479,8 @@ export default function ManageSubjects() {
                       <span className="text-xs text-gray-600 w-24 shrink-0">{n} alumnos:</span>
                       <Input
                         type="number"
-                        value={groupPrices[n] !== undefined ? groupPrices[n] : (groupPrices[String(n)] || '')}
-                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [n]: e.target.value, [String(n)]: e.target.value }))}
+                        value={groupPrices[String(n)] ?? ''}
+                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [String(n)]: e.target.value }))}
                         placeholder="€/hora por persona"
                         className="h-8 text-sm"
                         min="0"
