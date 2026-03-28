@@ -76,11 +76,8 @@ export default function BookClass() {
 
         const allBookings = await base44.entities.Booking.filter({ status: 'scheduled' });
         setAllScheduledBookings(allBookings);
-        // Block slots with: individual bookings OR full group bookings
-        setExistingBookings(allBookings.filter(b =>
-          b.class_type !== 'group' ||
-          (b.enrolled_students?.length || 0) >= (b.max_students || 4)
-        ));
+        // existingBookings = all scheduled (used differently per classType in availableSlots)
+        setExistingBookings(allBookings);
 
         // Load Google Calendar events if teacher has it connected
         setGoogleCalendarEvents([]);
@@ -216,9 +213,17 @@ export default function BookClass() {
     
     const slots = {};
     const teacherAvailability = availabilities.filter(a => a.teacher_id === selectedTeacher.id);
-    // For individual: block slots with any booking (individual or group that is full)
-    // For group: block slots with individual bookings; group slots still show but as "join"
-    const teacherBookings = existingBookings.filter(b => b.teacher_id === selectedTeacher.id);
+    // For group mode: only block slots that have individual bookings OR full group bookings
+    // For individual mode: block slots with ANY booking (individual or group, full or not)
+    const teacherBookings = existingBookings.filter(b => {
+      if (b.teacher_id !== selectedTeacher.id) return false;
+      if (classType === 'group') {
+        // In group mode, open (non-full) group bookings don't block — student can join them
+        const isFull = (b.enrolled_students?.length || 0) >= (b.max_students || 4);
+        return b.class_type !== 'group' || isFull;
+      }
+      return true; // individual mode: all bookings block
+    });
     
     const now = new Date();
     const minDate = addDays(now, 1);
@@ -298,7 +303,7 @@ export default function BookClass() {
     }
     
     return slots;
-  }, [selectedTeacher, availabilities, existingBookings, googleCalendarEvents]);
+  }, [selectedTeacher, availabilities, existingBookings, googleCalendarEvents, classType]);
 
   const handleSlotSelect = (date, time) => {
     setSelectedDate(date);
