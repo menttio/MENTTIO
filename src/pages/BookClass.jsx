@@ -193,20 +193,16 @@ export default function BookClass() {
   // Open group bookings for the selected teacher+subject (not full yet)
   const openGroupBookings = useMemo(() => {
     if (!selectedTeacher || !selectedSubject) return [];
-    const result = allScheduledBookings.filter(b =>
+    // Match by subject_id OR by subject_name (fallback for bookings created with different id format)
+    const selectedSubjectName = subjects.find(s => s.id === selectedSubject)?.name;
+    return allScheduledBookings.filter(b =>
       b.class_type === 'group' &&
       b.teacher_id === selectedTeacher.id &&
-      b.subject_id === selectedSubject &&
+      (b.subject_id === selectedSubject || (selectedSubjectName && b.subject_name === selectedSubjectName)) &&
       (b.enrolled_students?.length || 0) < (b.max_students || 4) &&
       !b.enrolled_students?.some(s => s.student_id === student?.id)
     );
-    console.log('🟣 openGroupBookings:', result);
-    console.log('🔍 selectedTeacher.id:', selectedTeacher?.id, 'selectedSubject:', selectedSubject);
-    console.log('📋 allScheduledBookings group:', allScheduledBookings.filter(b => b.class_type === 'group').map(b => ({
-      id: b.id, teacher_id: b.teacher_id, subject_id: b.subject_id, enrolled: b.enrolled_students?.length
-    })));
-    return result;
-  }, [selectedTeacher, selectedSubject, allScheduledBookings, student]);
+  }, [selectedTeacher, selectedSubject, allScheduledBookings, student, subjects]);
 
   // For a given date+time, find the open group booking if it exists
   const getGroupBookingForSlot = (dateStr, time) => {
@@ -295,6 +291,7 @@ export default function BookClass() {
               )
               .map(b => b.start_time)
           : [];
+        // Also keep these slots unblocked in teacherBookings (covers the Google Calendar bypass)
 
         const eventsForDay = googleCalendarEvents.filter(e => {
           if (!e.start || !e.end) return false;
