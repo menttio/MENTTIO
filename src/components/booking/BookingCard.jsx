@@ -80,7 +80,7 @@ export default function BookingCard({
   // Students need 24h advance; teachers can always delete (even past classes)
   const canModify = userRole === 'teacher' 
     ? !isCancelled
-    : is24HoursBefore && !isCompleted && !isCancelled;
+    : is24HoursBefore && !isCompleted && !isCancelled && !isGroup;
 
   // Load teacher info and review for completed classes
   React.useEffect(() => {
