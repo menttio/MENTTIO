@@ -82,8 +82,8 @@ export default function BookingCard({
     ? !isCancelled
     : is24HoursBefore && !isCompleted && !isCancelled && !isGroup;
 
-  // Para grupales, el alumno puede salirse sin límite de 24h
-  const canLeaveGroup = isGroup && userRole === 'student' && !isCompleted && !isCancelled;
+  // Para grupales, el alumno puede salirse si faltan más de 24h
+  const canLeaveGroup = isGroup && userRole === 'student' && is24HoursBefore && !isCompleted && !isCancelled;
 
   // Load teacher info and review for completed classes
   React.useEffect(() => {
