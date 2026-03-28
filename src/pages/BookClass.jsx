@@ -277,6 +277,19 @@ export default function BookClass() {
             });
           });
 
+        // In group mode, skip Google Calendar events that correspond to open (non-full) group bookings
+        // so that the slot remains visible for students to join
+        const openGroupTimesForDay = classType === 'group'
+          ? existingBookings
+              .filter(b =>
+                b.teacher_id === selectedTeacher?.id &&
+                b.class_type === 'group' &&
+                b.date === dateStr &&
+                (b.enrolled_students?.length || 0) < (b.max_students || 4)
+              )
+              .map(b => b.start_time)
+          : [];
+
         const eventsForDay = googleCalendarEvents.filter(e => {
           if (!e.start || !e.end) return false;
           const eventDate = format(parseISO(e.start), 'yyyy-MM-dd');
@@ -287,6 +300,8 @@ export default function BookClass() {
           const eventStart = parseISO(e.start);
           const eventEnd = parseISO(e.end);
           slots[dateStr]?.forEach(slot => {
+            // Skip blocking if this slot has an open group booking (in group mode)
+            if (openGroupTimesForDay.includes(slot)) return;
             const [slotHour, slotMin] = slot.split(':').map(Number);
             const slotStart = new Date(dateStr);
             slotStart.setHours(slotHour, slotMin, 0, 0);
