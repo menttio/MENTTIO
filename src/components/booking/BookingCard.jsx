@@ -82,6 +82,9 @@ export default function BookingCard({
     ? !isCancelled
     : is24HoursBefore && !isCompleted && !isCancelled && !isGroup;
 
+  // Para grupales, el alumno puede salirse sin límite de 24h
+  const canLeaveGroup = isGroup && userRole === 'student' && !isCompleted && !isCancelled;
+
   // Load teacher info and review for completed classes
   React.useEffect(() => {
     const loadData = async () => {
@@ -360,7 +363,7 @@ export default function BookingCard({
                       Cambiar fecha/hora
                     </DropdownMenuItem>
                   )}
-                  {(canModify || (isGroup && userRole === 'student' && !isCompleted)) && (
+                  {(canModify || canLeaveGroup) && (
                     <DropdownMenuItem 
                       onClick={() => setShowCancelDialog(true)}
                       className="text-red-500 focus:text-red-500"
