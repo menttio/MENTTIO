@@ -142,22 +142,9 @@ export default function ManageSubjects() {
         group_prices: builtGroupPrices,
       };
 
-      const currentSubjects = freshTeacher.subjects || [];
-      let updatedSubjects;
-
-      if (editingSubject) {
-        // Find by exact reference match
-        const editIdx = currentSubjects.findIndex(s =>
-          s.subject_name === editingSubject.subject_name &&
-          s.level === editingSubject.level
-        );
-        if (editIdx >= 0) {
-          updatedSubjects = currentSubjects.map((s, i) => i === editIdx ? entry : s);
-        } else {
-          updatedSubjects = [...currentSubjects, entry];
-        }
-      } else {
-        const isDuplicate = currentSubjects.some(s =>
+      // Check for duplicates when adding new
+      if (!editingSubject) {
+        const isDuplicate = (teacher?.subjects || []).some(s =>
           (s.subject_id ? s.subject_id === entry.subject_id : s.subject_name === subjectName) &&
           s.level === selectedLevel
         );
@@ -166,13 +153,26 @@ export default function ManageSubjects() {
           setSaving(false);
           return;
         }
-        updatedSubjects = [...currentSubjects, entry];
       }
 
-      await base44.entities.Teacher.update(freshTeacher.id, { subjects: updatedSubjects });
+      // Build finalSubjects from LOCAL state (preserves group_prices/max_group_students of all cards)
+      const localSubjects = teacher?.subjects || [];
+      let finalSubjects;
+      if (editingSubject) {
+        const editIdx = localSubjects.findIndex(s =>
+          s.subject_name === editingSubject.subject_name && s.level === editingSubject.level
+        );
+        finalSubjects = editIdx >= 0
+          ? localSubjects.map((s, i) => i === editIdx ? entry : s)
+          : [...localSubjects, entry];
+      } else {
+        finalSubjects = [...localSubjects, entry];
+      }
 
-      // Update local state immediately so UI reflects changes without waiting for BD round-trip
-      setTeacher(prev => ({ ...prev, subjects: updatedSubjects }));
+      await base44.entities.Teacher.update(freshTeacher.id, { subjects: finalSubjects });
+
+      // Update local state immediately
+      setTeacher(prev => ({ ...prev, subjects: finalSubjects }));
 
       // Update all students that have this teacher assigned
       const allStudents = await base44.entities.Student.list();
@@ -180,7 +180,7 @@ export default function ManageSubjects() {
         if (!student.assigned_teachers?.some(at => at.teacher_id === freshTeacher.id)) continue;
         const updatedAssignedTeachers = student.assigned_teachers.map(at => {
           if (at.teacher_id !== freshTeacher.id) return at;
-          const teacherSubject = updatedSubjects.find(s => s.subject_id === at.subject_id);
+          const teacherSubject = finalSubjects.find(s => s.subject_id === at.subject_id);
           return teacherSubject ? { ...at, subject_name: teacherSubject.subject_name } : null;
         }).filter(Boolean);
         await base44.entities.Student.update(student.id, { assigned_teachers: updatedAssignedTeachers });
