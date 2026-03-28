@@ -40,6 +40,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import PaymentDialog from './PaymentDialog';
+import { getGroupPrice } from './GroupPricingInfo';
 
 export default function BookingCard({ 
   booking, 
@@ -67,6 +68,10 @@ export default function BookingCard({
   }, [booking?.id, booking?.files]);
 
   const isGroup = booking.class_type === 'group';
+  const enrolledCount = isGroup ? (booking.enrolled_students?.length || 1) : 1;
+  const displayPrice = isGroup
+    ? (getGroupPrice(enrolledCount, (booking.duration_minutes || 60) / 60) || booking.price)
+    : booking.price;
   const bookingDate = parseISO(booking.date);
   const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
   const bookingEndDateTime = new Date(`${booking.date}T${booking.end_time}`);
@@ -443,10 +448,11 @@ export default function BookingCard({
         )}
 
         {/* Price & Payment Status */}
-        {booking.price && (
+        {displayPrice && (
           <div className="flex items-center justify-between mb-4">
             <div className="text-lg font-semibold text-[#41f2c0]">
-              {booking.price}€
+              {displayPrice}€
+              {isGroup && <span className="text-xs text-gray-400 font-normal ml-1">/ alumno</span>}
             </div>
             {booking.payment_status === 'paid' && (
               <Badge className="bg-green-100 text-green-700 pointer-events-none">
