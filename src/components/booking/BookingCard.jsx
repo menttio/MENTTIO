@@ -354,20 +354,20 @@ export default function BookingCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {canModify && (
-                    <>
-                      <DropdownMenuItem onClick={() => onEdit?.(booking)}>
-                        <Edit size={14} className="mr-2" />
-                        Cambiar fecha/hora
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => setShowCancelDialog(true)}
-                        className="text-red-500 focus:text-red-500"
-                      >
-                        <Trash2 size={14} className="mr-2" />
-                        Cancelar clase
-                      </DropdownMenuItem>
-                    </>
+                  {canModify && !isGroup && (
+                    <DropdownMenuItem onClick={() => onEdit?.(booking)}>
+                      <Edit size={14} className="mr-2" />
+                      Cambiar fecha/hora
+                    </DropdownMenuItem>
+                  )}
+                  {(canModify || (isGroup && userRole === 'student' && !isCompleted)) && (
+                    <DropdownMenuItem 
+                      onClick={() => setShowCancelDialog(true)}
+                      className="text-red-500 focus:text-red-500"
+                    >
+                      <Trash2 size={14} className="mr-2" />
+                      {isGroup && userRole === 'student' ? 'Salir de la clase' : 'Cancelar clase'}
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={() => setShowUploadDialog(true)}>
                     <FileUp size={14} className="mr-2" />
@@ -582,8 +582,8 @@ export default function BookingCard({
           </div>
         )}
 
-        {/* Modification Warning */}
-        {!canModify && !isCompleted && !isCancelled && userRole === 'student' && (
+        {/* Modification Warning - solo para clases individuales */}
+        {!canModify && !isCompleted && !isCancelled && userRole === 'student' && !isGroup && (
           <div className="text-xs text-orange-500 mt-4 bg-orange-50 p-2 rounded-lg">
             ⚠️ No se puede modificar a menos de 24h de la clase
           </div>
