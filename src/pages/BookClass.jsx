@@ -76,7 +76,11 @@ export default function BookClass() {
 
         const allBookings = await base44.entities.Booking.filter({ status: 'scheduled' });
         setAllScheduledBookings(allBookings);
-        setExistingBookings(allBookings.filter(b => b.class_type !== 'group')); // solo individuales bloquean slots normalmente
+        // Block slots with: individual bookings OR full group bookings
+        setExistingBookings(allBookings.filter(b =>
+          b.class_type !== 'group' ||
+          (b.enrolled_students?.length || 0) >= (b.max_students || 4)
+        ));
 
         // Load Google Calendar events if teacher has it connected
         setGoogleCalendarEvents([]);
@@ -482,7 +486,8 @@ export default function BookClass() {
             price: calculatePrice(),
             date: format(selectedDate, 'yyyy-MM-dd'),
             start_time: selectedTime,
-            status: 'scheduled'
+            status: 'new',
+            class_type: classType || 'individual'
           }
         });
       } catch (webhookError) {

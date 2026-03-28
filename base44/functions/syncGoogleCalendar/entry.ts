@@ -80,13 +80,19 @@ Deno.serve(async (req) => {
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
     const endDateTime = `${booking.date}T${booking.end_time}:00`;
 
-    const eventTitle = targetUserType === 'teacher' 
-      ? `Clase de ${booking.subject_name} con ${booking.student_name}`
-      : `Clase de ${booking.subject_name} con ${booking.teacher_name}`;
+    const isGroup = booking.class_type === 'group';
 
-    const eventDescription = targetUserType === 'teacher' 
-      ? `Clase con ${booking.student_name}`
-      : `Clase con ${booking.teacher_name}`;
+    const eventTitle = isGroup
+      ? `Clase grupal de ${booking.subject_name}`
+      : targetUserType === 'teacher'
+        ? `Clase de ${booking.subject_name} con ${booking.student_name}`
+        : `Clase de ${booking.subject_name} con ${booking.teacher_name}`;
+
+    const eventDescription = isGroup
+      ? `Clase grupal de ${booking.subject_name} (${booking.enrolled_students?.length || 1} alumno(s))`
+      : targetUserType === 'teacher'
+        ? `Clase con ${booking.student_name}`
+        : `Clase con ${booking.teacher_name}`;
 
     const event = {
       summary: eventTitle,
