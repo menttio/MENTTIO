@@ -16,14 +16,14 @@ Deno.serve(async (req) => {
 
     console.log('Enviando datos a n8n para crear usuario corporativo');
 
-    // Enviar datos a n8n usando GET con query params (requerido por el workflow de n8n)
-    const url = new URL(webhookUrl);
-    url.searchParams.append('nombre', nombre);
-    url.searchParams.append('apellidos', apellidos);
-    if (email_personal) url.searchParams.append('email', email_personal);
+    // Enviar datos a n8n usando POST con body JSON (evitar PII en query params)
+    const body = { nombre, apellidos };
+    if (email_personal) body.email = email_personal;
 
-    const response = await fetch(url.toString(), {
-      method: 'GET'
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
 
     console.log('Response status:', response.status);
