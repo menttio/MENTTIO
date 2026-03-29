@@ -85,7 +85,9 @@ export default function ManageSubjects() {
     setSelectedLevel(subject.level || '');
     setPrice((subject.price_per_hour ?? '').toString());
     setCustomSubjectName(subject.subject_id ? '' : subject.subject_name);
-    const maxG = subject.max_group_students?.toString() || '';
+    const maxG = subject.max_group_students != null && parseInt(subject.max_group_students) >= 2
+      ? String(parseInt(subject.max_group_students))
+      : '';
     setMaxGroupStudents(maxG);
     const gp = subject.group_prices || {};
     setGroupPrices({
@@ -126,9 +128,11 @@ export default function ManageSubjects() {
         const gp = {};
         for (let n = 2; n <= max; n++) {
           const val = groupPrices[String(n)];
-          if (val !== '' && val != null) gp[String(n)] = parseFloat(val);
+          if (val !== '' && val != null && val !== undefined) {
+            gp[String(n)] = parseFloat(val);
+          }
         }
-        return Object.keys(gp).length > 0 ? gp : null;
+        return Object.keys(gp).length > 0 ? gp : {};
       };
 
       const builtGroupPrices = buildGroupPrices();
