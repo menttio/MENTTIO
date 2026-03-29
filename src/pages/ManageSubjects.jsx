@@ -51,6 +51,10 @@ export default function ManageSubjects() {
       
       if (teachers.length > 0) {
         const teacherData = teachers[0];
+        console.log('📚 [ManageSubjects] loadData - subjects from DB:', JSON.stringify(teacherData.subjects, null, 2));
+        teacherData.subjects?.forEach((s, i) => {
+          console.log(`  Subject[${i}] ${s.subject_name} (${s.level}): max_group_students=${s.max_group_students} (type=${typeof s.max_group_students}), group_prices=`, s.group_prices);
+        });
         setTeacher(teacherData);
         
         // Show tour if not completed and has subjects
@@ -173,7 +177,9 @@ export default function ManageSubjects() {
         finalSubjects = [...baseSubjects, entry];
       }
 
+      console.log('💾 [ManageSubjects] handleSave - saving finalSubjects:', JSON.stringify(finalSubjects, null, 2));
       await base44.entities.Teacher.update(freshTeacher.id, { subjects: finalSubjects });
+      console.log('✅ [ManageSubjects] handleSave - saved successfully');
 
       // Update local state immediately
       setTeacher(prev => ({ ...prev, subjects: finalSubjects }));
