@@ -53,10 +53,9 @@ export default function CorporateLoginCallback() {
             throw new Error('No se pudo crear la cuenta corporativa. Inténtalo de nuevo.');
           }
 
-          // Actualizar localStorage con las credenciales reales
+          // Actualizar localStorage con las credenciales reales (sin contraseña)
           localStorage.setItem('corporate_credentials', JSON.stringify({
             email: corpResponse.data.email,
-            password: corpResponse.data.password,
             signup_data: storedData.signup_data,
             subscription_plan: storedData.subscription_plan,
             pending_corporate: false,
@@ -64,7 +63,6 @@ export default function CorporateLoginCallback() {
 
           setCredentials({
             email: corpResponse.data.email,
-            password: corpResponse.data.password,
           });
           setPhase('show_credentials');
           // Auto-logout after 5 seconds so user can log in with corporate account
@@ -140,14 +138,14 @@ export default function CorporateLoginCallback() {
           }
         }
 
-        // Notificar nuevo profesor al webhook de n8n
+        // Notificar nuevo profesor al webhook de n8n (vía función backend segura)
         try {
-          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
-          nuevoProfesorUrl.searchParams.append('nombre', signup_data.first_name);
-          nuevoProfesorUrl.searchParams.append('apellidos', signup_data.last_name);
-          nuevoProfesorUrl.searchParams.append('telefono', signup_data.phone);
-          nuevoProfesorUrl.searchParams.append('correo_electronico', signup_data.email_personal);
-          await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
+          await base44.functions.invoke('notifyNuevoProfesor', {
+            nombre: signup_data.first_name,
+            apellidos: signup_data.last_name,
+            telefono: signup_data.phone,
+            correo_electronico: signup_data.email_personal
+          });
         } catch (webhookErr) {
           console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
         }
