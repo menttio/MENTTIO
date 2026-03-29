@@ -159,18 +159,18 @@ export default function ManageSubjects() {
         }
       }
 
-      // Build finalSubjects from LOCAL state (preserves group_prices/max_group_students of all cards)
-      const localSubjects = teacher?.subjects || [];
+      // Build finalSubjects from FRESH DB data (avoids stale closure losing group_prices of other subjects)
+      const baseSubjects = freshTeacher.subjects || [];
       let finalSubjects;
       if (editingSubject) {
-        const editIdx = localSubjects.findIndex(s =>
+        const editIdx = baseSubjects.findIndex(s =>
           s.subject_name === editingSubject.subject_name && s.level === editingSubject.level
         );
         finalSubjects = editIdx >= 0
-          ? localSubjects.map((s, i) => i === editIdx ? entry : s)
-          : [...localSubjects, entry];
+          ? baseSubjects.map((s, i) => i === editIdx ? entry : s)
+          : [...baseSubjects, entry];
       } else {
-        finalSubjects = [...localSubjects, entry];
+        finalSubjects = [...baseSubjects, entry];
       }
 
       await base44.entities.Teacher.update(freshTeacher.id, { subjects: finalSubjects });
