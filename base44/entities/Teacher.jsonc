@@ -1,0 +1,219 @@
+{
+  "name": "Teacher",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email del usuario asociado"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Nombre completo del profesor"
+    },
+    "phone": {
+      "type": "string",
+      "description": "N\u00famero de tel\u00e9fono"
+    },
+    "education": {
+      "type": "string",
+      "description": "Formaci\u00f3n acad\u00e9mica"
+    },
+    "experience_years": {
+      "type": "number",
+      "description": "A\u00f1os de experiencia"
+    },
+    "profile_photo": {
+      "type": "string",
+      "description": "URL de la foto de perfil"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Biograf\u00eda o descripci\u00f3n del profesor"
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subject_id": {
+            "type": "string"
+          },
+          "subject_name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "ESO",
+              "Bachillerato",
+              "Universidad"
+            ]
+          },
+          "price_per_hour": {
+            "type": "number"
+          },
+          "max_group_students": {
+            "type": "number",
+            "description": "M\u00e1ximo de alumnos por clase grupal (2-4)"
+          },
+          "group_prices": {
+            "type": "object",
+            "description": "Precios por persona seg\u00fan n\u00famero de alumnos en grupo",
+            "additionalProperties": true
+          }
+        }
+      },
+      "description": "Asignaturas que imparte con niveles y precios"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Valoraci\u00f3n media del profesor"
+    },
+    "total_classes": {
+      "type": "number",
+      "description": "Total de clases impartidas"
+    },
+    "teaching_methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "M\u00e9todos de ense\u00f1anza (ej: Visual, Pr\u00e1ctico, Te\u00f3rico)"
+    },
+    "specializations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Especializaciones o \u00e1reas de expertise"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Idiomas que habla"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Certificaciones y t\u00edtulos"
+    },
+    "subscription_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si la suscripci\u00f3n est\u00e1 activa"
+    },
+    "subscription_expires": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de expiraci\u00f3n de la suscripci\u00f3n"
+    },
+    "subscription_plan": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "premium"
+      ],
+      "default": "basic",
+      "description": "Plan de suscripci\u00f3n: basic (sin grabaci\u00f3n) o premium (con grabaci\u00f3n)"
+    },
+    "subscription_exempt": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si est\u00e1 exento de pagar la cuota mensual (acceso gratuito indefinido concedido manualmente por el administrador)"
+    },
+    "trial_used": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ya ha usado el per\u00edodo de prueba gratuito"
+    },
+    "trial_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si est\u00e1 actualmente en per\u00edodo de prueba gratuito"
+    },
+    "trial_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de inicio del per\u00edodo de prueba"
+    },
+    "trial_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de fin del per\u00edodo de prueba"
+    },
+    "stripe_customer_id": {
+      "type": "string",
+      "description": "ID del cliente en Stripe (para su suscripci\u00f3n a Menttio)"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "ID de la suscripci\u00f3n en Stripe"
+    },
+    "stripe_connect_account_id": {
+      "type": "string",
+      "description": "ID de la cuenta Stripe Connect del profesor para recibir pagos de clases"
+    },
+    "stripe_connect_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si la cuenta Stripe Connect del profesor est\u00e1 completamente configurada y puede recibir pagos"
+    },
+    "tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour inicial"
+    },
+    "availability_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour de disponibilidad"
+    },
+    "calendar_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour del calendario"
+    },
+    "subjects_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour de asignaturas"
+    },
+    "workload_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour de estad\u00edsticas"
+    },
+    "profile_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour del perfil"
+    },
+    "students_tour_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si ha completado el tour de mis alumnos"
+    },
+    "google_calendar_connected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si tiene Google Calendar conectado"
+    },
+    "google_calendar_tokens": {
+      "type": "object",
+      "description": "Tokens de acceso de Google Calendar"
+    },
+    "corporate_email": {
+      "type": "string",
+      "description": "Email corporativo de Google Workspace"
+    }
+  },
+  "required": [
+    "user_email",
+    "full_name",
+    "phone"
+  ]
+}
