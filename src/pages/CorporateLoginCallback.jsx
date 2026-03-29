@@ -67,6 +67,10 @@ export default function CorporateLoginCallback() {
             password: corpResponse.data.password,
           });
           setPhase('show_credentials');
+          // Auto-logout after 5 seconds so user can log in with corporate account
+          setTimeout(() => {
+            base44.auth.logout();
+          }, 5000);
           return;
         }
 
@@ -185,53 +189,21 @@ export default function CorporateLoginCallback() {
       <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
           <Card className="shadow-xl border-0">
-            <CardContent className="p-8">
+            <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-[#41f2c0]/20 flex items-center justify-center">
                   <Mail className="text-[#41f2c0]" size={32} />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-center text-[#404040] mb-2">¡Tu cuenta corporativa está lista!</h2>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                <p className="text-blue-800 text-sm font-medium mb-1">⚠️ Importante</p>
-                <p className="text-blue-700 text-sm">
-                  Copia estas credenciales. Al pulsar "Continuar", cerraremos tu sesión actual y deberás <strong>iniciar sesión con este email corporativo</strong> para completar el pago.
-                </p>
+              <h2 className="text-2xl font-bold text-[#404040] mb-3">¡Credenciales enviadas!</h2>
+              <p className="text-gray-600 text-sm mb-4">
+                Hemos enviado tus credenciales de acceso a tu correo personal. Revisa tu bandeja de entrada y accede con tu nueva cuenta para completar la configuración.
+              </p>
+              <div className="bg-[#41f2c0]/10 border border-[#41f2c0]/30 rounded-xl p-4 mb-6 text-left">
+                <p className="text-[#404040] text-sm font-medium mb-1">📧 Tu email corporativo</p>
+                <p className="font-mono text-[#404040] font-semibold break-all">{credentials.email}</p>
               </div>
-
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-                <p className="text-red-800 text-sm font-medium mb-1">🚫 No cambies la contraseña</p>
-                <p className="text-red-700 text-sm">
-                  Usa exactamente la contraseña que aparece arriba para iniciar sesión. <strong>No la cambies</strong> hasta haber completado el proceso de pago, o el registro fallará.
-                </p>
-              </div>
-
-              <div className="space-y-4 mb-8">
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">Email corporativo</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-mono text-[#404040] font-semibold break-all">{credentials.email}</p>
-                    <button onClick={() => handleCopy(credentials.email, 'email')} className="shrink-0 p-1.5 rounded-lg hover:bg-gray-200 transition-colors">
-                      {copied === 'email' ? <CheckCircle size={16} className="text-green-500" /> : <Copy size={16} className="text-gray-400" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">Contraseña</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-mono text-[#404040] font-semibold">{credentials.password}</p>
-                    <button onClick={() => handleCopy(credentials.password, 'password')} className="shrink-0 p-1.5 rounded-lg hover:bg-gray-200 transition-colors">
-                      {copied === 'password' ? <CheckCircle size={16} className="text-green-500" /> : <Copy size={16} className="text-gray-400" />}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <Button onClick={handleContinue} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold h-12">
-                Continuar e iniciar sesión con cuenta corporativa
-                <ArrowRight size={18} />
-              </Button>
+              <p className="text-gray-400 text-xs">Redirigiendo al inicio de sesión en unos segundos...</p>
             </CardContent>
           </Card>
         </motion.div>
