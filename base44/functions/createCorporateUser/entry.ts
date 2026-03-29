@@ -14,17 +14,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-    console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
-    console.log('Webhook URL:', webhookUrl);
+    console.log('Enviando datos a n8n para crear usuario corporativo');
 
-    // Enviar datos a n8n usando GET con parámetros en la URL
-    const url = new URL(webhookUrl);
-    url.searchParams.append('nombre', nombre);
-    url.searchParams.append('apellidos', apellidos);
-    if (email_personal) url.searchParams.append('email', email_personal);
+    // Enviar datos a n8n usando POST con body JSON (evitar PII en query params)
+    const body = { nombre, apellidos };
+    if (email_personal) body.email = email_personal;
 
-    const response = await fetch(url.toString(), {
-      method: 'GET'
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
     });
 
     console.log('Response status:', response.status);
@@ -41,18 +40,16 @@ Deno.serve(async (req) => {
     }
 
     const parsed = JSON.parse(rawText);
-    console.log('Respuesta de n8n:', parsed);
 
     // n8n puede devolver un array o un objeto directo
     const result = Array.isArray(parsed) ? parsed[0] : parsed;
-    console.log('Result extraído:', result);
 
+    // No devolver la contraseña al frontend — debe comunicarse por canal seguro (email)
     return Response.json({
       status: result.status,
       email: result.email,
       firstName: result.firstName,
-      lastName: result.lastName,
-      password: result.password
+      lastName: result.lastName
     });
 
   } catch (error) {

@@ -12,6 +12,14 @@ Deno.serve(async (req) => {
 
     const { userEmail, title, body, data } = await req.json();
 
+    // Solo admins pueden enviar notificaciones a otros usuarios.
+    // Usuarios normales solo pueden enviarse notificaciones a sí mismos.
+    const isAdmin = user.role === 'admin';
+    const isSelf = user.email === userEmail;
+    if (!isAdmin && !isSelf) {
+      return Response.json({ error: 'Forbidden: cannot send notifications to other users' }, { status: 403 });
+    }
+
     // Configure VAPID
     const publicKey = Deno.env.get('VAPID_PUBLIC_KEY');
     const privateKey = Deno.env.get('VAPID_PRIVATE_KEY');
