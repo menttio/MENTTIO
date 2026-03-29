@@ -196,14 +196,14 @@ export default function CorporateLoginCallback() {
                 </div>
               </div>
               <h2 className="text-2xl font-bold text-[#404040] mb-3">¡Credenciales enviadas!</h2>
-              <p className="text-gray-600 text-sm mb-4">
-                Hemos enviado tus credenciales de acceso a tu correo personal. Revisa tu bandeja de entrada y accede con tu nueva cuenta para completar la configuración.
+              <p className="text-gray-600 text-sm mb-6">
+                Hemos enviado tus credenciales de acceso a tu <strong>correo personal</strong>. Revisa tu bandeja de entrada, accede con tu nueva cuenta y configura tu perfil.
               </p>
-              <div className="bg-[#41f2c0]/10 border border-[#41f2c0]/30 rounded-xl p-4 mb-6 text-left">
-                <p className="text-[#404040] text-sm font-medium mb-1">📧 Tu email corporativo</p>
-                <p className="font-mono text-[#404040] font-semibold break-all">{credentials.email}</p>
-              </div>
-              <p className="text-gray-400 text-xs">Redirigiendo al inicio de sesión en unos segundos...</p>
+              <Button onClick={handleContinue} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold h-12 mb-3">
+                Iniciar sesión
+                <ArrowRight size={18} />
+              </Button>
+              <p className="text-gray-400 text-xs">También puedes esperar, serás redirigido automáticamente en unos segundos...</p>
             </CardContent>
           </Card>
         </motion.div>
