@@ -330,7 +330,7 @@ export default function ManageSubjects() {
                       <p className="text-xs text-gray-600">por hora (individual)</p>
                     </div>
                   </div>
-                  {subject.max_group_students && (
+                  {subject.max_group_students && parseInt(subject.max_group_students) >= 2 && (
                     <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
                       <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1">
                         <Users size={12} /> Clases grupales (máx. {subject.max_group_students} alumnos)
@@ -338,7 +338,7 @@ export default function ManageSubjects() {
                       <div className="space-y-1">
                         {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
                           const gp = subject.group_prices || {};
-                          const priceVal = gp[String(n)] ?? gp[n];
+                          const priceVal = gp[String(n)] ?? gp[n] ?? null;
                           return (
                             <div key={n} className="flex items-center justify-between text-xs">
                               <span className="text-gray-500">{n} alumnos:</span>
