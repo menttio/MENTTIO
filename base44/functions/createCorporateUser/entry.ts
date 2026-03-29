@@ -1,8 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
-// Rate limiting en memoria: máximo 3 intentos por IP en 10 minutos
+// Rate limiting en memoria: máximo 5 intentos por IP en 10 minutos
 const rateLimitMap = new Map();
-const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 
 function isRateLimited(ip) {
@@ -24,15 +24,17 @@ function isRateLimited(ip) {
 
 Deno.serve(async (req) => {
   try {
-    // 1. Autenticación obligatoria — solo usuarios registrados pueden invocar esto
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    // Validación con secret compartido — esta función se invoca sin sesión activa
+    // (el usuario aún no ha hecho login con la cuenta corporativa en este punto del flujo)
+    const internalSecret = Deno.env.get('INTERNAL_API_SECRET');
+    const requestSecret = req.headers.get('x-internal-secret');
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!internalSecret || requestSecret !== internalSecret) {
+      console.warn('⚠️ createCorporateUser: acceso rechazado (secret inválido o ausente)');
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // 2. Rate limiting por IP — máx. 3 peticiones cada 10 minutos
+    // Rate limiting por IP — máx. 5 peticiones cada 10 minutos
     const clientIp =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       req.headers.get('cf-connecting-ip') ||
@@ -57,9 +59,8 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-    console.log(`✅ createCorporateUser invocado por: ${user.email}`);
+    console.log('✅ createCorporateUser invocado desde IP:', clientIp);
 
-    // Enviar datos a n8n usando POST con body JSON (sin PII en query params)
     const body = { nombre, apellidos };
     if (email_personal) body.email = email_personal;
 
