@@ -31,17 +31,30 @@ export default function TeacherSignupPayment() {
 
         const data = JSON.parse(signupData);
 
-        // ── PLAN PREMIUM: guardar datos y forzar login personal antes de crear cuenta corporativa ──
-        // createCorporateUser requiere sesión activa, así que primero login personal
+        // ── PLAN PREMIUM: crear cuenta corporativa vía n8n y mostrar pantalla "revisa tu correo" ──
         if (subscription_plan === 'premium') {
+          // 1. Llamar a n8n para crear la cuenta corporativa
+          const corpResponse = await base44.functions.invoke('createCorporateUser', {
+            nombre: data.first_name,
+            apellidos: data.last_name,
+            email_personal: data.email_personal
+          });
+
+          if (!corpResponse.data?.email) {
+            throw new Error(corpResponse.data?.error || 'No se pudo crear la cuenta corporativa.');
+          }
+
+          // 2. Guardar el email corporativo (sin contraseña) para que CorporateLoginCallback
+          //    sepa qué cuenta esperar cuando el usuario inicie sesión
           localStorage.setItem('corporate_credentials', JSON.stringify({
+            email: corpResponse.data.email,
             signup_data: data,
             subscription_plan,
-            pending_corporate: true,
+            pending_corporate: false,
           }));
-          // Forzar login con cuenta personal; al volver, CorporateLoginCallback
-          // detecta pending_corporate=true y ejecuta createCorporateUser con sesión activa
-          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+
+          // 3. Mostrar pantalla "revisa tu correo" → el usuario inicia sesión manualmente
+          window.location.href = createPageUrl('CorporateLoginCallback');
           return;
         }
 

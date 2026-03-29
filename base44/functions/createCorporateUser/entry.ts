@@ -1,7 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 // Rate limiting en memoria: máximo 5 intentos por IP en 10 minutos
-// Protección adicional tras la autenticación obligatoria de sesión
 const rateLimitMap = new Map();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
@@ -20,14 +19,7 @@ function isRateLimited(ip) {
 
 Deno.serve(async (req) => {
   try {
-    // 1. Autenticación obligatoria — protección principal
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // 2. Rate limiting por IP — protección adicional
+    // Rate limiting por IP — esta función se invoca antes del login corporativo
     const clientIp =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       req.headers.get('cf-connecting-ip') ||
@@ -49,7 +41,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-    console.log(`✅ createCorporateUser invocado por: ${user.email} desde IP: ${clientIp}`);
+    console.log(`✅ createCorporateUser invocado desde IP: ${clientIp}, nombre: ${nombre} ${apellidos}`);
 
     const body = { nombre, apellidos };
     if (email_personal) body.email = email_personal;
@@ -74,7 +66,7 @@ Deno.serve(async (req) => {
     const parsed = JSON.parse(rawText);
     const result = Array.isArray(parsed) ? parsed[0] : parsed;
 
-    // No devolver la contraseña al frontend — se comunica por email
+    // No devolver la contraseña al frontend — se comunica por email al correo personal
     return Response.json({
       status: result.status,
       email: result.email,

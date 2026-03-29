@@ -3,46 +3,36 @@ import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Mail, Copy, CheckCircle, ArrowRight } from 'lucide-react';
+import { Loader2, AlertCircle, Mail, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 /**
  * Flujo premium:
- * 1. TeacherSignupPayment guarda datos en sessionStorage y redirige al login
- * 2. Usuario inicia sesión con su cuenta personal
- * 3. Esta página:
- *    a. Crea la cuenta corporativa @menttio.com
- *    b. Muestra las credenciales al usuario
- *    c. Usuario pulsa "Continuar" → cierra sesión → login
- * 4. Usuario inicia sesión con la cuenta @menttio.com
- * 5. Esta página detecta que ya tiene credenciales guardadas → crea Teacher → Stripe
+ * 1. TeacherSignupPayment llama a createCorporateUser → n8n crea la cuenta → guarda {email, pending_corporate:false}
+ * 2. Redirige aquí → no hay sesión → muestra pantalla "revisa tu correo e inicia sesión"
+ * 3. Usuario inicia sesión con la cuenta @menttio.com que recibió por email
+ * 4. Vuelve aquí con sesión activa → verifica email → crea Teacher → Stripe
  */
 export default function CorporateLoginCallback() {
   const [phase, setPhase] = useState('loading'); // loading | show_credentials | processing | error
-  const [credentials, setCredentials] = useState(null);
-  const [copied, setCopied] = useState(null);
+  const [corporateEmail, setCorporateEmail] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const run = async () => {
       try {
-        console.log('🚀 CorporateLoginCallback iniciando...');
-        console.log('🔗 URL actual:', window.location.href);
-        console.log('📦 localStorage corporate_credentials:', localStorage.getItem('corporate_credentials'));
-
         const stored = localStorage.getItem('corporate_credentials');
         if (!stored) {
-          console.error('❌ No hay datos en localStorage');
           setError('No se encontraron datos de registro. Por favor vuelve a empezar.');
+          setPhase('error');
           return;
         }
 
         const storedData = JSON.parse(stored);
-        console.log('📋 Datos almacenados:', JSON.stringify(storedData));
 
-        // FASE 1: pending_corporate = true → crear cuenta corporativa sin necesitar sesión
+        // CASO LEGACY: pending_corporate=true → la cuenta todavía no fue creada
+        // (compatibilidad con flujos anteriores)
         if (storedData.pending_corporate) {
-          // Crear la cuenta corporativa (no requiere autenticación)
           const corpResponse = await base44.functions.invoke('createCorporateUser', {
             nombre: storedData.signup_data.first_name,
             apellidos: storedData.signup_data.last_name,
@@ -53,69 +43,61 @@ export default function CorporateLoginCallback() {
             throw new Error('No se pudo crear la cuenta corporativa. Inténtalo de nuevo.');
           }
 
-          // Actualizar localStorage con las credenciales reales (sin contraseña)
-          localStorage.setItem('corporate_credentials', JSON.stringify({
+          const updatedData = {
             email: corpResponse.data.email,
             signup_data: storedData.signup_data,
             subscription_plan: storedData.subscription_plan,
             pending_corporate: false,
-          }));
-
-          setCredentials({
-            email: corpResponse.data.email,
-          });
+          };
+          localStorage.setItem('corporate_credentials', JSON.stringify(updatedData));
+          setCorporateEmail(corpResponse.data.email);
           setPhase('show_credentials');
-          // Auto-logout after 5 seconds so user can log in with corporate account
-          setTimeout(() => {
-            base44.auth.logout();
-          }, 5000);
           return;
         }
 
-        // FASE 2: ya tenemos credenciales → verificar que el usuario es la cuenta corporativa
-        const { email: corporateEmail, signup_data, subscription_plan } = storedData;
+        // CASO NORMAL: cuenta ya creada por TeacherSignupPayment
+        const { email: corpEmail, signup_data, subscription_plan } = storedData;
 
         const isAuthenticated = await base44.auth.isAuthenticated();
+
+        // Sin sesión → mostrar pantalla "revisa tu correo e inicia sesión"
         if (!isAuthenticated) {
-          base44.auth.redirectToLogin(createPageUrl('CorporateLoginCallback'));
+          setCorporateEmail(corpEmail);
+          setPhase('show_credentials');
           return;
         }
 
+        // Con sesión → verificar que es la cuenta corporativa correcta
         const user = await base44.auth.me();
+        console.log('👤 Usuario autenticado:', user.email, '| Esperado:', corpEmail);
 
-        console.log('👤 Usuario autenticado:', user.email);
-        console.log('📧 Email corporativo esperado:', corporateEmail);
-        console.log('🔗 URL actual (href):', window.location.href);
-        console.log('🔗 URL limpia (origin+pathname):', window.location.origin + window.location.pathname);
-
-        if (user.email.toLowerCase() !== corporateEmail.toLowerCase()) {
-          // Tiene sesión de otra cuenta → cerrar sesión sin pasar URL (evita error 400 de Google)
-          console.log('🔄 Email no coincide, haciendo logout sin redirectUrl');
+        if (user.email.toLowerCase() !== corpEmail.toLowerCase()) {
+          // Sesión de otra cuenta → logout para que inicie con la corporativa
+          console.log('🔄 Email no coincide, haciendo logout');
           base44.auth.logout();
           return;
         }
 
-        // ✅ Es la cuenta corporativa → crear el profesor
+        // ✅ Cuenta corporativa verificada → crear Teacher y Stripe
         setPhase('processing');
 
-        const existing = await base44.entities.Teacher.filter({ user_email: corporateEmail });
+        const existing = await base44.entities.Teacher.filter({ user_email: corpEmail });
         if (existing.length === 0) {
-          const data = signup_data;
-          const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: corporateEmail });
+          const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: corpEmail });
           const grantTrial = trialUsedRecords.length === 0;
           const now = new Date();
           const trialEndDate = new Date();
           trialEndDate.setDate(trialEndDate.getDate() + 14);
 
           await base44.entities.Teacher.create({
-            user_email: corporateEmail,
-            corporate_email: corporateEmail,
-            full_name: `${data.first_name} ${data.last_name}`,
-            phone: data.phone,
-            education: data.education,
-            experience_years: data.experience_years,
+            user_email: corpEmail,
+            corporate_email: corpEmail,
+            full_name: `${signup_data.first_name} ${signup_data.last_name}`,
+            phone: signup_data.phone,
+            education: signup_data.education,
+            experience_years: signup_data.experience_years,
             bio: '',
-            subjects: data.subjects || [],
+            subjects: signup_data.subjects || [],
             rating: 0,
             total_classes: 0,
             subscription_active: grantTrial,
@@ -131,14 +113,13 @@ export default function CorporateLoginCallback() {
           if (grantTrial) {
             try {
               await base44.entities.TrialUsed.create({
-                email: corporateEmail,
+                email: corpEmail,
                 used_date: now.toISOString().split('T')[0]
               });
             } catch (e) { /* no crítico */ }
           }
         }
 
-        // Notificar nuevo profesor al webhook de n8n (vía función backend segura)
         try {
           await base44.functions.invoke('notifyNuevoProfesor', {
             nombre: signup_data.first_name,
@@ -146,9 +127,7 @@ export default function CorporateLoginCallback() {
             telefono: signup_data.phone,
             correo_electronico: signup_data.email_personal
           });
-        } catch (webhookErr) {
-          console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
-        }
+        } catch (e) { console.error('Error notifyNuevoProfesor:', e.message); }
 
         localStorage.removeItem('corporate_credentials');
         sessionStorage.removeItem('teacher_signup_data');
@@ -169,20 +148,11 @@ export default function CorporateLoginCallback() {
     run();
   }, []);
 
-  const handleCopy = (text, field) => {
-    navigator.clipboard.writeText(text);
-    setCopied(field);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const handleContinue = () => {
-    // Hacer logout sin pasar URL (evita el error 400 de Google con redirect_uri no autorizada)
-    // base44 redirigirá a la página de login por defecto
-    console.log('🔄 handleContinue - haciendo logout sin redirect URL');
+  const handleLogin = () => {
     base44.auth.logout();
   };
 
-  if (phase === 'show_credentials' && credentials) {
+  if (phase === 'show_credentials') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
@@ -193,15 +163,20 @@ export default function CorporateLoginCallback() {
                   <Mail className="text-[#41f2c0]" size={32} />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-[#404040] mb-3">¡Credenciales enviadas!</h2>
-              <p className="text-gray-600 text-sm mb-6">
-                Hemos enviado tus credenciales de acceso a tu <strong>correo personal</strong>. Revisa tu bandeja de entrada, accede con tu nueva cuenta y configura tu perfil.
+              <h2 className="text-2xl font-bold text-[#404040] mb-3">¡Cuenta creada!</h2>
+              <p className="text-gray-600 text-sm mb-4">
+                Hemos enviado tus credenciales de acceso a tu <strong>correo personal</strong>. Revisa tu bandeja de entrada.
               </p>
-              <Button onClick={handleContinue} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold h-12 mb-3">
-                Iniciar sesión
+              <p className="text-gray-500 text-sm mb-6">
+                Una vez tengas tus credenciales, inicia sesión con tu cuenta corporativa <strong>{corporateEmail || '@menttio.com'}</strong> para completar el registro.
+              </p>
+              <Button
+                onClick={handleLogin}
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold h-12"
+              >
+                Iniciar sesión con mi cuenta corporativa
                 <ArrowRight size={18} />
               </Button>
-              <p className="text-gray-400 text-xs">También puedes esperar, serás redirigido automáticamente en unos segundos...</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -231,7 +206,7 @@ export default function CorporateLoginCallback() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
         <Loader2 className="animate-spin text-[#41f2c0] mx-auto mb-4" size={48} />
         <h2 className="text-xl font-semibold text-[#404040] mb-2">
-          {phase === 'processing' ? 'Preparando tu suscripción...' : 'Cargando...'}
+          {phase === 'processing' ? 'Preparando tu suscripción...' : 'Configurando tu cuenta...'}
         </h2>
         <p className="text-gray-500 text-sm">Por favor espera un momento</p>
       </motion.div>
