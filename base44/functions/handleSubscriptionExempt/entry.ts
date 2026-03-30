@@ -5,8 +5,8 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), { apiVersion: '2024
 
 // Precios a 0€ para exentos (mismo producto, cuota 0)
 const EXEMPT_PRICES = {
-  basic: 'price_1T6TtwHAmL0VZFroEzHxUnpt',
-  premium: 'price_1T6TtwHAmL0VZFroALx8VVZO',
+  basic: Deno.env.get('STRIPE_PRICE_EXEMPT_BASIC'),
+  premium: Deno.env.get('STRIPE_PRICE_EXEMPT_PREMIUM'),
 };
 
 Deno.serve(async (req) => {

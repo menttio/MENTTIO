@@ -27,11 +27,11 @@ Deno.serve(async (req) => {
     // Determinar el price_id según el plan
     let priceId;
     if (is_beta) {
-      priceId = 'price_1TCi4RHZYiECTxiyb6PQ8haP'; // Básico Beta (Live)
+      priceId = Deno.env.get('STRIPE_PRICE_BASIC_BETA'); // Básico Beta (Live)
     } else if (subscription_plan === 'premium') {
-      priceId = 'price_1TGRGdHZYiECTxiyqmskk0Dr'; // Premium (Live)
+      priceId = Deno.env.get('STRIPE_PRICE_PREMIUM'); // Premium (Live)
     } else {
-      priceId = 'price_1TBu8mHZYiECTxiyJ6fB9Hy3'; // Básico (Live)
+      priceId = Deno.env.get('STRIPE_PRICE_BASIC'); // Básico (Live)
     }
 
     console.log('💳 Price ID seleccionado:', priceId);
