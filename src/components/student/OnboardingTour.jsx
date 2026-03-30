@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, ChevronRight, ChevronLeft, Home, Calendar, Search, BookOpen } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Home, Calendar, Search, BookOpen, Library } from 'lucide-react';
 
 const STORAGE_KEY = 'hasSeenStudentOnboarding';
 
@@ -29,6 +29,12 @@ const STEPS = [
     title: 'Historial de clases',
     description: 'En "Mis Clases" tienes el historial completo de sesiones pasadas y futuras. También puedes gestionar pagos y dejar valoraciones.',
     color: '#404040',
+  },
+  {
+    icon: Library,
+    title: 'Biblioteca de grabaciones',
+    description: 'En "Biblioteca" encontrarás las grabaciones de todas tus clases anteriores. Puedes revisarlas cuando quieras para repasar el contenido.',
+    color: '#41f2c0',
   },
 ];
 
