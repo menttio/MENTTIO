@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-    console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
+
     
     // Enviar datos a n8n usando POST con body JSON (nunca GET con query params)
     const webhookResponse = await fetch(webhookUrl, {
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     }
 
     const corporateData = await webhookResponse.json();
-    console.log('Respuesta de n8n:', corporateData);
+
 
     if (corporateData.status !== 'ok') {
       console.error('Error en respuesta de n8n:', corporateData);

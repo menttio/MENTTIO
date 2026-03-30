@@ -85,7 +85,7 @@ export default function CorporateLoginCallback() {
 
         // Con sesión → verificar que es la cuenta corporativa correcta
         const user = await base44.auth.me();
-        console.log('👤 Usuario autenticado:', user.email, '| Esperado:', corpEmail);
+
 
         if (user.email.toLowerCase() !== corpEmail.toLowerCase()) {
           // Sesión de otra cuenta → logout y redirigir al login para que inicie con la corporativa
