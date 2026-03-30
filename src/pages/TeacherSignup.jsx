@@ -714,17 +714,25 @@ export default function TeacherSignup() {
                   className="space-y-4"
                 >
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
-                    <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-[#404040]">
-                        {formData.subscription_plan === 'basic' ? '14,99€' : '36,99€'}
-                      </span>
-                      <span className="text-gray-500">/mes</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                      Plan {formData.subscription_plan === 'basic' ? 'Básico' : 'Premium'}
-                      {formData.subscription_plan === 'premium' && ' (con grabación de clases)'}
-                    </p>
+                    {formData.subscription_plan === 'basic' ? (
+                      <>
+                        <p className="text-sm text-gray-500 mb-1">Plan Básico</p>
+                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">30 días gratis</div>
+                        <p className="text-sm text-gray-500">Prueba gratuita sin compromiso</p>
+                        <p className="text-gray-500 mt-3 text-base">
+                          Después: <span className="font-bold text-[#404040]">14,99€/mes</span>
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
+                        <div className="flex items-baseline justify-center gap-2">
+                          <span className="text-5xl font-bold text-[#404040]">36,99€</span>
+                          <span className="text-gray-500">/mes</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">Plan Premium (con grabación de clases)</p>
+                      </>
+                    )}
                   </div>
 
                   {formData.subscription_plan === 'basic' && (
