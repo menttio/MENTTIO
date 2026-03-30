@@ -41,14 +41,11 @@ Deno.serve(async (req) => {
 
     console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
     
-    // Enviar datos a n8n usando GET con parámetros en la URL
-    const url = new URL(webhookUrl);
-    url.searchParams.append('nombre', nombre);
-    url.searchParams.append('apellidos', apellidos);
-    url.searchParams.append('email', email_personal);
-
-    const webhookResponse = await fetch(url.toString(), {
-      method: 'GET'
+    // Enviar datos a n8n usando POST con body JSON (nunca GET con query params)
+    const webhookResponse = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, apellidos, email: email_personal })
     });
 
     console.log('Webhook response status:', webhookResponse.status);
@@ -101,12 +98,19 @@ Deno.serve(async (req) => {
 
     // Notificar nuevo profesor al webhook de n8n
     try {
-      const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
-      nuevoProfesorUrl.searchParams.append('nombre', nombre);
-      nuevoProfesorUrl.searchParams.append('apellidos', apellidos);
-      nuevoProfesorUrl.searchParams.append('telefono', phone);
-      nuevoProfesorUrl.searchParams.append('correo_electronico', corporateData.email);
-      await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
+      const nuevoProfesorUrl = Deno.env.get('N8N_NUEVO_PROFESOR_WEBHOOK_URL');
+      if (nuevoProfesorUrl) {
+        await fetch(nuevoProfesorUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre,
+            apellidos,
+            telefono: phone,
+            correo_electronico: corporateData.email
+          })
+        });
+      }
     } catch (webhookErr) {
       console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
     }
@@ -132,11 +136,10 @@ Deno.serve(async (req) => {
       // No fallar el registro si falla el email
     }
 
-    // Devolver datos de la cuenta corporativa
+    // Devolver datos de la cuenta corporativa (sin password)
     return Response.json({
       status: 'ok',
-      email: corporateData.email,
-      password: corporateData.password
+      email: corporateData.email
     });
 
   } catch (error) {
