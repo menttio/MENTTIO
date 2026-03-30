@@ -72,9 +72,10 @@ export default function CorporateLoginCallback() {
         console.log('👤 Usuario autenticado:', user.email, '| Esperado:', corpEmail);
 
         if (user.email.toLowerCase() !== corpEmail.toLowerCase()) {
-          // Sesión de otra cuenta → logout para que inicie con la corporativa
-          console.log('🔄 Email no coincide, haciendo logout');
-          base44.auth.logout();
+          // Sesión de otra cuenta → logout y redirigir al login para que inicie con la corporativa
+          console.log('🔄 Email no coincide, haciendo logout y redirigiendo al login');
+          setCorporateEmail(corpEmail);
+          setPhase('show_credentials');
           return;
         }
 
@@ -148,8 +149,15 @@ export default function CorporateLoginCallback() {
     run();
   }, []);
 
-  const handleLogin = () => {
-    base44.auth.logout();
+  const handleLogin = async () => {
+    // Cerrar sesión actual (si hay) y redirigir al login con retorno a esta página
+    const callbackUrl = '/CorporateLoginCallback';
+    const isAuthenticated = await base44.auth.isAuthenticated();
+    if (isAuthenticated) {
+      base44.auth.logout(window.location.origin + callbackUrl);
+    } else {
+      base44.auth.redirectToLogin(callbackUrl);
+    }
   };
 
   if (phase === 'show_credentials') {
