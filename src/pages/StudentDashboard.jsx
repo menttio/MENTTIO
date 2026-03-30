@@ -25,6 +25,7 @@ import { format, parseISO, isAfter, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
+import StudentOnboardingTour, { shouldShowStudentOnboarding } from '../components/student/OnboardingTour';
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,7 @@ export default function StudentDashboard() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
 
   const loadData = async () => {
@@ -50,6 +52,7 @@ export default function StudentDashboard() {
       const students = await base44.entities.Student.filter({ user_email: currentUser.email });
       if (students.length > 0) {
         setStudent(students[0]);
+        if (shouldShowStudentOnboarding()) setShowOnboarding(true);
 
         const [scheduledBookings, completedBookings] = await Promise.all([
           base44.entities.Booking.filter({ student_email: currentUser.email, status: 'scheduled' }, 'date', 50),
@@ -107,6 +110,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      <StudentOnboardingTour show={showOnboarding} onClose={() => setShowOnboarding(false)} />
       {/* Welcome Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

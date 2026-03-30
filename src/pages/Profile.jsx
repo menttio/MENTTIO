@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { createPageUrl } from '../utils';
 import { resetOnboarding } from '../components/teacher/OnboardingTour';
+import { resetStudentOnboarding } from '../components/student/OnboardingTour';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -334,7 +335,7 @@ export default function Profile() {
       </Button>
 
       {/* Restart Onboarding */}
-      {userRole === 'teacher' && (
+      {(userRole === 'teacher' || userRole === 'student') && (
         <Card className="mb-6 border-[#41f2c0]/30">
           <CardContent className="p-5 flex items-center justify-between">
             <div>
@@ -344,7 +345,15 @@ export default function Profile() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => { resetOnboarding(); window.location.href = createPageUrl('TeacherDashboard'); }}
+              onClick={() => {
+                if (userRole === 'teacher') {
+                  resetOnboarding();
+                  window.location.href = createPageUrl('TeacherDashboard');
+                } else {
+                  resetStudentOnboarding();
+                  window.location.href = createPageUrl('StudentDashboard');
+                }
+              }}
               className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0]/10"
             >
               Reiniciar
