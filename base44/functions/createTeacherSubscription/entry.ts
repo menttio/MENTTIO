@@ -70,6 +70,7 @@ Deno.serve(async (req) => {
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'subscription',
+      ...(shouldGrantTrial ? { payment_method_collection: 'if_required' } : {}),
       line_items: [
         {
           price: priceId,
