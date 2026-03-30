@@ -124,12 +124,16 @@ export default function TeacherSignupComplete() {
 
         // Notificar nuevo profesor a n8n (plan básico)
         try {
-          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
-          nuevoProfesorUrl.searchParams.append('nombre', data.first_name);
-          nuevoProfesorUrl.searchParams.append('apellidos', data.last_name);
-          nuevoProfesorUrl.searchParams.append('telefono', data.phone);
-          nuevoProfesorUrl.searchParams.append('correo_electronico', user.email);
-          await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
+          await fetch('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              nombre: data.first_name,
+              apellidos: data.last_name,
+              telefono: data.phone,
+              correo_electronico: user.email
+            })
+          });
           console.log('✅ Webhook nuevo_profesor enviado');
         } catch (webhookErr) {
           console.error('Error enviando webhook nuevo_profesor:', webhookErr.message);
