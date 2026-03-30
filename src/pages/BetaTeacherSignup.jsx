@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Users, Check, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Info, X } from 'lucide-react';
@@ -120,7 +121,7 @@ export default function BetaTeacherSignup() {
   const handleGoToLogin = () => {
     const signupData = sessionStorage.getItem('teacher_signup_data');
     if (!signupData) {
-      alert('Error: los datos no se guardaron. Por favor vuelve a intentarlo.');
+      toast.error('Error: los datos no se guardaron. Por favor vuelve a intentarlo.');
       return;
     }
     sessionStorage.setItem('teacher_signup_in_progress', 'true');

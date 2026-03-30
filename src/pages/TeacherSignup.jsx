@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
+import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -211,7 +212,7 @@ export default function TeacherSignup() {
     if (!signupData) {
       console.error('❌ ¡ERROR CRÍTICO! No hay teacher_signup_data en sessionStorage');
       console.error('❌ Esto impedirá que se cree el profesor después del login');
-      alert('ERROR: Los datos no se guardaron correctamente. Por favor, vuelve a intentarlo.');
+      toast.error('ERROR: Los datos no se guardaron correctamente. Por favor, vuelve a intentarlo.');
       return;
     }
     

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -87,7 +88,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
       } else {
         // Check for duplicate before adding
         if (existingIndex !== -1) {
-          alert('Ya tienes esta asignatura con este nivel. Por favor, edítala en lugar de crear una nueva.');
+          toast.error('Ya tienes esta asignatura con este nivel. Por favor, edítala en lugar de crear una nueva.');
           setSaving(false);
           return;
         }
@@ -105,10 +106,12 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
       }
 
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+      toast.success(editingSubject ? 'Asignatura actualizada' : 'Asignatura añadida');
       onUpdate();
       setShowDialog(false);
     } catch (error) {
       console.error(error);
+      toast.error('Error al guardar la asignatura');
     } finally {
       setSaving(false);
     }

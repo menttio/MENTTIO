@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createPageUrl } from '../utils';
+import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -19,7 +20,7 @@ export default function TeacherSignupPayment() {
         const subscription_plan = sessionStorage.getItem('subscription_plan') || 'basic';
 
         if (!signupData) {
-          alert('Error: No se encontraron datos de registro. Vuelve al formulario.');
+          toast.error('Error: No se encontraron datos de registro. Vuelve al formulario.');
           window.location.href = createPageUrl('TeacherSignup');
           return;
         }
@@ -137,7 +138,7 @@ export default function TeacherSignupPayment() {
         console.error('═══════════════════════════════════════════════════════');
         
         setLoading(false);
-        alert(`Error al crear el perfil del profesor:\n\n${error.message}\n\nPor favor, contacta con soporte o revisa la consola.`);
+        toast.error(`Error al crear el perfil del profesor: ${error.message}. Por favor, contacta con soporte.`);
       }
     };
 

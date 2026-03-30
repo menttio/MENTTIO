@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { AlertCircle, Check, Loader2, Video, X } from 'lucide-react';
@@ -47,7 +48,7 @@ export default function RenewSubscription() {
       window.location.replace(response.data.url);
     } catch (error) {
       console.error(error);
-      alert('Error al procesar el pago: ' + error.message);
+      toast.error('Error al procesar el pago: ' + error.message);
       setRenewing(false);
     }
   };

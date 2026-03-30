@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { 
   User, 
@@ -106,13 +107,13 @@ export default function Profile() {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona una imagen válida');
+      toast.error('Por favor selecciona una imagen válida');
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen no puede superar los 5MB');
+      toast.error('La imagen no puede superar los 5MB');
       return;
     }
 
@@ -132,9 +133,10 @@ export default function Profile() {
       await loadUserData();
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
+      toast.success('Foto de perfil actualizada');
     } catch (error) {
       console.error('Error uploading photo:', error);
-      alert('Error al subir la foto');
+      toast.error('Error al subir la foto');
     } finally {
       setUploadingPhoto(false);
     }
@@ -163,12 +165,13 @@ export default function Profile() {
 
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
+      toast.success('Cambios guardados correctamente');
 
       // Reload data
       await loadUserData();
     } catch (error) {
       console.error('Error saving profile:', error);
-      alert('Error al guardar los cambios');
+      toast.error('Error al guardar los cambios');
     } finally {
       setSaving(false);
     }
@@ -186,7 +189,7 @@ export default function Profile() {
       window.location.href = createPageUrl('Home');
     } catch (error) {
       console.error('Error deleting account:', error);
-      alert('Error al eliminar la cuenta');
+      toast.error('Error al eliminar la cuenta');
       setDeleting(false);
     }
   };
