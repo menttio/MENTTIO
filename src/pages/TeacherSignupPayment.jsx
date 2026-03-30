@@ -51,6 +51,7 @@ export default function TeacherSignupPayment() {
             signup_data: data,
             subscription_plan,
             pending_corporate: false,
+            expires_at: Date.now() + 60 * 60 * 1000 // TTL: 60 minutos
           }));
 
           // 3. Mostrar pantalla "revisa tu correo" → el usuario inicia sesión manualmente

@@ -30,6 +30,14 @@ export default function CorporateLoginCallback() {
 
         const storedData = JSON.parse(stored);
 
+        // Verificar TTL si existe
+        if (storedData.expires_at && Date.now() > storedData.expires_at) {
+          localStorage.removeItem('corporate_credentials');
+          setError('El enlace de registro ha expirado. Por favor vuelve a empezar.');
+          setPhase('error');
+          return;
+        }
+
         // CASO LEGACY: pending_corporate=true → la cuenta todavía no fue creada
         // (compatibilidad con flujos anteriores)
         if (storedData.pending_corporate) {

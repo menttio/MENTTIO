@@ -26,7 +26,6 @@ export default function TeacherSignup() {
   const [step, setStep] = useState(1);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [corporateAccount, setCorporateAccount] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -246,7 +245,7 @@ export default function TeacherSignup() {
   };
 
   // Success screen for basic plan (similar to students)
-  if (showSuccess && !corporateAccount) {
+  if (showSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
         <motion.div
@@ -290,84 +289,7 @@ export default function TeacherSignup() {
     );
   }
 
-  if (showSuccess && corporateAccount) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-2xl"
-        >
-          <Card className="shadow-xl">
-            <CardContent className="p-12 text-center">
-              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-                <Check className="text-green-600" size={40} />
-              </div>
-              
-              <h2 className="text-3xl font-bold text-[#404040] mb-2">
-                ¡Cuenta Creada con Éxito!
-              </h2>
-              
-              <p className="text-gray-600 mb-8">
-                Tu cuenta corporativa ha sido creada correctamente
-              </p>
 
-              <div className="bg-[#41f2c0]/10 rounded-xl p-6 mb-6 text-left">
-                <h3 className="font-semibold text-[#404040] mb-4">Datos de Acceso Corporativo:</h3>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm text-gray-500">Correo Corporativo:</label>
-                    <p className="text-lg font-mono font-semibold text-[#404040] break-all">
-                      {corporateAccount.email}
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm text-gray-500">Contraseña Temporal:</label>
-                    <p className="text-lg font-mono font-semibold text-[#404040]">
-                      {corporateAccount.password}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                <p className="text-sm text-yellow-800 mb-2">
-                  <strong>⚠️ Importante:</strong> Revisa tu correo corporativo para completar el registro.
-                </p>
-                <p className="text-sm text-yellow-800 mb-2">
-                  Recibirás un email de invitación de Base44 en <strong>{corporateAccount.email}</strong>. Haz clic en el enlace y establece tu contraseña para acceder a Menπio.
-                </p>
-                <p className="text-sm text-yellow-800">
-                  Puedes cambiar la contraseña de tu cuenta de Google cuando quieras, y te recomendamos usar la misma en Menπio por comodidad.
-                </p>
-              </div>
-
-              <div className="bg-[#41f2c0]/10 border border-[#41f2c0] rounded-xl p-4 mb-6">
-                <p className="text-sm text-[#404040] font-medium mb-2">
-                  📌 Próximos pasos:
-                </p>
-                <ol className="text-sm text-gray-700 space-y-1 ml-4 list-decimal">
-                  <li>Inicia sesión en Google con tu cuenta corporativa</li>
-                  <li>Accede a Menπio usando "Iniciar sesión con Google"</li>
-                  <li>Conecta tu Google Calendar para gestionar tus clases</li>
-                </ol>
-              </div>
-
-              <Button
-                onClick={() => window.location.href = `/login?from_url=${encodeURIComponent(window.location.origin + createPageUrl('AuthRedirect'))}`}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
-              >
-                Ir a Iniciar Sesión
-                <ArrowRight size={18} className="ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    );
-  }
 
   if (saving) {
     return (
