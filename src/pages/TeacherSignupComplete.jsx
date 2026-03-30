@@ -11,68 +11,52 @@ export default function TeacherSignupComplete() {
   useEffect(() => {
     const completeSignup = async () => {
       try {
-        console.log('═══════════════════════════════════════════════════════');
-        console.log('🔵 TeacherSignupComplete INICIADO');
-        console.log('═══════════════════════════════════════════════════════');
-        console.log('🌐 URL actual:', window.location.href);
-        console.log('🌐 Timestamp:', new Date().toISOString());
-        
-        // Verificar sessionStorage COMPLETO
-        console.log('📦 Contenido COMPLETO de sessionStorage AL INICIAR:');
-        if (sessionStorage.length === 0) {
-          console.error('❌ ¡sessionStorage está VACÍO!');
-        } else {
-          console.log('✅ sessionStorage tiene', sessionStorage.length, 'elementos:');
-          for (let i = 0; i < sessionStorage.length; i++) {
-            const key = sessionStorage.key(i);
-            const value = sessionStorage.getItem(key);
-            console.log(`  ${i + 1}. ${key} (${value?.length} chars):`, value);
-          }
-        }
-        
-        console.log('👤 Obteniendo usuario autenticado...');
         const user = await base44.auth.me();
-        console.log('✅ Usuario autenticado:');
-        console.log('  - Email:', user.email);
-        console.log('  - ID:', user.id);
-        console.log('  - Full Name:', user.full_name);
-        console.log('  - Usuario completo:', user);
-        
+        if (!user) {
+          window.location.href = createPageUrl('Home');
+          return;
+        }
+
         const signupData = sessionStorage.getItem('teacher_signup_data');
         const subscriptionPlan = sessionStorage.getItem('subscription_plan') || 'basic';
-        console.log('🔍 Verificando teacher_signup_data...');
-        console.log('📋 teacher_signup_data encontrado:', signupData ? 'SÍ' : 'NO');
-        console.log('📋 Plan seleccionado:', subscriptionPlan);
-        
+
         if (!signupData) {
-          console.error('❌❌❌ ERROR CRÍTICO: NO HAY teacher_signup_data ❌❌❌');
-          console.error('❌ No se puede crear el profesor sin estos datos');
-          console.error('❌ Redirigiendo de vuelta a TeacherSignup...');
           navigate(createPageUrl('TeacherSignup'));
           return;
         }
 
-        console.log('📋 Datos raw encontrados (completos):', signupData);
-        console.log('📄 Parseando datos JSON...');
-        
-        let data;
-        try {
-          data = JSON.parse(signupData);
-          console.log('✅ Datos parseados exitosamente:', data);
-        } catch (parseError) {
-          console.error('❌ ERROR al parsear JSON:', parseError);
-          console.error('❌ Contenido que falló:', signupData);
-          throw parseError;
+        const data = JSON.parse(signupData);
+
+        // Verificar si ya existe el profesor (por si el usuario recargó la página)
+        const existingTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
+        if (existingTeachers.length > 0) {
+          const teacher = existingTeachers[0];
+          if (teacher.subscription_active || teacher.trial_active || teacher.subscription_exempt) {
+            // Ya tiene acceso → ir directo al dashboard
+            sessionStorage.removeItem('teacher_signup_data');
+            sessionStorage.removeItem('subscription_plan');
+            sessionStorage.removeItem('teacher_signup_in_progress');
+            window.location.href = createPageUrl('TeacherDashboard');
+            return;
+          }
+          // Existe pero sin suscripción → ir a pagar
+          sessionStorage.removeItem('teacher_signup_data');
+          sessionStorage.removeItem('subscription_plan');
+          sessionStorage.removeItem('teacher_signup_in_progress');
+          const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan: subscriptionPlan });
+          if (response.data.error) throw new Error(response.data.error);
+          window.location.replace(response.data.url);
+          return;
         }
-        
-        // Calcular fechas de prueba (14 días)
-        console.log('📅 Calculando fechas de prueba...');
-        const trialStartDate = new Date();
+
+        // Verificar si ya usó el trial
+        const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: user.email });
+        const grantTrial = trialUsedRecords.length === 0;
+
+        const now = new Date();
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 30);
-        console.log('✅ Trial start:', trialStartDate.toISOString().split('T')[0]);
-        console.log('✅ Trial end:', trialEndDate.toISOString().split('T')[0]);
-        
+
         const teacherData = {
           user_email: user.email,
           full_name: `${data.first_name} ${data.last_name}`,
@@ -83,106 +67,53 @@ export default function TeacherSignupComplete() {
           subjects: data.subjects || [],
           rating: 0,
           total_classes: 0,
-          subscription_active: true,
-          subscription_expires: trialEndDate.toISOString().split('T')[0],
+          subscription_active: grantTrial,
+          subscription_expires: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
           subscription_plan: subscriptionPlan,
-          trial_used: false,
-          trial_active: true,
-          trial_start_date: trialStartDate.toISOString().split('T')[0],
-          trial_end_date: trialEndDate.toISOString().split('T')[0],
+          trial_used: !grantTrial,
+          trial_active: grantTrial,
+          trial_start_date: grantTrial ? now.toISOString().split('T')[0] : null,
+          trial_end_date: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
           tour_completed: false
         };
-        
-        console.log('🔨 Preparando creación de Teacher...');
-        console.log('🔨 Datos completos a enviar:', JSON.stringify(teacherData, null, 2));
-        console.log('✅ Llamando a base44.entities.Teacher.create...');
-        console.log('⏳ ESPERANDO RESPUESTA DEL SERVIDOR...');
-        
-        const teacher = await base44.entities.Teacher.create(teacherData);
-        
-        console.log('═══════════════════════════════════════════════════════');
-        console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
-        console.log('═══════════════════════════════════════════════════════');
-        console.log('✅ ID del profesor creado:', teacher.id);
-        console.log('✅ Email del profesor:', teacher.user_email);
-        console.log('✅ Nombre completo:', teacher.full_name);
-        console.log('✅ Plan:', teacher.subscription_plan);
-        console.log('✅ Trial activo:', teacher.trial_active);
-        console.log('✅ Datos COMPLETOS del profesor creado:', JSON.stringify(teacher, null, 2));
-        console.log('═══════════════════════════════════════════════════════');
-        
-        console.log('🔍 VERIFICANDO EN BASE DE DATOS...');
-        console.log('🔍 Buscando profesor con email:', user.email);
-        const verifyTeachers = await base44.entities.Teacher.filter({ user_email: user.email });
-        console.log('🔍 Profesores encontrados en verificación:', verifyTeachers.length);
-        if (verifyTeachers.length > 0) {
-          console.log('✅ CONFIRMADO: Profesor existe en base de datos');
-          console.log('✅ Datos encontrados:', verifyTeachers[0]);
-        } else {
-          console.error('❌ ERROR: Profesor NO encontrado en base de datos tras creación');
-        }
 
-        // Notificar nuevo profesor a n8n (plan básico)
+        await base44.entities.Teacher.create(teacherData);
+
+        // Notificar a n8n vía función backend (POST seguro)
         try {
-          const nuevoProfesorUrl = new URL('https://raulng16.app.n8n.cloud/webhook/nuevo_profesor');
-          nuevoProfesorUrl.searchParams.append('nombre', data.first_name);
-          nuevoProfesorUrl.searchParams.append('apellidos', data.last_name);
-          nuevoProfesorUrl.searchParams.append('telefono', data.phone);
-          nuevoProfesorUrl.searchParams.append('correo_electronico', user.email);
-          await fetch(nuevoProfesorUrl.toString(), { method: 'GET' });
-          console.log('✅ Webhook nuevo_profesor enviado');
-        } catch (webhookErr) {
-          console.error('Error enviando webhook nuevo_profesor:', webhookErr.message);
-        }
+          await base44.functions.invoke('notifyNuevoProfesor', {
+            nombre: data.first_name,
+            apellidos: data.last_name,
+            telefono: data.phone,
+            correo_electronico: user.email
+          });
+        } catch (e) { /* no crítico */ }
 
-        console.log('📧 Enviando email de notificación...');
+        // Email de notificación interna
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: `Nuevo Profesor Registrado (Plan ${subscriptionPlan === 'premium' ? 'Premium' : 'Básico'}) - Menttio`,
-            body: `
-              <h2>Nuevo Profesor Registrado</h2>
-              <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
-              <p><strong>Email:</strong> ${user.email}</p>
-              <p><strong>Teléfono:</strong> ${data.phone}</p>
-              <p><strong>Formación:</strong> ${data.education}</p>
-              <p><strong>Años de experiencia:</strong> ${data.experience_years || 'No especificado'}</p>
-              <p><strong>Plan:</strong> ${subscriptionPlan === 'premium' ? 'Premium (con grabaciones)' : 'Básico (sin grabaciones)'}</p>
-              <p><strong>Período de prueba:</strong> 30 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
-            `
+            subject: `Nuevo Profesor - Plan ${subscriptionPlan === 'premium' ? 'Premium' : 'Básico'} - Menttio`,
+            body: `<h2>Nuevo Profesor Registrado</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Teléfono:</strong> ${data.phone}</p><p><strong>Plan:</strong> ${subscriptionPlan}</p>`
           });
-          console.log('✅ Email enviado correctamente');
-        } catch (emailError) {
-          console.error('❌ Error enviando email de notificación:', emailError);
-        }
+        } catch (e) { /* no crítico */ }
 
-        console.log('🗑️ Limpiando sessionStorage...');
+        // Limpiar sessionStorage
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
-        sessionStorage.removeItem('post_login_redirect');
         sessionStorage.removeItem('teacher_signup_in_progress');
-        console.log('✅ sessionStorage limpiado');
-        
-        console.log('➡️ Preparando redirección a TeacherDashboard...');
-        const dashboardUrl = createPageUrl('TeacherDashboard');
-        console.log('🔗 URL destino:', dashboardUrl);
-        console.log('🚀 Redirigiendo...');
-        console.log('═══════════════════════════════════════════════════════');
-        
-        window.location.href = dashboardUrl;
+
+        // Siempre pasar por Stripe para registrar el método de pago
+        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan: subscriptionPlan });
+        if (response.data.error) throw new Error(response.data.error);
+        window.location.replace(response.data.url);
+
       } catch (error) {
-        console.error('═══════════════════════════════════════════════════════');
-        console.error('❌❌❌ ERROR COMPLETANDO SIGNUP ❌❌❌');
-        console.error('═══════════════════════════════════════════════════════');
-        console.error('❌ Mensaje de error:', error.message);
-        console.error('❌ Error completo:', error);
-        console.error('❌ Stack trace:', error.stack);
-        console.error('═══════════════════════════════════════════════════════');
+        console.error('Error completando signup de profesor:', error.message);
         setError(error.message);
       }
     };
 
-    console.log('🚀 Ejecutando completeSignup...');
     completeSignup();
   }, [navigate]);
 
