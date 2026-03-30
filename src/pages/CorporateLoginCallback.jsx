@@ -28,7 +28,15 @@ export default function CorporateLoginCallback() {
           return;
         }
 
-        const storedData = JSON.parse(stored);
+        let storedData;
+        try {
+          storedData = JSON.parse(stored);
+        } catch {
+          localStorage.removeItem('corporate_credentials');
+          setError('No se encontraron datos de registro. Por favor vuelve a empezar.');
+          setPhase('error');
+          return;
+        }
 
         // Verificar TTL si existe
         if (storedData.expires_at && Date.now() > storedData.expires_at) {
