@@ -249,8 +249,13 @@ export default function Layout({ children, currentPageName }) {
                 student_id: students[0].id,
                 payment_status: 'pending'
               });
-              // Filter out cancelled bookings
-              const unpaidNonCancelled = studentBookings.filter(b => b.status !== 'cancelled');
+              // Solo mostrar clases ya completadas (pasadas) y no canceladas
+              const now = new Date();
+              const unpaidNonCancelled = studentBookings.filter(b => {
+                if (b.status === 'cancelled') return false;
+                const bookingEnd = new Date(`${b.date}T${b.end_time || b.start_time}`);
+                return bookingEnd < now; // solo si ya pasó la clase
+              });
               
               if (unpaidNonCancelled.length > 0) {
                 setUnpaidBookings(unpaidNonCancelled);
