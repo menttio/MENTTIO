@@ -191,7 +191,7 @@ export default function ManageAvailability() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <Switch checked={isEnabled} onCheckedChange={() => toggleDay(day.value)} />
+                    <Switch checked={isEnabled} onCheckedChange={() => toggleDay(day.value)} className="data-[state=checked]:bg-[#41f2c0]" />
                     <Label className="font-medium text-[#404040]">{day.label}</Label>
                   </div>
                   {isEnabled && (
