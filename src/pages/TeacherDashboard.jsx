@@ -22,12 +22,14 @@ import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import ManageSubjectsCard from '../components/teacher/ManageSubjectsCard';
 import CreateRecurringBookingDialog from '../components/teacher/CreateRecurringBookingDialog';
+import OnboardingTour, { shouldShowOnboarding } from '../components/teacher/OnboardingTour';
 
 export default function TeacherDashboard() {
   const [teacher, setTeacher] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTour, setShowTour] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [showRecurringDialog, setShowRecurringDialog] = useState(false);
 
   const loadData = async () => {
@@ -42,6 +44,10 @@ export default function TeacherDashboard() {
         // Show tour if not completed
         if (!teacherData.tour_completed) {
           setShowTour(true);
+        }
+        // Show onboarding on first visit
+        if (shouldShowOnboarding()) {
+          setShowOnboarding(true);
         }
 
         // Only fetch scheduled (for upcoming) + this month completed (for earnings stats)
@@ -99,14 +105,7 @@ export default function TeacherDashboard() {
 
   return (
     <>
-      {/* Temporarily disabled tour */}
-      {/* {showTour && teacher && (
-        <InteractiveTour
-          teacherId={teacher.id}
-          teacherName={teacher.full_name}
-          onComplete={() => setShowTour(false)}
-        />
-      )} */}
+      <OnboardingTour show={showOnboarding} onClose={() => setShowOnboarding(false)} />
       
         <div className="max-w-6xl mx-auto">
           {/* Welcome Section */}

@@ -31,6 +31,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { createPageUrl } from '../utils';
+import { resetOnboarding } from '../components/teacher/OnboardingTour';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -331,6 +332,26 @@ export default function Profile() {
           </>
         )}
       </Button>
+
+      {/* Restart Onboarding */}
+      {userRole === 'teacher' && (
+        <Card className="mb-6 border-[#41f2c0]/30">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div>
+              <p className="font-medium text-[#404040]">Tutorial de bienvenida</p>
+              <p className="text-xs text-gray-500 mt-0.5">Vuelve a ver el tour de introducción</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { resetOnboarding(); window.location.href = createPageUrl('TeacherDashboard'); }}
+              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0]/10"
+            >
+              Reiniciar
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Delete Account Section */}
       <Card className="border-red-200 bg-red-50">
