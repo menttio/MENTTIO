@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
     } else if (subscription_plan === 'premium') {
       priceId = 'price_1TGRGdHZYiECTxiyqmskk0Dr'; // Premium (Live)
     } else {
-      priceId = 'price_1TBu8mHZYiECTxiyJ6fB9Hy3'; // Básico (Live)
+      priceId = 'price_1T52D1HAmL0VZFroIHMQq2wc'; // Básico (Live)
     }
 
     console.log('💳 Price ID seleccionado:', priceId);
