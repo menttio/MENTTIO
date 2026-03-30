@@ -105,6 +105,9 @@ export default function StripeConnectCard() {
             <p className="text-blue-600 text-xs mt-1">
               ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas.
             </p>
+            <p className="text-blue-700 text-xs mt-2 pt-2 border-t border-blue-200">
+              Como alternativa, tus alumnos también pueden pagarte por <strong>Bizum</strong> directamente a tu teléfono, sin ninguna comisión.
+            </p>
           </div>
         </div>
 
