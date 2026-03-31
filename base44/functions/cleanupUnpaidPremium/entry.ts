@@ -36,30 +36,33 @@ Deno.serve(async (req) => {
       return Response.json({ success: true, message: 'No unpaid premium teachers found', count: 0 });
     }
 
-    // Enviar al webhook con la info mínima necesaria
-    const payload = unpaidPremium.map(t => ({
-      teacher_id: t.id,
-      full_name: t.full_name,
-      user_email: t.user_email,
-      corporate_email: t.corporate_email || null,
-      created_date: t.created_date,
-      subscription_plan: t.subscription_plan
-    }));
+    // Filtrar solo los que tienen email corporativo @menttio.com (igual que deleteAccount)
+    const toDelete = unpaidPremium.filter(t => t.corporate_email && t.corporate_email.includes('@menttio.com'));
 
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ teachers: payload, triggered_at: new Date().toISOString() })
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error enviando a n8n:', errorText);
-      return Response.json({ error: 'Failed to notify n8n', details: errorText }, { status: 500 });
+    if (toDelete.length === 0) {
+      return Response.json({ success: true, message: 'No corporate accounts to delete', count: 0 });
     }
 
-    console.log(`✅ Webhook enviado a n8n con ${unpaidPremium.length} profesores`);
-    return Response.json({ success: true, count: unpaidPremium.length, teachers: payload });
+    // Enviar un webhook por profesor, mismo payload que deleteAccount
+    const results = [];
+    for (const t of toDelete) {
+      const payload = {
+        primaryEmail: t.corporate_email,
+        googleUserId: t.corporate_email
+      };
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      results.push({ email: t.corporate_email, ok: response.ok, status: response.status });
+      console.log(`Webhook sent for ${t.corporate_email}: ${response.status}`);
+    }
+
+    console.log(`✅ Webhooks enviados: ${toDelete.length}`);
+    return Response.json({ success: true, count: toDelete.length, results });
 
   } catch (error) {
     console.error('Error en cleanupUnpaidPremium:', error);
