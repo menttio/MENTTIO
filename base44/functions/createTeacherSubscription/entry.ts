@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     if (is_beta) {
       priceId = 'price_1TCi4RHZYiECTxiyb6PQ8haP'; // Básico Beta (Live)
     } else if (subscription_plan === 'premium') {
-      priceId = 'price_1TGRGdHZYiECTxiyqmskk0Dr'; // Premium (Live)
+      priceId = 'price_1TBuNwHZYiECTxiyiZ41AEcx'; // Premium (Live)
     } else {
       priceId = 'price_1TBu8mHZYiECTxiyJ6fB9Hy3'; // Básico (Live)
     }
