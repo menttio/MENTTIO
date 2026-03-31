@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,7 +51,7 @@ export default function StripeConnectCard() {
       }
     } catch (err) {
       console.error(err);
-      toast.error('Error al conectar con Stripe. Inténtalo de nuevo.');
+      alert('Error al conectar con Stripe. Inténtalo de nuevo.');
       setConnecting(false);
     }
   };

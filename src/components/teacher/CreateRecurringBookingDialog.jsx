@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import {
   Dialog,
@@ -324,7 +323,6 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         }
       }
 
-      toast.success('Clases recurrentes creadas correctamente');
       onSuccess?.();
 
       // If some classes were blocked by Google Calendar, show popup before closing
@@ -337,7 +335,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       }
     } catch (error) {
       console.error('Error creating recurring bookings:', error);
-      toast.error('Error al crear las reservas recurrentes. Inténtalo de nuevo.');
+      alert('Error al crear las reservas recurrentes. Inténtalo de nuevo.');
     } finally {
       setSaving(false);
     }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { GraduationCap, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
@@ -47,12 +46,12 @@ export default function StudentSignup() {
     e?.preventDefault();
     
     if (!formData.first_name || !formData.last_name) {
-      toast.error('Por favor, completa todos los campos obligatorios');
+      alert('Por favor, completa todos los campos obligatorios');
       return;
     }
     
     if (!formData.phone) {
-      toast.error('El teléfono es obligatorio para los alumnos');
+      alert('El teléfono es obligatorio para los alumnos');
       return;
     }
     
@@ -68,7 +67,7 @@ export default function StudentSignup() {
       setSuccess(true);
     } catch (error) {
       console.error('Error:', error);
-      toast.error(`Error: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
+      alert(`Error: ${error.message || 'Por favor, inténtalo de nuevo.'}`);
       setLoading(false);
     }
   };

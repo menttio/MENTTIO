@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import {
   Dialog,
@@ -324,12 +323,11 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
         console.error('Error notificando a n8n:', webhookError);
       }
 
-      toast.success('Clase reservada correctamente');
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
       console.error('Error creating booking:', error);
-      toast.error('Error al crear la reserva. Inténtalo de nuevo.');
+      alert('Error al crear la reserva. Inténtalo de nuevo.');
     } finally {
       setSaving(false);
     }

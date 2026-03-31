@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { createPageUrl } from '../utils';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -15,7 +14,7 @@ export default function BetaTeacherSignupPayment() {
       try {
         const signupData = sessionStorage.getItem('teacher_signup_data');
         if (!signupData) {
-          toast.error('Error: No se encontraron datos de registro. Vuelve al formulario.');
+          alert('Error: No se encontraron datos de registro. Vuelve al formulario.');
           window.location.href = createPageUrl('BetaTeacherSignup') + '?token=beta2024menttio';
           return;
         }

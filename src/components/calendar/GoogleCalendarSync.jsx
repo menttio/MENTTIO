@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Calendar, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -47,11 +46,10 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
         const handleMessage = (event) => {
           if (event.data.type === 'oauth_success') {
             setConnected(true);
-            toast.success('Google Calendar conectado correctamente');
             window.removeEventListener('message', handleMessage);
             setToggling(false);
           } else if (event.data.type === 'oauth_error') {
-            toast.error('Error al conectar con Google Calendar');
+            alert('Error al conectar con Google Calendar');
             window.removeEventListener('message', handleMessage);
             setToggling(false);
           }
@@ -69,7 +67,7 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
 
       } catch (error) {
         console.error('Error starting OAuth:', error);
-        toast.error('Error al iniciar la conexión');
+        alert('Error al iniciar la conexión');
         setToggling(false);
       }
     } else {
@@ -77,10 +75,9 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
       try {
         await base44.functions.invoke('toggleGoogleCalendar', { connect: false });
         setConnected(false);
-        toast.success('Google Calendar desconectado');
       } catch (error) {
         console.error('Error disconnecting Google Calendar:', error);
-        toast.error('Error al desconectar Google Calendar');
+        alert('Error al desconectar');
       } finally {
         setToggling(false);
       }

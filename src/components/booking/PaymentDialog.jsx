@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { 
   CreditCard, 
@@ -49,7 +48,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
-      toast.error('Error al procesar el pago. Inténtalo de nuevo.');
+      alert('Error al procesar el pago. Inténtalo de nuevo.');
       setProcessing(false);
     }
   };
@@ -76,7 +75,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
       onOpenChange(false);
     } catch (error) {
       console.error('Error confirming payment:', error);
-      toast.error('Error al confirmar el pago. Inténtalo de nuevo.');
+      alert('Error al confirmar el pago. Inténtalo de nuevo.');
     } finally {
       setProcessing(false);
     }
@@ -84,7 +83,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    toast.success('Número copiado al portapapeles');
+    alert('Número copiado al portapapeles');
   };
 
   return (

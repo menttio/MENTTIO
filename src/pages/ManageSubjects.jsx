@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -105,7 +104,7 @@ export default function ManageSubjects() {
 
   const handleSave = async () => {
     if (selectedSubjectId === 'custom' && !customSubjectName.trim()) {
-      toast.error('Por favor, escribe el nombre de la asignatura');
+      alert('Por favor, escribe el nombre de la asignatura');
       return;
     }
     if (!selectedSubjectId || !selectedLevel || !price) return;
@@ -158,7 +157,7 @@ export default function ManageSubjects() {
           s.level === selectedLevel
         );
         if (isDuplicate) {
-          toast.error('Ya tienes esta asignatura con este nivel.');
+          alert('Ya tienes esta asignatura con este nivel.');
           setSaving(false);
           return;
         }
@@ -198,10 +197,8 @@ export default function ManageSubjects() {
       }
 
       setShowDialog(false);
-      toast.success(editingSubject ? 'Asignatura actualizada' : 'Asignatura añadida');
     } catch (error) {
       console.error(error);
-      toast.error('Error al guardar la asignatura');
     } finally {
       setSaving(false);
     }
@@ -232,10 +229,8 @@ export default function ManageSubjects() {
       }
 
       await loadData();
-      toast.success('Asignatura eliminada');
     } catch (error) {
       console.error(error);
-      toast.error('Error al eliminar la asignatura');
     }
   };
 

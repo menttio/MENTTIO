@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
 import { Mail, Send, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -37,7 +36,7 @@ export default function Contact() {
       }, 5000);
     } catch (error) {
       console.error('Error sending email:', error);
-      toast.error('Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+      alert('Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
     } finally {
       setSending(false);
     }

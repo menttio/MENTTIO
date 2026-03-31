@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Webhook URL no configurada' }, { status: 500 });
     }
 
-
+    console.log('Enviando datos a n8n:', { nombre, apellidos, email_personal });
     
     // Enviar datos a n8n usando POST con body JSON (nunca GET con query params)
     const webhookResponse = await fetch(webhookUrl, {
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     }
 
     const corporateData = await webhookResponse.json();
-
+    console.log('Respuesta de n8n:', corporateData);
 
     if (corporateData.status !== 'ok') {
       console.error('Error en respuesta de n8n:', corporateData);
@@ -115,66 +115,9 @@ Deno.serve(async (req) => {
       console.error('Error enviando datos al webhook nuevo_profesor:', webhookErr.message);
     }
 
-    // Enviar email de bienvenida al profesor (a su email personal)
-    try {
-      const senderName = Deno.env.get('EMAIL_SENDER_NAME') || 'Menttio';
-      const appUrl = Deno.env.get('APP_URL') || 'https://app.menttio.com';
-      await base44.asServiceRole.integrations.Core.SendEmail({
-        from_name: senderName,
-        to: email_personal,
-        subject: '¡Bienvenido/a a Menttio! Tu cuenta está lista',
-        body: `
-          <!DOCTYPE html>
-          <html lang="es">
-          <head><meta charset="UTF-8"></head>
-          <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
-            <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; font-size: 28px; margin: 0;">Menttio</h1>
-              <p style="color: #888; font-size: 14px; margin: 4px 0 0;">La herramienta para profesores profesionales</p>
-            </div>
-            <div style="background: #f9f9ff; border-left: 4px solid #6366f1; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
-              <h2 style="margin: 0 0 8px; color: #4f46e5;">¡Hola, ${nombre}!</h2>
-              <p style="margin: 0;">Tu cuenta de Menttio ha sido creada con éxito. Ya puedes empezar a profesionalizar y automatizar la gestión de tus clases.</p>
-            </div>
-            <h3 style="color: #4f46e5;">Tus datos de acceso</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
-              <tr>
-                <td style="padding: 10px; background: #f3f4f6; border-radius: 6px 0 0 6px; font-weight: bold; width: 40%;">Email de acceso</td>
-                <td style="padding: 10px; background: #f3f4f6; border-radius: 0 6px 6px 0;">${corporateData.email}</td>
-              </tr>
-            </table>
-            <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-              <p style="margin: 0; font-size: 14px;"><strong>Próximo paso:</strong> Revisa la bandeja de entrada de <strong>${corporateData.email}</strong>. Recibirás un email de invitación para configurar tu contraseña y acceder a la plataforma.</p>
-            </div>
-            <div style="text-align: center; margin-bottom: 32px;">
-              <a href="${appUrl}" style="background: #6366f1; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">Acceder a Menttio</a>
-            </div>
-            <h3 style="color: #4f46e5;">¿Qué puedes hacer en Menttio?</h3>
-            <ul style="padding-left: 20px; line-height: 1.8;">
-              <li>Gestionar tu agenda y reservas de clases</li>
-              <li>Cobrar a tus alumnos de forma automática</li>
-              <li>Ver estadísticas de tus clases y facturación</li>
-              <li>Enviar recordatorios automáticos a tus alumnos</li>
-              <li>Compartir archivos y materiales</li>
-            </ul>
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
-            <p style="color: #888; font-size: 12px; text-align: center;">
-              ¿Tienes alguna duda? Contáctanos en <a href="mailto:menttio@menttio.com" style="color: #6366f1;">menttio@menttio.com</a><br>
-              © ${new Date().getFullYear()} Menttio. Todos los derechos reservados.
-            </p>
-          </body>
-          </html>
-        `
-      });
-    } catch (emailError) {
-      console.error('Error enviando email de bienvenida al profesor:', emailError);
-      // No fallar el registro si falla el email
-    }
-
-    // Enviar email de notificación interna a menttio
+    // Enviar email de notificación a menttio
     try {
       await base44.asServiceRole.integrations.Core.SendEmail({
-        from_name: 'Menttio — Sistema',
         to: 'menttio@menttio.com',
         subject: 'Nuevo Profesor Registrado - Menttio',
         body: `
@@ -189,7 +132,7 @@ Deno.serve(async (req) => {
         `
       });
     } catch (emailError) {
-      console.error('Error enviando email de notificación interna:', emailError);
+      console.error('Error enviando email de notificación:', emailError);
       // No fallar el registro si falla el email
     }
 

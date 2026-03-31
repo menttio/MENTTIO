@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { 
@@ -522,7 +521,7 @@ export default function BookClass() {
       navigate(createPageUrl('MyClasses'));
     } catch (error) {
       console.error('Error creating booking:', error);
-      toast.error('Error al crear la reserva. Inténtalo de nuevo.');
+      alert('Error al crear la reserva. Inténtalo de nuevo.');
     } finally {
       setSaving(false);
     }

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { toast } from 'sonner';
 import { Star, Clock, DollarSign, User, Plus, Trash2, MessageCircle, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -60,7 +59,7 @@ export default function TeacherCard({
       const students = await base44.entities.Student.filter({ user_email: user.email });
       
       if (students.length === 0) {
-        toast.error('No se encontró tu perfil de estudiante');
+        alert('No se encontró tu perfil de estudiante');
         setStartingChat(false);
         return;
       }
@@ -95,7 +94,7 @@ export default function TeacherCard({
       navigate(createPageUrl('Messages'));
     } catch (error) {
       console.error('Error starting chat:', error);
-      toast.error('Hubo un error al iniciar el chat');
+      alert('Hubo un error al iniciar el chat');
     } finally {
       setStartingChat(false);
     }
