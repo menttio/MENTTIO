@@ -30,15 +30,11 @@ export default function StudentSignupComplete() {
 
         // Notificar nuevo alumno a n8n
         try {
-          await fetch('https://raulng16.app.n8n.cloud/webhook/nuevo_alumno', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              nombre: data.first_name,
-              apellidos: data.last_name,
-              telefono: data.phone,
-              correo_electronico: user.email
-            })
+          await base44.functions.invoke('notifyNuevoAlumno', {
+            nombre: data.first_name,
+            apellidos: data.last_name,
+            telefono: data.phone,
+            correo_electronico: user.email
           });
         } catch (webhookErr) {
           console.error('Error enviando webhook nuevo_alumno:', webhookErr.message);
