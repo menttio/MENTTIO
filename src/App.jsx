@@ -9,7 +9,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import BetaChat from './pages/BetaChat';
-import AdminCommissions from './pages/AdminCommissions';
+import AdminCommissions from './pages/AdminCommissions.jsx';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
