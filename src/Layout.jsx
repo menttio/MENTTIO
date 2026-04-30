@@ -164,6 +164,19 @@ export default function Layout({ children, currentPageName }) {
             }
           }
           
+          // Plan commission: siempre activo, nunca redirigir a renovación
+          if (teacher.subscription_plan === 'commission') {
+            console.log('✅ Profesor en plan comisión - acceso libre');
+            setUserRole('teacher');
+            loadUnreadMessages(currentUser.email, 'teacher', teacher.id);
+            if (studentPages.includes(currentPageName)) {
+              window.location.href = createPageUrl('TeacherDashboard');
+              return;
+            }
+            setLoading(false);
+            return;
+          }
+
           // Si el profesor está exento, acceso libre
           if (teacher.subscription_exempt) {
             console.log('✅ Profesor exento de pago - acceso libre');
@@ -317,6 +330,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mi Perfil', icon: User, page: 'Profile' },
+    ...(user?.role === 'admin' ? [{ name: 'Comisiones', icon: Settings, page: 'AdminCommissions' }] : []),
   ];
 
   const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;

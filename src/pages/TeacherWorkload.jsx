@@ -221,11 +221,14 @@ export default function TeacherWorkload() {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className={`grid w-full lg:w-auto lg:inline-grid ${teacher?.subscription_plan === 'commission' ? 'grid-cols-5' : 'grid-cols-4'}`}>
             <TabsTrigger value="overview">Vista General</TabsTrigger>
             <TabsTrigger value="earnings">Ingresos</TabsTrigger>
             <TabsTrigger value="performance">Rendimiento</TabsTrigger>
             <TabsTrigger value="payments">Pagos</TabsTrigger>
+            {teacher?.subscription_plan === 'commission' && (
+              <TabsTrigger value="commissions">Comisiones</TabsTrigger>
+            )}
           </TabsList>
 
           {/* Overview Tab */}
@@ -638,6 +641,92 @@ export default function TeacherWorkload() {
               </CardContent>
             </Card>
           </TabsContent>
+          {/* Commission Tab - only for commission plan */}
+          {teacher?.subscription_plan === 'commission' && (
+            <TabsContent value="commissions" className="space-y-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold text-[#404040]">Mis Comisiones</h2>
+                <p className="text-sm text-gray-500">Desglose de tus clases: lo que recibes tú y la comisión de Menttio</p>
+              </div>
+
+              {/* Summary cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-green-50 border-green-200">
+                  <CardContent className="p-5">
+                    <p className="text-sm text-green-600 font-medium mb-1">Total recibirás tú (75%)</p>
+                    <p className="text-2xl font-bold text-green-700">
+                      {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
+                        const pct = teacher.commission_percentage ?? 25;
+                        return s + (b.teacher_payout ?? (b.price || 0) * (1 - pct / 100));
+                      }, 0).toFixed(2)}€
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-purple-50 border-purple-200">
+                  <CardContent className="p-5">
+                    <p className="text-sm text-purple-600 font-medium mb-1">Comisión Menttio (25%)</p>
+                    <p className="text-2xl font-bold text-purple-700">
+                      {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
+                        const pct = teacher.commission_percentage ?? 25;
+                        return s + (b.platform_fee ?? (b.price || 0) * pct / 100);
+                      }, 0).toFixed(2)}€
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-5">
+                    <p className="text-sm text-gray-500 font-medium mb-1">Total facturado (precio bruto)</p>
+                    <p className="text-2xl font-bold text-[#404040]">
+                      {bookings.filter(b => b.status === 'completed').reduce((s, b) => s + (b.price || 0), 0).toFixed(2)}€
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Bookings table */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b text-left text-gray-500">
+                          <th className="pb-2 pr-3">Fecha</th>
+                          <th className="pb-2 pr-3">Asignatura</th>
+                          <th className="pb-2 pr-3">Alumno</th>
+                          <th className="pb-2 pr-3 text-right">Precio bruto</th>
+                          <th className="pb-2 pr-3 text-right">Tu parte (75%)</th>
+                          <th className="pb-2 text-right">Menttio (25%)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bookings
+                          .filter(b => b.status === 'completed')
+                          .sort((a, b) => new Date(b.date) - new Date(a.date))
+                          .map((b) => {
+                            const pct = teacher.commission_percentage ?? 25;
+                            const fee = b.platform_fee ?? (b.price || 0) * pct / 100;
+                            const payout = b.teacher_payout ?? (b.price || 0) * (1 - pct / 100);
+                            return (
+                              <tr key={b.id} className="border-b last:border-0 hover:bg-gray-50">
+                                <td className="py-2 pr-3 whitespace-nowrap">{b.date}</td>
+                                <td className="py-2 pr-3">{b.subject_name}</td>
+                                <td className="py-2 pr-3 text-gray-600">{b.student_name}</td>
+                                <td className="py-2 pr-3 text-right font-medium">{(b.price || 0).toFixed(2)}€</td>
+                                <td className="py-2 pr-3 text-right text-green-600 font-medium">{payout.toFixed(2)}€</td>
+                                <td className="py-2 text-right text-purple-600">{fee.toFixed(2)}€</td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                    {bookings.filter(b => b.status === 'completed').length === 0 && (
+                      <p className="text-center text-gray-400 py-8">No hay clases completadas aún.</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
+import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -490,88 +491,10 @@ export default function TeacherSignup() {
                     <label className="block text-sm font-medium text-[#404040] mb-3">
                       Selecciona tu plan *
                     </label>
-                    
-                    <div 
-                      onClick={() => setFormData({ ...formData, subscription_plan: 'basic' })}
-                      className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
-                        formData.subscription_plan === 'basic' 
-                          ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
-                          <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
-                          <p className="text-sm text-green-600 font-semibold mt-1">✨ 30 días de prueba gratis</p>
-                        </div>
-                        {formData.subscription_plan === 'basic' && (
-                          <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                            <Check className="text-white" size={16} />
-                          </div>
-                        )}
-                      </div>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Gestión de clases y calendario
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Chat con alumnos
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Gestión de disponibilidad
-                        </li>
-                        <li className="flex items-center gap-2 text-gray-400">
-                          <X size={14} />
-                          Sin grabación de clases
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div 
-                      onClick={() => setFormData({ ...formData, subscription_plan: 'premium' })}
-                      className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
-                        formData.subscription_plan === 'premium' 
-                          ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
-                            <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
-                          </div>
-                          <p className="text-2xl font-bold text-[#404040] mt-1">36,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
-                        </div>
-                        {formData.subscription_plan === 'premium' && (
-                          <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                            <Check className="text-white" size={16} />
-                          </div>
-                        )}
-                      </div>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Gestión de clases y calendario
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Chat con alumnos
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <Check size={14} className="text-[#41f2c0]" />
-                          Gestión de disponibilidad
-                        </li>
-                        <li className="flex items-center gap-2 font-medium text-[#41f2c0]">
-                          <Check size={14} />
-                          Grabación y almacenamiento de clases
-                        </li>
-                      </ul>
-                    </div>
+                    <PlanSelector
+                      selected={formData.subscription_plan}
+                      onChange={(plan) => setFormData({ ...formData, subscription_plan: plan })}
+                    />
                   </div>
 
                   <Button
@@ -706,15 +629,24 @@ export default function TeacherSignup() {
 
               {/* Step 3: Terms & Payment */}
               {step === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-4"
-                >
-                  <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
-                    {formData.subscription_plan === 'basic' ? (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-4"
+              >
+                <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
+                  {formData.subscription_plan === 'commission' ? (
+                    <>
+                      <p className="text-sm text-gray-500 mb-2">Plan Comisión</p>
+                      <div className="text-4xl font-bold text-purple-600 mb-1">Sin cuota mensual</div>
+                      <p className="text-sm text-gray-600 mt-2">
+                        Menttio retiene el <strong>25%</strong> de cada clase.<br/>
+                        Tú recibes el <strong>75%</strong> directamente del alumno por Bizum.
+                      </p>
+                    </>
+                  ) : formData.subscription_plan === 'basic' ? (
                       <>
                         <p className="text-sm text-gray-500 mb-1">Plan Básico</p>
                         <div className="text-5xl font-bold text-[#41f2c0] mb-1">30 días gratis</div>
@@ -820,7 +752,9 @@ export default function TeacherSignup() {
                     disabled={!canFinalize || saving}
                     className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
                   >
-                    {saving ? <Loader2 className="animate-spin" /> : 'Configurar Método de Pago'}
+                    {saving ? <Loader2 className="animate-spin" /> : (
+                      formData.subscription_plan === 'commission' ? 'Completar Registro' : 'Configurar Método de Pago'
+                    )}
                     {!saving && <ArrowRight size={18} className="ml-2" />}
                   </Button>
                 </motion.div>

@@ -66,7 +66,8 @@ export default function SubscriptionTab({ profile }) {
   const isActive = data?.subscription_active;
   const isTrial = data?.trial_active;
   const plan = data?.subscription_plan || profile?.subscription_plan || 'basic';
-  const planPrice = plan === 'premium' ? '36,99€' : '14,99€';
+  const isCommission = plan === 'commission';
+  const planPrice = plan === 'premium' ? '36,99€' : plan === 'commission' ? 'Sin cuota' : '14,99€';
   const details = data?.subscription_details;
 
   // Dates
@@ -102,8 +103,8 @@ export default function SubscriptionTab({ profile }) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              {plan === 'premium' ? <Crown className="text-yellow-500" size={20} /> : <Zap className="text-[#41f2c0]" size={20} />}
-              Plan {plan === 'premium' ? 'Premium' : 'Básico'}
+              {plan === 'premium' ? <Crown className="text-yellow-500" size={20} /> : isCommission ? <Zap className="text-purple-500" size={20} /> : <Zap className="text-[#41f2c0]" size={20} />}
+              Plan {plan === 'premium' ? 'Premium' : isCommission ? 'Comisión' : 'Básico'}
             </CardTitle>
             <Badge className={status.color}>{status.label}</Badge>
           </div>
@@ -199,7 +200,16 @@ export default function SubscriptionTab({ profile }) {
       {/* Stripe Connect - cobros de clases */}
       <StripeConnectCard />
 
-      {!isActive && (
+      {isCommission && (
+        <Card className="border-purple-200 bg-purple-50">
+          <CardContent className="p-5">
+            <p className="font-semibold text-purple-800 mb-1">Plan Comisión activo</p>
+            <p className="text-sm text-purple-700">No pagas cuota mensual. Menttio retiene el 25% de cada clase y tú recibes el 75% directamente del alumno por Bizum.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {!isActive && !isCommission && (
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-5 flex items-center justify-between gap-4">
             <div>

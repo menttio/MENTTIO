@@ -9,6 +9,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import BetaChat from './pages/BetaChat';
+import AdminCommissions from './pages/AdminCommissions';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -61,6 +62,11 @@ const AuthenticatedApp = () => {
         />
       ))}
       <Route path="/beta" element={<BetaChat />} />
+      <Route path="/AdminCommissions" element={
+        <LayoutWrapper currentPageName="AdminCommissions">
+          <AdminCommissions />
+        </LayoutWrapper>
+      } />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

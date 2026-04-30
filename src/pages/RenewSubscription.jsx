@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { AlertCircle, Check, Loader2, Video, X } from 'lucide-react';
+import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +37,20 @@ export default function RenewSubscription() {
   const handleRenew = async () => {
     setRenewing(true);
     try {
+      if (selectedPlan === 'commission') {
+        // Commission plan: no Stripe, just update the teacher record
+        await base44.entities.Teacher.update(teacher.id, {
+          subscription_plan: 'commission',
+          subscription_active: true,
+          subscription_expires: null,
+          stripe_subscription_id: null,
+          trial_active: false,
+          commission_percentage: 25,
+        });
+        window.location.href = '/TeacherDashboard';
+        return;
+      }
+
       const response = await base44.functions.invoke('createTeacherSubscription', {
         subscription_plan: selectedPlan
       });
@@ -86,90 +101,11 @@ export default function RenewSubscription() {
               <label className="block text-sm font-medium text-[#404040] text-center mb-4">
                 Selecciona tu plan de renovación
               </label>
-              
-              <div 
-                onClick={() => setSelectedPlan('basic')}
-                className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
-                  selectedPlan === 'basic' 
-                    ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h4 className="font-semibold text-[#404040]">📚 Plan Básico</h4>
-                    {!teacher?.trial_used && (
-                      <Badge className="bg-green-500 text-white text-xs mb-1">30 días gratis</Badge>
-                    )}
-                    <p className="text-2xl font-bold text-[#404040] mt-1">14,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
-                  </div>
-                  {selectedPlan === 'basic' && (
-                    <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                      <Check className="text-white" size={16} />
-                    </div>
-                  )}
-                </div>
-                <ul className="text-sm text-gray-600 space-y-1 mt-3">
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Gestión de clases y calendario
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Chat con alumnos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Gestión de disponibilidad
-                  </li>
-                  <li className="flex items-center gap-2 text-gray-400">
-                    <X size={14} />
-                    Sin grabación de clases
-                  </li>
-                </ul>
-              </div>
-
-              <div 
-                onClick={() => setSelectedPlan('premium')}
-                className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${
-                  selectedPlan === 'premium' 
-                    ? 'border-[#41f2c0] bg-[#41f2c0]/10' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-[#404040]">⭐ Plan Premium</h4>
-                      <Badge className="bg-[#41f2c0] text-white text-xs">Recomendado</Badge>
-                    </div>
-                    <p className="text-2xl font-bold text-[#404040] mt-1">36,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
-                  </div>
-                  {selectedPlan === 'premium' && (
-                    <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                      <Check className="text-white" size={16} />
-                    </div>
-                  )}
-                </div>
-                <ul className="text-sm text-gray-600 space-y-1 mt-3">
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Gestión de clases y calendario
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Chat con alumnos
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="text-[#41f2c0]" />
-                    Gestión de disponibilidad
-                  </li>
-                  <li className="flex items-center gap-2 font-medium text-[#41f2c0]">
-                    <Video size={14} />
-                    Grabación y almacenamiento de clases
-                  </li>
-                </ul>
-              </div>
+              <PlanSelector
+                selected={selectedPlan}
+                onChange={setSelectedPlan}
+                showTrial={!teacher?.trial_used}
+              />
             </div>
 
             <Button
@@ -177,7 +113,11 @@ export default function RenewSubscription() {
               disabled={renewing}
               className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
             >
-              {renewing ? <Loader2 className="animate-spin" /> : `Renovar con Plan ${selectedPlan === 'basic' ? 'Básico' : 'Premium'}`}
+              {renewing ? <Loader2 className="animate-spin" /> : (
+                selectedPlan === 'basic' ? 'Continuar con Plan Básico' :
+                selectedPlan === 'premium' ? 'Continuar con Plan Premium' :
+                'Activar Plan Comisión'
+              )}
             </Button>
 
             <div className="text-center">

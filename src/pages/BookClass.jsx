@@ -369,6 +369,14 @@ export default function BookClass() {
 
       let newBooking;
 
+      // Calculate commission fields for commission-plan teachers
+      const isCommissionTeacher = selectedTeacher.subscription_plan === 'commission';
+      const commissionPct = selectedTeacher.commission_percentage ?? 25;
+      const price = calculatePrice();
+      const commissionFields = isCommissionTeacher
+        ? { platform_fee: parseFloat((price * commissionPct / 100).toFixed(2)), teacher_payout: parseFloat((price * (1 - commissionPct / 100)).toFixed(2)) }
+        : {};
+
       if (classType === 'group' && existingGroupBooking) {
         // Join existing group booking
         const updatedEnrolled = [
@@ -397,7 +405,7 @@ export default function BookClass() {
           start_time: selectedTime,
           end_time: calculateEndTime(selectedTime, duration),
           duration_minutes: duration,
-          price: calculatePrice(),
+          price,
           status: 'scheduled',
           payment_status: 'pending',
           class_type: 'group',
@@ -408,7 +416,8 @@ export default function BookClass() {
             student_email: user.email,
             payment_status: 'pending'
           }],
-          files: []
+          files: [],
+          ...commissionFields
         });
       } else {
         // Individual booking (existing logic)
@@ -427,11 +436,12 @@ export default function BookClass() {
           start_time: selectedTime,
           end_time: calculateEndTime(selectedTime, duration),
           duration_minutes: duration,
-          price: calculatePrice(),
+          price,
           status: 'scheduled',
           payment_status: 'pending',
           class_type: 'individual',
-          files: []
+          files: [],
+          ...commissionFields
         });
       }
 
