@@ -43,27 +43,28 @@ export default function GoogleCalendarSync({ userEmail, userType }) {
           'width=600,height=700,scrollbars=yes'
         );
 
+        const cleanup = () => {
+          window.removeEventListener('message', handleMessage);
+          clearTimeout(timeoutId);
+          setToggling(false);
+        };
+
         const handleMessage = (event) => {
-          if (event.data.type === 'oauth_success') {
+          if (event.data?.type === 'oauth_success') {
             setConnected(true);
-            window.removeEventListener('message', handleMessage);
-            setToggling(false);
-          } else if (event.data.type === 'oauth_error') {
+            cleanup();
+          } else if (event.data?.type === 'oauth_error') {
             alert('Error al conectar con Google Calendar');
-            window.removeEventListener('message', handleMessage);
-            setToggling(false);
+            cleanup();
           }
         };
 
         window.addEventListener('message', handleMessage);
 
-        const checkClosed = setInterval(() => {
-          if (popup.closed) {
-            clearInterval(checkClosed);
-            window.removeEventListener('message', handleMessage);
-            setToggling(false);
-          }
-        }, 1000);
+        // Fallback: si no recibimos mensaje en 5 minutos, limpiar el estado
+        const timeoutId = setTimeout(() => {
+          cleanup();
+        }, 5 * 60 * 1000);
 
       } catch (error) {
         console.error('Error starting OAuth:', error);
