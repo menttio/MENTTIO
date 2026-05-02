@@ -89,6 +89,7 @@ export default function TeacherSignupPayment() {
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + 30);
 
+        const isCommission = subscription_plan === 'commission';
         const teacherData = {
           user_email: user.email,
           full_name: `${data.first_name} ${data.last_name}`,
@@ -99,13 +100,14 @@ export default function TeacherSignupPayment() {
           subjects: data.subjects || [],
           rating: 0,
           total_classes: 0,
-          subscription_active: grantTrial,
-          subscription_expires: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
+          subscription_active: isCommission ? true : grantTrial,
+          subscription_expires: isCommission ? null : (grantTrial ? trialEndDate.toISOString().split('T')[0] : null),
           subscription_plan,
-          trial_used: !grantTrial,
-          trial_active: grantTrial,
-          trial_start_date: grantTrial ? now.toISOString().split('T')[0] : null,
-          trial_end_date: grantTrial ? trialEndDate.toISOString().split('T')[0] : null,
+          commission_percentage: isCommission ? 25 : undefined,
+          trial_used: isCommission ? false : !grantTrial,
+          trial_active: isCommission ? false : grantTrial,
+          trial_start_date: isCommission ? null : (grantTrial ? now.toISOString().split('T')[0] : null),
+          trial_end_date: isCommission ? null : (grantTrial ? trialEndDate.toISOString().split('T')[0] : null),
           tour_completed: false
         };
 
@@ -122,6 +124,12 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
+
+        // Plan commission: no Stripe needed, go directly to dashboard
+        if (subscription_plan === 'commission') {
+          window.location.href = createPageUrl('TeacherDashboard');
+          return;
+        }
 
         const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
         if (response.data.error) throw new Error(response.data.error);
