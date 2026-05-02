@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@base44/sdk@0.8.20';
+import { createClient } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No authorization code' }, { status: 400 });
     }
 
-    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
+    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID'), serviceRoleKey: 'service_role' });
     const stateData = state ? JSON.parse(decodeURIComponent(state)) : {};
     const { userEmail, userType } = stateData;
 
@@ -73,10 +73,10 @@ Deno.serve(async (req) => {
 
     // Save tokens and update connection status
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
-    const users = await base44.entities[entity].filter({ user_email: userEmail });
+    const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
 
     if (users.length > 0) {
-      await base44.entities[entity].update(users[0].id, {
+      await base44.asServiceRole.entities[entity].update(users[0].id, {
         google_calendar_connected: true,
         google_calendar_tokens: tokensWithExpiry
       });
