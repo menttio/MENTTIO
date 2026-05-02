@@ -1,4 +1,4 @@
-import { createClient } from 'npm:@base44/sdk@0.8.25';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
     console.log('💾 Saving to entity:', entity, '| for email:', userEmail);
 
-    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
+    const base44 = createClientFromRequest(req);
     const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
     console.log('🔍 Users found:', users.length);
 
