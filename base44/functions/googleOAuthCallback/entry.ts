@@ -1,4 +1,5 @@
-import { createClient } from 'npm:@base44/sdk@0.8.25';
+// Google OAuth Callback - exchanges code for tokens and passes them to frontend
+// The frontend (already authenticated) saves the tokens to its own Teacher/Student record
 
 const REDIRECT_URI = 'https://menttio.com/api/functions/googleOAuthCallback';
 
@@ -19,25 +20,25 @@ Deno.serve(async (req) => {
     stateData = state ? JSON.parse(decodeURIComponent(state)) : {};
     console.log('GOOGLE_OAUTH_CALLBACK: state decoded OK:', JSON.stringify(stateData));
   } catch (e) {
-    console.error('GOOGLE_OAUTH_CALLBACK: state parse error:', e.message, '| raw state:', state);
-    return redirect(stateData, 'invalid_state', 'No se pudo decodificar el parámetro state');
+    console.error('GOOGLE_OAUTH_CALLBACK: state parse error:', e.message);
+    return redirectError('/', 'invalid_state', 'No se pudo decodificar el parámetro state');
   }
 
   const { userEmail, userType, returnUrl = '/' } = stateData;
 
   if (!userEmail || !userType) {
     console.error('GOOGLE_OAUTH_CALLBACK: missing userEmail or userType in state');
-    return redirect(stateData, 'invalid_state', 'Faltan datos de usuario en el state');
+    return redirectError(returnUrl, 'invalid_state', 'Faltan datos de usuario en el state');
   }
 
   if (errorParam) {
     console.error('GOOGLE_OAUTH_CALLBACK: Google returned error:', errorParam);
-    return redirect(stateData, 'google_denied', errorParam);
+    return redirectError(returnUrl, 'google_denied', errorParam);
   }
 
   if (!code) {
     console.error('GOOGLE_OAUTH_CALLBACK: no authorization code');
-    return redirect(stateData, 'no_code', 'Google no devolvió código de autorización');
+    return redirectError(returnUrl, 'no_code', 'Google no devolvió código de autorización');
   }
 
   // Exchange code for tokens
@@ -67,58 +68,40 @@ Deno.serve(async (req) => {
     console.log('GOOGLE_OAUTH_CALLBACK: token exchange response:', responseText.substring(0, 500));
 
     if (!tokenResponse.ok) {
-      console.error('GOOGLE_OAUTH_CALLBACK: token exchange FAILED. Status:', tokenResponse.status, '| Body:', responseText);
       let detail = 'HTTP ' + tokenResponse.status;
       try {
         const parsed = JSON.parse(responseText);
         detail = parsed.error_description || parsed.error || detail;
       } catch {}
-      return redirect(stateData, 'token_exchange_failed', detail);
+      console.error('GOOGLE_OAUTH_CALLBACK: token exchange FAILED:', detail);
+      return redirectError(returnUrl, 'token_exchange_failed', detail);
     }
 
     tokens = JSON.parse(responseText);
     console.log('GOOGLE_OAUTH_CALLBACK: token exchange SUCCESS. has_access_token:', !!tokens.access_token, '| has_refresh_token:', !!tokens.refresh_token);
   } catch (err) {
     console.error('GOOGLE_OAUTH_CALLBACK: token exchange exception:', err.message);
-    return redirect(stateData, 'token_exchange_failed', err.message);
+    return redirectError(returnUrl, 'token_exchange_failed', err.message);
   }
 
+  // Pass tokens to frontend so it can save them using its own authenticated session
+  // This avoids service role issues — the frontend user has write permission to their own Teacher/Student
   const tokensWithExpiry = {
     ...tokens,
     expiry_date: Date.now() + (tokens.expires_in * 1000)
   };
 
-  // Save tokens to DB using service role (no user session available in OAuth callback)
-  console.log('GOOGLE_OAUTH_CALLBACK: saving tokens for', userType, userEmail);
-  try {
-    const entity = userType === 'teacher' ? 'Teacher' : 'Student';
-    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
-    const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
-    console.log('GOOGLE_OAUTH_CALLBACK: found', users.length, entity, 'record(s) for email:', userEmail);
+  const tokensEncoded = encodeURIComponent(JSON.stringify(tokensWithExpiry));
+  const userTypeEncoded = encodeURIComponent(userType);
 
-    if (users.length === 0) {
-      console.error('GOOGLE_OAUTH_CALLBACK: no', entity, 'found with email:', userEmail);
-      return redirect(stateData, 'user_not_found', 'No se encontró el perfil para ' + userEmail);
-    }
-
-    console.log('GOOGLE_OAUTH_CALLBACK: attempting update with service role...');
-    await base44.asServiceRole.entities[entity].update(users[0].id, {
-      google_calendar_connected: true,
-      google_calendar_tokens: tokensWithExpiry
-    });
-    console.log('GOOGLE_OAUTH_CALLBACK: DB update SUCCESS for id:', users[0].id);
-  } catch (err) {
-    console.error('GOOGLE_OAUTH_CALLBACK: DB update FAILED:', err.message);
-    return redirect(stateData, 'update_failed', err.message);
-  }
-
-  console.log('GOOGLE_OAUTH_CALLBACK: ===== SUCCESS, redirecting to:', returnUrl, '=====');
   const appBase = 'https://menttio.com';
-  return Response.redirect(`${appBase}${returnUrl}?calendar_connected=true`, 302);
+  const dest = `${appBase}${returnUrl}?calendar_pending=true&cal_tokens=${tokensEncoded}&cal_user_type=${userTypeEncoded}`;
+
+  console.log('GOOGLE_OAUTH_CALLBACK: ===== SUCCESS, redirecting to frontend for token save =====');
+  return Response.redirect(dest, 302);
 });
 
-function redirect(stateData, errorCode, detail = '') {
-  const returnUrl = stateData?.returnUrl || '/';
+function redirectError(returnUrl, errorCode, detail = '') {
   const appBase = 'https://menttio.com';
   const detailEncoded = encodeURIComponent(detail.substring(0, 200));
   const dest = `${appBase}${returnUrl}?calendar_error=${errorCode}&detail=${detailEncoded}`;

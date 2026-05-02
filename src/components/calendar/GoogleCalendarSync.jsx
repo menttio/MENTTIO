@@ -11,7 +11,7 @@ export default function GoogleCalendarSync({ userEmail, userType, returnUrl, onC
 
   const showToast = (type, message) => {
     setToast({ type, message });
-    setTimeout(() => setToast(null), 6000);
+    setTimeout(() => setToast(null), 7000);
   };
 
   const checkConnection = async () => {
@@ -19,38 +19,74 @@ export default function GoogleCalendarSync({ userEmail, userType, returnUrl, onC
       const entity = userType === 'teacher' ? 'Teacher' : 'Student';
       const users = await base44.entities[entity].filter({ user_email: userEmail });
       if (users.length > 0) {
-        setConnected(users[0].google_calendar_connected || false);
-        return users[0].google_calendar_connected || false;
+        const isConnected = users[0].google_calendar_connected || false;
+        setConnected(isConnected);
+        return { isConnected, recordId: users[0].id };
       }
     } catch (error) {
       console.error('Error checking Google Calendar connection:', error);
     }
-    return false;
+    return { isConnected: false, recordId: null };
   };
 
   useEffect(() => {
     if (!userEmail) return;
 
     const params = new URLSearchParams(window.location.search);
+    const calendarPending = params.get('calendar_pending');
+    const calTokens = params.get('cal_tokens');
+    const calUserType = params.get('cal_user_type');
     const calendarConnected = params.get('calendar_connected');
     const calendarError = params.get('calendar_error');
     const detail = params.get('detail');
 
-    // Clean URL params immediately
-    if (calendarConnected || calendarError) {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
+    // Clean URL immediately
+    if (calendarPending || calendarConnected || calendarError) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    if (calendarPending === 'true' && calTokens) {
+      // Save tokens using the authenticated user session (bypasses RLS correctly)
+      const saveTokens = async () => {
+        try {
+          const tokens = JSON.parse(decodeURIComponent(calTokens));
+          const entityType = calUserType ? decodeURIComponent(calUserType) : userType;
+          const entity = entityType === 'teacher' ? 'Teacher' : 'Student';
+
+          const users = await base44.entities[entity].filter({ user_email: userEmail });
+          if (users.length === 0) {
+            showToast('error', 'No se encontró tu perfil. Inténtalo de nuevo.');
+            setLoading(false);
+            return;
+          }
+
+          await base44.entities[entity].update(users[0].id, {
+            google_calendar_connected: true,
+            google_calendar_tokens: tokens,
+          });
+
+          setConnected(true);
+          showToast('success', '¡Google Calendar conectado correctamente!');
+          if (onConnected) onConnected();
+        } catch (err) {
+          console.error('Error saving Google Calendar tokens:', err);
+          showToast('error', 'Error al guardar la conexión: ' + err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      saveTokens();
+      return;
     }
 
     if (calendarConnected === 'true') {
-      // Re-fetch from DB to confirm tokens were saved
-      checkConnection().then((isConnected) => {
+      checkConnection().then(({ isConnected }) => {
         setLoading(false);
         if (isConnected) {
           showToast('success', '¡Google Calendar conectado correctamente!');
           if (onConnected) onConnected();
         } else {
-          showToast('error', 'La autorización se completó pero no se pudo confirmar la conexión. Inténtalo de nuevo.');
+          showToast('error', 'La autorización se completó pero no se pudo confirmar la conexión.');
         }
       });
       return;
@@ -63,13 +99,12 @@ export default function GoogleCalendarSync({ userEmail, userType, returnUrl, onC
         google_denied: 'Acceso denegado por Google',
         no_code: 'Google no devolvió código de autorización',
         user_not_found: 'No se encontró tu perfil en el sistema',
-        update_failed: 'Error al guardar los tokens en la base de datos',
+        update_failed: 'Error al guardar los tokens',
       };
       const message = errorMessages[calendarError] || 'Error al conectar Google Calendar';
       const fullMessage = detail ? `${message}: ${decodeURIComponent(detail)}` : message;
-      setLoading(false);
       showToast('error', fullMessage);
-      checkConnection().then(isConnected => setConnected(isConnected));
+      checkConnection().then(() => setLoading(false));
       return;
     }
 
@@ -99,7 +134,7 @@ export default function GoogleCalendarSync({ userEmail, userType, returnUrl, onC
       setConnected(false);
       showToast('success', 'Google Calendar desconectado');
     } catch (error) {
-      console.error('Error disconnecting Google Calendar:', error);
+      console.error('Error disconnecting:', error);
       showToast('error', 'Error al desconectar');
     } finally {
       setToggling(false);
