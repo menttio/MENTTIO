@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createClient } from 'npm:@base44/sdk@0.8.25';
 
 const REDIRECT_URI = 'https://menttio.com/api/functions/googleOAuthCallback';
 
@@ -88,11 +88,11 @@ Deno.serve(async (req) => {
     expiry_date: Date.now() + (tokens.expires_in * 1000)
   };
 
-  // Save tokens to DB
+  // Save tokens to DB using service role (no user session available in OAuth callback)
   console.log('GOOGLE_OAUTH_CALLBACK: saving tokens for', userType, userEmail);
   try {
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
-    const base44 = createClientFromRequest(req);
+    const base44 = createClient({ appId: Deno.env.get('BASE44_APP_ID') });
     const users = await base44.asServiceRole.entities[entity].filter({ user_email: userEmail });
     console.log('GOOGLE_OAUTH_CALLBACK: found', users.length, entity, 'record(s) for email:', userEmail);
 
@@ -101,6 +101,7 @@ Deno.serve(async (req) => {
       return redirect(stateData, 'user_not_found', 'No se encontró el perfil para ' + userEmail);
     }
 
+    console.log('GOOGLE_OAUTH_CALLBACK: attempting update with service role...');
     await base44.asServiceRole.entities[entity].update(users[0].id, {
       google_calendar_connected: true,
       google_calendar_tokens: tokensWithExpiry
