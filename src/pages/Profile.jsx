@@ -315,7 +315,7 @@ export default function Profile() {
 
       {/* Google Calendar Integration */}
       <div className="mb-6">
-        <GoogleCalendarSync userEmail={user?.email} userType={userRole} />
+        <GoogleCalendarSync userEmail={user?.email} userType={userRole} returnUrl="/Profile" />
       </div>
 
       {/* Save Button */}

@@ -271,7 +271,7 @@ export default function TeacherCalendar() {
                     {format(currentMonth, 'MMMM yyyy', { locale: es })}
                   </h3>
                   {teacher && (
-                    <GoogleCalendarSync userEmail={teacher.user_email} userType="teacher" />
+                    <GoogleCalendarSync userEmail={teacher.user_email} userType="teacher" returnUrl="/TeacherCalendar" />
                   )}
                 </div>
                 <Button

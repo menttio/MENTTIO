@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { userType } = await req.json();
+    const { userType, returnUrl } = await req.json();
 
     const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
     
@@ -19,8 +19,9 @@ Deno.serve(async (req) => {
       }, { status: 500 });
     }
 
-    // Use the correct function URL for callback
     const redirectUri = 'https://menttio.com/api/functions/googleOAuthCallback';
+
+    const stateData = { userEmail: user.email, userType, returnUrl: returnUrl || '/' };
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${encodeURIComponent(clientId)}&` +
@@ -29,7 +30,7 @@ Deno.serve(async (req) => {
       `scope=${encodeURIComponent('https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly')}&` +
       `access_type=offline&` +
       `prompt=consent&` +
-      `state=${encodeURIComponent(JSON.stringify({ userEmail: user.email, userType }))}`;
+      `state=${encodeURIComponent(JSON.stringify(stateData))}`;
 
     return Response.json({ url: authUrl });
 
