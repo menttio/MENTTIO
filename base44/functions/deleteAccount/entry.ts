@@ -148,8 +148,8 @@ Deno.serve(async (req) => {
       }
       console.log('═══ END STRIPE CANCELLATION ═══');
 
-      // Delete teacher profile
-      await base44.asServiceRole.entities.Teacher.delete(teacherId);
+      // Delete teacher profile - use user-scoped client because Teacher RLS requires user ownership
+      await base44.entities.Teacher.delete(teacherId);
       console.log(`Deleted teacher profile: ${teacherId}`);
     }
     
