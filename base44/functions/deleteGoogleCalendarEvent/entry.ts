@@ -1,54 +1,34 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-async function getAccessToken(tokens, targetEntity, userId, base44) {
-  let accessToken = tokens.access_token;
+async function refreshAccessToken(tokens) {
+  if (!tokens.refresh_token) return tokens.access_token;
 
-  // Refresh token if expired
-  if (tokens.refresh_token && (!tokens.expiry_date || Date.now() >= tokens.expiry_date)) {
-    const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'),
-        client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'),
-        refresh_token: tokens.refresh_token,
-        grant_type: 'refresh_token'
-      })
-    });
-
-    if (refreshResponse.ok) {
-      const newTokens = await refreshResponse.json();
-      accessToken = newTokens.access_token;
-      const updatedTokens = {
-        ...tokens,
-        access_token: newTokens.access_token,
-        expiry_date: Date.now() + (newTokens.expires_in * 1000)
-      };
-      await base44.asServiceRole.entities[targetEntity].update(userId, {
-        google_calendar_tokens: updatedTokens
-      });
-    }
+  // Only refresh if expired (with 60s buffer)
+  if (tokens.expiry_date && Date.now() < tokens.expiry_date - 60000) {
+    return tokens.access_token;
   }
 
-  return accessToken;
-}
+  console.log('[deleteGoogleCalendarEvent] Refreshing expired access token...');
+  const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID') || '',
+      client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET') || '',
+      refresh_token: tokens.refresh_token,
+      grant_type: 'refresh_token'
+    })
+  });
 
-async function deleteEvent(accessToken, eventId) {
-  const response = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
-    {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${accessToken}` }
-    }
-  );
-
-  // 404 means already deleted — treat as success
-  if (!response.ok && response.status !== 404) {
-    const error = await response.text();
-    throw new Error(`Google Calendar API error: ${error}`);
+  if (!refreshResponse.ok) {
+    const errText = await refreshResponse.text();
+    console.error('[deleteGoogleCalendarEvent] Token refresh failed:', errText);
+    return tokens.access_token; // Fall back to existing token
   }
 
-  return true;
+  const newTokens = await refreshResponse.json();
+  console.log('[deleteGoogleCalendarEvent] Token refreshed successfully');
+  return newTokens.access_token;
 }
 
 Deno.serve(async (req) => {
@@ -57,17 +37,25 @@ Deno.serve(async (req) => {
 
     const { bookingId, userType, userEmail, eventId: directEventId } = await req.json();
 
+    if (!userType || !userEmail) {
+      return Response.json({ success: false, message: 'Missing userType or userEmail' }, { status: 400 });
+    }
+
+    console.log(`[deleteGoogleCalendarEvent] START userType=${userType} userEmail=${userEmail} eventId=${directEventId || 'from booking'}`);
+
     const targetEntity = userType === 'teacher' ? 'Teacher' : 'Student';
 
-    // Get user's Google Calendar tokens
+    // Use service role to read profile (bypasses RLS)
     const users = await base44.asServiceRole.entities[targetEntity].filter({ user_email: userEmail });
 
     if (users.length === 0 || !users[0].google_calendar_tokens) {
       return Response.json({ success: false, message: 'Google Calendar not connected' });
     }
 
-    const user = users[0];
-    const accessToken = await getAccessToken(user.google_calendar_tokens, targetEntity, user.id, base44);
+    const profile = users[0];
+
+    // Get access token — refresh in memory only, no DB write (avoids RLS on Teacher.update)
+    const accessToken = await refreshAccessToken(profile.google_calendar_tokens);
 
     // Use directEventId if provided, otherwise look up from booking
     let eventId = directEventId;
@@ -81,12 +69,30 @@ Deno.serve(async (req) => {
     }
 
     if (!eventId) {
+      console.log(`[deleteGoogleCalendarEvent] No event ID found for ${userType} — skipping`);
       return Response.json({ success: false, message: 'No Google Calendar event ID found' });
     }
 
-    await deleteEvent(accessToken, eventId);
+    console.log(`[deleteGoogleCalendarEvent] Deleting event ${eventId} for ${userType}: ${userEmail}`);
 
-    // Clear event ID from booking if we have bookingId
+    const response = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`,
+      {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      }
+    );
+
+    // 404 means already deleted — treat as success
+    if (!response.ok && response.status !== 404) {
+      const error = await response.text();
+      console.error(`[deleteGoogleCalendarEvent] Google Calendar API error (${response.status}):`, error);
+      return Response.json({ success: false, error: `Google Calendar API error ${response.status}: ${error}` }, { status: 500 });
+    }
+
+    console.log(`[deleteGoogleCalendarEvent] Event deleted successfully: ${eventId}`);
+
+    // Clear event ID from booking if we have bookingId — Booking has no RLS issues
     if (bookingId) {
       try {
         await base44.asServiceRole.entities.Booking.update(bookingId, {
@@ -94,13 +100,14 @@ Deno.serve(async (req) => {
         });
       } catch (e) {
         // Booking may already be deleted — ignore
+        console.warn('[deleteGoogleCalendarEvent] Could not clear event ID from booking:', e.message);
       }
     }
 
     return Response.json({ success: true, message: 'Event deleted from Google Calendar' });
 
   } catch (error) {
-    console.error('Error deleting Google Calendar event:', error);
+    console.error('[deleteGoogleCalendarEvent] Unexpected error:', error.message || error);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 });
