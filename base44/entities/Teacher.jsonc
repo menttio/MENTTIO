@@ -115,10 +115,16 @@
       "type": "string",
       "enum": [
         "basic",
-        "premium"
+        "premium",
+        "commission"
       ],
       "default": "basic",
-      "description": "Plan de suscripci\u00f3n: basic (sin grabaci\u00f3n) o premium (con grabaci\u00f3n)"
+      "description": "Plan de suscripci\u00f3n: basic (sin grabaci\u00f3n), premium (con grabaci\u00f3n), commission (sin cuota, 25% por clase)"
+    },
+    "commission_percentage": {
+      "type": "number",
+      "default": 25,
+      "description": "Porcentaje de comisi\u00f3n que retiene Menttio para el plan commission"
     },
     "subscription_exempt": {
       "type": "boolean",
@@ -215,5 +221,31 @@
     "user_email",
     "full_name",
     "phone"
-  ]
+  ],
+  "rls": {
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    },
+    "write": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
 }
