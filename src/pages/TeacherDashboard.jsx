@@ -84,9 +84,14 @@ export default function TeacherDashboard() {
     return isWithinInterval(bookingDate, { start: monthStart, end: monthEnd });
   });
 
+  const isCommission = teacher?.subscription_plan === 'commission';
+  const commissionPct = teacher?.commission_percentage ?? 25;
+
+  const calcPayout = (price) => isCommission ? (price || 0) * (1 - commissionPct / 100) : (price || 0);
+
   const thisMonthEarnings = thisMonthBookings
     .filter(b => b.status !== 'cancelled')
-    .reduce((sum, b) => sum + (b.price || 0), 0);
+    .reduce((sum, b) => sum + calcPayout(b.price), 0);
 
   const totalClasses = bookings.filter(b => b.status !== 'cancelled').length;
   const scheduledClasses = bookings.filter(b => b.status === 'scheduled').length;

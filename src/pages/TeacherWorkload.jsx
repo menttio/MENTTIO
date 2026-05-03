@@ -73,6 +73,10 @@ export default function TeacherWorkload() {
     }
   };
 
+  const isCommission = teacher?.subscription_plan === 'commission';
+  const commissionPct = teacher?.commission_percentage ?? 25;
+  const calcPayout = (price) => isCommission ? (price || 0) * (1 - commissionPct / 100) : (price || 0);
+
   const stats = useMemo(() => {
     const now = new Date();
     let dateRange;
@@ -91,7 +95,7 @@ export default function TeacherWorkload() {
     const totalClasses = filteredBookings.length;
     const completedClasses = filteredBookings.filter(b => b.status === 'completed').length;
     const scheduledClasses = filteredBookings.filter(b => b.status === 'scheduled').length;
-    const totalEarnings = filteredBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+    const totalEarnings = filteredBookings.reduce((sum, b) => sum + calcPayout(b.price), 0);
     const totalHours = filteredBookings.reduce((sum, b) => sum + (b.duration_minutes || 60) / 60, 0);
 
     // Classes by subject
@@ -110,7 +114,7 @@ export default function TeacherWorkload() {
         studentStats[b.student_name] = { count: 0, earnings: 0 };
       }
       studentStats[b.student_name].count++;
-      studentStats[b.student_name].earnings += b.price || 0;
+      studentStats[b.student_name].earnings += calcPayout(b.price);
     });
 
     return {
@@ -122,7 +126,7 @@ export default function TeacherWorkload() {
       subjectStats,
       studentStats
     };
-  }, [bookings, timeRange]);
+  }, [bookings, timeRange, teacher]);
 
   // Monthly earnings by year
   const monthlyEarnings = useMemo(() => {
@@ -142,12 +146,12 @@ export default function TeacherWorkload() {
       })
       .forEach(b => {
         const monthIndex = new Date(b.date).getMonth();
-        monthlyData[monthIndex].ingresos += b.price || 0;
+        monthlyData[monthIndex].ingresos += calcPayout(b.price);
         monthlyData[monthIndex].clases += 1;
       });
 
     return monthlyData;
-  }, [bookings, selectedYear]);
+  }, [bookings, selectedYear, teacher]);
 
   // Subject distribution for pie chart
   const subjectDistribution = useMemo(() => {
@@ -158,13 +162,13 @@ export default function TeacherWorkload() {
         if (!distribution[b.subject_name]) {
           distribution[b.subject_name] = 0;
         }
-        distribution[b.subject_name] += b.price || 0;
+        distribution[b.subject_name] += calcPayout(b.price);
       });
 
     return Object.entries(distribution)
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
-  }, [bookings]);
+  }, [bookings, teacher]);
 
   // Payment status stats
   const paymentStats = useMemo(() => {
@@ -178,11 +182,11 @@ export default function TeacherWorkload() {
     });
     const paid = completed.filter(b => b.payment_status === 'paid').length;
     const pending = completed.filter(b => b.payment_status === 'pending').length;
-    const paidAmount = completed.filter(b => b.payment_status === 'paid').reduce((sum, b) => sum + (b.price || 0), 0);
-    const pendingAmount = completed.filter(b => b.payment_status === 'pending').reduce((sum, b) => sum + (b.price || 0), 0);
+    const paidAmount = completed.filter(b => b.payment_status === 'paid').reduce((sum, b) => sum + calcPayout(b.price), 0);
+    const pendingAmount = completed.filter(b => b.payment_status === 'pending').reduce((sum, b) => sum + calcPayout(b.price), 0);
 
     return { paid, pending, paidAmount, pendingAmount };
-  }, [bookings]);
+  }, [bookings, teacher]);
 
   // Available years for selection
   const availableYears = useMemo(() => {
