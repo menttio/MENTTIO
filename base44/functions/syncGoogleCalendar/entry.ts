@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { bookingId, userType, userEmail } = await req.json();
+    const { bookingId, userType, userEmail, date, start_time, end_time } = await req.json();
 
     if (!bookingId || !userType || !userEmail) {
       return Response.json({ error: 'Missing required params: bookingId, userType, userEmail' }, { status: 400 });
@@ -51,11 +51,19 @@ Deno.serve(async (req) => {
     console.log(`[syncGoogleCalendar] START bookingId=${bookingId} userType=${userType} userEmail=${userEmail}`);
 
     // Always use service role to read Booking (avoid RLS issues)
-    const booking = await base44.asServiceRole.entities.Booking.get(bookingId);
-    if (!booking) {
+    const bookingFromDB = await base44.asServiceRole.entities.Booking.get(bookingId);
+    if (!bookingFromDB) {
       console.error('[syncGoogleCalendar] Booking not found:', bookingId);
       return Response.json({ error: 'Booking not found' }, { status: 404 });
     }
+
+    // Allow caller to override date/time (avoids race condition when booking was just updated)
+    const booking = {
+      ...bookingFromDB,
+      ...(date && { date }),
+      ...(start_time && { start_time }),
+      ...(end_time && { end_time }),
+    };
 
     const targetEntity = userType === 'teacher' ? 'Teacher' : 'Student';
 

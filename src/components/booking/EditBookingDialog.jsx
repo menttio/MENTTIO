@@ -271,20 +271,29 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
         link_page: 'TeacherCalendar'
       });
 
-      // Sync with Google Calendar — the backend function checks if connected internally
+      // Sync with Google Calendar — pass new date/time to avoid race condition
       try {
-        await Promise.all([
+        const syncPromises = [
           base44.functions.invoke('syncGoogleCalendar', { 
             bookingId: booking.id,
             userType: 'teacher',
-            userEmail: booking.teacher_email
-          }),
-          base44.functions.invoke('syncGoogleCalendar', { 
+            userEmail: booking.teacher_email,
+            date: newDateStr,
+            start_time: selectedTime,
+            end_time: newEndTime
+          })
+        ];
+        if (booking.student_email) {
+          syncPromises.push(base44.functions.invoke('syncGoogleCalendar', { 
             bookingId: booking.id,
             userType: 'student',
-            userEmail: booking.student_email
-          })
-        ]);
+            userEmail: booking.student_email,
+            date: newDateStr,
+            start_time: selectedTime,
+            end_time: newEndTime
+          }));
+        }
+        await Promise.all(syncPromises);
       } catch (syncError) {
         console.error('Error syncing with Google Calendar:', syncError);
       }
