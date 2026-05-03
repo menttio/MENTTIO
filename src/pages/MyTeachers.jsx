@@ -34,10 +34,11 @@ export default function MyTeachers() {
 
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
-          const [teachersData, allBookings] = await Promise.all([
-            base44.entities.Teacher.list(),
+          const [teachersRes, allBookings] = await Promise.all([
+            base44.functions.invoke('getPublicTeachers', {}),
             base44.entities.Booking.list()
           ]);
+          const teachersData = teachersRes.data?.teachers || [];
           const filtered = teachersData.filter(t => teacherIds.includes(t.id));
           const teachersWithRealClasses = filtered.map(teacher => {
             const completedCount = allBookings.filter(b => 

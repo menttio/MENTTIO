@@ -20,8 +20,13 @@ export function getGroupPrice(numStudents, durationHours = 1) {
   return pricePerHour * durationHours;
 }
 
-export default function GroupPricingInfo({ durationHours = 1 }) {
+export default function GroupPricingInfo({ durationHours = 1, teacherGroupPrices = null }) {
   const [open, setOpen] = useState(false);
+
+  // Use teacher's group_prices if provided, otherwise fall back to defaults
+  const pricesToShow = teacherGroupPrices && Object.keys(teacherGroupPrices).length > 0
+    ? teacherGroupPrices
+    : GROUP_PRICES;
 
   return (
     <>
@@ -48,7 +53,7 @@ export default function GroupPricingInfo({ durationHours = 1 }) {
             </p>
 
             <div className="space-y-2">
-              {Object.entries(GROUP_PRICES).map(([num, price]) => (
+              {Object.entries(pricesToShow).filter(([, price]) => Number(price) > 0).map(([num, price]) => (
                 <div
                   key={num}
                   className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100"
@@ -66,7 +71,7 @@ export default function GroupPricingInfo({ durationHours = 1 }) {
                     </span>
                   </div>
                   <span className="font-bold text-[#41f2c0]">
-                    {price * durationHours}€/alumno
+                    {(Number(price) * durationHours).toFixed(0)}€/alumno
                   </span>
                 </div>
               ))}

@@ -68,8 +68,8 @@ export default function BookClass() {
         const allSubjects = await base44.entities.Subject.list();
         setSubjects(allSubjects);
         
-        const allTeachers = await base44.entities.Teacher.list();
-        setTeachers(allTeachers);
+        const teachersRes = await base44.functions.invoke('getPublicTeachers', {});
+        setTeachers(teachersRes.data?.teachers || []);
 
         const allAvailabilities = await base44.entities.Availability.list();
         setAvailabilities(allAvailabilities);
@@ -90,6 +90,20 @@ export default function BookClass() {
     };
     loadData();
   }, []);
+
+  // Check if any assigned teacher has group prices configured
+  const anyTeacherHasGroupPrices = useMemo(() => {
+    if (!student?.assigned_teachers?.length || !teachers.length) return false;
+    const assignedTeacherIds = [...new Set(student.assigned_teachers.map(at => at.teacher_id))];
+    return assignedTeacherIds.some(id => {
+      const teacher = teachers.find(t => t.id === id);
+      if (!teacher?.subjects) return false;
+      return teacher.subjects.some(s => {
+        const gp = s.group_prices;
+        return gp && Object.keys(gp).length > 0 && Object.values(gp).some(v => v > 0);
+      });
+    });
+  }, [student, teachers]);
 
   // Get unique subjects from assigned teachers (only those that still exist in teacher's subjects)
   const availableSubjects = useMemo(() => {
@@ -345,18 +359,21 @@ export default function BookClass() {
 
   const calculatePrice = () => {
     if (!selectedTeacher || !selectedSubject) return 0;
+    const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
     if (classType === 'group') {
       const currentCount = existingGroupBooking
         ? (existingGroupBooking.enrolled_students?.length || 0) + 1
         : 1;
       if (currentCount <= 1) {
         // Solo hay 1 alumno, precio individual de fallback
-        const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
         return subjectInfo ? (subjectInfo.price_per_hour * duration) / 60 : 0;
       }
-      return getGroupPrice(currentCount, duration / 60) || 0;
+      // Use teacher's group_prices if available, otherwise fall back to GROUP_PRICES
+      const groupPrices = subjectInfo?.group_prices;
+      const key = String(Math.min(currentCount, 4));
+      const pricePerHour = groupPrices?.[key] ?? GROUP_PRICES[Math.min(currentCount, 4)];
+      return (pricePerHour * duration) / 60;
     }
-    const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
     if (!subjectInfo) return 0;
     return (subjectInfo.price_per_hour * duration) / 60;
   };
@@ -640,26 +657,28 @@ export default function BookClass() {
                     </div>
                   </button>
 
-                  <button
-                    onClick={() => { setClassType('group'); setStep(2); }}
-                    className="p-5 rounded-xl border-2 text-left transition-all hover:border-purple-400 hover:shadow-md border-gray-100"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-                        <Users className="text-purple-500" size={24} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-semibold text-[#404040] text-lg">Clase Grupal</p>
-                          <Badge className="bg-purple-100 text-purple-700 text-xs">Hasta 4 alumnos</Badge>
+                  {anyTeacherHasGroupPrices && (
+                    <button
+                      onClick={() => { setClassType('group'); setStep(2); }}
+                      className="p-5 rounded-xl border-2 text-left transition-all hover:border-purple-400 hover:shadow-md border-gray-100"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                          <Users className="text-purple-500" size={24} />
                         </div>
-                        <p className="text-sm text-gray-500 mt-0.5">Comparte la clase con otros alumnos a menor precio</p>
-                        <div className="mt-2">
-                          <GroupPricingInfo durationHours={duration / 60} />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold text-[#404040] text-lg">Clase Grupal</p>
+                            <Badge className="bg-purple-100 text-purple-700 text-xs">Hasta 4 alumnos</Badge>
+                          </div>
+                          <p className="text-sm text-gray-500 mt-0.5">Comparte la clase con otros alumnos a menor precio</p>
+                          <div className="mt-2">
+                            <GroupPricingInfo durationHours={duration / 60} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </button>
+                    </button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -868,7 +887,14 @@ export default function BookClass() {
                         ))}
                       </div>
                       <p className="text-xs text-purple-600 mt-2 font-medium">
-                        Precio estimado: {getGroupPrice((existingGroupBooking.enrolled_students?.length || 0) + 1, duration / 60)}€/alumno
+                        Precio estimado: {(() => {
+                          const count = (existingGroupBooking.enrolled_students?.length || 0) + 1;
+                          const subjectInfo = selectedTeacher?.subjects?.find(s => s.subject_id === selectedSubject);
+                          const gp = subjectInfo?.group_prices;
+                          const key = String(Math.min(count, 4));
+                          const pricePerHour = gp?.[key] ?? GROUP_PRICES[Math.min(count, 4)];
+                          return ((pricePerHour * duration) / 60).toFixed(0);
+                        })()}€/alumno
                         <span className="text-gray-400 block text-[10px]">(precio final según alumnos que asistan)</span>
                       </p>
                     </CardContent>
