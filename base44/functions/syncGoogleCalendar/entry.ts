@@ -1,110 +1,108 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+
+async function refreshAccessToken(tokens) {
+  if (!tokens.refresh_token) return tokens.access_token;
+  
+  // Only refresh if expired (with 60s buffer)
+  if (tokens.expiry_date && Date.now() < tokens.expiry_date - 60000) {
+    return tokens.access_token;
+  }
+
+  console.log('[syncGoogleCalendar] Refreshing expired access token...');
+  const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID') || '',
+      client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET') || '',
+      refresh_token: tokens.refresh_token,
+      grant_type: 'refresh_token'
+    })
+  });
+
+  if (!refreshResponse.ok) {
+    const errText = await refreshResponse.text();
+    console.error('[syncGoogleCalendar] Token refresh failed:', errText);
+    // Fall back to existing token — Google will reject if truly invalid
+    return tokens.access_token;
+  }
+
+  const newTokens = await refreshResponse.json();
+  console.log('[syncGoogleCalendar] Token refreshed successfully');
+  return newTokens.access_token;
+}
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    
+
+    // Require authentication
+    const user = await base44.auth.me();
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { bookingId, userType, userEmail } = await req.json();
 
-    // Get booking details
+    if (!bookingId || !userType || !userEmail) {
+      return Response.json({ error: 'Missing required params: bookingId, userType, userEmail' }, { status: 400 });
+    }
+
+    console.log(`[syncGoogleCalendar] START bookingId=${bookingId} userType=${userType} userEmail=${userEmail}`);
+
+    // Always use service role to read Booking (avoid RLS issues)
     const booking = await base44.asServiceRole.entities.Booking.get(bookingId);
-    
     if (!booking) {
+      console.error('[syncGoogleCalendar] Booking not found:', bookingId);
       return Response.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // Determine which user to sync for
-    let targetUserEmail, targetUserType, targetEntity;
-    
-    if (userType && userEmail) {
-      // Sync for specific user
-      targetUserEmail = userEmail;
-      targetUserType = userType;
-      targetEntity = userType === 'teacher' ? 'Teacher' : 'Student';
-    } else {
-      // Legacy: sync for current authenticated user
-      const user = await base44.auth.me();
-      if (!user) {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-      
-      const isTeacher = user.email === booking.teacher_email;
-      targetUserEmail = user.email;
-      targetUserType = isTeacher ? 'teacher' : 'student';
-      targetEntity = isTeacher ? 'Teacher' : 'Student';
+    const targetEntity = userType === 'teacher' ? 'Teacher' : 'Student';
+
+    // Use service role to read the profile — this bypasses RLS on Teacher
+    const profiles = await base44.asServiceRole.entities[targetEntity].filter({ user_email: userEmail });
+
+    if (profiles.length === 0) {
+      console.warn(`[syncGoogleCalendar] ${targetEntity} not found for email: ${userEmail}`);
+      return Response.json({ success: false, message: `${targetEntity} profile not found` });
     }
 
-    // Get user's Google Calendar tokens
-    const users = await base44.asServiceRole.entities[targetEntity].filter({ user_email: targetUserEmail });
-    
-    if (users.length === 0 || !users[0].google_calendar_tokens) {
-      return Response.json({ 
-        success: false,
-        message: 'Google Calendar not connected for this user' 
-      });
+    const profile = profiles[0];
+
+    if (!profile.google_calendar_connected || !profile.google_calendar_tokens) {
+      console.log(`[syncGoogleCalendar] Google Calendar not connected for ${userType}: ${userEmail}`);
+      return Response.json({ success: false, message: 'Google Calendar not connected for this user' });
     }
 
-    let tokens = users[0].google_calendar_tokens;
-    let accessToken = tokens.access_token;
+    // Get a valid access token — refresh if needed (we don't persist the refresh to avoid RLS on Teacher.update)
+    const accessToken = await refreshAccessToken(profile.google_calendar_tokens);
 
-    // Check if token needs refresh
-    if (tokens.refresh_token && (!tokens.expiry_date || Date.now() >= tokens.expiry_date)) {
-      const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'),
-          client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'),
-          refresh_token: tokens.refresh_token,
-          grant_type: 'refresh_token'
-        })
-      });
-
-      if (refreshResponse.ok) {
-        const newTokens = await refreshResponse.json();
-        accessToken = newTokens.access_token;
-        
-        tokens = {
-          ...tokens,
-          access_token: newTokens.access_token,
-          expiry_date: Date.now() + (newTokens.expires_in * 1000)
-        };
-        
-        await base44.asServiceRole.entities[targetEntity].update(users[0].id, {
-          google_calendar_tokens: tokens
-        });
-      }
-    }
-
-    // Create or update event in Google Calendar
+    // Build calendar event
     const startDateTime = `${booking.date}T${booking.start_time}:00`;
     const endDateTime = `${booking.date}T${booking.end_time}:00`;
-
     const isGroup = booking.class_type === 'group';
 
     const eventTitle = isGroup
       ? `Clase grupal de ${booking.subject_name}`
-      : targetUserType === 'teacher'
+      : userType === 'teacher'
         ? `Clase de ${booking.subject_name} con ${booking.student_name}`
         : `Clase de ${booking.subject_name} con ${booking.teacher_name}`;
 
-    const eventDescription = isGroup
-      ? `Clase grupal de ${booking.subject_name} (${booking.enrolled_students?.length || 1} alumno(s))`
-      : targetUserType === 'teacher'
-        ? `Clase con ${booking.student_name}`
-        : `Clase con ${booking.teacher_name}`;
+    let eventDescription = isGroup
+      ? `Clase grupal de ${booking.subject_name} (${booking.enrolled_students?.length || 1} alumno(s))\n\nID reserva: ${booking.id}`
+      : userType === 'teacher'
+        ? `Clase con ${booking.student_name}\n\nID reserva: ${booking.id}`
+        : `Clase con ${booking.teacher_name}\n\nID reserva: ${booking.id}`;
+
+    if (booking.meet_link) {
+      eventDescription += `\n\nGoogle Meet: ${booking.meet_link}`;
+    }
 
     const event = {
       summary: eventTitle,
       description: eventDescription,
-      start: {
-        dateTime: startDateTime,
-        timeZone: 'Europe/Madrid'
-      },
-      end: {
-        dateTime: endDateTime,
-        timeZone: 'Europe/Madrid'
-      },
+      start: { dateTime: startDateTime, timeZone: 'Europe/Madrid' },
+      end: { dateTime: endDateTime, timeZone: 'Europe/Madrid' },
       reminders: {
         useDefault: false,
         overrides: [
@@ -114,13 +112,12 @@ Deno.serve(async (req) => {
       }
     };
 
-    // Check if event already exists
-    const existingEventId = booking[`google_event_id_${targetUserType}`];
-    
-    let response;
+    const existingEventId = booking[`google_event_id_${userType}`];
+    let calResponse;
+
     if (existingEventId) {
-      // Update existing event
-      response = await fetch(
+      console.log(`[syncGoogleCalendar] Updating existing event ${existingEventId} for ${userType}`);
+      calResponse = await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/primary/events/${existingEventId}`,
         {
           method: 'PUT',
@@ -132,8 +129,8 @@ Deno.serve(async (req) => {
         }
       );
     } else {
-      // Create new event
-      response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      console.log(`[syncGoogleCalendar] Creating new event for ${userType}: ${userEmail}`);
+      calResponse = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -143,33 +140,36 @@ Deno.serve(async (req) => {
       });
     }
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error(`Google Calendar API error for ${targetUserType}:`, error);
-      return Response.json({ 
+    if (!calResponse.ok) {
+      const errText = await calResponse.text();
+      console.error(`[syncGoogleCalendar] Google Calendar API error (${calResponse.status}) for ${userType} ${userEmail}:`, errText);
+      return Response.json({
         success: false,
-        error: `Google Calendar API error: ${error}` 
+        error: `Google Calendar API error ${calResponse.status}: ${errText}`
       }, { status: 500 });
     }
 
-    const createdEvent = await response.json();
+    const createdEvent = await calResponse.json();
+    console.log(`[syncGoogleCalendar] Event ${existingEventId ? 'updated' : 'created'}: ${createdEvent.id} for ${userType}`);
 
-    // Store event ID in booking
+    // Save event ID back to booking — service role so it always works
     await base44.asServiceRole.entities.Booking.update(booking.id, {
-      [`google_event_id_${targetUserType}`]: createdEvent.id
+      [`google_event_id_${userType}`]: createdEvent.id
     });
 
-    return Response.json({ 
-      success: true, 
+    console.log(`[syncGoogleCalendar] SUCCESS bookingId=${bookingId} eventId=${createdEvent.id}`);
+
+    return Response.json({
+      success: true,
       eventId: createdEvent.id,
       eventLink: createdEvent.htmlLink
     });
 
   } catch (error) {
-    console.error('Error syncing with Google Calendar:', error);
-    return Response.json({ 
+    console.error('[syncGoogleCalendar] Unexpected error:', error.message || error);
+    return Response.json({
       success: false,
-      error: error.message 
+      error: error.message
     }, { status: 500 });
   }
 });

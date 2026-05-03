@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 async function getAccessToken(tokens, targetEntity, userId, base44) {
   let accessToken = tokens.access_token;
