@@ -9,8 +9,10 @@ import {
   CheckCircle,
   Camera,
   Trash2,
-  CreditCard
+  CreditCard,
+  AlertCircle
 } from 'lucide-react';
+import { uploadProfilePhoto } from '../utils/uploadToCloudinary';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -100,41 +102,29 @@ export default function Profile() {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [photoError, setPhotoError] = useState('');
+
   const handlePhotoUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona una imagen válida');
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen no puede superar los 5MB');
-      return;
-    }
-
+    setPhotoError('');
     setUploadingPhoto(true);
     try {
-      // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const secureUrl = await uploadProfilePhoto(file);
 
-      // Update profile
       if (userRole === 'teacher') {
-        await base44.entities.Teacher.update(profile.id, { profile_photo: file_url });
+        await base44.entities.Teacher.update(profile.id, { profile_photo: secureUrl });
       } else if (userRole === 'student') {
-        await base44.entities.Student.update(profile.id, { profile_photo: file_url });
+        await base44.entities.Student.update(profile.id, { profile_photo: secureUrl });
       }
 
-      // Reload data
       await loadUserData();
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       console.error('Error uploading photo:', error);
-      alert('Error al subir la foto');
+      setPhotoError(error.message || 'No se pudo subir la imagen, prueba de nuevo.');
     } finally {
       setUploadingPhoto(false);
     }
@@ -251,6 +241,11 @@ export default function Profile() {
               <h3 className="font-semibold text-[#404040] text-lg">{formData.full_name}</h3>
               <p className="text-gray-500 text-sm truncate">{user?.email}</p>
               <p className="text-xs text-gray-400 mt-1 capitalize">{userRole === 'teacher' ? 'Profesor' : 'Alumno'}</p>
+              {photoError && (
+                <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle size={12} /> {photoError}
+                </p>
+              )}
             </div>
           </div>
         </CardContent>
