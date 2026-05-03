@@ -60,12 +60,13 @@ export default function SearchTeachers() {
     try {
       const user = await base44.auth.me();
       
-      const [students, allTeachers, allSubjects, allBookings] = await Promise.all([
+      const [students, teachersRes, allSubjects, allBookings] = await Promise.all([
         base44.entities.Student.filter({ user_email: user.email }),
-        base44.entities.Teacher.list(),
+        base44.functions.invoke('getPublicTeachers', {}),
         base44.entities.Subject.list(),
         base44.entities.Booking.list()
       ]);
+      const allTeachers = teachersRes.data?.teachers || [];
 
       if (students.length > 0) {
         setStudent(students[0]);
