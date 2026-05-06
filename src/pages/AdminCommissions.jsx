@@ -18,8 +18,7 @@ export default function AdminCommissions() {
         setUser(me);
         if (me.role !== 'admin') { setLoading(false); return; }
 
-        const allTeachers = await base44.entities.Teacher.list();
-        const commissionTeachers = allTeachers.filter(t => t.subscription_plan === 'commission');
+        const commissionTeachers = await base44.entities.Teacher.filter({ subscription_plan: 'commission' });
 
         if (commissionTeachers.length === 0) { setData([]); setLoading(false); return; }
 

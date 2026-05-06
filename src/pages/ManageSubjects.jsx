@@ -177,9 +177,7 @@ export default function ManageSubjects() {
         finalSubjects = [...baseSubjects, entry];
       }
 
-      console.log('💾 [ManageSubjects] handleSave - saving finalSubjects:', JSON.stringify(finalSubjects, null, 2));
       await base44.entities.Teacher.update(freshTeacher.id, { subjects: finalSubjects });
-      console.log('✅ [ManageSubjects] handleSave - saved successfully');
 
       // Update local state immediately
       setTeacher(prev => ({ ...prev, subjects: finalSubjects }));
