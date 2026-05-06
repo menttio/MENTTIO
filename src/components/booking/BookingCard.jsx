@@ -18,7 +18,9 @@ import {
   Star,
   CreditCard,
   AlertCircle,
-  VideoIcon
+  VideoIcon,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -84,6 +86,7 @@ export default function BookingCard({
   const isCompleted = booking.status === 'completed' || isPast;
   const isCancelled = booking.status === 'cancelled';
   const needsPayment = isCompleted && booking.payment_status === 'pending' && !isCancelled && userRole === 'student';
+  const paymentPendingConfirmation = booking.payment_status === 'pending_confirmation' && isCompleted && !isCancelled;
 
   // Students need 24h advance; teachers can always delete (even past classes)
   const canModify = userRole === 'teacher' 
@@ -308,6 +311,42 @@ export default function BookingCard({
     }
   };
 
+  const handleConfirmPayment = async () => {
+    try {
+      await base44.entities.Booking.update(booking.id, { payment_status: 'paid' });
+      await base44.entities.Notification.create({
+        user_id: booking.student_id,
+        user_email: booking.student_email,
+        type: 'payment_confirmed',
+        title: 'Pago confirmado',
+        message: `${booking.teacher_name} ha confirmado que recibió tu pago de ${booking.price}€ por la clase de ${booking.subject_name}.`,
+        related_id: booking.id,
+        link_page: 'MyClasses'
+      });
+      onRefresh?.();
+    } catch (error) {
+      console.error('Error confirming payment:', error);
+    }
+  };
+
+  const handleRejectPayment = async () => {
+    try {
+      await base44.entities.Booking.update(booking.id, { payment_status: 'pending' });
+      await base44.entities.Notification.create({
+        user_id: booking.student_id,
+        user_email: booking.student_email,
+        type: 'payment_rejected',
+        title: 'Pago no recibido',
+        message: `${booking.teacher_name} indica que no ha recibido el pago de ${booking.price}€ por la clase de ${booking.subject_name}. Por favor, vuelve a intentarlo.`,
+        related_id: booking.id,
+        link_page: 'MyClasses'
+      });
+      onRefresh?.();
+    } catch (error) {
+      console.error('Error rejecting payment:', error);
+    }
+  };
+
   return (
     <>
       <motion.div
@@ -350,10 +389,14 @@ export default function BookingCard({
             <Badge className={cn(status.color, "pointer-events-none")}>{status.label}</Badge>
             {isCompleted && !isCancelled && (
               <Badge className={cn(
-                booking.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700',
+                booking.payment_status === 'paid' ? 'bg-green-100 text-green-700' :
+                booking.payment_status === 'pending_confirmation' ? 'bg-blue-100 text-blue-700' :
+                'bg-orange-100 text-orange-700',
                 "pointer-events-none"
               )}>
-                {booking.payment_status === 'paid' ? 'Pagado' : 'No Pagado'}
+                {booking.payment_status === 'paid' ? 'Pagado' :
+                 booking.payment_status === 'pending_confirmation' ? 'En verificación' :
+                 'No Pagado'}
               </Badge>
             )}
             
@@ -386,7 +429,19 @@ export default function BookingCard({
                   </DropdownMenuItem>
                   {userRole === 'teacher' && isCompleted && (
                     <>
-                      {booking.payment_status !== 'paid' && (
+                      {booking.payment_status === 'pending_confirmation' && (
+                        <>
+                          <DropdownMenuItem onClick={handleConfirmPayment}>
+                            <CheckCircle2 size={14} className="mr-2 text-green-500" />
+                            Confirmar pago recibido
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={handleRejectPayment}>
+                            <XCircle size={14} className="mr-2 text-red-500" />
+                            No he recibido el pago
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                      {booking.payment_status !== 'paid' && booking.payment_status !== 'pending_confirmation' && (
                         <DropdownMenuItem onClick={async () => {
                           await base44.entities.Booking.update(booking.id, { payment_status: 'paid' });
                           onRefresh?.();
@@ -483,6 +538,42 @@ export default function BookingCard({
                   <CreditCard size={14} className="mr-1" />
                   Pagar ahora
                 </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Verification Block for Student */}
+        {paymentPendingConfirmation && userRole === 'student' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="flex items-start gap-2">
+              <Clock className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
+              <div>
+                <p className="text-sm font-medium text-blue-800">Pago en verificación</p>
+                <p className="text-xs text-blue-600">Esperando confirmación del profesor</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Teacher Payment Confirmation Block */}
+        {paymentPendingConfirmation && userRole === 'teacher' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="text-blue-500 flex-shrink-0 mt-0.5" size={18} />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-800">{booking.student_name} dice haber pagado</p>
+                <p className="text-xs text-blue-600 mb-2">{booking.price}€ por Bizum — ¿Lo has recibido?</p>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={handleConfirmPayment} className="bg-green-500 hover:bg-green-600 text-white">
+                    <CheckCircle2 size={14} className="mr-1" />
+                    Sí, recibido
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={handleRejectPayment} className="border-red-300 text-red-500 hover:bg-red-50">
+                    <XCircle size={14} className="mr-1" />
+                    No lo recibí
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

@@ -95,7 +95,7 @@ export default function MyClasses() {
       if (filter === 'unpaid') {
         const bookingDateTime = new Date(`${booking.date}T${booking.start_time}`);
         const isPast = isBefore(bookingDateTime, now);
-        return booking.payment_status === 'pending' && booking.status !== 'cancelled' && (booking.status === 'completed' || isPast);
+        return (booking.payment_status === 'pending' || booking.payment_status === 'pending_confirmation') && booking.status !== 'cancelled' && (booking.status === 'completed' || isPast);
       }
       return true;
     })

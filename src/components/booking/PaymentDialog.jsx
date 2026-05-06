@@ -57,16 +57,16 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
     setProcessing(true);
     try {
       await base44.entities.Booking.update(booking.id, {
-        payment_status: 'paid',
+        payment_status: 'pending_confirmation',
         payment_method: 'bizum'
       });
 
       await base44.entities.Notification.create({
         user_id: booking.teacher_id,
         user_email: booking.teacher_email,
-        type: 'booking_modified',
-        title: 'Pago recibido',
-        message: `${booking.student_name} ha confirmado el pago por Bizum de la clase de ${booking.subject_name}`,
+        type: 'payment_pending_confirmation',
+        title: 'Confirma el pago de una clase',
+        message: `${booking.student_name} dice haber enviado ${booking.price}€ por Bizum por la clase de ${booking.subject_name}. Confirma si lo has recibido.`,
         related_id: booking.id,
         link_page: 'TeacherCalendar'
       });
@@ -245,10 +245,10 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
               >
                 <CheckCircle className="mx-auto text-[#41f2c0] mb-3" size={64} />
                 <h3 className="font-semibold text-[#404040] mb-2">
-                  ¿Confirmas el pago?
+                  ¿Has enviado el pago?
                 </h3>
                 <p className="text-sm text-gray-500 mb-6">
-                  Al confirmar, se marcará la clase como pagada
+                  El profesor deberá confirmar la recepción para marcar la clase como pagada
                 </p>
 
                 <div className="flex gap-2">

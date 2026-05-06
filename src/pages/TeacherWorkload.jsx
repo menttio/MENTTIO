@@ -181,9 +181,9 @@ export default function TeacherWorkload() {
       return b.status === 'scheduled' && bookingDateTime < now;
     });
     const paid = completed.filter(b => b.payment_status === 'paid').length;
-    const pending = completed.filter(b => b.payment_status === 'pending').length;
+    const pending = completed.filter(b => b.payment_status === 'pending' || b.payment_status === 'pending_confirmation').length;
     const paidAmount = completed.filter(b => b.payment_status === 'paid').reduce((sum, b) => sum + calcPayout(b.price), 0);
-    const pendingAmount = completed.filter(b => b.payment_status === 'pending').reduce((sum, b) => sum + calcPayout(b.price), 0);
+    const pendingAmount = completed.filter(b => b.payment_status === 'pending' || b.payment_status === 'pending_confirmation').reduce((sum, b) => sum + calcPayout(b.price), 0);
 
     return { paid, pending, paidAmount, pendingAmount };
   }, [bookings, teacher]);
