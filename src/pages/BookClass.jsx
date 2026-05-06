@@ -380,11 +380,12 @@ export default function BookClass() {
 
   const handleConfirmBooking = async () => {
     setSaving(true);
+    let user = null;
+    let newBooking = null;
+    const calendarSynced = { teacher: false, student: false };
     try {
-      const user = await base44.auth.me();
+      user = await base44.auth.me();
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || availableSubjects.find(s => s.id === selectedSubject)?.name;
-
-      let newBooking;
 
       // Calculate commission fields for commission-plan teachers
       const isCommissionTeacher = selectedTeacher.subscription_plan === 'commission';
@@ -517,18 +518,20 @@ export default function BookClass() {
       // Sync with Google Calendar for both teacher and student
       try {
         if (selectedTeacher.google_calendar_connected) {
-          await base44.functions.invoke('syncGoogleCalendar', { 
+          await base44.functions.invoke('syncGoogleCalendar', {
             bookingId: newBooking.id,
             userType: 'teacher',
             userEmail: selectedTeacher.user_email
           });
+          calendarSynced.teacher = true;
         }
         if (student.google_calendar_connected) {
-          await base44.functions.invoke('syncGoogleCalendar', { 
+          await base44.functions.invoke('syncGoogleCalendar', {
             bookingId: newBooking.id,
             userType: 'student',
             userEmail: user.email
           });
+          calendarSynced.student = true;
         }
       } catch (syncError) {
         console.error('Error syncing with Google Calendar:', syncError);
@@ -561,6 +564,28 @@ export default function BookClass() {
 
       navigate(createPageUrl('MyClasses'));
     } catch (error) {
+      // Rollback Google Calendar events if they were synced before this failure
+      if (newBooking && (calendarSynced.teacher || calendarSynced.student)) {
+        try {
+          const freshBooking = await base44.entities.Booking.get(newBooking.id);
+          if (calendarSynced.teacher && freshBooking?.google_event_id_teacher) {
+            await base44.functions.invoke('deleteGoogleCalendarEvent', {
+              userType: 'teacher',
+              userEmail: selectedTeacher.user_email,
+              eventId: freshBooking.google_event_id_teacher
+            });
+          }
+          if (calendarSynced.student && freshBooking?.google_event_id_student && user) {
+            await base44.functions.invoke('deleteGoogleCalendarEvent', {
+              userType: 'student',
+              userEmail: user.email,
+              eventId: freshBooking.google_event_id_student
+            });
+          }
+        } catch (rollbackError) {
+          console.error('Error rolling back Google Calendar events:', rollbackError);
+        }
+      }
       console.error('Error creating booking:', error);
       alert('Error al crear la reserva. Inténtalo de nuevo.');
     } finally {
