@@ -59,29 +59,18 @@ export default function SearchTeachers() {
   const loadData = async () => {
     try {
       const user = await base44.auth.me();
-      
-      const [students, teachersRes, allSubjects, allBookings] = await Promise.all([
+
+      const [students, teachersRes, allSubjects] = await Promise.all([
         base44.entities.Student.filter({ user_email: user.email }),
         base44.functions.invoke('getPublicTeachers', {}),
-        base44.entities.Subject.list(),
-        base44.entities.Booking.list()
+        base44.entities.Subject.list()
       ]);
-      const allTeachers = teachersRes.data?.teachers || [];
 
       if (students.length > 0) {
         setStudent(students[0]);
       }
 
-      // Calculate real completed classes per teacher
-      const teachersWithRealClasses = allTeachers.map(teacher => {
-        const completedCount = allBookings.filter(b => 
-          b.teacher_id === teacher.id && 
-          (b.status === 'completed' || (b.status === 'scheduled' && new Date(`${b.date}T${b.start_time}`) < new Date()))
-        ).length;
-        return { ...teacher, total_classes: completedCount };
-      });
-      
-      setTeachers(teachersWithRealClasses);
+      setTeachers(teachersRes.data?.teachers || []);
       setSubjects(allSubjects);
     } catch (error) {
       console.error(error);
@@ -408,6 +397,7 @@ export default function SearchTeachers() {
               >
                 <TeacherCard
                   teacher={teacher}
+                  student={student}
                   isAssigned={isTeacherAssigned(teacher.id)}
                   onAssign={handleAssignTeacher}
                   onRemove={handleRemoveTeacher}

@@ -20,11 +20,12 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
-export default function TeacherCard({ 
-  teacher, 
-  onSelect, 
-  onAssign, 
-  onRemove, 
+export default function TeacherCard({
+  teacher,
+  student: studentProp = null,
+  onSelect,
+  onAssign,
+  onRemove,
   isAssigned = false,
   showActions = true,
   selectedSubject = null
@@ -55,16 +56,17 @@ export default function TeacherCard({
   const handleStartChat = async () => {
     setStartingChat(true);
     try {
-      const user = await base44.auth.me();
-      const students = await base44.entities.Student.filter({ user_email: user.email });
-      
-      if (students.length === 0) {
-        alert('No se encontró tu perfil de estudiante');
-        setStartingChat(false);
-        return;
+      let student = studentProp;
+      if (!student) {
+        const user = await base44.auth.me();
+        const students = await base44.entities.Student.filter({ user_email: user.email });
+        if (students.length === 0) {
+          alert('No se encontró tu perfil de estudiante');
+          setStartingChat(false);
+          return;
+        }
+        student = students[0];
       }
-
-      const student = students[0];
 
       // Check if conversation already exists
       const existingConversations = await base44.entities.Conversation.filter({
