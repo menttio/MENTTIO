@@ -15,11 +15,10 @@ export default function Footer() {
         <div className="max-w-4xl mx-auto px-6 text-center">
           {/* CAMBIO: titular orientado al dolor, no a la aspiración genérica */}
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-            Deja de perder tiempo organizando tus clases
+            Empieza hoy. En 5 minutos tienes todo listo.
           </h2>
-          {/* CAMBIO: subtítulo más directo, menciona el resultado inmediato */}
           <p className="text-xl text-white/90 mb-8">
-            Crea tu perfil en 5 minutos y empieza a gestionar reservas, alumnos y pagos desde un solo lugar. Sin complicaciones.
+            Sin instalaciones, sin configuraciones complicadas. Crea tu perfil y empieza a recibir reservas.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
             {/* CAMBIO: CTA principal más específico para profesores */}
@@ -87,7 +86,7 @@ export default function Footer() {
               <li><a href="/TermsOfService" className="hover:text-[#41f2c0] transition-colors">Términos de uso</a></li>
               <li><a href="/PrivacyPolicy" className="hover:text-[#41f2c0] transition-colors">Política de privacidad</a></li>
               <li><a href="/CookiesPolicy" className="hover:text-[#41f2c0] transition-colors">Cookies</a></li>
-              <li><span className="text-gray-400 cursor-default">Aviso legal</span></li>
+              <li><a href="/LegalNotice" className="hover:text-[#41f2c0] transition-colors">Aviso legal</a></li>
             </ul>
           </div>
         </div>

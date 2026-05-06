@@ -18,6 +18,13 @@ export default function Hero() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -71,7 +78,7 @@ export default function Hero() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg px-4 md:px-6 py-4">
+      <nav className={`fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4 transition-all duration-300 ${scrolled ? 'bg-gradient-to-r from-[#41f2c0]/95 to-[#35d4a7]/95 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button 
@@ -283,9 +290,8 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-              <Sparkles className="text-white" size={16} />
-              {/* CAMBIO: badge más directo al dolor */}
+            <div className="inline-flex items-center gap-2 bg-[#404040] px-4 py-2 rounded-full mb-6">
+              <Sparkles className="text-[#41f2c0]" size={16} />
               <span className="text-white text-sm font-medium">Para profesores que quieren dejar de perder tiempo</span>
             </div>
             
@@ -311,10 +317,10 @@ export default function Hero() {
                 Crea tu perfil gratis
                 <ArrowRight className="ml-2" size={18} />
               </Button>
-              <Button 
+              <Button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                size="lg" 
-                className="bg-white text-[#41f2c0] hover:bg-gray-100 px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
+                size="lg"
+                className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl transition-all w-full sm:w-auto"
               >
                 Ver precios
               </Button>

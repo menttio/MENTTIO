@@ -81,7 +81,9 @@ export default function HowItWorks() {
           </h2>
           {/* CAMBIO: subtítulo reescrito para que el profesor sea el protagonista */}
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            En 4 pasos tienes tu perfil activo y empiezas a recibir reservas sin gestionar nada a mano
+            {activeTab === 'teacher'
+              ? 'En 4 pasos tienes tu perfil activo y empiezas a recibir reservas sin gestionar nada a mano'
+              : 'En 4 pasos encuentras tu profesor, reservas tu clase y accedes a todo el contenido'}
           </p>
 
           {/* Tabs */}
@@ -90,7 +92,7 @@ export default function HowItWorks() {
               onClick={() => setActiveTab('teacher')}
               className={`px-6 py-3 rounded-lg transition-all ${
                 activeTab === 'teacher'
-                  ? 'bg-[#41f2c0] text-white shadow-lg'
+                  ? 'bg-[#41f2c0] text-[#404040] font-semibold shadow-lg'
                   : 'bg-transparent text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -100,7 +102,7 @@ export default function HowItWorks() {
               onClick={() => setActiveTab('student')}
               className={`px-6 py-3 rounded-lg transition-all ${
                 activeTab === 'student'
-                  ? 'bg-[#41f2c0] text-white shadow-lg'
+                  ? 'bg-[#41f2c0] text-[#404040] font-semibold shadow-lg'
                   : 'bg-transparent text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -112,7 +114,7 @@ export default function HowItWorks() {
         {/* Steps */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
           {/* Connection lines */}
-          <div className="hidden lg:block absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#41f2c0]/20 to-transparent" />
+          <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#41f2c0]/70 to-transparent" />
           
           {steps.map((step, index) => (
             <motion.div

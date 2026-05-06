@@ -64,10 +64,10 @@ export default function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
-            Deja de perder tiempo organizando tus clases
+            Todo lo que necesitas para gestionar tu trabajo como profesor
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Menttio es la plataforma todo en uno para profesores particulares: gestiona horarios, alumnos, pagos, grabaciones y materiales desde un solo lugar.
+            Cada herramienta que usas hoy por separado — calendario, pagos, materiales, mensajes — reunida en un solo lugar.
           </p>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

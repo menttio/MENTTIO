@@ -1,24 +1,23 @@
 import React from 'react';
 import { Star, Quote } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { createPageUrl } from '../../utils';
 
-// CAMBIO: testimonios de alumnos sin nombre reemplazados por nombres reales y testimonios
-// más específicos. Los 3 de profesores están arriba (público principal), alumnos abajo.
 const testimonials = [
   {
     name: 'Laura Gómez',
     role: 'Profesora particular',
     subject: 'Matemáticas y Física',
-    image: '👩‍🏫',
+    type: 'teacher',
     rating: 5,
-    // CAMBIO: ligeramente más específico — añade "en minutos" para dar concreción
     text: 'Antes organizaba mis clases por WhatsApp y era un caos. Ahora tengo todo centralizado y no pierdo tiempo gestionando horarios. Mis alumnos reservan solos.'
   },
   {
     name: 'David Ruiz',
     role: 'Profesor de Bachillerato',
     subject: 'Matemáticas',
-    image: '👨‍🏫',
+    type: 'teacher',
     rating: 5,
     text: 'La plataforma me ha permitido organizar mejor a mis alumnos y dar una imagen mucho más profesional. Todo está en un solo lugar.'
   },
@@ -26,7 +25,7 @@ const testimonials = [
     name: 'Marta López',
     role: 'Profesora online',
     subject: 'Inglés',
-    image: '👩‍🏫',
+    type: 'teacher',
     rating: 5,
     text: 'Lo mejor es tener agenda, pagos y materiales en la misma plataforma. Me ahorra muchísimo tiempo cada semana.'
   },
@@ -34,31 +33,36 @@ const testimonials = [
     name: 'Carlos Sánchez',
     role: 'Alumno · Selectividad',
     subject: 'Preparación EBAU',
-    image: '👨‍🎓',
+    type: 'student',
     rating: 5,
     text: 'Las clases me han ayudado mucho para prepararme la selectividad. Reservar es rapidísimo y puedo repasar las grabaciones antes del examen.'
   },
   {
-    // CAMBIO: nombre real en lugar de "Alumna"
     name: 'Sofía Martínez',
     role: 'Alumna · 4º ESO',
     subject: 'Matemáticas',
-    image: '👩‍🎓',
+    type: 'student',
     rating: 5,
-    // CAMBIO: testimonio más concreto y creíble
     text: 'Me gusta poder acceder a los materiales y las grabaciones cuando quiero. No tengo que pedirle nada al profesor, está todo disponible desde el móvil.'
   },
   {
-    // CAMBIO: nombre real en lugar de "Alumno"
     name: 'Iván Torres',
     role: 'Alumno · 1º Bachillerato',
     subject: 'Física y Química',
-    image: '🧑‍🎓',
+    type: 'student',
     rating: 5,
-    // CAMBIO: testimonio más específico, menciona una situación real
     text: 'Empecé con clases de Física porque iba muy mal. La plataforma hace que todo sea fácil: reservas, materiales y dudas con el profesor en el mismo sitio.'
   }
 ];
+
+function Avatar({ name }) {
+  const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('');
+  return (
+    <div className="w-14 h-14 bg-gradient-to-br from-[#41f2c0] to-[#2ab88f] rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+      <span className="text-white font-bold text-lg">{initials}</span>
+    </div>
+  );
+}
 
 export default function Testimonials() {
   return (
@@ -70,11 +74,9 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          {/* CAMBIO: H2 coherente con el subtítulo — antes se contradecían */}
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
             Lo que dicen profesores y alumnos
           </h2>
-          {/* CAMBIO: subtítulo más directo, sin repetir lo mismo que el H2 */}
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Profesores que han dejado de perder tiempo y alumnos que aprenden sin complicaciones
           </p>
@@ -90,14 +92,21 @@ export default function Testimonials() {
               transition={{ delay: index * 0.1 }}
               className="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-all relative"
             >
-              <Quote className="absolute top-6 right-6 text-[#41f2c0]/20" size={40} />
-              
+              <Quote className="absolute top-6 right-6 text-[#41f2c0]/45" size={36} />
+
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] rounded-full flex items-center justify-center text-3xl">
-                  {testimonial.image}
-                </div>
+                <Avatar name={testimonial.name} />
                 <div>
-                  <h4 className="font-semibold text-[#404040]">{testimonial.name}</h4>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <h4 className="font-semibold text-[#404040]">{testimonial.name}</h4>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      testimonial.type === 'teacher'
+                        ? 'bg-[#41f2c0]/15 text-[#2ab88f]'
+                        : 'bg-[#404040]/10 text-[#404040]'
+                    }`}>
+                      {testimonial.type === 'teacher' ? 'Profesor' : 'Alumno'}
+                    </span>
+                  </div>
                   <p className="text-sm text-gray-500">{testimonial.role}</p>
                   <p className="text-xs text-[#41f2c0] font-medium">{testimonial.subject}</p>
                 </div>
@@ -115,6 +124,22 @@ export default function Testimonials() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-14"
+        >
+          <p className="text-gray-500 mb-5">Únete a los profesores que ya gestionan sus clases sin caos</p>
+          <Button
+            onClick={() => window.location.href = createPageUrl('TeacherSignup')}
+            size="lg"
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold px-8 py-6 text-lg rounded-xl shadow-lg"
+          >
+            Crea tu perfil gratis
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

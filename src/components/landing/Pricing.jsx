@@ -1,23 +1,109 @@
-import React, { useState } from 'react';
-import { Check, Sparkles, Crown, X, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { Check, Sparkles, Crown, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
-import { base44 } from '@/api/base44Client';
+import { motion } from 'framer-motion';
 import { createPageUrl } from '../../utils';
 
-export default function Pricing() {
-  const [activeTeacherPlan, setActiveTeacherPlan] = useState('premium'); // premium por defecto
+const teacherPlans = [
+  {
+    id: 'comision',
+    icon: Zap,
+    name: 'Plan Comisión',
+    badge: null,
+    price: '0€',
+    period: '/mes',
+    description: 'Empieza sin coste fijo',
+    note: '25% de comisión por clase · tú te quedas el 75%',
+    cardClass: 'bg-white border-2 border-gray-100 hover:border-[#41f2c0]',
+    iconClass: 'bg-gray-100',
+    iconColor: 'text-[#404040]',
+    priceColor: 'text-[#404040]',
+    textColor: 'text-gray-700',
+    mutedColor: 'text-gray-500',
+    checkBg: 'bg-[#41f2c0]/20',
+    checkColor: 'text-[#41f2c0]',
+    ctaClass: 'bg-[#404040] hover:bg-[#303030] text-white',
+    ctaLabel: 'Empezar gratis',
+    features: [
+      { text: 'Gestión automática de reservas', included: true },
+      { text: 'Calendario inteligente', included: true },
+      { text: 'Chat con alumnos ilimitado', included: true },
+      { text: 'Procesamiento de pagos integrado', included: true },
+      { text: 'Notificaciones en tiempo real', included: true },
+      { text: 'Sin cuota mensual', included: true },
+      { text: 'Grabación de clases en la nube', included: false },
+      { text: 'Soporte estándar', included: true },
+    ],
+  },
+  {
+    id: 'basico',
+    icon: Sparkles,
+    name: 'Plan Básico',
+    badge: 'Más popular',
+    price: '14,99€',
+    period: '/mes',
+    description: '14 días gratis, sin compromiso',
+    note: 'Sin comisiones por clase',
+    cardClass: 'bg-[#404040] border-2 border-[#404040] scale-105 shadow-2xl',
+    iconClass: 'bg-[#41f2c0]',
+    iconColor: 'text-white',
+    priceColor: 'text-white',
+    textColor: 'text-white',
+    mutedColor: 'text-white/70',
+    checkBg: 'bg-[#41f2c0]/40',
+    checkColor: 'text-white',
+    ctaClass: 'bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold',
+    ctaLabel: 'Empezar 14 días gratis',
+    features: [
+      { text: 'Gestión automática de reservas', included: true },
+      { text: 'Calendario inteligente', included: true },
+      { text: 'Chat con alumnos ilimitado', included: true },
+      { text: 'Procesamiento de pagos automático', included: true },
+      { text: 'Notificaciones en tiempo real', included: true },
+      { text: 'Sin comisiones por clase', included: true },
+      { text: 'Grabación de clases en la nube', included: false },
+      { text: 'Soporte estándar', included: true },
+    ],
+  },
+  {
+    id: 'premium',
+    icon: Crown,
+    name: 'Plan Premium',
+    badge: null,
+    price: '36,99€',
+    period: '/mes',
+    description: 'Todo incluido',
+    note: 'Sin comisiones por clase',
+    cardClass: 'bg-gradient-to-br from-[#41f2c0] to-[#2ab88f] border-2 border-[#41f2c0]',
+    iconClass: 'bg-white/20',
+    iconColor: 'text-white',
+    priceColor: 'text-white',
+    textColor: 'text-white',
+    mutedColor: 'text-white/80',
+    checkBg: 'bg-[#404040]/30',
+    checkColor: 'text-white',
+    ctaClass: 'bg-white hover:bg-gray-100 text-[#2ab88f] font-bold',
+    ctaLabel: 'Comenzar ahora',
+    features: [
+      { text: 'Gestión automática de reservas', included: true },
+      { text: 'Calendario inteligente', included: true },
+      { text: 'Chat con alumnos ilimitado', included: true },
+      { text: 'Procesamiento de pagos automático', included: true },
+      { text: 'Notificaciones en tiempo real', included: true },
+      { text: 'Sin comisiones por clase', included: true },
+      { text: 'Grabación de clases en la nube', included: true },
+      { text: 'Soporte premium 24/7', included: true },
+    ],
+  },
+];
 
+export default function Pricing() {
   const handleGetStartedStudent = () => {
     window.location.href = createPageUrl('SelectRole') + '?role=student';
   };
 
   const handleGetStartedTeacher = () => {
     window.location.href = createPageUrl('TeacherSignup');
-  };
-
-  const switchPlan = () => {
-    setActiveTeacherPlan(prev => prev === 'premium' ? 'basic' : 'premium');
   };
 
   return (
@@ -27,253 +113,113 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-6"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
             Precios transparentes y justos
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Para alumnos es gratis. Los profesores pagan solo por lo que usan.
+            Los profesores pagan solo por lo que usan.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto items-center">
-          {/* Student Plan */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-3xl shadow-lg p-8 border-2 border-gray-100 hover:border-[#41f2c0] transition-all"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                <Sparkles className="text-white" size={24} />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-[#404040]">Para Alumnos</h3>
-                <p className="text-gray-500">Acceso completo</p>
-              </div>
+        {/* Student callout */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex justify-center mb-12"
+        >
+          <div className="inline-flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-6 py-3 shadow-sm">
+            <div className="w-8 h-8 bg-[#41f2c0] rounded-lg flex items-center justify-center flex-shrink-0">
+              <Sparkles className="text-white" size={16} />
             </div>
-
-            <div className="mb-8">
-              <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-bold text-[#41f2c0]">0€</span>
-                <span className="text-gray-500">/siempre</span>
-              </div>
-              <p className="text-sm text-gray-600 mt-2">Solo pagas las clases que tomes</p>
-            </div>
-
-            <ul className="space-y-4 mb-8">
-              {[
-                'Registro gratuito',
-                'Búsqueda ilimitada de profesores',
-                'Reserva de clases sin comisiones',
-                'Acceso a grabaciones de tus clases',
-                'Chat con profesores',
-                'Almacenamiento de materiales',
-                'Sin límite de clases',
-                'Soporte prioritario'
-              ].map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="text-blue-500" size={14} />
-                  </div>
-                  <span className="text-gray-700">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Button 
-              onClick={handleGetStartedStudent}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
-            >
-              Empezar gratis
-            </Button>
-          </motion.div>
-
-          {/* Teacher Plans - Carousel */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="relative h-[700px] lg:h-[750px] pr-32"
-          >
-            {/* Switch Button */}
+            <span className="text-gray-700 font-medium">Para alumnos es siempre <span className="text-[#41f2c0] font-bold">gratis</span></span>
             <button
-              onClick={switchPlan}
-              className="absolute top-1/2 -translate-y-1/2 right-8 z-20 w-12 h-12 bg-[#404040] hover:bg-[#35d4a7] rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+              onClick={handleGetStartedStudent}
+              className="text-sm text-[#404040] font-semibold underline underline-offset-2 hover:text-[#41f2c0] transition-colors"
             >
-              <ChevronRight className="text-white" size={24} />
+              Regístrate →
             </button>
+          </div>
+        </motion.div>
 
-            <AnimatePresence mode="wait">
-              {/* Premium Plan - Front */}
-              {activeTeacherPlan === 'premium' && (
-                <>
-                  <motion.div
-                    key="premium-front"
-                    initial={{ x: 100, opacity: 0, scale: 0.9, rotateY: -10 }}
-                    animate={{ x: 0, opacity: 1, scale: 1, rotateY: 0, zIndex: 10 }}
-                    exit={{ x: -100, opacity: 0, scale: 0.9, rotateY: 10 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-2xl p-8 border-2 border-[#41f2c0] overflow-hidden"
-                  >
-                    <div className="absolute -top-2 -right-2 bg-[#404040] text-white px-6 py-2 rounded-bl-2xl rounded-tr-2xl flex items-center gap-2 shadow-lg">
-                      <Crown size={16} />
-                      <span className="text-sm font-semibold">Más popular</span>
-                    </div>
+        {/* Teacher plans */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
+          {teacherPlans.map((plan, index) => {
+            const Icon = plan.icon;
+            return (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -8, scale: plan.id === 'basico' ? 1.08 : 1.04 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, hover: { type: 'spring', stiffness: 300, damping: 22, delay: 0 } }}
+                className={`relative rounded-3xl p-7 ${plan.cardClass} cursor-pointer`}
+              >
+                {plan.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#41f2c0] text-[#404040] text-xs font-bold px-4 py-1 rounded-full shadow">
+                    {plan.badge}
+                  </div>
+                )}
 
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-[#404040] rounded-xl flex items-center justify-center">
-                        <Crown className="text-white" size={24} />
+                <div className="flex items-center gap-3 mb-5">
+                  <div className={`w-11 h-11 ${plan.iconClass} rounded-xl flex items-center justify-center`}>
+                    <Icon className={plan.iconColor} size={22} />
+                  </div>
+                  <div>
+                    <h3 className={`text-lg font-bold ${plan.textColor}`}>{plan.name}</h3>
+                    <p className={`text-xs ${plan.mutedColor}`}>{plan.description}</p>
+                  </div>
+                </div>
+
+                <div className="mb-5">
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-bold ${plan.priceColor}`}>{plan.price}</span>
+                    <span className={`text-sm ${plan.mutedColor}`}>{plan.period}</span>
+                  </div>
+                  <p className={`text-xs mt-1 ${plan.mutedColor}`}>{plan.note}</p>
+                </div>
+
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center gap-2.5">
+                      <div className={`w-5 h-5 ${feature.included ? plan.checkBg : 'bg-red-100'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                        {feature.included
+                          ? <Check className={plan.checkColor} size={12} />
+                          : <X className="text-red-400" size={12} />
+                        }
                       </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-white">Plan Premium</h3>
-                        <p className="text-white/80">Para profesores</p>
-                      </div>
-                    </div>
+                      <span className={`text-sm ${feature.included ? plan.textColor : (plan.id === 'comision' ? 'text-gray-400 line-through' : 'text-white/40 line-through')}`}>
+                        {feature.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-                    <div className="mb-8">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-white">36,99€</span>
-                        <span className="text-white/80">/mes</span>
-                      </div>
-                      <p className="text-sm text-white/80 mt-2">Todas las funcionalidades</p>
-                    </div>
-
-                    <ul className="space-y-4 mb-8">
-                      {[
-                        'Gestión automática de reservas',
-                        'Calendario inteligente',
-                        'Grabación de clases en la nube',
-                        'Chat con alumnos ilimitado',
-                        'Estadísticas y análisis detallados',
-                        'Procesamiento de pagos automático',
-                        'Notificaciones en tiempo real',
-                        'Sin comisiones por clase',
-                        'Soporte premium 24/7'
-                      ].map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-3">
-                          <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                            <Check className="text-[#41f2c0]" size={14} />
-                          </div>
-                          <span className="text-white font-medium">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button 
-                      onClick={handleGetStartedTeacher}
-                      className="w-full bg-white hover:bg-gray-100 text-[#41f2c0] py-5 md:py-6 text-base md:text-lg rounded-xl font-semibold shadow-xl"
-                    >
-                      Comenzar ahora
-                    </Button>
-                  </motion.div>
-
-                  {/* Basic Plan - Back */}
-                  <motion.div
-                    key="basic-back"
-                    initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
-                    animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0 bg-[#404040] rounded-3xl shadow-lg p-8 border-2 border-[#404040] pointer-events-none"
-                  />
-                </>
-              )}
-
-              {/* Basic Plan - Front */}
-              {activeTeacherPlan === 'basic' && (
-                <>
-                  <motion.div
-                    key="basic-front"
-                    initial={{ x: 100, opacity: 0, scale: 0.9, rotateY: -10 }}
-                    animate={{ x: 0, opacity: 1, scale: 1, rotateY: 0, zIndex: 10 }}
-                    exit={{ x: -100, opacity: 0, scale: 0.9, rotateY: 10 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-[#404040] rounded-3xl shadow-lg p-8 border-2 border-[#404040] overflow-hidden"
-                  >
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-[#41f2c0] rounded-xl flex items-center justify-center">
-                        <Crown className="text-white" size={24} />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-white">Plan Básico</h3>
-                        <p className="text-white/80">Para profesores</p>
-                      </div>
-                    </div>
-
-                    <div className="mb-8">
-                      <div className="inline-block bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
-                        ✨ 14 días gratis
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold text-white">14,99€</span>
-                        <span className="text-white/80">/mes</span>
-                      </div>
-                      <p className="text-sm text-white/80 mt-2">Funcionalidades esenciales</p>
-                    </div>
-
-                    <ul className="space-y-4 mb-8">
-                      {[
-                        { text: 'Gestión automática de reservas', included: true },
-                        { text: 'Calendario inteligente', included: true },
-                        { text: 'Grabación de clases en la nube', included: false },
-                        { text: 'Chat con alumnos ilimitado', included: true },
-                        { text: 'Estadísticas y análisis detallados', included: true },
-                        { text: 'Procesamiento de pagos automático', included: true },
-                        { text: 'Notificaciones en tiempo real', included: true },
-                        { text: 'Sin comisiones por clase', included: true },
-                        { text: 'Soporte estándar', included: true }
-                      ].map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            feature.included ? 'bg-white' : 'bg-red-200'
-                          }`}>
-                            {feature.included ? (
-                              <Check className="text-[#404040]" size={14} />
-                            ) : (
-                              <X className="text-red-600" size={14} />
-                            )}
-                          </div>
-                          <span className={feature.included ? 'text-white font-medium' : 'text-white/40 line-through'}>
-                            {feature.text}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button 
-                      onClick={handleGetStartedTeacher}
-                      className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl font-semibold shadow-xl"
-                    >
-                      Comenzar ahora
-                    </Button>
-                  </motion.div>
-
-                  {/* Premium Plan - Back */}
-                  <motion.div
-                    key="premium-back"
-                    initial={{ x: 80, opacity: 0.5, scale: 0.85 }}
-                    animate={{ x: 80, opacity: 0.7, scale: 0.92, zIndex: 5 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0 bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-lg p-8 border-2 border-[#41f2c0] pointer-events-none"
-                  />
-                </>
-              )}
-            </AnimatePresence>
-          </motion.div>
+                <Button
+                  onClick={handleGetStartedTeacher}
+                  className={`w-full py-5 text-sm rounded-xl ${plan.ctaClass}`}
+                >
+                  {plan.ctaLabel}
+                </Button>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Additional info */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-10"
         >
-          <p className="text-gray-600">
-            ¿Dudas sobre los precios? <a href="/Contact" className="text-[#41f2c0] font-semibold hover:underline">Contáctanos</a>
+          <p className="text-gray-500 text-sm">
+            ¿Dudas sobre los precios?{' '}
+            <a href="/Contact" className="text-[#41f2c0] font-semibold hover:underline">
+              Contáctanos
+            </a>
           </p>
         </motion.div>
       </div>

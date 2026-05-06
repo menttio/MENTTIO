@@ -123,7 +123,7 @@ export default function TeacherDashboard() {
           ¡Hola, {teacher?.full_name?.split(' ')[0] || 'Profesor'}! 👋
         </h1>
         <p className="text-gray-500 mt-2 text-sm">
-          Bienvenido de nuevo a tu panel de profesor
+          {format(now, "EEEE, d 'de' MMMM", { locale: es })} · {scheduledClasses} {scheduledClasses === 1 ? 'clase programada' : 'clases programadas'}
         </p>
       </motion.div>
 
@@ -150,10 +150,12 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="stats-students">
+          <Card className="stats-students bg-gray-50">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
-                <Users className="text-[#41f2c0]" size={24} />
+                <div className="w-9 h-9 rounded-lg bg-[#41f2c0]/15 flex items-center justify-center">
+                  <Users className="text-[#41f2c0]" size={18} />
+                </div>
               </div>
               <p className="text-3xl font-bold text-[#404040]">{studentsCount}</p>
               <p className="text-sm text-gray-500">Alumnos</p>
@@ -166,10 +168,12 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="stats-classes">
+          <Card className="stats-classes bg-gray-50">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
-                <BookOpen className="text-[#41f2c0]" size={24} />
+                <div className="w-9 h-9 rounded-lg bg-[#41f2c0]/15 flex items-center justify-center">
+                  <BookOpen className="text-[#41f2c0]" size={18} />
+                </div>
               </div>
               <p className="text-3xl font-bold text-[#404040]">{totalClasses}</p>
               <p className="text-sm text-gray-500">Total clases</p>
@@ -183,10 +187,12 @@ export default function TeacherDashboard() {
           transition={{ delay: 0.4 }}
         >
           <Link to={createPageUrl('ReviewsHistory')}>
-            <Card className="stats-rating hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-yellow-400">
+            <Card className="stats-rating bg-gray-50 hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-yellow-400">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <Star className="text-yellow-400" size={24} />
+                  <div className="w-9 h-9 rounded-lg bg-yellow-50 flex items-center justify-center">
+                    <Star className="text-yellow-400 fill-yellow-400" size={18} />
+                  </div>
                 </div>
                 <p className="text-3xl font-bold text-[#404040]">{teacher?.rating?.toFixed(1) || '5.0'}</p>
                 <p className="text-sm text-gray-500">Valoración</p>
@@ -254,8 +260,8 @@ export default function TeacherDashboard() {
           <Link to={createPageUrl('MyStudents')} className="action-students">
             <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Users className="text-[#404040]" size={24} />
+                <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/15 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Users className="text-[#41f2c0]" size={24} />
                 </div>
                 <h3 className="font-semibold text-[#404040]">Mis Alumnos</h3>
                 <p className="text-sm text-gray-500 mt-1">Ver información de alumnos</p>
