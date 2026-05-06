@@ -172,6 +172,11 @@ export default function MyClasses() {
         </div>
       </div>
 
+      {/* Results count */}
+      <div className="mb-4 text-sm text-gray-500">
+        {filteredBookings.length} {filteredBookings.length === 1 ? 'clase encontrada' : 'clases encontradas'}
+      </div>
+
       {/* Classes List */}
       {filteredBookings.length > 0 ? (
         <div className="space-y-4">

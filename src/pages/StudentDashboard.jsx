@@ -121,7 +121,7 @@ export default function StudentDashboard() {
           ¡Hola, {student?.full_name?.split(' ')[0] || 'Alumno'}! 👋
         </h1>
         <p className="text-gray-500 mt-2 text-sm">
-          Bienvenido de nuevo a tu portal de clases
+          {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })} · {scheduledClasses} {scheduledClasses === 1 ? 'clase programada' : 'clases programadas'}
         </p>
       </motion.div>
 
@@ -186,16 +186,18 @@ export default function StudentDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <TrendingUp size={24} />
-                <span className="text-3xl font-bold">{teachers.length || 0}</span>
-              </div>
-              <h3 className="font-semibold">Profesores Asignados</h3>
-              <p className="text-sm opacity-80 mt-1">En tu lista actual</p>
-            </CardContent>
-          </Card>
+          <Link to={createPageUrl('MyTeachers')}>
+            <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white hover:shadow-lg transition-all cursor-pointer">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp size={24} />
+                  <span className="text-3xl font-bold">{teachers.length || 0}</span>
+                </div>
+                <h3 className="font-semibold">Profesores Asignados</h3>
+                <p className="text-sm opacity-80 mt-1">En tu lista actual</p>
+              </CardContent>
+            </Card>
+          </Link>
         </motion.div>
       </div>
 
@@ -226,8 +228,8 @@ export default function StudentDashboard() {
         >
           <Card>
             <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                <Clock className="text-green-600" size={18} />
+              <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
+                <Clock className="text-[#41f2c0]" size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{completedClasses}</p>
@@ -244,8 +246,8 @@ export default function StudentDashboard() {
         >
           <Card>
             <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <Calendar className="text-blue-600" size={18} />
+              <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
+                <Calendar className="text-[#41f2c0]" size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{scheduledClasses}</p>
@@ -312,7 +314,7 @@ export default function StudentDashboard() {
                                   {teacher.rating?.toFixed(1) || '5.0'}
                                 </span>
                               </div>
-                              {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') && (
+                              {teacher.corporate_email?.includes('@menttio.com') && (
                                 <Badge className="bg-green-100 text-green-700 border border-green-200 text-xs flex items-center gap-1">
                                   <Video size={10} />
                                   <span>Grabación</span>
