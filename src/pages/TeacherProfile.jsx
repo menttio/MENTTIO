@@ -140,7 +140,7 @@ export default function TeacherProfile() {
 
               {/* Recording Badge */}
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                {teacher.corporate_email && teacher.corporate_email.includes('@menttio.com') ? (
+                {teacher.corporate_email?.includes('@menttio.com') ? (
                   <Badge className="bg-green-100 text-green-700 border border-green-200 flex items-center gap-1.5">
                     <Video size={14} />
                     <span>Grabación disponible</span>

@@ -56,25 +56,19 @@ export default function TeacherClassHistory() {
 
   const loadBookings = async () => {
     try {
-      console.log('📚 Cargando clases...');
       const user = await base44.auth.me();
-      console.log('👤 Usuario:', user.email);
-      
+
       const scheduled = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'scheduled' });
       const completed = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'completed' });
-      const allBookings = [...scheduled, ...completed];
-      console.log('📋 Clases encontradas:', allBookings.length);
-      setBookings(allBookings);
+      setBookings([...scheduled, ...completed]);
 
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
-      console.log('👨‍🏫 Profesores encontrados:', teachers.length);
       if (teachers.length > 0) {
         setTeacher(teachers[0]);
       }
     } catch (error) {
-      console.error('❌ Error cargando clases:', error);
+      console.error(error);
     } finally {
-      console.log('✅ Carga finalizada');
       setLoading(false);
     }
   };
@@ -221,10 +215,7 @@ export default function TeacherClassHistory() {
     }
   };
 
-  console.log('🔍 Estado antes de renderizar - loading:', loading, 'teacher:', teacher, 'bookings:', bookings.length);
-
   if (loading) {
-    console.log('⏳ Mostrando loading...');
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
@@ -232,15 +223,13 @@ export default function TeacherClassHistory() {
     );
   }
 
-  console.log('✅ Renderizando contenido principal');
-
   return (
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-[#404040]">Historial de Clases</h1>
-          <p className="text-gray-500 mt-2">Todas tus clases con filtros avanzados</p>
+          <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Historial de Clases</h1>
+          <p className="text-gray-500 mt-2 text-sm">Todas tus clases con filtros avanzados.</p>
         </div>
         <div className="flex gap-2 flex-wrap justify-end">
           {selectionMode ? (

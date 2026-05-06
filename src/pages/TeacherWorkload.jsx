@@ -257,7 +257,6 @@ export default function TeacherWorkload() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
                 <Calendar className="text-[#41f2c0]" size={24} />
-                <Badge className="bg-[#41f2c0] text-white">{stats.totalClasses}</Badge>
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalClasses}</p>
               <p className="text-sm text-gray-500">Clases totales</p>
@@ -269,8 +268,8 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <Clock className="text-blue-500" size={24} />
-                <Badge className="bg-blue-100 text-blue-600">{stats.scheduledClasses}</Badge>
+                <Clock className="text-[#41f2c0]" size={24} />
+                <Badge className="bg-[#41f2c0]/10 text-[#41f2c0]">{stats.scheduledClasses} prog.</Badge>
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalHours.toFixed(1)}h</p>
               <p className="text-sm text-gray-500">Horas de clase</p>
@@ -282,8 +281,8 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <DollarSign className="text-green-500" size={24} />
-                <TrendingUp className="text-green-500" size={20} />
+                <DollarSign className="text-[#41f2c0]" size={24} />
+                <TrendingUp className="text-[#41f2c0]" size={20} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalEarnings.toFixed(2)}€</p>
               <p className="text-sm text-gray-500">Ingresos</p>
@@ -295,10 +294,7 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <Users className="text-purple-500" size={24} />
-                <Badge className="bg-purple-100 text-purple-600">
-                  {Object.keys(stats.studentStats).length}
-                </Badge>
+                <Users className="text-[#41f2c0]" size={24} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{Object.keys(stats.studentStats).length}</p>
               <p className="text-sm text-gray-500">Alumnos distintos</p>
@@ -657,7 +653,7 @@ export default function TeacherWorkload() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="bg-green-50 border-green-200">
                   <CardContent className="p-5">
-                    <p className="text-sm text-green-600 font-medium mb-1">Total recibirás tú (75%)</p>
+                    <p className="text-sm text-green-600 font-medium mb-1">Total recibirás tú ({100 - commissionPct}%)</p>
                     <p className="text-2xl font-bold text-green-700">
                       {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
                         const pct = teacher.commission_percentage ?? 25;
@@ -668,7 +664,7 @@ export default function TeacherWorkload() {
                 </Card>
                 <Card className="bg-purple-50 border-purple-200">
                   <CardContent className="p-5">
-                    <p className="text-sm text-purple-600 font-medium mb-1">Comisión Menttio (25%)</p>
+                    <p className="text-sm text-purple-600 font-medium mb-1">Comisión Menttio ({commissionPct}%)</p>
                     <p className="text-2xl font-bold text-purple-700">
                       {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
                         const pct = teacher.commission_percentage ?? 25;
@@ -698,8 +694,8 @@ export default function TeacherWorkload() {
                           <th className="pb-2 pr-3">Asignatura</th>
                           <th className="pb-2 pr-3">Alumno</th>
                           <th className="pb-2 pr-3 text-right">Precio bruto</th>
-                          <th className="pb-2 pr-3 text-right">Tu parte (75%)</th>
-                          <th className="pb-2 text-right">Menttio (25%)</th>
+                          <th className="pb-2 pr-3 text-right">Tu parte ({100 - commissionPct}%)</th>
+                          <th className="pb-2 text-right">Menttio ({commissionPct}%)</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -173,8 +173,8 @@ export default function MyStudents() {
         
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <BookOpen className="text-green-600" size={20} />
+            <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
+              <BookOpen className="text-[#41f2c0]" size={20} />
             </div>
             <div>
               <p className="text-2xl font-bold text-[#404040]">
@@ -184,11 +184,11 @@ export default function MyStudents() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <Calendar className="text-blue-600" size={20} />
+            <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
+              <Calendar className="text-[#41f2c0]" size={20} />
             </div>
             <div>
               <p className="text-2xl font-bold text-[#404040]">
