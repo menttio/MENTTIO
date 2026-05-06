@@ -216,13 +216,8 @@ export default function BookingCard({
     try {
       // For group bookings where student is cancelling: just remove from enrolled list
       if (isGroup && userRole === 'student') {
-        const updatedEnrolled = (booking.enrolled_students || []).filter(
-          s => s.student_email !== booking.student_email && s.student_id !== currentUserEmail
-        );
-        // Try to find current student email
-        const user = await base44.auth.me();
-        const filtered = (booking.enrolled_students || []).filter(s => s.student_email !== user.email);
-        
+        const filtered = (booking.enrolled_students || []).filter(s => s.student_email !== currentUserEmail);
+
         if (filtered.length === 0) {
           // Last student leaving — delete the booking
           await base44.entities.Booking.delete(booking.id);
