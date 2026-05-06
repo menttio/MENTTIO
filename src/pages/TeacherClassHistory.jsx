@@ -166,11 +166,8 @@ export default function TeacherClassHistory() {
 
     setDeleting(true);
     try {
-      for (let i = 0; i < toDelete.length; i++) {
-        if (i > 0) await new Promise(r => setTimeout(r, 2000));
-        const booking = toDelete[i];
-
-        // Eliminar del Google Calendar del profesor ANTES de borrar el booking
+      // Phase 1: delete Calendar events + bookings in parallel (no delay needed)
+      await Promise.all(toDelete.map(async (booking) => {
         if (teacher?.google_calendar_connected && booking.google_event_id_teacher) {
           try {
             await base44.functions.invoke('deleteGoogleCalendarEvent', {
@@ -182,9 +179,21 @@ export default function TeacherClassHistory() {
             console.error('Error eliminando evento de Google Calendar:', booking.id, e);
           }
         }
-
         await base44.entities.Booking.delete(booking.id);
+      }));
 
+      setSelectedIds(new Set());
+      setSelectionMode(false);
+      await loadBookings();
+    } finally {
+      setDeleting(false);
+    }
+
+    // Phase 2: notify n8n sequentially with delay so webhook entries don't overlap in the sheet
+    (async () => {
+      for (let i = 0; i < toDelete.length; i++) {
+        if (i > 0) await new Promise(r => setTimeout(r, 2000));
+        const booking = toDelete[i];
         try {
           await base44.functions.invoke('notifyN8N', {
             bookingData: {
@@ -207,12 +216,7 @@ export default function TeacherClassHistory() {
           console.error('Error notifying n8n for deleted booking:', booking.id, e);
         }
       }
-      setSelectedIds(new Set());
-      setSelectionMode(false);
-      await loadBookings();
-    } finally {
-      setDeleting(false);
-    }
+    })();
   };
 
   if (loading) {
