@@ -94,20 +94,19 @@ export default function SearchTeachers() {
     loadData();
   }, []);
 
-  const isTeacherAssigned = (teacherId, subjectId = null) => {
+  const isTeacherAssigned = (teacherId, subjectId = null, level = null) => {
     if (!student?.assigned_teachers) return false;
     if (subjectId) {
       return student.assigned_teachers.some(
-        at => at.teacher_id === teacherId && at.subject_id === subjectId
+        at => at.teacher_id === teacherId && at.subject_id === subjectId && (level ? at.level === level : true)
       );
     }
-    // A teacher is only fully assigned if ALL their subjects are assigned
+    // A teacher is fully assigned only if every (subject, level) combo is assigned
     const teacher = teachers.find(t => t.id === teacherId);
     if (!teacher?.subjects?.length) return false;
-    
-    return teacher.subjects.every(subject => 
+    return teacher.subjects.every(subject =>
       student.assigned_teachers.some(
-        at => at.teacher_id === teacherId && at.subject_id === subject.subject_id
+        at => at.teacher_id === teacherId && at.subject_id === subject.subject_id && at.level === subject.level
       )
     );
   };
@@ -175,9 +174,9 @@ export default function SearchTeachers() {
 
   const handleAssignTeacher = (teacher) => {
     setSelectedTeacher(teacher);
-    // Pre-select first unassigned subject
-    const firstUnassigned = teacher.subjects?.find(s => 
-      !isTeacherAssigned(teacher.id, s.subject_id)
+    // Pre-select first (subject, level) combo not yet assigned
+    const firstUnassigned = teacher.subjects?.find(s =>
+      !isTeacherAssigned(teacher.id, s.subject_id, s.level)
     );
     setAssignSubject(firstUnassigned ? `${firstUnassigned.subject_id}-${firstUnassigned.level}` : '');
     setShowAssignDialog(true);
@@ -185,12 +184,18 @@ export default function SearchTeachers() {
 
   const confirmAssign = async () => {
     if (!selectedTeacher || !assignSubject) return;
-    
+
     setAssigning(true);
     try {
       const [subjectId, level] = assignSubject.split('-');
       const subject = selectedTeacher.subjects?.find(s => s.subject_id === subjectId && s.level === level);
-      
+
+      // Guard: prevent duplicate (teacher_id, subject_id, level) assignment
+      if (isTeacherAssigned(selectedTeacher.id, subjectId, level)) {
+        setShowAssignDialog(false);
+        return;
+      }
+
       const newAssignment = {
         teacher_id: selectedTeacher.id,
         teacher_name: selectedTeacher.full_name,
@@ -198,7 +203,7 @@ export default function SearchTeachers() {
         subject_name: subject?.subject_name || '',
         level: level
       };
-      
+
       const updatedAssignments = [...(student.assigned_teachers || []), newAssignment];
       
       await base44.entities.Student.update(student.id, {
@@ -437,16 +442,16 @@ export default function SearchTeachers() {
               </SelectTrigger>
               <SelectContent>
                 {selectedTeacher?.subjects?.map((subject, idx) => (
-                  <SelectItem 
-                    key={`${subject.subject_id}-${subject.level}-${idx}`} 
+                  <SelectItem
+                    key={`${subject.subject_id}-${subject.level}-${idx}`}
                     value={`${subject.subject_id}-${subject.level}`}
-                    disabled={isTeacherAssigned(selectedTeacher.id, subject.subject_id)}
+                    disabled={isTeacherAssigned(selectedTeacher.id, subject.subject_id, subject.level)}
                   >
                     <div className="flex items-center justify-between w-full gap-2">
                       <span>{subject.subject_name}</span>
                       <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{subject.level}</span>
                       <span className="text-gray-500">{subject.price_per_hour}€/h</span>
-                      {isTeacherAssigned(selectedTeacher?.id, subject.subject_id) && (
+                      {isTeacherAssigned(selectedTeacher?.id, subject.subject_id, subject.level) && (
                         <Check className="text-green-500" size={16} />
                       )}
                     </div>
@@ -462,7 +467,7 @@ export default function SearchTeachers() {
             </Button>
             <Button
               onClick={confirmAssign}
-              disabled={!assignSubject || assigning || isTeacherAssigned(selectedTeacher?.id, assignSubject)}
+              disabled={!assignSubject || assigning}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
             >
               {assigning ? (
