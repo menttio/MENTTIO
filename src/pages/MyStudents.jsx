@@ -53,29 +53,27 @@ export default function MyStudents() {
           const allBookings = [...scheduledBookings, ...completedBookings];
           setBookings(allBookings);
 
-          // Get unique student IDs from bookings
-          const studentIdsFromBookings = [...new Set(allBookings.map(b => b.student_id))];
-          
-          // Get students assigned to this teacher via assigned_teachers (filtered server-side)
-          const assignedStudents = await base44.entities.Student.filter({});
-          const filteredAssigned = assignedStudents.filter(s => 
-            s.assigned_teachers?.some(at => at.teacher_id === teachers[0].id)
-          );
-          
-          // Build final student map (no duplicates)
+          // Get unique student IDs from bookings (including enrolled_students from group bookings)
+          const studentIdsSet = new Set();
+          allBookings.forEach(b => {
+            if (b.student_id) studentIdsSet.add(b.student_id);
+            if (b.enrolled_students?.length) {
+              b.enrolled_students.forEach(s => { if (s.student_id) studentIdsSet.add(s.student_id); });
+            }
+          });
+          const studentIdsFromBookings = [...studentIdsSet].filter(Boolean);
+
+          // Fetch each student by ID
           const studentMap = {};
-          filteredAssigned.forEach(s => { studentMap[s.id] = s; });
-          
-          // Add students from bookings not already in map
-          for (const studentId of studentIdsFromBookings) {
-            if (!studentMap[studentId]) {
+          await Promise.all(
+            studentIdsFromBookings.map(async (studentId) => {
               const studentData = await base44.entities.Student.filter({ id: studentId });
               if (studentData.length > 0) {
                 studentMap[studentId] = studentData[0];
               }
-            }
-          }
-          
+            })
+          );
+
           setStudents(Object.values(studentMap));
         }
       } catch (error) {

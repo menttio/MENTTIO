@@ -95,7 +95,12 @@ export default function TeacherDashboard() {
 
   const totalClasses = bookings.filter(b => b.status !== 'cancelled').length;
   const scheduledClasses = bookings.filter(b => b.status === 'scheduled').length;
-  const studentsCount = new Set(bookings.map(b => b.student_id)).size;
+  const studentsSet = new Set();
+  bookings.forEach(b => {
+    if (b.student_id) studentsSet.add(b.student_id);
+    b.enrolled_students?.forEach(s => { if (s.student_id) studentsSet.add(s.student_id); });
+  });
+  const studentsCount = studentsSet.size;
 
   if (loading) {
     return (
