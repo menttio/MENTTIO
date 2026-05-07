@@ -64,7 +64,7 @@ export default function StudentDashboard() {
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
           const teachersData = await Promise.all(
-            teacherIds.map(id => base44.entities.Teacher.get(id))
+            teacherIds.map(id => base44.entities.Teacher.get(id).catch(() => null))
           );
           setTeachers(teachersData.filter(Boolean));
         }
