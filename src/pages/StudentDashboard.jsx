@@ -60,13 +60,11 @@ export default function StudentDashboard() {
         ]);
         setBookings([...scheduledBookings, ...completedBookings]);
 
-        // Load only the specific assigned teachers instead of all teachers
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
-          const teachersData = await Promise.all(
-            teacherIds.map(id => base44.entities.Teacher.get(id).catch(() => null))
-          );
-          setTeachers(teachersData.filter(Boolean));
+          const teachersRes = await base44.functions.invoke('getPublicTeachers', {});
+          const allTeachers = teachersRes.data?.teachers || [];
+          setTeachers(allTeachers.filter(t => teacherIds.includes(t.id)));
         }
       }
     } catch (error) {
