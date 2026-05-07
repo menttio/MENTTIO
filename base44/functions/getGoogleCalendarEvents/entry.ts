@@ -39,20 +39,21 @@ Deno.serve(async (req) => {
       if (refreshResponse.ok) {
         const newTokens = await refreshResponse.json();
         accessToken = newTokens.access_token;
-        
+
         // Update tokens in database
         tokens = {
           ...tokens,
           access_token: newTokens.access_token,
           expiry_date: Date.now() + (newTokens.expires_in * 1000)
         };
-        
+
         await base44.asServiceRole.entities[entity].update(users[0].id, {
           google_calendar_tokens: tokens
         });
       } else {
         const error = await refreshResponse.text();
-        throw new Error(`Failed to refresh token: ${error}`);
+        console.error(`Failed to refresh Google Calendar token for ${targetEmail}:`, error);
+        return Response.json({ events: [] });
       }
     }
 
@@ -71,6 +72,11 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.text();
+      // Auth errors (revoked token, expired session) → return empty gracefully
+      if (response.status === 401 || response.status === 403) {
+        console.error(`Google Calendar auth error for ${targetEmail}:`, error);
+        return Response.json({ events: [] });
+      }
       throw new Error(`Google Calendar API error: ${error}`);
     }
 

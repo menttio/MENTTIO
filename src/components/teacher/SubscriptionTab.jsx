@@ -148,7 +148,7 @@ export default function SubscriptionTab({ profile }) {
                   <Zap className="text-gray-400 mt-0.5 shrink-0" size={18} />
                   <div>
                     <p className="text-xs text-gray-500">Plan</p>
-                    <p className="text-sm font-medium text-[#404040] capitalize">{plan}</p>
+                    <p className="text-sm font-medium text-[#404040]">{plan === 'premium' ? 'Premium' : plan === 'commission' ? 'Comisión' : 'Básico'}</p>
                   </div>
                 </div>
                 {details?.status && (
