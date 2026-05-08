@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Star, Save, X, Pencil, TrendingUp } from 'lucide-react';
+import { Star, Save, X, Pencil, TrendingUp, CheckSquare, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -36,6 +36,7 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [note, setNote] = useState(booking.progress_note || '');
   const [rating, setRating] = useState(booking.progress_rating || 0);
+  const [homeworkDone, setHomeworkDone] = useState(booking.homework_done ?? null);
   const [saving, setSaving] = useState(false);
 
   const now = new Date();
@@ -43,14 +44,15 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
   const isCompleted = booking.status === 'completed' || (booking.status === 'scheduled' && isPast);
   if (!isCompleted) return null;
 
-  const hasNote = booking.progress_note || booking.progress_rating > 0;
+  const hasNote = booking.progress_note || booking.progress_rating > 0 || booking.homework_done !== null;
 
   const handleSave = async () => {
     setSaving(true);
     try {
       await base44.entities.Booking.update(booking.id, {
         progress_note: note,
-        progress_rating: rating
+        progress_rating: rating,
+        homework_done: homeworkDone
       });
       setEditing(false);
       onUpdate?.();
@@ -64,6 +66,7 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
   const handleCancel = () => {
     setNote(booking.progress_note || '');
     setRating(booking.progress_rating || 0);
+    setHomeworkDone(booking.homework_done ?? null);
     setEditing(false);
   };
 
@@ -90,6 +93,35 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
           <div>
             <p className="text-xs text-amber-600 mb-1.5">Valoración del alumno</p>
             <StarRating value={rating} onChange={setRating} />
+          </div>
+          <div>
+            <p className="text-xs text-amber-600 mb-1.5">Deberes</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setHomeworkDone(homeworkDone === true ? null : true)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                  homeworkDone === true
+                    ? 'bg-green-100 border-green-400 text-green-700'
+                    : 'bg-white border-gray-200 text-gray-400 hover:border-green-300'
+                }`}
+              >
+                <CheckSquare size={13} />
+                Hizo los deberes
+              </button>
+              <button
+                type="button"
+                onClick={() => setHomeworkDone(homeworkDone === false ? null : false)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
+                  homeworkDone === false
+                    ? 'bg-red-100 border-red-400 text-red-700'
+                    : 'bg-white border-gray-200 text-gray-400 hover:border-red-300'
+                }`}
+              >
+                <Square size={13} />
+                No hizo los deberes
+              </button>
+            </div>
           </div>
           <div>
             <p className="text-xs text-amber-600 mb-1.5">Nota de la clase</p>
@@ -125,6 +157,16 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
         <div className="space-y-1.5">
           {booking.progress_rating > 0 && (
             <StarRating value={booking.progress_rating} readOnly />
+          )}
+          {booking.homework_done !== null && booking.homework_done !== undefined && (
+            <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+              booking.homework_done
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-600'
+            }`}>
+              {booking.homework_done ? <CheckSquare size={11} /> : <Square size={11} />}
+              {booking.homework_done ? 'Deberes hechos' : 'Deberes no hechos'}
+            </span>
           )}
           {booking.progress_note ? (
             <p className="text-sm text-amber-900 leading-relaxed">{booking.progress_note}</p>

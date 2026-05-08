@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, TrendingUp, BookOpen, Star } from 'lucide-react';
+import { Loader2, TrendingUp, BookOpen, Star, CheckSquare, Square } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format, parseISO } from 'date-fns';
@@ -63,7 +63,7 @@ export default function StudentProgress() {
     );
   }
 
-  const ratedBookings = bookings.filter(b => b.progress_rating > 0 || b.progress_note);
+  const ratedBookings = bookings.filter(b => b.progress_rating > 0 || b.progress_note || b.homework_done !== null && b.homework_done !== undefined);
 
   // Group by subject
   const subjectMap = {};
@@ -195,6 +195,14 @@ export default function StudentProgress() {
                           </span>
                           {b.progress_rating > 0 && <StarDisplay value={b.progress_rating} />}
                         </div>
+                        {b.homework_done !== null && b.homework_done !== undefined && (
+                          <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full mb-1.5 ${
+                            b.homework_done ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+                          }`}>
+                            {b.homework_done ? <CheckSquare size={11} /> : <Square size={11} />}
+                            {b.homework_done ? 'Deberes hechos' : 'Deberes no hechos'}
+                          </span>
+                        )}
                         {b.progress_note ? (
                           <p className="text-sm text-[#404040] leading-relaxed">{b.progress_note}</p>
                         ) : (
