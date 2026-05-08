@@ -42,6 +42,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
       });
 
       if (response.data?.url) {
+        sessionStorage.setItem('pending_stripe_booking_id', booking.id);
         window.location.href = response.data.url;
       } else {
         throw new Error('No se recibió URL de pago');
