@@ -54,7 +54,7 @@ export default function StudentSection() {
 
         <div className="text-center">
           <Link
-            to={createPageUrl('SearchTeachers')}
+            to={createPageUrl('StudentSignup')}
             className="inline-block px-8 py-4 bg-[#41f2c0] hover:bg-[#35d4a7] text-white font-semibold rounded-xl text-lg transition-colors shadow-lg shadow-[#41f2c0]/30"
           >
             Encontrar mi profesor
