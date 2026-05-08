@@ -84,7 +84,7 @@ export default function TeacherCard({
       await base44.entities.Conversation.create({
         student_id: student.id,
         student_name: student.full_name,
-        student_email: user.email,
+        student_email: student.user_email,
         teacher_id: teacher.id,
         teacher_name: teacher.full_name,
         teacher_email: teacher.user_email,
