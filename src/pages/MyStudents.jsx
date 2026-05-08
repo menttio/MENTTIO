@@ -12,8 +12,10 @@ import {
   ChevronDown,
   ChevronUp,
   Star,
-  TrendingUp
+  TrendingUp,
+  Download
 } from 'lucide-react';
+import { downloadReport } from '@/lib/reportPdf';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -32,6 +34,9 @@ export default function MyStudents() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [showTour, setShowTour] = useState(false);
+  const [reportMonths, setReportMonths] = useState({});
+
+  const currentMonth = format(new Date(), 'yyyy-MM');
 
   useEffect(() => {
     const loadData = async () => {
@@ -103,13 +108,18 @@ export default function MyStudents() {
     
     // Get subjects
     const subjects = [...new Set(studentBookings.map(b => b.subject_name))];
-    
+
     // Get recent bookings
     const recentBookings = studentBookings
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
-    
-    return { totalClasses, completedClasses, upcomingClasses, totalSpent, subjects, recentBookings };
+
+    // Homework stats (all bookings where the field was set)
+    const homeworkMarked = studentBookings.filter(b => b.homework_done === true || b.homework_done === false);
+    const homeworkDone = homeworkMarked.filter(b => b.homework_done === true).length;
+    const homeworkStats = { done: homeworkDone, total: homeworkMarked.length };
+
+    return { totalClasses, completedClasses, upcomingClasses, totalSpent, subjects, recentBookings, homeworkStats };
   };
 
   const filteredStudents = useMemo(() => {
@@ -281,7 +291,7 @@ export default function MyStudents() {
                         >
                           <div className="px-5 pb-5 pt-2 border-t border-gray-100">
                             {/* Stats */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                               <div className="p-3 rounded-lg bg-gray-50">
                                 <p className="text-xl font-bold text-[#404040]">{stats.completedClasses}</p>
                                 <p className="text-xs text-gray-500">Completadas</p>
@@ -293,6 +303,22 @@ export default function MyStudents() {
                               <div className="p-3 rounded-lg bg-gray-50">
                                 <p className="text-xl font-bold text-[#41f2c0]">{stats.totalSpent.toFixed(0)}€</p>
                                 <p className="text-xs text-gray-500">Total</p>
+                              </div>
+                              <div className="p-3 rounded-lg bg-gray-50">
+                                {stats.homeworkStats.total > 0 ? (
+                                  <>
+                                    <p className="text-xl font-bold text-[#404040]">
+                                      {stats.homeworkStats.done}
+                                      <span className="text-sm text-gray-400">/{stats.homeworkStats.total}</span>
+                                    </p>
+                                    <p className="text-xs text-gray-500">Deberes hechos</p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p className="text-xl font-bold text-gray-300">—</p>
+                                    <p className="text-xs text-gray-400">Deberes hechos</p>
+                                  </>
+                                )}
                               </div>
                             </div>
 
@@ -381,6 +407,36 @@ export default function MyStudents() {
                                 </div>
                               );
                             })()}
+
+                            {/* Monthly report download */}
+                            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
+                              <Download size={14} className="text-gray-400 flex-shrink-0" />
+                              <span className="text-sm text-gray-500">Informe mensual:</span>
+                              <input
+                                type="month"
+                                value={reportMonths[student.id] || currentMonth}
+                                onChange={e => setReportMonths(prev => ({ ...prev, [student.id]: e.target.value }))}
+                                className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-[#41f2c0]"
+                              />
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white h-8 text-xs"
+                                onClick={() => {
+                                  const month = reportMonths[student.id] || currentMonth;
+                                  const studentBookings = bookings.filter(b => b.student_id === student.id);
+                                  downloadReport({
+                                    studentName: student.full_name,
+                                    teacherName: teacher?.full_name || '',
+                                    month,
+                                    bookings: studentBookings,
+                                  });
+                                }}
+                              >
+                                <Download size={13} className="mr-1.5" />
+                                Descargar PDF
+                              </Button>
+                            </div>
                           </div>
                         </motion.div>
                       )}

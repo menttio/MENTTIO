@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, TrendingUp, BookOpen, Star, CheckSquare, Square } from 'lucide-react';
+import { Loader2, TrendingUp, BookOpen, Star, CheckSquare, Square, Download } from 'lucide-react';
+import { downloadReport } from '@/lib/reportPdf';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format, parseISO } from 'date-fns';
@@ -31,6 +32,10 @@ export default function StudentProgress() {
   const [student, setStudent] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reportMonth, setReportMonth] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -95,8 +100,27 @@ export default function StudentProgress() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Progreso</h1>
-        <p className="text-gray-500 mt-2 text-sm">Seguimiento de tu evolución por asignatura</p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mi Progreso</h1>
+            <p className="text-gray-500 mt-2 text-sm">Seguimiento de tu evolución por asignatura</p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <input
+              type="month"
+              value={reportMonth}
+              onChange={e => setReportMonth(e.target.value)}
+              className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#41f2c0]"
+            />
+            <button
+              onClick={() => downloadReport({ studentName: student?.full_name || 'Alumno', month: reportMonth, bookings })}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#41f2c0] text-[#41f2c0] text-sm font-medium hover:bg-[#41f2c0] hover:text-white transition-colors"
+            >
+              <Download size={14} />
+              Descargar informe
+            </button>
+          </div>
+        </div>
       </motion.div>
 
       {ratedBookings.length === 0 ? (
@@ -158,6 +182,8 @@ export default function StudentProgress() {
             const entries = subjectMap[subject].sort((a, b) => new Date(b.date) - new Date(a.date));
             const avg = entries.filter(e => e.progress_rating > 0).reduce((s, e) => s + e.progress_rating, 0) /
               (entries.filter(e => e.progress_rating > 0).length || 1);
+            const hwMarked = entries.filter(e => e.homework_done === true || e.homework_done === false);
+            const hwDone = hwMarked.filter(e => e.homework_done === true).length;
 
             return (
               <motion.div
@@ -173,15 +199,26 @@ export default function StudentProgress() {
                         <BookOpen size={16} className="text-[#41f2c0]" />
                         {subject}
                       </CardTitle>
-                      {entries.some(e => e.progress_rating > 0) && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-500">Media</span>
-                          <StarDisplay value={Math.round(avg)} />
-                          <span className="text-sm font-semibold text-[#404040]">
-                            {avg.toFixed(1)}
+                      <div className="flex items-center gap-3 flex-wrap">
+                        {entries.some(e => e.progress_rating > 0) && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500">Media</span>
+                            <StarDisplay value={Math.round(avg)} />
+                            <span className="text-sm font-semibold text-[#404040]">{avg.toFixed(1)}</span>
+                          </div>
+                        )}
+                        {hwMarked.length > 0 && (
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                            hwDone / hwMarked.length >= 0.8
+                              ? 'bg-green-100 text-green-700'
+                              : hwDone / hwMarked.length >= 0.5
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-red-100 text-red-600'
+                          }`}>
+                            Deberes: {hwDone}/{hwMarked.length}
                           </span>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
