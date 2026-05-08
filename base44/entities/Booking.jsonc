@@ -1,0 +1,188 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID del alumno (para clases individuales)"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Nombre del alumno (para clases individuales)"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Email del alumno"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID del profesor"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Nombre del profesor"
+    },
+    "teacher_email": {
+      "type": "string",
+      "description": "Email del profesor"
+    },
+    "subject_id": {
+      "type": "string",
+      "description": "ID de la asignatura"
+    },
+    "subject_name": {
+      "type": "string",
+      "description": "Nombre de la asignatura"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de la clase"
+    },
+    "start_time": {
+      "type": "string",
+      "description": "Hora de inicio"
+    },
+    "end_time": {
+      "type": "string",
+      "description": "Hora de fin"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "description": "Duraci\u00f3n en minutos"
+    },
+    "price": {
+      "type": "number",
+      "description": "Precio de la clase (por alumno si es grupal)"
+    },
+    "platform_fee": {
+      "type": "number",
+      "description": "Comisi\u00f3n que retiene Menttio (solo plan commission). Null para basic/premium."
+    },
+    "teacher_payout": {
+      "type": "number",
+      "description": "Lo que recibe el profesor (solo plan commission). Null para basic/premium."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled",
+      "description": "Estado de la reserva"
+    },
+    "class_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "group"
+      ],
+      "default": "individual",
+      "description": "Tipo de clase: individual o grupal"
+    },
+    "max_students": {
+      "type": "number",
+      "description": "N\u00famero m\u00e1ximo de alumnos (solo clases grupales, 2-4)"
+    },
+    "enrolled_students": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "student_id": {
+            "type": "string"
+          },
+          "student_name": {
+            "type": "string"
+          },
+          "student_email": {
+            "type": "string"
+          },
+          "payment_status": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Lista de alumnos apuntados (solo clases grupales)"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "uploaded_by": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Archivos adjuntos a la clase"
+    },
+    "recording_url": {
+      "type": "string",
+      "description": "URL de la grabaci\u00f3n de la clase"
+    },
+    "meet_link": {
+      "type": "string",
+      "description": "URL de Google Meet para la videollamada"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notas adicionales"
+    },
+    "progress_note": {
+      "type": "string",
+      "description": "Nota de progreso del profesor sobre el alumno"
+    },
+    "progress_rating": {
+      "type": "number",
+      "description": "Valoraci\u00f3n de progreso del alumno (1-5 estrellas)",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid",
+        "refunded"
+      ],
+      "default": "pending",
+      "description": "Estado del pago"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "bizum",
+        "other"
+      ],
+      "description": "M\u00e9todo de pago utilizado"
+    },
+    "stripe_payment_id": {
+      "type": "string",
+      "description": "ID del pago en Stripe"
+    },
+    "google_event_id_teacher": {
+      "type": "string",
+      "description": "ID del evento en Google Calendar del profesor"
+    },
+    "google_event_id_student": {
+      "type": "string",
+      "description": "ID del evento en Google Calendar del alumno"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "subject_id",
+    "date",
+    "start_time"
+  ]
+}

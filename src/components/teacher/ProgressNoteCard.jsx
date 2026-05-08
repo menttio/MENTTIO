@@ -33,15 +33,15 @@ function StarRating({ value, onChange, readOnly = false }) {
 }
 
 export default function ProgressNoteCard({ booking, onUpdate }) {
-  const now = new Date();
-  const isPast = new Date(`${booking.date}T${booking.start_time || '00:00'}`) < now;
-  const isCompleted = booking.status === 'completed' || (booking.status === 'scheduled' && isPast);
-  if (!isCompleted) return null;
-
   const [editing, setEditing] = useState(false);
   const [note, setNote] = useState(booking.progress_note || '');
   const [rating, setRating] = useState(booking.progress_rating || 0);
   const [saving, setSaving] = useState(false);
+
+  const now = new Date();
+  const isPast = new Date(`${booking.date}T${booking.start_time || '00:00'}`) < now;
+  const isCompleted = booking.status === 'completed' || (booking.status === 'scheduled' && isPast);
+  if (!isCompleted) return null;
 
   const hasNote = booking.progress_note || booking.progress_rating > 0;
 
