@@ -37,6 +37,7 @@ import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
 import CreateBookingDialog from '../components/teacher/CreateBookingDialog';
 import CreateRecurringBookingDialog from '../components/teacher/CreateRecurringBookingDialog';
+import ProgressNoteCard from '../components/teacher/ProgressNoteCard';
 
 export default function TeacherClassHistory() {
   const [bookings, setBookings] = useState([]);
@@ -421,6 +422,7 @@ export default function TeacherClassHistory() {
                     onEdit={(b) => setEditingBooking(b)}
                     onRefresh={loadBookings}
                   />
+                  <ProgressNoteCard booking={booking} onUpdate={loadBookings} />
                 </div>
               </motion.div>
             );

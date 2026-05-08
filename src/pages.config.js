@@ -74,6 +74,7 @@ import ReviewsHistory from './pages/ReviewsHistory';
 import SearchTeachers from './pages/SearchTeachers';
 import SelectRole from './pages/SelectRole';
 import StudentDashboard from './pages/StudentDashboard';
+import StudentProgress from './pages/StudentProgress';
 import StudentSignup from './pages/StudentSignup';
 import StudentSignupComplete from './pages/StudentSignupComplete';
 import TeacherCalendar from './pages/TeacherCalendar';
@@ -117,6 +118,7 @@ export const PAGES = {
     "SearchTeachers": SearchTeachers,
     "SelectRole": SelectRole,
     "StudentDashboard": StudentDashboard,
+    "StudentProgress": StudentProgress,
     "StudentSignup": StudentSignup,
     "StudentSignupComplete": StudentSignupComplete,
     "TeacherCalendar": TeacherCalendar,

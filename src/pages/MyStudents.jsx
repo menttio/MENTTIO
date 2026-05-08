@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { 
-  Search, 
-  User, 
-  Mail, 
-  Phone, 
-  BookOpen, 
+import {
+  Search,
+  User,
+  Mail,
+  Phone,
+  BookOpen,
   Calendar,
   Clock,
   Loader2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Star,
+  TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -311,7 +313,7 @@ export default function MyStudents() {
                               <p className="text-sm font-medium text-gray-500 mb-2">Clases recientes</p>
                               <div className="space-y-2">
                                 {stats.recentBookings.map((booking) => (
-                                  <div 
+                                  <div
                                     key={booking.id}
                                     className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
                                   >
@@ -331,18 +333,54 @@ export default function MyStudents() {
                                     <Badge className={cn(
                                       booking.status === 'cancelled' && "bg-red-100 text-red-600",
                                       booking.status === 'completed' && "bg-gray-100 text-gray-600",
-                                      booking.status === 'scheduled' && new Date(booking.date) >= new Date() 
+                                      booking.status === 'scheduled' && new Date(booking.date) >= new Date()
                                         ? "bg-[#41f2c0] text-white"
                                         : "bg-gray-100 text-gray-600"
                                     )}>
                                       {booking.status === 'cancelled' ? 'Cancelada' :
-                                       booking.status === 'completed' || new Date(booking.date) < new Date() 
+                                       booking.status === 'completed' || new Date(booking.date) < new Date()
                                          ? 'Completada' : 'Programada'}
                                     </Badge>
                                   </div>
                                 ))}
                               </div>
                             </div>
+
+                            {/* Progress notes */}
+                            {(() => {
+                              const ratedBookings = stats.recentBookings.filter(b => b.progress_rating > 0 || b.progress_note);
+                              if (ratedBookings.length === 0) return null;
+                              return (
+                                <div className="mt-4">
+                                  <p className="text-sm font-medium text-gray-500 mb-2 flex items-center gap-1.5">
+                                    <TrendingUp size={14} className="text-amber-500" />
+                                    Notas de progreso
+                                  </p>
+                                  <div className="space-y-2">
+                                    {ratedBookings.map(b => (
+                                      <div key={b.id} className="p-3 bg-amber-50/70 border border-amber-100 rounded-lg">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <span className="text-xs text-amber-600 font-medium">{b.subject_name}</span>
+                                          {b.progress_rating > 0 && (
+                                            <div className="flex gap-0.5">
+                                              {[1,2,3,4,5].map(n => (
+                                                <Star key={n} size={12} className={n <= b.progress_rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'} />
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
+                                        {b.progress_note && (
+                                          <p className="text-xs text-amber-900 leading-relaxed">{b.progress_note}</p>
+                                        )}
+                                        <p className="text-xs text-amber-400 mt-1">
+                                          {format(parseISO(b.date), "d 'de' MMMM", { locale: es })}
+                                        </p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            })()}
                           </div>
                         </motion.div>
                       )}

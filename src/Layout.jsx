@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
-import { 
-  Calendar, 
-  Search, 
-  BookOpen, 
-  Users, 
-  Clock, 
-  LogOut, 
-  Menu, 
+import {
+  Calendar,
+  Search,
+  BookOpen,
+  Users,
+  Clock,
+  LogOut,
+  Menu,
   X,
   Home,
   User,
@@ -19,7 +19,8 @@ import {
   Settings,
   ArrowLeft,
   AlertCircle,
-  CreditCard
+  CreditCard,
+  TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -65,7 +66,7 @@ export default function Layout({ children, currentPageName }) {
     const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory'];
     
     // Student-only pages
-    const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile'];
+    const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile', 'StudentProgress'];
 
     const loadUnreadMessages = async (userEmail, role, profileId) => {
       try {
@@ -313,6 +314,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Inicio', icon: Home, page: 'StudentDashboard' },
     { name: 'Reservar Clase', icon: Calendar, page: 'BookClass' },
     { name: 'Mis Clases', icon: BookOpen, page: 'MyClasses' },
+    { name: 'Mi Progreso', icon: TrendingUp, page: 'StudentProgress' },
     { name: 'Mis Profesores', icon: Users, page: 'MyTeachers' },
     { name: 'Buscar Profesores', icon: Search, page: 'SearchTeachers' },
     { name: 'Biblioteca', icon: Library, page: 'ClassRecordings' },
