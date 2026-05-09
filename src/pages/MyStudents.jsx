@@ -13,7 +13,9 @@ import {
   ChevronUp,
   Star,
   TrendingUp,
-  Download
+  Download,
+  Send,
+  CheckCircle2
 } from 'lucide-react';
 import { downloadReport } from '@/lib/reportPdf';
 import { Button } from '@/components/ui/button';
@@ -35,8 +37,83 @@ export default function MyStudents() {
   const [expandedStudent, setExpandedStudent] = useState(null);
   const [showTour, setShowTour] = useState(false);
   const [reportMonths, setReportMonths] = useState({});
+  const [sendMonth, setSendMonth] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
+  const [sendingReports, setSendingReports] = useState(false);
+  const [sentCount, setSentCount] = useState(null);
 
   const currentMonth = format(new Date(), 'yyyy-MM');
+
+  const N8N_WEBHOOK = 'https://raulng16.app.n8n.cloud/webhook/informe-progreso';
+
+  const handleSendReports = async () => {
+    setSendingReports(true);
+    setSentCount(null);
+    try {
+      const now = new Date();
+      const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      const [year, month] = sendMonth.split('-');
+      const mesLabel = `${monthNames[parseInt(month) - 1]} ${year}`;
+
+      const studentMap = {};
+      for (const b of bookings) {
+        if (!b.date?.startsWith(sendMonth)) continue;
+        if (b.status === 'cancelled') continue;
+        const isPast = new Date(`${b.date}T${b.start_time || '00:00'}`) < now;
+        const isCompleted = b.status === 'completed' || (b.status === 'scheduled' && isPast);
+        if (!isCompleted) continue;
+
+        const email = b.student_email;
+        if (!email) continue;
+
+        if (!studentMap[email]) {
+          studentMap[email] = {
+            nombre: b.student_name || '',
+            email,
+            profesor: teacher?.full_name || '',
+            emailProfesor: teacher?.user_email || '',
+            mesLabel,
+            clases: [],
+            totalClases: 0,
+            totalPrecio: 0,
+          };
+        }
+        const precio = b.price || 0;
+        studentMap[email].clases.push({
+          fecha: b.date,
+          asignatura: b.subject_name || '',
+          precio,
+          valoracion: b.progress_rating || 0,
+          deberes: b.homework_done ?? null,
+          nota: b.progress_note || '',
+        });
+        studentMap[email].totalClases++;
+        studentMap[email].totalPrecio += precio;
+      }
+
+      const estudiantes = Object.values(studentMap);
+      if (estudiantes.length === 0) {
+        setSentCount(0);
+        return;
+      }
+      estudiantes.forEach(e => e.clases.sort((a, b) => a.fecha.localeCompare(b.fecha)));
+
+      await fetch(N8N_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mes: mesLabel, estudiantes }),
+      });
+
+      setSentCount(estudiantes.length);
+    } catch (e) {
+      console.error(e);
+      setSentCount(-1);
+    } finally {
+      setSendingReports(false);
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -151,9 +228,37 @@ export default function MyStudents() {
 
       <div className="max-w-4xl mx-auto">
          {/* Header */}
-         <div className="mb-8">
-           <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
-           <p className="text-gray-500 mt-2 text-sm">Información completa de tus alumnos</p>
+         <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+           <div>
+             <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Mis Alumnos</h1>
+             <p className="text-gray-500 mt-2 text-sm">Información completa de tus alumnos</p>
+           </div>
+           <div className="flex items-center gap-2 flex-wrap">
+             <input
+               type="month"
+               value={sendMonth}
+               onChange={e => { setSendMonth(e.target.value); setSentCount(null); }}
+               className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#41f2c0]"
+             />
+             <Button
+               onClick={handleSendReports}
+               disabled={sendingReports}
+               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white h-9 text-sm"
+             >
+               {sendingReports
+                 ? <><Loader2 size={14} className="animate-spin mr-1.5" />Enviando...</>
+                 : <><Send size={14} className="mr-1.5" />Enviar informes</>}
+             </Button>
+             {sentCount !== null && (
+               <span className={`text-sm flex items-center gap-1 ${sentCount > 0 ? 'text-green-600' : sentCount === 0 ? 'text-gray-400' : 'text-red-500'}`}>
+                 {sentCount > 0
+                   ? <><CheckCircle2 size={14} />{sentCount} {sentCount === 1 ? 'informe enviado' : 'informes enviados'}</>
+                   : sentCount === 0
+                     ? 'Sin clases ese mes'
+                     : 'Error al enviar'}
+               </span>
+             )}
+           </div>
          </div>
 
         {/* Search */}
