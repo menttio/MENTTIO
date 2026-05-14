@@ -59,13 +59,16 @@ export default function TeacherClassHistory() {
     try {
       const user = await base44.auth.me();
 
-      const scheduled = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'scheduled' });
-      const completed = await base44.entities.Booking.filter({ teacher_email: user.email, status: 'completed' });
-      setBookings([...scheduled, ...completed]);
-
       const teachers = await base44.entities.Teacher.filter({ user_email: user.email });
       if (teachers.length > 0) {
-        setTeacher(teachers[0]);
+        const t = teachers[0];
+        setTeacher(t);
+
+        const scheduled = await base44.entities.Booking.filter({ teacher_id: t.id, status: 'scheduled' });
+        const completed = await base44.entities.Booking.filter({ teacher_id: t.id, status: 'completed' });
+        setBookings([...scheduled, ...completed]);
+      } else {
+        setBookings([]);
       }
     } catch (error) {
       console.error(error);
@@ -398,7 +401,7 @@ export default function TeacherClassHistory() {
                 key={booking.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
+                transition={{ delay: Math.min(idx * 0.05, 0.3) }}
                 className="flex gap-3 items-start"
               >
                 {selectionMode && (
