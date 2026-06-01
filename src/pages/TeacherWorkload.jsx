@@ -42,6 +42,8 @@ export default function TeacherWorkload() {
   const [timeRange, setTimeRange] = useState('month');
   const [showTour, setShowTour] = useState(false);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [paymentFilterYear, setPaymentFilterYear] = useState(new Date().getFullYear().toString());
+  const [paymentFilterMonth, setPaymentFilterMonth] = useState('all');
 
   useEffect(() => {
     loadData();
@@ -179,10 +181,17 @@ export default function TeacherWorkload() {
     const now = new Date();
     const completed = bookings.filter(b => {
       if (b.status === 'cancelled') return false;
-      if (b.status === 'completed') return true;
-      // Scheduled but already past
-      const bookingDateTime = new Date(`${b.date}T${b.start_time}`);
-      return b.status === 'scheduled' && bookingDateTime < now;
+      const isCompleted = b.status === 'completed' || (b.status === 'scheduled' && new Date(`${b.date}T${b.start_time}`) < now);
+      if (!isCompleted) return false;
+      // Apply year filter
+      const bYear = new Date(b.date).getFullYear().toString();
+      if (bYear !== paymentFilterYear) return false;
+      // Apply month filter
+      if (paymentFilterMonth !== 'all') {
+        const bMonth = new Date(b.date).getMonth().toString();
+        if (bMonth !== paymentFilterMonth) return false;
+      }
+      return true;
     });
     const paid = completed.filter(b => b.payment_status === 'paid').length;
     const pending = completed.filter(b => b.payment_status === 'pending' || b.payment_status === 'pending_confirmation').length;
@@ -190,7 +199,7 @@ export default function TeacherWorkload() {
     const pendingAmount = completed.filter(b => b.payment_status === 'pending' || b.payment_status === 'pending_confirmation').reduce((sum, b) => sum + calcPayout(b.price), 0);
 
     return { paid, pending, paidAmount, pendingAmount };
-  }, [bookings, teacher]);
+  }, [bookings, teacher, paymentFilterYear, paymentFilterMonth]);
 
   // Available years for selection
   const availableYears = useMemo(() => {
@@ -553,9 +562,43 @@ export default function TeacherWorkload() {
 
           {/* Payments Tab */}
           <TabsContent value="payments" className="space-y-6">
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-[#404040]">Estado de Pagos</h2>
-              <p className="text-sm text-gray-500">Controla los pagos pendientes y realizados</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <div>
+                <h2 className="text-xl font-semibold text-[#404040]">Estado de Pagos</h2>
+                <p className="text-sm text-gray-500">Controla los pagos pendientes y realizados</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={paymentFilterYear} onValueChange={setPaymentFilterYear}>
+                  <SelectTrigger className="w-28">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableYears.map(year => (
+                      <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={paymentFilterMonth} onValueChange={setPaymentFilterMonth}>
+                  <SelectTrigger className="w-36">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los meses</SelectItem>
+                    <SelectItem value="0">Enero</SelectItem>
+                    <SelectItem value="1">Febrero</SelectItem>
+                    <SelectItem value="2">Marzo</SelectItem>
+                    <SelectItem value="3">Abril</SelectItem>
+                    <SelectItem value="4">Mayo</SelectItem>
+                    <SelectItem value="5">Junio</SelectItem>
+                    <SelectItem value="6">Julio</SelectItem>
+                    <SelectItem value="7">Agosto</SelectItem>
+                    <SelectItem value="8">Septiembre</SelectItem>
+                    <SelectItem value="9">Octubre</SelectItem>
+                    <SelectItem value="10">Noviembre</SelectItem>
+                    <SelectItem value="11">Diciembre</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
