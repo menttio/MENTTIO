@@ -61,8 +61,8 @@ export default function TeacherWorkload() {
         }
         
         const [scheduledBookings, completedBookings] = await Promise.all([
-          base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'scheduled' }, 'date', 100),
-          base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'completed' }, '-date', 200)
+          base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'scheduled' }, 'date', 500),
+          base44.entities.Booking.filter({ teacher_id: teachers[0].id, status: 'completed' }, '-date', 500)
         ]);
         setBookings([...scheduledBookings, ...completedBookings]);
       }
@@ -83,13 +83,17 @@ export default function TeacherWorkload() {
 
     if (timeRange === 'week') {
       dateRange = { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
-    } else {
+    } else if (timeRange === 'month') {
       dateRange = { start: startOfMonth(now), end: endOfMonth(now) };
+    } else {
+      dateRange = null; // 'all' - no filter
     }
 
     const filteredBookings = bookings.filter(b => {
+      if (b.status === 'cancelled') return false;
+      if (!dateRange) return true;
       const bookingDate = new Date(b.date);
-      return bookingDate >= dateRange.start && bookingDate <= dateRange.end && b.status !== 'cancelled';
+      return bookingDate >= dateRange.start && bookingDate <= dateRange.end;
     });
 
     const totalClasses = filteredBookings.length;
@@ -190,7 +194,7 @@ export default function TeacherWorkload() {
 
   // Available years for selection
   const availableYears = useMemo(() => {
-    const years = new Set();
+    const years = new Set([new Date().getFullYear()]);
     bookings.forEach(b => {
       years.add(new Date(b.date).getFullYear());
     });
@@ -246,6 +250,7 @@ export default function TeacherWorkload() {
                 <SelectContent>
                   <SelectItem value="week">Esta semana</SelectItem>
                   <SelectItem value="month">Este mes</SelectItem>
+                  <SelectItem value="all">Todo el tiempo</SelectItem>
                 </SelectContent>
               </Select>
             </div>
