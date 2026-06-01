@@ -11,7 +11,8 @@ export default function BookingCalendar({
   existingBookings = [],
   onSelectSlot,
   selectedDate,
-  selectedTime 
+  selectedTime,
+  allowPast = false
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -30,7 +31,7 @@ export default function BookingCalendar({
   };
 
   const isDateAvailable = (date) => {
-    if (isBefore(date, startOfDay(new Date()))) return false;
+    if (!allowPast && isBefore(date, startOfDay(new Date()))) return false;
     return getAvailableSlotsForDate(date).length > 0;
   };
 
@@ -85,16 +86,18 @@ export default function BookingCalendar({
           const available = isDateAvailable(day);
           const isSelected = selectedDate && isSameDay(day, selectedDate);
           const isPast = isBefore(day, startOfDay(new Date()));
+          const isDisabled = !available || (!allowPast && isPast);
           
           return (
             <button
               key={day.toISOString()}
               onClick={() => handleDateClick(day)}
-              disabled={!available || isPast}
+              disabled={isDisabled}
               className={cn(
                 "bg-white aspect-square flex flex-col items-center justify-center relative transition-all",
-                available && !isPast && "cursor-pointer hover:bg-[#41f2c0]/10",
-                isPast && "text-gray-300 cursor-not-allowed",
+                available && "cursor-pointer hover:bg-[#41f2c0]/10",
+                !available && "text-gray-300 cursor-not-allowed",
+                isPast && available && allowPast && "text-gray-400",
                 isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0] font-bold",
                 isToday(day) && !isSelected && "border-2 border-gray-300"
               )}
@@ -105,8 +108,11 @@ export default function BookingCalendar({
               )}>
                 {format(day, 'd')}
               </span>
-              {available && !isPast && !isSelected && (
-                <div className="absolute bottom-1 w-1.5 h-1.5 rounded-full bg-[#41f2c0]" />
+              {available && !isSelected && (
+                <div className={cn(
+                  "absolute bottom-1 w-1.5 h-1.5 rounded-full",
+                  isPast && allowPast ? "bg-gray-400" : "bg-[#41f2c0]"
+                )} />
               )}
             </button>
           );

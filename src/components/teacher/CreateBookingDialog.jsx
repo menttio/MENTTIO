@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Calendar, Clock, User, BookOpen, Loader2, Check } from 'lucide-react';
-import { format, addDays, getDay, parseISO } from 'date-fns';
+import { format, addDays, getDay, parseISO, isBefore } from 'date-fns';
 import { es } from 'date-fns/locale';
 import BookingCalendar from '../booking/BookingCalendar';
 import { cn } from '@/lib/utils';
@@ -128,11 +128,11 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
     
     const slots = {};
     
-    // Generate slots for next 30 days
+    // Generate slots for 90 days back and 30 days forward
     const now = new Date();
-    const minDate = new Date(now);
+    const minDate = addDays(now, -90);
     
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 120; i++) {
       const date = addDays(minDate, i);
       const dateStr = format(date, 'yyyy-MM-dd');
       
@@ -237,7 +237,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
         end_time: calculateEndTime(selectedTime, duration),
         duration_minutes: duration,
         price: calculatePrice(),
-        status: 'scheduled',
+        status: isBefore(new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${calculateEndTime(selectedTime, duration)}`), new Date()) ? 'completed' : 'scheduled',
         payment_status: 'pending',
         files: []
       });
@@ -461,6 +461,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                       onSelectSlot={handleSlotSelect}
                       selectedDate={selectedDate}
                       selectedTime={selectedTime}
+                      allowPast={true}
                     />
                   </div>
                   
