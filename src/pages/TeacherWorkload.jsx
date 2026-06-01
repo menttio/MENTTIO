@@ -8,12 +8,10 @@ import {
   Users,
   BookOpen,
   Loader2,
-  Filter,
   BarChart3,
   PieChart,
   Euro
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -33,7 +31,6 @@ import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInte
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, LineChart, Line } from 'recharts';
-import WorkloadTour from '../components/teacher/WorkloadTour';
 
 export default function TeacherWorkload() {
   const [teacher, setTeacher] = useState(null);
