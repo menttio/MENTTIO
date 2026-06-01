@@ -201,9 +201,19 @@ export default function MyClasses() {
         <div className="text-center py-12">
           <Calendar className="mx-auto text-gray-300 mb-4" size={48} />
           <h3 className="font-medium text-[#404040] mb-2">No se encontraron clases</h3>
-          <p className="text-gray-500 text-sm">
-            {searchQuery ? 'Intenta con otro término de búsqueda' : 'Aún no tienes clases registradas'}
+          <p className="text-gray-500 text-sm mb-4">
+            {bookings.length > 0
+              ? 'Ninguna clase coincide con los filtros actuales'
+              : 'Aún no tienes clases registradas'}
           </p>
+          {bookings.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => { setFilter('all'); setSearchQuery(''); setSortBy('date_asc'); }}
+            >
+              Quitar filtros
+            </Button>
+          )}
         </div>
       )}
 
