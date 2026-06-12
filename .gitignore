@@ -9,6 +9,9 @@ _detail.txt
 .dev.vars
 .dev.vars.*
 
+# Estado local de Cloudflare Wrangler
+.wrangler/
+
 # Logs
 logs
 *.log
