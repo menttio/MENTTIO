@@ -4,11 +4,16 @@ Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   
   try {
-    const user = await base44.auth.me();
-    
-    // Admin-only function
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    // Permitir invocación desde el cron del Cloudflare Worker mediante secreto compartido,
+    // o desde un admin con sesión iniciada.
+    const cronSecret = Deno.env.get('CRON_SECRET');
+    const isCron = cronSecret && req.headers.get('x-cron-secret') === cronSecret;
+
+    if (!isCron) {
+      const user = await base44.auth.me();
+      if (user?.role !== 'admin') {
+        return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+      }
     }
 
     const now = new Date();

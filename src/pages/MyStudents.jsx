@@ -46,7 +46,11 @@ export default function MyStudents() {
 
   const currentMonth = format(new Date(), 'yyyy-MM');
 
-  const N8N_WEBHOOK = 'https://raulng16.app.n8n.cloud/webhook/informe-progreso';
+  // Antes apuntaba a n8n Cloud. Ahora al Cloudflare Worker (configurable por entorno).
+  const INFORME_WEBHOOK =
+    import.meta.env.VITE_AUTOMATIONS_URL
+      ? `${import.meta.env.VITE_AUTOMATIONS_URL}/informe-progreso`
+      : 'https://menttio-automations.TU-SUBDOMINIO.workers.dev/informe-progreso';
 
   const handleSendReports = async () => {
     setSendingReports(true);
@@ -100,7 +104,7 @@ export default function MyStudents() {
       }
       estudiantes.forEach(e => e.clases.sort((a, b) => a.fecha.localeCompare(b.fecha)));
 
-      await fetch(N8N_WEBHOOK, {
+      await fetch(INFORME_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mes: mesLabel, estudiantes }),

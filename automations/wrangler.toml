@@ -1,0 +1,25 @@
+name = "menttio-automations"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Cron: sustituye al scheduler que hacía n8n.
+# El handler scheduled() decide qué función Base44 invocar según el cron que dispara.
+[triggers]
+crons = [
+  "*/15 * * * *",   # markCompletedClasses  -> cada 15 min
+  "0 * * * *",      # cleanupUnpaidPremium  -> cada hora
+  "*/30 * * * *"    # syncAllBookings       -> cada 30 min
+]
+
+# Variables NO secretas (las secretas se cargan con `wrangler secret put`):
+[vars]
+# Dominio Workspace y cuenta a impersonar para Gmail/Drive/Admin
+GOOGLE_WORKSPACE_DOMAIN = "menttio.com"
+GOOGLE_IMPERSONATE = "menttio@menttio.com"
+# Carpeta raíz "Profesores" en Drive (para el flujo de subida de archivos)
+DRIVE_ROOT_PROFESORES = "1Ytihq4nYRvlFZg-jcHeVJUTuK_VHcXKJ"
+# Email interno que recibe avisos (nuevo alumno/profesor, nueva reserva)
+MENTTIO_INBOX = "menttio@menttio.com"
+# Base URL de las backend functions de Base44 (para los cron). Se rellena tras desplegar.
+BASE44_FUNCTIONS_URL = ""

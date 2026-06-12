@@ -2,6 +2,13 @@
 .env
 .env.*
 
+# Exports de n8n: contienen la clave privada del service account de Google.
+# NUNCA subir a git. Se conservan solo en local como referencia de migración.
+n8n/
+_detail.txt
+.dev.vars
+.dev.vars.*
+
 # Logs
 logs
 *.log

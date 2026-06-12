@@ -3,10 +3,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    // Permitir invocación desde el cron del Worker (x-cron-secret) o desde un admin.
+    const cronSecret = Deno.env.get('CRON_SECRET');
+    const isCron = cronSecret && req.headers.get('x-cron-secret') === cronSecret;
+    if (!isCron) {
+      const user = await base44.auth.me();
+      if (user?.role !== 'admin') {
+        return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+      }
     }
 
     const webhookUrl = Deno.env.get('N8N_DELETE_TEACHER_WEBHOOK_URL');
