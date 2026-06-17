@@ -3,6 +3,9 @@ import { getPublicTeachers } from "./functions/getPublicTeachers";
 import { setMeetLink } from "./functions/setMeetLink";
 import { getRecordingLink } from "./functions/getRecordingLink";
 import { sendContactEmail } from "./functions/sendContactEmail";
+import { deleteUserProfile } from "./functions/deleteUserProfile";
+import { createCorporateUser } from "./functions/createCorporateUser";
+import { registerTeacher } from "./functions/registerTeacher";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -13,6 +16,9 @@ const FUNCTIONS: Record<string, Handler> = {
   setMeetLink: (env, req, body) => setMeetLink(env, req, body),
   getRecordingLink: (env, req, body) => getRecordingLink(env, req, body),
   sendContactEmail: (env, req, body) => sendContactEmail(env, req, body),
+  deleteUserProfile: (env, req, body) => deleteUserProfile(env, req, body),
+  createCorporateUser: (env, req, body) => createCorporateUser(env, req, body),
+  registerTeacher: (env, req, body) => registerTeacher(env, req, body),
   // Pendientes de portar (grupos B–E): se añaden aquí conforme lleguen los secretos.
 };
 
