@@ -23,18 +23,34 @@ Rama: **`nivel-b`** (no toca producción). Actualizado: 18 jun 2026.
 - Worker funciones: `menttio-functions.raul2000plgr.workers.dev` (secretos cargados:
   SUPABASE_URL, SUPABASE_SERVICE_KEY, GOOGLE_SA_CLIENT_EMAIL, GOOGLE_SA_PRIVATE_KEY).
 
-## Bloqueado por credenciales (lo que falta aportar para seguir)
+## Secretos cargados en el Worker de funciones (18 jun)
+SUPABASE_*, GOOGLE_SA_*, AUTOMATIONS_URL, WEBHOOK_SECRET, CRON_SECRET, STRIPE_SECRET_KEY,
+STRIPE_WEBHOOK_SECRET, GOOGLE_OAUTH_CLIENT_ID/SECRET, VAPID_PUBLIC_KEY/PRIVATE_KEY.
+Frontend (Supabase publishable key, para `VITE_SUPABASE_ANON_KEY`): `sb_publishable_SIH6V31I3wSyrkY47w17GA_SDCzkMGp`.
+
+## Funciones portadas: 25/34 (todas desplegadas + gated)
+Grupo A (9) + avisos (6) + chatAssistant(gated por ANTHROPIC_API_KEY) + getVapidPublicKey +
+Stripe (createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo,
+handleSubscriptionExempt, createTeacherSubscription) + Calendar (getGoogleOAuthUrl, toggleGoogleCalendar).
+
+## Pendientes (las 8 más complejas — necesitan tokens de usuario / firma / pruebas, no creds nuevas)
+- Calendar con tokens del usuario: `googleOAuthCallback` (intercambio code→tokens + guardar),
+  `getGoogleCalendarEvents`, `syncGoogleCalendar`, `deleteGoogleCalendarEvent`, `debugGoogleCalendar`.
+  (Requieren lógica de refresh de tokens y un usuario conectado para probar. Redirect URI a
+  registrar en Google: `GOOGLE_OAUTH_REDIRECT_URI`.)
+- `stripeWebhook`: verificación de firma (Stripe.webhooks + SubtleCryptoProvider) + manejo de
+  eventos (sincroniza suscripción → Teacher). El endpoint en Stripe "no está bien configurado"
+  (revisar — lo dijo el usuario).
+- `deleteAccount`: cancela suscripción Stripe + borra cuenta Workspace + datos Supabase (destructiva).
+- `sendPushNotification`: ⚠️ las VAPID keys aportadas NO parecen base64url válidas → revisar/regenerar;
+  además requiere lib de Web Push compatible con Workers.
+
+## Bloqueado por config (Fases 4 y 5)
 | Tarea | Necesita |
 |---|---|
-| Funciones Stripe (7) | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` |
-| Funciones Google Calendar de usuario (7) | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` |
-| Push (sendPushNotification) | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` |
-| Chat IA (chatAssistant → Claude) | `ANTHROPIC_API_KEY` |
-| **Fase 4 — Auth** | Configurar **Supabase Auth** (proveedor Google) en el panel + la **anon/publishable key** (para `VITE_SUPABASE_ANON_KEY`) |
-| **Fase 5 — Hosting** | Crear proyecto **Cloudflare Pages** y apuntar dominio |
-
-(Todos esos secretos son hoy env vars de Base44; se obtienen del panel de Base44 / Stripe /
-Google Cloud / Supabase.)
+| **Fase 4 — Auth** | Configurar **Supabase Auth → Google** en el panel (con el Client ID/Secret aportados) + políticas RLS por usuario (migración a escribir) |
+| Activar chat IA | `ANTHROPIC_API_KEY` (usuario lo dejó desactivado) |
+| **Fase 5 — Hosting** | Crear **Cloudflare Pages** + PWA + dominio |
 
 ## Próximos pasos (cuando haya credenciales)
 1. **Fase 4 — Auth** (la crítica): Supabase Auth + Google, migrar usuarios, políticas RLS por
