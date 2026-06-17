@@ -8,6 +8,9 @@ import { createCorporateUser } from "./functions/createCorporateUser";
 import { registerTeacher } from "./functions/registerTeacher";
 import { markCompletedClasses } from "./functions/markCompletedClasses";
 import { cleanupUnpaidPremium } from "./functions/cleanupUnpaidPremium";
+import {
+  notifyN8N, notifyN8NBulk, notifyFileUpload, notifyClassPaid, notifyNuevoAlumno, notifyNuevoProfesor,
+} from "./functions/notify";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -23,6 +26,12 @@ const FUNCTIONS: Record<string, Handler> = {
   registerTeacher: (env, req, body) => registerTeacher(env, req, body),
   markCompletedClasses: (env, req) => markCompletedClasses(env, req),
   cleanupUnpaidPremium: (env, req) => cleanupUnpaidPremium(env, req),
+  notifyN8N: (env, req, body) => notifyN8N(env, req, body),
+  notifyN8NBulk: (env, req, body) => notifyN8NBulk(env, req, body),
+  notifyFileUpload: (env, req, body) => notifyFileUpload(env, req, body),
+  notifyClassPaid: (env, req, body) => notifyClassPaid(env, req, body),
+  notifyNuevoAlumno: (env, req, body) => notifyNuevoAlumno(env, req, body),
+  notifyNuevoProfesor: (env, req, body) => notifyNuevoProfesor(env, req, body),
   // Pendientes de portar (grupos B–E): se añaden aquí conforme lleguen los secretos.
 };
 

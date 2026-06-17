@@ -7,11 +7,17 @@ Rama: **`nivel-b`** (no toca producción). Actualizado: 18 jun 2026.
   verificadas. Transformación Base44→Supabase validada con datos reales. (docs 01, 02, 03)
 - **Fase 2 — Adapter**: `src/api/adapter/*` imita el SDK de Base44 sobre Supabase/Workers,
   conmutable con `VITE_USE_SUPABASE`. **13 tests Vitest verdes** (`npm run test`). (doc 04)
-- **Fase 3 — Funciones (base)**: Worker `functions/` desplegado en
+- **Fase 3 — Funciones (grupo A + avisos = 15/34)**: Worker `functions/` desplegado en
   **https://menttio-functions.raul2000plgr.workers.dev** con helpers `db` (Supabase) y
-  `auth` (verifica JWT de Supabase). 4 funciones portadas:
-  - `getPublicTeachers`, `setMeetLink`, `getRecordingLink` (requieren auth — puerta validada 401)
-  - `sendContactEmail` (pública) — **probada e2e**, emails por Gmail (0 créditos Base44). (doc 05)
+  `auth` (verifica JWT de Supabase: requireUser/requireAdmin/requireCronOrAdmin). Portadas:
+  - **Datos/Gmail/Admin** (sin secretos nuevos): `getPublicTeachers`, `setMeetLink`,
+    `getRecordingLink`, `sendContactEmail` (✅ e2e, Gmail), `deleteUserProfile`,
+    `createCorporateUser`, `registerTeacher`, `markCompletedClasses`, `cleanupUnpaidPremium`.
+  - **Avisos (proxy a automations)**: `notifyN8N`, `notifyN8NBulk`, `notifyFileUpload`,
+    `notifyClassPaid`, `notifyNuevoAlumno`, `notifyNuevoProfesor`.
+  - Guardas validadas (401/403/400) sin crear datos reales. Tests: 17/17 verdes
+    (adapter 13 + notify 4). Secretos cargados: SUPABASE_*, GOOGLE_SA_*, AUTOMATIONS_URL,
+    WEBHOOK_SECRET, CRON_SECRET. (doc 05)
 
 ## Desplegado
 - Worker funciones: `menttio-functions.raul2000plgr.workers.dev` (secretos cargados:
@@ -38,7 +44,13 @@ Google Cloud / Supabase.)
 4. **Fase 6 — Corte**: cargar datos (runbook doc 03), conmutar `VITE_USE_SUPABASE=true`,
    apuntar dominio a Pages, baja de Base44.
 
-## Funciones del grupo A que quedan por portar (sin secretos nuevos, pendientes)
-`deleteUserProfile`, `registerTeacher`/`createCorporateUser` (reutilizan el /registrar-profesor
-del Worker de automations), `markCompletedClasses`/`cleanupUnpaidPremium` (como cron del Worker
-sobre Supabase). `syncAllBookings` queda obsoleto.
+## Funciones que quedan por portar (19/34, casi todas necesitan secretos)
+- 🔑 Stripe (8): createCheckout, stripeWebhook, createTeacherSubscription, connectStripeAccount,
+  getStripeConnectStatus, getSubscriptionInfo, handleSubscriptionExempt, deleteAccount.
+- 🔑 Google OAuth de usuario (7): getGoogleOAuthUrl, googleOAuthCallback, syncGoogleCalendar,
+  getGoogleCalendarEvents, deleteGoogleCalendarEvent, toggleGoogleCalendar, debugGoogleCalendar.
+- 🔑 Push (2): sendPushNotification, getVapidPublicKey (VAPID).
+- 🔑 chatAssistant (1): → API Claude.
+- `syncAllBookings`: obsoleto.
+Los cron (markCompletedClasses, cleanupUnpaidPremium) se programarán en el Worker en el corte
+(ahora Base44 los hace nativo y Supabase está vacío).
