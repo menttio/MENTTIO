@@ -166,6 +166,57 @@ export async function getSubscriptionInfo(env: Env, req: Request) {
   return result;
 }
 
+// Price IDs (Live) de los planes de suscripción del profesor.
+const PLAN_PRICES = {
+  beta: "price_1TCi4RHZYiECTxiyb6PQ8haP",
+  premium: "price_1TRsz4IM9N8RANXqnuQWPWYt",
+  basic: "price_1TRt1tIM9N8RANXqgQ7GGij1",
+};
+
+// createTeacherSubscription: checkout de suscripción (trial para 'basic' si no se usó antes).
+export async function createTeacherSubscription(env: Env, req: Request, body: { subscription_plan?: string; is_beta?: boolean }) {
+  const user = await requireUser(env, req);
+  const stripe = stripeClient(env);
+  const plan = body.subscription_plan;
+  const priceId = body.is_beta ? PLAN_PRICES.beta : plan === "premium" ? PLAN_PRICES.premium : PLAN_PRICES.basic;
+  const origin = req.headers.get("origin") || "https://menttio.com";
+
+  // Customer (reusar si existe).
+  const existing = await stripe.customers.list({ email: user.email, limit: 1 });
+  const customerId = existing.data[0]?.id
+    || (await stripe.customers.create({ email: user.email, name: (user as any).full_name, metadata: { subscription_plan: plan || "" } })).id;
+
+  // Trial solo para 'basic' si no se ha usado.
+  const trialUsed = await db.list<any>(env, "trial_used", { email: `eq.${user.email}` });
+  const grantTrial = plan === "basic" && trialUsed.length === 0;
+
+  const session = await stripe.checkout.sessions.create({
+    customer: customerId,
+    payment_method_types: ["card"],
+    mode: "subscription",
+    ...(grantTrial ? { payment_method_collection: "if_required" } : {}),
+    line_items: [{ price: priceId, quantity: 1 }],
+    subscription_data: {
+      ...(grantTrial ? { trial_period_days: 1 } : {}),
+      metadata: { base44_user_email: user.email || "", subscription_plan: plan || "" },
+    },
+    metadata: { base44_user_email: user.email || "", subscription_plan: plan || "" },
+    success_url: `${origin}/TeacherDashboard?setup=success`,
+    cancel_url: `${origin}/TeacherDashboard?setup=cancelled`,
+  });
+
+  // Registrar TrialUsed y guardar customer_id (sin esperar al webhook).
+  if (trialUsed.length === 0) {
+    try { await db.insert(env, "trial_used", { email: user.email, used_date: new Date().toISOString().split("T")[0] }); } catch { /* idempotente */ }
+  }
+  try {
+    const t = await teacherByEmail(env, user.email!);
+    if (t) await db.update(env, "teachers", { id: `eq.${t.id}` }, { stripe_customer_id: customerId });
+  } catch (e) { console.error("guardar customer_id:", e); }
+
+  return { url: session.url, sessionId: session.id };
+}
+
 // handleSubscriptionExempt: al marcar un profesor como exento, migra su suscripción Stripe a 0€.
 export async function handleSubscriptionExempt(env: Env, req: Request, body: any) {
   await requireAdmin(env, req);
