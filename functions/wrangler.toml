@@ -1,0 +1,13 @@
+name = "menttio-functions"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Variables NO secretas. Las secretas (SUPABASE_*, GOOGLE_SA_*, y más adelante STRIPE_*, VAPID_*,
+# GOOGLE_OAUTH_*, ANTHROPIC_API_KEY) se cargan con `wrangler secret put`.
+[vars]
+GOOGLE_WORKSPACE_DOMAIN = "menttio.com"
+GOOGLE_IMPERSONATE = "menttio@menttio.com"
+MENTTIO_INBOX = "menttio@menttio.com"
+# Origen permitido para CORS (frontend). Ajustar al dominio definitivo (menttio.com / Pages).
+ALLOWED_ORIGIN = "*"
