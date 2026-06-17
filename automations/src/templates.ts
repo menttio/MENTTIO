@@ -73,6 +73,40 @@ export function reservaProfesor(d: {
   };
 }
 
+// Imágenes del email premium (instrucciones para activar la grabación en Meet).
+const VC_IMG1 = "https://drive.google.com/uc?id=1RA_WXv1VSMewnmKDStySdZD3Dstf58RF";
+const VC_IMG2 = "https://drive.google.com/uc?id=1h3CtFp0JHpyXJPcNXXd2C2LnNXEWH8Wd";
+
+// Email "tu clase está a punto de comenzar" con el enlace de la videollamada
+// (Workflow "Creacion videollamada", nodos Code/Code1/Code7). avisoGrabar=true => versión premium.
+export function videollamadaAviso(d: { link: string; avisoGrabar: boolean }): Email {
+  const bloqueGrabar = d.avisoGrabar
+    ? `
+    <div style="background:#fff3cd; border-left:6px solid #ffb300; padding:15px; margin:25px auto; border-radius:6px; max-width:300px;">
+      <p style="margin:0; color:#8a6d3b; font-weight:bold; text-align:center;">⚠️ Recuerda grabar la clase.</p>
+    </div>
+    <img src="${VC_IMG1}" alt="Habilitar grabación 1" style="max-width:400px; border-radius:10px; display:block; margin:0 auto 50px auto;"/>
+    <img src="${VC_IMG2}" alt="Habilitar grabación 2" style="max-width:400px; border-radius:10px; display:block; margin:0 auto 40px auto;"/>`
+    : "";
+  return {
+    subject: "📚 Tu clase está a punto de comenzar",
+    html: `
+<html><body style="font-family: Arial, sans-serif; background-color: #f6f8fa; padding: 30px; color: #333;">
+  <div style="background:#333038; border-radius:10px; padding:25px; max-width:600px; margin:auto; box-shadow:0 2px 8px rgba(0,0,0,0.08); color:white;">
+    <div style="text-align:center; margin-bottom: 25px;"><img src="${LOGO_DARK}" alt="Menttio" style="max-width: 160px;"/></div>
+    <h2 style="color:#0b72b9; text-align:center;">Tu clase está a punto de comenzar 🎓</h2>
+    <p style="text-align:center;">Entra en este enlace para unirte:</p>
+    <div style="text-align:center; margin: 25px 0;">
+      <a href="${escapeHtml(d.link)}" style="display:inline-block; background:#0b72b9; color:#ffffff; padding:12px 20px; border-radius:6px; text-decoration:none; font-weight:bold;">Entrar a la videollamada</a>
+    </div>
+    ${bloqueGrabar}
+    <p style="text-align:center; margin-top:50px;">Nos vemos en clase 👋<br><strong>El equipo de Menttio</strong></p>
+    ${footer}
+  </div>
+</body></html>`,
+  };
+}
+
 // Aviso interno de nueva reserva (nodo "Aviso alumno1" -> menttio@menttio.com).
 export function reservaInterna(d: {
   nombreAlumno: string;

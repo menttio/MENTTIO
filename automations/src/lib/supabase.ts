@@ -28,6 +28,21 @@ export async function upsert(
   if (!res.ok) throw new Error(`Supabase upsert ${table} (${res.status}): ${await res.text()}`);
 }
 
+// Lee filas que cumplan el filtro (ej. { status: "in.(scheduled,modified)" }).
+export async function select<T = Record<string, unknown>>(
+  env: Env,
+  table: string,
+  filter: Record<string, string> = {},
+  extra: Record<string, string> = {},
+): Promise<T[]> {
+  const url = new URL(tableUrl(env, table));
+  for (const [k, v] of Object.entries(filter)) url.searchParams.set(k, v);
+  for (const [k, v] of Object.entries(extra)) url.searchParams.set(k, v);
+  const res = await fetch(url, { headers: headers(env) });
+  if (!res.ok) throw new Error(`Supabase select ${table} (${res.status}): ${await res.text()}`);
+  return (await res.json()) as T[];
+}
+
 // Actualiza filas que cumplan el filtro (ej. { booking_id: "eq.123" }).
 export async function update(
   env: Env,

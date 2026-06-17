@@ -9,6 +9,7 @@ export const SCOPES = {
     "https://www.googleapis.com/auth/admin.directory.group.member",
   ],
   drive: ["https://www.googleapis.com/auth/drive"],
+  calendar: ["https://www.googleapis.com/auth/calendar"],
 };
 
 // Cache de tokens por conjunto de scopes durante la vida del isolate.
@@ -43,8 +44,9 @@ async function importPrivateKey(pem: string): Promise<CryptoKey> {
 }
 
 // Equivalente a los nodos "Code in JavaScript2/4" (firma JWT) + "HTTP Request" (token).
-export async function getAccessToken(env: Env, scopes: string[]): Promise<string> {
-  const cacheKey = scopes.join(" ");
+export async function getAccessToken(env: Env, scopes: string[], impersonate?: string): Promise<string> {
+  const sub = impersonate || env.GOOGLE_IMPERSONATE;
+  const cacheKey = `${sub}|${scopes.join(" ")}`;
   const cached = tokenCache.get(cacheKey);
   const now = Math.floor(Date.now() / 1000);
   if (cached && cached.exp > now + 60) return cached.token;
@@ -52,8 +54,8 @@ export async function getAccessToken(env: Env, scopes: string[]): Promise<string
   const header = { alg: "RS256", typ: "JWT" };
   const payload = {
     iss: env.GOOGLE_SA_CLIENT_EMAIL,
-    sub: env.GOOGLE_IMPERSONATE, // impersonación obligatoria (domain-wide delegation)
-    scope: cacheKey,
+    sub, // impersonación (domain-wide delegation); por defecto GOOGLE_IMPERSONATE
+    scope: scopes.join(" "),
     aud: "https://oauth2.googleapis.com/token",
     iat: now,
     exp: now + 3600,

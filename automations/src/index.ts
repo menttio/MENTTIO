@@ -1,5 +1,6 @@
 import type { Env } from "./env";
 import * as r from "./routes";
+import { runVideollamadas } from "./cron";
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
@@ -45,6 +46,15 @@ export default {
     if (req.method === "GET" && url.pathname === "/") {
       return json({ service: "menttio-automations", ok: true });
     }
+
+    // Cron de videollamadas/grabaciones (disparable a mano para pruebas; protegido por secreto).
+    if (req.method === "POST" && url.pathname === "/cron/videollamadas") {
+      const provided = req.headers.get("x-webhook-secret") ?? url.searchParams.get("key");
+      if (provided !== env.WEBHOOK_SECRET) return json({ error: "Unauthorized" }, 401);
+      const out = await runVideollamadas(env);
+      return json(out);
+    }
+
 
     const route = ROUTES.find((rt) => rt.method === req.method && rt.path === url.pathname);
     if (!route) return json({ error: "Not found" }, 404);
