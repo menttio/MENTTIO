@@ -12,6 +12,10 @@ import {
   notifyN8N, notifyN8NBulk, notifyFileUpload, notifyClassPaid, notifyNuevoAlumno, notifyNuevoProfesor,
 } from "./functions/notify";
 import { chatAssistant } from "./functions/chatAssistant";
+import { getVapidPublicKey } from "./functions/getVapidPublicKey";
+import {
+  createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo, handleSubscriptionExempt,
+} from "./functions/stripe";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -34,7 +38,13 @@ const FUNCTIONS: Record<string, Handler> = {
   notifyNuevoAlumno: (env, req, body) => notifyNuevoAlumno(env, req, body),
   notifyNuevoProfesor: (env, req, body) => notifyNuevoProfesor(env, req, body),
   chatAssistant: (env, req, body) => chatAssistant(env, req, body),
-  // Pendientes de portar: Stripe (8), Google OAuth usuario (7), push/VAPID (2). Necesitan secretos.
+  getVapidPublicKey: (env) => getVapidPublicKey(env),
+  createCheckout: (env, req, body) => createCheckout(env, req, body),
+  getStripeConnectStatus: (env, req) => getStripeConnectStatus(env, req),
+  connectStripeAccount: (env, req) => connectStripeAccount(env, req),
+  getSubscriptionInfo: (env, req) => getSubscriptionInfo(env, req),
+  handleSubscriptionExempt: (env, req, body) => handleSubscriptionExempt(env, req, body),
+  // Pendientes: createTeacherSubscription, stripeWebhook, deleteAccount (Stripe) + Google Calendar (7) + sendPushNotification.
 };
 
 function corsHeaders(env: Env): Record<string, string> {
