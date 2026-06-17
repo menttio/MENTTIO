@@ -6,6 +6,8 @@ import { sendContactEmail } from "./functions/sendContactEmail";
 import { deleteUserProfile } from "./functions/deleteUserProfile";
 import { createCorporateUser } from "./functions/createCorporateUser";
 import { registerTeacher } from "./functions/registerTeacher";
+import { markCompletedClasses } from "./functions/markCompletedClasses";
+import { cleanupUnpaidPremium } from "./functions/cleanupUnpaidPremium";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -19,6 +21,8 @@ const FUNCTIONS: Record<string, Handler> = {
   deleteUserProfile: (env, req, body) => deleteUserProfile(env, req, body),
   createCorporateUser: (env, req, body) => createCorporateUser(env, req, body),
   registerTeacher: (env, req, body) => registerTeacher(env, req, body),
+  markCompletedClasses: (env, req) => markCompletedClasses(env, req),
+  cleanupUnpaidPremium: (env, req) => cleanupUnpaidPremium(env, req),
   // Pendientes de portar (grupos B–E): se añaden aquí conforme lleguen los secretos.
 };
 

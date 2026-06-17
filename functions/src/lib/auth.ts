@@ -20,6 +20,13 @@ export async function requireUser(env: Env, req: Request): Promise<SupabaseUser>
   return (await res.json()) as SupabaseUser;
 }
 
+// Para funciones cron: acepta x-cron-secret válido, o si no, exige admin.
+export async function requireCronOrAdmin(env: Env, req: Request): Promise<void> {
+  const cronSecret = env.CRON_SECRET;
+  if (cronSecret && req.headers.get("x-cron-secret") === cronSecret) return;
+  await requireAdmin(env, req);
+}
+
 // Comprueba además que el usuario sea admin (role en profiles).
 export async function requireAdmin(env: Env, req: Request): Promise<SupabaseUser> {
   const user = await requireUser(env, req);

@@ -17,9 +17,11 @@ export interface Env {
   VAPID_PUBLIC_KEY?: string;
   VAPID_PRIVATE_KEY?: string;
   ANTHROPIC_API_KEY?: string;
-  // Worker de automations (reutiliza /registrar-profesor, /nuevo-profesor, etc.).
+  // Worker de automations (reutiliza /registrar-profesor, /nuevo-profesor, /eliminar-profesor).
   AUTOMATIONS_URL?: string;
   WEBHOOK_SECRET?: string;
+  // Secreto para invocar funciones cron (markCompletedClasses, cleanupUnpaidPremium) por schedule.
+  CRON_SECRET?: string;
   // CORS: origen permitido del frontend (Cloudflare Pages / menttio.com).
   ALLOWED_ORIGIN?: string;
 }
