@@ -3,10 +3,12 @@ main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-# NOTA: NO definimos cron triggers. Se comprobó que n8n nunca ejecutó tareas programadas
-# (sus 10 workflows son todos webhooks) y que Base44 YA ejecuta markCompletedClasses /
-# cleanupUnpaidPremium / syncAllBookings con su scheduler nativo interno. Añadir un cron aquí
-# solo duplicaría el trabajo y consumiría créditos de Base44. El Worker es solo webhooks.
+# Cron: reemplaza al workflow n8n "Creacion videollamada + pizarra". Cada 15 min el Worker
+# crea las videollamadas (Calendar+Meet) de las clases próximas y recupera las grabaciones.
+# (markCompletedClasses/cleanupUnpaidPremium/syncAllBookings los ejecuta Base44 nativamente,
+# por eso no están aquí.)
+[triggers]
+crons = ["*/15 * * * *"]
 
 # Variables NO secretas (las secretas se cargan con `wrangler secret put`):
 [vars]

@@ -32,13 +32,6 @@ const ROUTES: Route[] = [
   { method: "POST", path: "/informe-progreso", secret: false, handler: (e, b) => r.informeProgreso(e, b) },
 ];
 
-// Mapea cada expresión cron a la función Base44 que hay que invocar.
-const CRON_MAP: Record<string, string> = {
-  "*/15 * * * *": "markCompletedClasses",
-  "0 * * * *": "cleanupUnpaidPremium",
-  "*/30 * * * *": "syncAllBookings",
-};
-
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
@@ -85,26 +78,14 @@ export default {
     }
   },
 
-  // Cron Triggers de Cloudflare -> invocan las funciones Base44 con cabecera secreta.
-  async scheduled(controller: ScheduledController, env: Env): Promise<void> {
-    const fn = CRON_MAP[controller.cron];
-    if (!fn) {
-      console.warn("Cron sin mapear:", controller.cron);
-      return;
-    }
-    if (!env.BASE44_FUNCTIONS_URL) {
-      console.error("BASE44_FUNCTIONS_URL no configurada; no se puede ejecutar el cron", fn);
-      return;
-    }
+  // Cron Trigger de Cloudflare -> crea videollamadas y recupera grabaciones (reemplaza el
+  // workflow n8n "Creacion videollamada"). Los demás crons de mantenimiento los hace Base44.
+  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
     try {
-      const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/${fn}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-cron-secret": env.CRON_SECRET },
-        body: "{}",
-      });
-      console.log(`Cron ${fn}: ${res.status} ${await res.text()}`);
+      const out = await runVideollamadas(env);
+      console.log("cron videollamadas:", JSON.stringify(out));
     } catch (err) {
-      console.error(`Error ejecutando cron ${fn}:`, err);
+      console.error("Error en cron videollamadas:", err);
     }
   },
 };
