@@ -17,6 +17,7 @@ import {
   createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo, handleSubscriptionExempt,
   createTeacherSubscription,
 } from "./functions/stripe";
+import { getGoogleOAuthUrl, toggleGoogleCalendar } from "./functions/calendar";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -46,7 +47,11 @@ const FUNCTIONS: Record<string, Handler> = {
   getSubscriptionInfo: (env, req) => getSubscriptionInfo(env, req),
   handleSubscriptionExempt: (env, req, body) => handleSubscriptionExempt(env, req, body),
   createTeacherSubscription: (env, req, body) => createTeacherSubscription(env, req, body),
-  // Pendientes: stripeWebhook, deleteAccount (Stripe) + Google Calendar (7) + sendPushNotification.
+  getGoogleOAuthUrl: (env, req, body) => getGoogleOAuthUrl(env, req, body),
+  toggleGoogleCalendar: (env, req, body) => toggleGoogleCalendar(env, req, body),
+  // Pendientes (necesitan tokens de usuario / sig / pruebas): googleOAuthCallback,
+  // getGoogleCalendarEvents, syncGoogleCalendar, deleteGoogleCalendarEvent, debugGoogleCalendar,
+  // stripeWebhook, deleteAccount, sendPushNotification.
 };
 
 function corsHeaders(env: Env): Record<string, string> {
