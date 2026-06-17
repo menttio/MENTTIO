@@ -9,6 +9,7 @@ import {
 } from "./lib/admin";
 import { resolveFolderPath, uploadFile } from "./lib/drive";
 import { normalizeText, deleteCountryCode, formatMadrid } from "./lib/util";
+import * as sheets from "./lib/sheets";
 import * as tpl from "./templates";
 
 // Payload que Base44 envía para las reservas (idéntico al que mandaba a n8n).
@@ -63,6 +64,22 @@ export async function reservaNueva(env: Env, p: BookingPayload) {
     status: "scheduled",
   });
 
+  // Mantener las hojas heredadas que el cron de videollamada/grabación de n8n todavía consume.
+  // (Best-effort: si falla la hoja, la reserva ya quedó guardada en Supabase.)
+  const teacherName = `${p.teacher_first_name ?? ""} ${p.teacher_last_name ?? ""}`.trim();
+  try {
+    await sheets.appendRow(env, sheets.SHEET_ALUMNOS, [
+      p.student_id ?? "", p.booking_id ?? "", p.student_first_name ?? "", p.student_last_name ?? "",
+      p.student_email ?? "", p.student_phone ?? "", p.subject ?? "", p.price ?? "",
+      p.class_start_datetime ?? "", "", "", "", teacherName, p.teacher_email ?? "",
+    ]);
+    await sheets.appendRow(env, sheets.SHEET_GRABACIONES, [
+      p.booking_id ?? "", p.student_id ?? "", ymd ?? "", p.subject ?? "", teacherName, "", "", "",
+    ]);
+  } catch (err) {
+    console.error("Aviso: fallo escribiendo hojas heredadas en /reserva:", err);
+  }
+
   if (p.teacher_email) {
     const e = tpl.reservaProfesor({
       nombreAlumno: p.student_first_name ?? "",
@@ -91,6 +108,19 @@ export async function reservaCancelada(env: Env, p: BookingPayload) {
   const filter = { booking_id: `eq.${p.booking_id}` };
   await db.update(env, "bookings_ledger", filter, { status: "cancelled" });
   await db.update(env, "class_log", { class_id: `eq.${p.booking_id}` }, { status: "cancelled" });
+
+  // Borrar la reserva de las hojas heredadas para que el cron de n8n no cree videollamada.
+  const bid = (p.booking_id ?? "").toString();
+  if (bid) {
+    try {
+      const rA = await sheets.findRowNumber(env, sheets.SHEET_ALUMNOS, sheets.SHEET_ALUMNOS.keyCol, bid);
+      if (rA > 0) await sheets.deleteRow(env, sheets.SHEET_ALUMNOS, rA);
+      const rG = await sheets.findRowNumber(env, sheets.SHEET_GRABACIONES, sheets.SHEET_GRABACIONES.keyCol, bid);
+      if (rG > 0) await sheets.deleteRow(env, sheets.SHEET_GRABACIONES, rG);
+    } catch (err) {
+      console.error("Aviso: fallo borrando hojas heredadas en /reserva/cancelada:", err);
+    }
+  }
   return { success: true };
 }
 
@@ -103,6 +133,19 @@ export async function reservaModificada(env: Env, p: BookingPayload) {
     { start_datetime: p.class_start_datetime ?? null, status: "modified" },
   );
   await db.update(env, "class_log", { class_id: `eq.${p.booking_id}` }, { date: ymd || null });
+
+  // Actualizar la fecha en las hojas heredadas (el cron de n8n usa "Fecha de inicio" de ALUMNOS).
+  const bid = (p.booking_id ?? "").toString();
+  if (bid) {
+    try {
+      const rA = await sheets.findRowNumber(env, sheets.SHEET_ALUMNOS, sheets.SHEET_ALUMNOS.keyCol, bid);
+      if (rA > 0) await sheets.updateCell(env, sheets.SHEET_ALUMNOS, rA, 8, p.class_start_datetime ?? ""); // col I
+      const rG = await sheets.findRowNumber(env, sheets.SHEET_GRABACIONES, sheets.SHEET_GRABACIONES.keyCol, bid);
+      if (rG > 0) await sheets.updateCell(env, sheets.SHEET_GRABACIONES, rG, 2, ymd ?? ""); // col C
+    } catch (err) {
+      console.error("Aviso: fallo actualizando hojas heredadas en /reserva/modificada:", err);
+    }
+  }
   return { success: true };
 }
 
