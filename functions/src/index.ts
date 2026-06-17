@@ -1,6 +1,7 @@
 import { type Env, HttpError } from "./env";
 import { getPublicTeachers } from "./functions/getPublicTeachers";
 import { setMeetLink } from "./functions/setMeetLink";
+import { getRecordingLink } from "./functions/getRecordingLink";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -9,6 +10,7 @@ type Handler = (env: Env, req: Request, body: any) => Promise<unknown>;
 const FUNCTIONS: Record<string, Handler> = {
   getPublicTeachers: (env, req) => getPublicTeachers(env, req),
   setMeetLink: (env, req, body) => setMeetLink(env, req, body),
+  getRecordingLink: (env, req, body) => getRecordingLink(env, req, body),
   // Pendientes de portar (grupos B–E): se añaden aquí conforme lleguen los secretos.
 };
 
