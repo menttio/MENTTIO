@@ -21,5 +21,5 @@ GOOGLE_IMPERSONATE = "menttio@menttio.com"
 DRIVE_ROOT_PROFESORES = "1Ytihq4nYRvlFZg-jcHeVJUTuK_VHcXKJ"
 # Email interno que recibe avisos (nuevo alumno/profesor, nueva reserva)
 MENTTIO_INBOX = "menttio@menttio.com"
-# Base URL de las backend functions de Base44 (para los cron). Se rellena tras desplegar.
-BASE44_FUNCTIONS_URL = ""
+# Base URL de las backend functions de Base44 (para los cron).
+BASE44_FUNCTIONS_URL = "https://base44.app/api/apps/694471e9c204eb0088437b85/functions"
