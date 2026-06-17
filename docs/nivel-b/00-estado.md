@@ -50,7 +50,9 @@ Google Cloud / Supabase.)
 - 🔑 Google OAuth de usuario (7): getGoogleOAuthUrl, googleOAuthCallback, syncGoogleCalendar,
   getGoogleCalendarEvents, deleteGoogleCalendarEvent, toggleGoogleCalendar, debugGoogleCalendar.
 - 🔑 Push (2): sendPushNotification, getVapidPublicKey (VAPID).
-- 🔑 chatAssistant (1): → API Claude.
 - `syncAllBookings`: obsoleto.
+
+**Ya escrita y desplegada, solo falta la key:** `chatAssistant` (→ API Claude, modelo Haiku).
+Devuelve 503 hasta cargar `ANTHROPIC_API_KEY` con `wrangler secret put`. Total portado: **16/34**.
 Los cron (markCompletedClasses, cleanupUnpaidPremium) se programarán en el Worker en el corte
 (ahora Base44 los hace nativo y Supabase está vacío).

@@ -11,6 +11,7 @@ import { cleanupUnpaidPremium } from "./functions/cleanupUnpaidPremium";
 import {
   notifyN8N, notifyN8NBulk, notifyFileUpload, notifyClassPaid, notifyNuevoAlumno, notifyNuevoProfesor,
 } from "./functions/notify";
+import { chatAssistant } from "./functions/chatAssistant";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -32,7 +33,8 @@ const FUNCTIONS: Record<string, Handler> = {
   notifyClassPaid: (env, req, body) => notifyClassPaid(env, req, body),
   notifyNuevoAlumno: (env, req, body) => notifyNuevoAlumno(env, req, body),
   notifyNuevoProfesor: (env, req, body) => notifyNuevoProfesor(env, req, body),
-  // Pendientes de portar (grupos B–E): se añaden aquí conforme lleguen los secretos.
+  chatAssistant: (env, req, body) => chatAssistant(env, req, body),
+  // Pendientes de portar: Stripe (8), Google OAuth usuario (7), push/VAPID (2). Necesitan secretos.
 };
 
 function corsHeaders(env: Env): Record<string, string> {
