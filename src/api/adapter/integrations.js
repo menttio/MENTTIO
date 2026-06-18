@@ -2,7 +2,7 @@
 // IMPORTANTE: integrations.Core.SendEmail en Base44 consume créditos. Aquí se redirige al Worker
 // (Gmail vía service account), eliminando ese gasto. InvokeLLM -> API Claude (Fase 3).
 // UploadFile -> Supabase Storage (Fase 3/5).
-const FUNCTIONS_URL = import.meta.env.VITE_FUNCTIONS_URL || "";
+const FUNCTIONS_URL = import.meta.env.VITE_FUNCTIONS_URL || "https://menttio-functions.raul2000plgr.workers.dev";
 
 async function post(path, payload, supabase) {
   if (!FUNCTIONS_URL) throw new Error("VITE_FUNCTIONS_URL no configurada");

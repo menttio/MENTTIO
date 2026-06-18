@@ -1,7 +1,7 @@
 // Compatibilidad con base44.functions.invoke(name, payload).
 // Las funciones backend se portan a Cloudflare Workers en la Fase 3; aquí se enruta la llamada
 // al Worker, adjuntando el token de sesión de Supabase para que la función pueda autenticar.
-const FUNCTIONS_URL = import.meta.env.VITE_FUNCTIONS_URL || "";
+const FUNCTIONS_URL = import.meta.env.VITE_FUNCTIONS_URL || "https://menttio-functions.raul2000plgr.workers.dev";
 
 export function makeFunctions(supabase) {
   async function invoke(name, payload = {}) {
