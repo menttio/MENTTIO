@@ -2,6 +2,10 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { supabase } from '@/api/supabaseClient';
+
+// Nivel B: en modo Supabase la auth se basa en la sesión de Supabase, no en el token de Base44.
+const USE_SUPABASE = import.meta.env.VITE_USE_SUPABASE !== 'false';
 
 const AuthContext = createContext();
 
@@ -15,13 +19,51 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkAppState();
+    // En modo Supabase, reaccionar a cambios de sesión (incl. la que llega tras el redirect de Google).
+    if (USE_SUPABASE && supabase) {
+      const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) {
+          base44.auth.me()
+            .then((u) => { setUser(u); setIsAuthenticated(true); })
+            .catch((e) => { console.error('me() tras auth change:', e); })
+            .finally(() => setIsLoadingAuth(false));
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
+          setIsLoadingAuth(false);
+        }
+      });
+      return () => sub?.subscription?.unsubscribe?.();
+    }
   }, []);
 
   const checkAppState = async () => {
+    // ---- Modo Supabase (Nivel B): sesión de Supabase en vez del token de Base44 ----
+    if (USE_SUPABASE) {
+      setAuthError(null);
+      setAppPublicSettings({ id: appParams.appId, public_settings: {} });
+      setIsLoadingPublicSettings(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          const currentUser = await base44.auth.me();
+          setUser(currentUser);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error('Supabase auth check failed:', error);
+        setIsAuthenticated(false);
+      }
+      setIsLoadingAuth(false);
+      return;
+    }
+
     try {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
-      
+
       // First, check app public settings (with token if available)
       // This will tell us if auth is required, user not registered, etc.
       const appClient = createAxiosClient({
