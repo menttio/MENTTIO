@@ -14,6 +14,7 @@ import {
 import { chatAssistant } from "./functions/chatAssistant";
 import { getVapidPublicKey } from "./functions/getVapidPublicKey";
 import { deleteAccount } from "./functions/deleteAccount";
+import { sendPushNotification } from "./functions/sendPushNotification";
 import {
   createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo, handleSubscriptionExempt,
   createTeacherSubscription, stripeWebhook,
@@ -57,7 +58,8 @@ const FUNCTIONS: Record<string, Handler> = {
   syncGoogleCalendar: (env, req, body) => syncGoogleCalendar(env, req, body),
   deleteGoogleCalendarEvent: (env, req, body) => deleteGoogleCalendarEvent(env, req, body),
   deleteAccount: (env, req) => deleteAccount(env, req),
-  // Pendientes: sendPushNotification (VAPID keys inválidas), debugGoogleCalendar (debug, baja prioridad).
+  sendPushNotification: (env, req, body) => sendPushNotification(env, req, body),
+  // Sin portar: debugGoogleCalendar (debug, baja prioridad), syncAllBookings (obsoleto).
 };
 
 function corsHeaders(env: Env): Record<string, string> {
