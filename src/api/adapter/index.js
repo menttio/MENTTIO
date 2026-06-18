@@ -18,5 +18,7 @@ export function createSupabaseAdapter(client = supabase) {
     auth: makeAuth(client),
     functions: makeFunctions(client),
     integrations: makeIntegrations(client),
+    // Telemetría de Base44 (NavigationTracker). En Nivel B es no-op (devuelve promesa).
+    appLogs: { logUserInApp: () => Promise.resolve() },
   };
 }
