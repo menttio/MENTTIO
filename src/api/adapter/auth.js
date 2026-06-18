@@ -8,12 +8,16 @@ export function makeAuth(supabase) {
   async function me() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("No autenticado");
-    // Perfil ampliado (full_name, role) desde la tabla profiles.
-    const { data: profile } = await supabase
-      .from("profiles").select("*").eq("email", user.email).single();
+    // Perfil ampliado (full_name, role). Sin .single() para NO crashear si aún no existe la fila.
+    let profile = null;
+    try {
+      const { data } = await supabase.from("profiles").select("*").eq("email", user.email).limit(1);
+      profile = data && data[0];
+    } catch (e) { /* perfil opcional */ }
     return {
       id: user.id,
       email: user.email,
+      role: profile?.role || "user",
       ...(profile ? fromDbRow(profile) : {}),
     };
   }

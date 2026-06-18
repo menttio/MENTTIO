@@ -21,11 +21,12 @@ export const AuthProvider = ({ children }) => {
     checkAppState();
     // En modo Supabase, reaccionar a cambios de sesión (incl. la que llega tras el redirect de Google).
     if (USE_SUPABASE && supabase) {
-      const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+        if (window.__dbg) window.__dbg('onAuthStateChange: ' + event + ' session=' + (!!session));
         if (session) {
           base44.auth.me()
-            .then((u) => { setUser(u); setIsAuthenticated(true); })
-            .catch((e) => { console.error('me() tras auth change:', e); })
+            .then((u) => { if (window.__dbg) window.__dbg('me() OK: ' + (u && u.email)); setUser(u); setIsAuthenticated(true); })
+            .catch((e) => { if (window.__dbg) window.__dbg('me() ERROR: ' + (e && e.message)); console.error('me() tras auth change:', e); })
             .finally(() => setIsLoadingAuth(false));
         } else {
           setUser(null);
@@ -45,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingPublicSettings(false);
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        if (window.__dbg) window.__dbg('checkAppState getSession: ' + (!!session) + ' url=' + window.location.href);
         if (session) {
           const currentUser = await base44.auth.me();
           setUser(currentUser);

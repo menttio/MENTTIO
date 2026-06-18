@@ -5,6 +5,29 @@
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- TEMPORAL (debug Nivel B): muestra errores JS en pantalla (quitar tras depurar). -->
+    <script>
+      (function () {
+        function show(msg) {
+          var d = document.getElementById('__err');
+          if (!d) { d = document.createElement('div'); d.id = '__err';
+            d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#b00020;color:#fff;padding:10px;font:12px/1.4 monospace;z-index:999999;white-space:pre-wrap;max-height:60%;overflow:auto';
+            (document.body || document.documentElement).appendChild(d); }
+          d.textContent += 'ERROR: ' + msg + '\n\n';
+        }
+        window.addEventListener('error', function (e) { show((e.message || 'error') + '  @ ' + (e.filename || '') + ':' + (e.lineno || '')); });
+        window.addEventListener('unhandledrejection', function (e) { var r = e.reason; show('Promise: ' + (r && (r.message || r.stack || r) || r)); });
+        // Registro de depuración visible (azul) para el flujo de auth.
+        window.__dbg = function (msg) {
+          var d = document.getElementById('__dbg');
+          if (!d) { d = document.createElement('div'); d.id = '__dbg';
+            d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#003c8f;color:#fff;padding:8px;font:12px/1.4 monospace;z-index:999998;white-space:pre-wrap;max-height:50%;overflow:auto';
+            (document.body || document.documentElement).appendChild(d); }
+          d.textContent += '· ' + msg + '\n';
+        };
+      })();
+    </script>
+
     <!-- PWA (Nivel B): app móvil instalable. Faltan iconos /icon-192.png y /icon-512.png. -->
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#41f2c0" />
