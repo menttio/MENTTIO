@@ -13,9 +13,10 @@ import {
 } from "./functions/notify";
 import { chatAssistant } from "./functions/chatAssistant";
 import { getVapidPublicKey } from "./functions/getVapidPublicKey";
+import { deleteAccount } from "./functions/deleteAccount";
 import {
   createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo, handleSubscriptionExempt,
-  createTeacherSubscription,
+  createTeacherSubscription, stripeWebhook,
 } from "./functions/stripe";
 import {
   getGoogleOAuthUrl, toggleGoogleCalendar, getGoogleCalendarEvents, syncGoogleCalendar,
@@ -55,7 +56,8 @@ const FUNCTIONS: Record<string, Handler> = {
   getGoogleCalendarEvents: (env, req, body) => getGoogleCalendarEvents(env, req, body),
   syncGoogleCalendar: (env, req, body) => syncGoogleCalendar(env, req, body),
   deleteGoogleCalendarEvent: (env, req, body) => deleteGoogleCalendarEvent(env, req, body),
-  // Pendientes: stripeWebhook, deleteAccount, sendPushNotification, debugGoogleCalendar.
+  deleteAccount: (env, req) => deleteAccount(env, req),
+  // Pendientes: sendPushNotification (VAPID keys inválidas), debugGoogleCalendar (debug, baja prioridad).
 };
 
 function corsHeaders(env: Env): Record<string, string> {
@@ -86,6 +88,11 @@ export default {
     // OAuth callback de Google Calendar: GET con redirección (no JSON).
     if (req.method === "GET" && name === "googleOAuthCallback") {
       return googleOAuthCallback(env, req);
+    }
+
+    // Webhook de Stripe: necesita el body crudo para verificar la firma (no parsear JSON).
+    if (req.method === "POST" && name === "stripeWebhook") {
+      return stripeWebhook(env, req);
     }
 
     const handler = FUNCTIONS[name];

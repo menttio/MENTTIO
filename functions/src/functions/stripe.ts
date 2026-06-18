@@ -10,7 +10,7 @@ const EXEMPT_PRICES: Record<string, string> = {
 };
 
 // Cliente Stripe compatible con Cloudflare Workers (fetch http client).
-function stripeClient(env: Env): Stripe {
+export function stripeClient(env: Env): Stripe {
   if (!env.STRIPE_SECRET_KEY) throw new HttpError(503, "STRIPE_SECRET_KEY no configurada");
   return new Stripe(env.STRIPE_SECRET_KEY, {
     apiVersion: "2024-12-18.acacia" as any,
@@ -172,6 +172,59 @@ const PLAN_PRICES = {
   premium: "price_1TRsz4IM9N8RANXqnuQWPWYt",
   basic: "price_1TRt1tIM9N8RANXqgQ7GGij1",
 };
+
+// stripeWebhook: endpoint público que recibe eventos de Stripe (verifica firma con raw body).
+// Maneja: pago de clase, pago de suscripción (activa teacher), cancelación de suscripción.
+export async function stripeWebhook(env: Env, req: Request): Promise<Response> {
+  const j = (d: unknown, s: number) => new Response(JSON.stringify(d), { status: s, headers: { "Content-Type": "application/json" } });
+  if (!env.STRIPE_SECRET_KEY || !env.STRIPE_WEBHOOK_SECRET) return j({ error: "Stripe no configurado" }, 503);
+  const stripe = stripeClient(env);
+  const body = await req.text();
+  const sig = req.headers.get("stripe-signature") || "";
+  let event: Stripe.Event;
+  try {
+    event = await stripe.webhooks.constructEventAsync(body, sig, env.STRIPE_WEBHOOK_SECRET, undefined, Stripe.createSubtleCryptoProvider());
+  } catch (err) {
+    return j({ error: `Invalid signature: ${(err as Error).message}` }, 400);
+  }
+
+  try {
+    if (event.type === "checkout.session.completed") {
+      const s = event.data.object as Stripe.Checkout.Session;
+      const bookingId = (s.metadata?.bookingId || s.metadata?.booking_id) as string | undefined;
+      if (bookingId) {
+        await db.update(env, "bookings", { id: `eq.${bookingId}` },
+          { payment_status: "paid", stripe_payment_id: (s.payment_intent as string) || s.id });
+      }
+    } else if (event.type === "invoice.payment_succeeded") {
+      const inv = event.data.object as Stripe.Invoice;
+      const subscriptionId = inv.subscription as string | null;
+      if (subscriptionId) {
+        const sub = await stripe.subscriptions.retrieve(subscriptionId);
+        const amount = sub.items.data[0]?.price?.unit_amount || 0;
+        const plan = amount >= 3000 ? "premium" : "basic";
+        const expires = new Date(sub.current_period_end * 1000).toISOString().split("T")[0];
+        const teachers = await db.list<any>(env, "teachers", { stripe_customer_id: `eq.${inv.customer}` });
+        if (teachers[0]) {
+          await db.update(env, "teachers", { id: `eq.${teachers[0].id}` }, {
+            subscription_active: true, subscription_plan: plan, subscription_expires: expires,
+            stripe_subscription_id: subscriptionId, trial_active: false,
+          });
+        }
+      }
+    } else if (event.type === "customer.subscription.deleted") {
+      const sub = event.data.object as Stripe.Subscription;
+      const teachers = await db.list<any>(env, "teachers", { stripe_customer_id: `eq.${sub.customer}` });
+      if (teachers[0]) {
+        await db.update(env, "teachers", { id: `eq.${teachers[0].id}` }, { subscription_active: false, stripe_subscription_id: null });
+      }
+    }
+  } catch (err) {
+    console.error("stripeWebhook proceso:", err);
+    return j({ error: "Internal error" }, 500);
+  }
+  return j({ received: true }, 200);
+}
 
 // createTeacherSubscription: checkout de suscripción (trial para 'basic' si no se usó antes).
 export async function createTeacherSubscription(env: Env, req: Request, body: { subscription_plan?: string; is_beta?: boolean }) {
