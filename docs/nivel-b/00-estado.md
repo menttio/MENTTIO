@@ -28,22 +28,25 @@ SUPABASE_*, GOOGLE_SA_*, AUTOMATIONS_URL, WEBHOOK_SECRET, CRON_SECRET, STRIPE_SE
 STRIPE_WEBHOOK_SECRET, GOOGLE_OAUTH_CLIENT_ID/SECRET, VAPID_PUBLIC_KEY/PRIVATE_KEY.
 Frontend (Supabase publishable key, para `VITE_SUPABASE_ANON_KEY`): `sb_publishable_SIH6V31I3wSyrkY47w17GA_SDCzkMGp`.
 
-## Funciones portadas: 25/34 (todas desplegadas + gated)
-Grupo A (9) + avisos (6) + chatAssistant(gated por ANTHROPIC_API_KEY) + getVapidPublicKey +
-Stripe (createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo,
-handleSubscriptionExempt, createTeacherSubscription) + Calendar (getGoogleOAuthUrl, toggleGoogleCalendar).
+## Funciones portadas: 32/34 — FASE 3 COMPLETA (lo funcional)
+Todas desplegadas en el Worker de funciones y con sus guardas validadas (401/403/400/503/302).
+Grupo A (9) + avisos (6) + chatAssistant (gated ANTHROPIC_API_KEY) + getVapidPublicKey +
+Stripe completo (createCheckout, getSubscriptionInfo, getStripeConnectStatus, connectStripeAccount,
+createTeacherSubscription, handleSubscriptionExempt, **stripeWebhook**, **deleteAccount**) +
+Calendar completo (getGoogleOAuthUrl, toggleGoogleCalendar, getGoogleCalendarEvents,
+syncGoogleCalendar, deleteGoogleCalendarEvent, googleOAuthCallback) + sendPushNotification.
 
-## Pendientes (las 8 más complejas — necesitan tokens de usuario / firma / pruebas, no creds nuevas)
-- Calendar con tokens del usuario: `googleOAuthCallback` (intercambio code→tokens + guardar),
-  `getGoogleCalendarEvents`, `syncGoogleCalendar`, `deleteGoogleCalendarEvent`, `debugGoogleCalendar`.
-  (Requieren lógica de refresh de tokens y un usuario conectado para probar. Redirect URI a
-  registrar en Google: `GOOGLE_OAUTH_REDIRECT_URI`.)
-- `stripeWebhook`: verificación de firma (Stripe.webhooks + SubtleCryptoProvider) + manejo de
-  eventos (sincroniza suscripción → Teacher). El endpoint en Stripe "no está bien configurado"
-  (revisar — lo dijo el usuario).
-- `deleteAccount`: cancela suscripción Stripe + borra cuenta Workspace + datos Supabase (destructiva).
-- `sendPushNotification`: ⚠️ las VAPID keys aportadas NO parecen base64url válidas → revisar/regenerar;
-  además requiere lib de Web Push compatible con Workers.
+Sin portar (a propósito): `debugGoogleCalendar` (debug, baja prioridad), `syncAllBookings` (obsoleto).
+
+### Avisos sobre las pendientes de verificar (no bloquean, pero ojo en el corte)
+- ⚠️ **VAPID keys** aportadas NO parecen base64url válidas → `sendPushNotification` no funcionará
+  hasta corregirlas (la función ya está lista).
+- ⚠️ **Stripe webhook endpoint** "mal configurado" (lo dijo el usuario) → revisar en Stripe y
+  apuntarlo a `…workers.dev/stripeWebhook` con el `STRIPE_WEBHOOK_SECRET` correcto.
+- **Redirect URI de Google** para Calendar: registrar `GOOGLE_OAUTH_REDIRECT_URI`
+  (`…/googleOAuthCallback`) en el OAuth client de Google Cloud.
+- Las funciones con tokens de usuario (Calendar) y destructivas (deleteAccount) están portadas
+  pero **no probadas e2e** (necesitan un usuario real conectado / no se borran cuentas a ciegas).
 
 ## Bloqueado por config (Fases 4 y 5)
 | Tarea | Necesita |
