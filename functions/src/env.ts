@@ -15,6 +15,7 @@ export interface Env {
   GOOGLE_OAUTH_CLIENT_ID?: string;
   GOOGLE_OAUTH_CLIENT_SECRET?: string;
   GOOGLE_OAUTH_REDIRECT_URI?: string;
+  APP_BASE_URL?: string; // base del frontend para redirecciones (p.ej. https://menttio.com)
   VAPID_PUBLIC_KEY?: string;
   VAPID_PRIVATE_KEY?: string;
   ANTHROPIC_API_KEY?: string;

@@ -17,7 +17,10 @@ import {
   createCheckout, getStripeConnectStatus, connectStripeAccount, getSubscriptionInfo, handleSubscriptionExempt,
   createTeacherSubscription,
 } from "./functions/stripe";
-import { getGoogleOAuthUrl, toggleGoogleCalendar } from "./functions/calendar";
+import {
+  getGoogleOAuthUrl, toggleGoogleCalendar, getGoogleCalendarEvents, syncGoogleCalendar,
+  deleteGoogleCalendarEvent, googleOAuthCallback,
+} from "./functions/calendar";
 
 // Worker que aloja las backend functions de la app (porte de las funciones Deno de Base44).
 // El frontend las llama vía el adapter: POST {VITE_FUNCTIONS_URL}/{name} con el token de sesión.
@@ -49,9 +52,10 @@ const FUNCTIONS: Record<string, Handler> = {
   createTeacherSubscription: (env, req, body) => createTeacherSubscription(env, req, body),
   getGoogleOAuthUrl: (env, req, body) => getGoogleOAuthUrl(env, req, body),
   toggleGoogleCalendar: (env, req, body) => toggleGoogleCalendar(env, req, body),
-  // Pendientes (necesitan tokens de usuario / sig / pruebas): googleOAuthCallback,
-  // getGoogleCalendarEvents, syncGoogleCalendar, deleteGoogleCalendarEvent, debugGoogleCalendar,
-  // stripeWebhook, deleteAccount, sendPushNotification.
+  getGoogleCalendarEvents: (env, req, body) => getGoogleCalendarEvents(env, req, body),
+  syncGoogleCalendar: (env, req, body) => syncGoogleCalendar(env, req, body),
+  deleteGoogleCalendarEvent: (env, req, body) => deleteGoogleCalendarEvent(env, req, body),
+  // Pendientes: stripeWebhook, deleteAccount, sendPushNotification, debugGoogleCalendar.
 };
 
 function corsHeaders(env: Env): Record<string, string> {
@@ -77,6 +81,11 @@ export default {
     const name = url.pathname.replace(/^\//, "");
     if (req.method === "GET" && name === "") {
       return json({ service: "menttio-functions", ok: true }, 200, env);
+    }
+
+    // OAuth callback de Google Calendar: GET con redirección (no JSON).
+    if (req.method === "GET" && name === "googleOAuthCallback") {
+      return googleOAuthCallback(env, req);
     }
 
     const handler = FUNCTIONS[name];
