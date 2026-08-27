@@ -1,0 +1,57 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID del alumno"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Nombre del alumno"
+    },
+    "student_email": {
+      "type": "string",
+      "description": "Email del alumno"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID del profesor"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Nombre del profesor"
+    },
+    "teacher_email": {
+      "type": "string",
+      "description": "Email del profesor"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "\u00daltimo mensaje enviado"
+    },
+    "last_message_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha del \u00faltimo mensaje"
+    },
+    "last_message_by": {
+      "type": "string",
+      "description": "Qui\u00e9n envi\u00f3 el \u00faltimo mensaje (student/teacher)"
+    },
+    "unread_count_student": {
+      "type": "number",
+      "default": 0,
+      "description": "Mensajes no le\u00eddos por el alumno"
+    },
+    "unread_count_teacher": {
+      "type": "number",
+      "default": 0,
+      "description": "Mensajes no le\u00eddos por el profesor"
+    }
+  },
+  "required": [
+    "student_id",
+    "teacher_id"
+  ]
+}

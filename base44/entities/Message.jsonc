@@ -1,0 +1,41 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversaci\u00f3n"
+    },
+    "sender_type": {
+      "type": "string",
+      "enum": [
+        "student",
+        "teacher"
+      ],
+      "description": "Tipo de remitente"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "ID del remitente"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Nombre del remitente"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenido del mensaje"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si el mensaje ha sido le\u00eddo"
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_type",
+    "sender_id",
+    "content"
+  ]
+}

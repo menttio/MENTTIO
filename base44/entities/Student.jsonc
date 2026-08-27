@@ -1,0 +1,56 @@
+{
+  "name": "Student",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email del usuario asociado"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Nombre completo del alumno"
+    },
+    "profile_photo": {
+      "type": "string",
+      "description": "URL de la foto de perfil"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Tel\u00e9fono de contacto"
+    },
+    "assigned_teachers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "teacher_id": {
+            "type": "string"
+          },
+          "teacher_name": {
+            "type": "string"
+          },
+          "subject_id": {
+            "type": "string"
+          },
+          "subject_name": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Profesores asignados al alumno"
+    },
+    "google_calendar_connected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si tiene Google Calendar conectado"
+    },
+    "google_calendar_tokens": {
+      "type": "object",
+      "description": "Tokens de acceso de Google Calendar"
+    }
+  },
+  "required": [
+    "user_email",
+    "full_name"
+  ]
+}

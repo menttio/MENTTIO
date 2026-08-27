@@ -1,0 +1,41 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "ID del profesor"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Nombre del profesor"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID del alumno"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Nombre del alumno"
+    },
+    "booking_id": {
+      "type": "string",
+      "description": "ID de la clase relacionada"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Valoraci\u00f3n de 1 a 5 estrellas"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Comentario o rese\u00f1a"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "student_id",
+    "rating"
+  ]
+}

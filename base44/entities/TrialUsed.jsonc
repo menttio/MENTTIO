@@ -1,0 +1,40 @@
+{
+  "name": "TrialUsed",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email del usuario que ya us\u00f3 el trial"
+    },
+    "used_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha en que se registr\u00f3 el uso del trial"
+    }
+  },
+  "required": [
+    "email"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

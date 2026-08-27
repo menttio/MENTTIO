@@ -1,0 +1,50 @@
+{
+  "name": "Availability",
+  "type": "object",
+  "properties": {
+    "teacher_id": {
+      "type": "string",
+      "description": "ID del profesor"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "regular",
+        "exception"
+      ],
+      "description": "Tipo: horario regular o excepci\u00f3n puntual"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "D\u00eda de la semana (0=Domingo, 1=Lunes...)"
+    },
+    "specific_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha espec\u00edfica para excepciones"
+    },
+    "time_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start_time": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Franjas horarias disponibles"
+    },
+    "is_unavailable": {
+      "type": "boolean",
+      "description": "Si es true, marca el d\u00eda como no disponible"
+    }
+  },
+  "required": [
+    "teacher_id",
+    "type"
+  ]
+}

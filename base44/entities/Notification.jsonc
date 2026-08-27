@@ -1,0 +1,53 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID del usuario destinatario"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email del usuario destinatario"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "booking_new",
+        "booking_modified",
+        "booking_cancelled",
+        "message_new",
+        "reminder_24h"
+      ],
+      "description": "Tipo de notificaci\u00f3n"
+    },
+    "title": {
+      "type": "string",
+      "description": "T\u00edtulo de la notificaci\u00f3n"
+    },
+    "message": {
+      "type": "string",
+      "description": "Mensaje de la notificaci\u00f3n"
+    },
+    "related_id": {
+      "type": "string",
+      "description": "ID de la reserva, mensaje o conversaci\u00f3n relacionada"
+    },
+    "link_page": {
+      "type": "string",
+      "description": "P\u00e1gina a la que debe navegar al hacer clic"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Si la notificaci\u00f3n ha sido le\u00edda"
+    }
+  },
+  "required": [
+    "user_id",
+    "user_email",
+    "type",
+    "title",
+    "message"
+  ]
+}
