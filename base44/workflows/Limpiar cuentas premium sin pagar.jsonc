@@ -1,0 +1,44 @@
+{
+  "name": "Limpiar cuentas premium sin pagar",
+  "description": "Detecta profesores premium creados hace m\u00e1s de 1h sin suscripci\u00f3n activa y notifica a n8n para eliminar sus cuentas corporativas",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * 1",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "limpiar_cuentas_premium_sin_pagar",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "cleanupUnpaidPremium",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "cleanupUnpaidPremium"
+  }
+}
