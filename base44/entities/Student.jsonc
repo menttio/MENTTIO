@@ -18,6 +18,51 @@
       "type": "string",
       "description": "Tel\u00e9fono de contacto"
     },
+    "birth_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Fecha de nacimiento (para saber si es menor de 14 a\u00f1os)"
+    },
+    "is_minor": {
+      "type": "boolean",
+      "description": "Si es menor de 14 a\u00f1os: el consentimiento lo da su padre, madre o tutor"
+    },
+    "guardian_name": {
+      "type": "string",
+      "description": "Nombre del padre, madre o tutor legal"
+    },
+    "guardian_email": {
+      "type": "string",
+      "description": "Email del padre, madre o tutor legal"
+    },
+    "guardian_relationship": {
+      "type": "string",
+      "enum": [
+        "madre",
+        "padre",
+        "tutor"
+      ],
+      "description": "Relaci\u00f3n del adulto con el alumno"
+    },
+    "data_consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha en que se acept\u00f3 la pol\u00edtica de privacidad"
+    },
+    "consent_version": {
+      "type": "string",
+      "description": "Versi\u00f3n del texto de consentimiento aceptado"
+    },
+    "recording_consent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Autoriza la grabaci\u00f3n de sus clases (revocable)"
+    },
+    "recording_consent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de la \u00faltima decisi\u00f3n sobre la grabaci\u00f3n"
+    },
     "assigned_teachers": {
       "type": "array",
       "items": {
