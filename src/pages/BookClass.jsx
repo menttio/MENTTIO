@@ -398,34 +398,14 @@ export default function BookClass() {
         : {};
 
       if (classType === 'group' && existingGroupBooking) {
-        // Join existing group booking
-        const updatedEnrolled = [
-          ...(existingGroupBooking.enrolled_students || []),
-          {
-            student_id: student.id,
-            student_name: student.full_name,
-            student_email: user.email,
-            payment_status: 'pending'
-          }
-        ];
-
-        // Recalculate price and commission for the new group size (#1 + #2 fix)
-        const newCount = updatedEnrolled.length;
-        const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
-        const groupPrices = subjectInfo?.group_prices;
-        const priceKey = String(Math.min(newCount, 4));
-        const newPricePerHour = groupPrices?.[priceKey] ?? GROUP_PRICES[Math.min(newCount, 4)];
-        const newPrice = parseFloat(((newPricePerHour * duration) / 60).toFixed(2));
-        const updatedCommissionFields = isCommissionTeacher
-          ? { platform_fee: parseFloat((newPrice * commissionPct / 100).toFixed(2)), teacher_payout: parseFloat((newPrice * (1 - commissionPct / 100)).toFixed(2)) }
-          : {};
-
-        await base44.entities.Booking.update(existingGroupBooking.id, {
-          enrolled_students: updatedEnrolled,
-          price: newPrice,
-          ...updatedCommissionFields
+        // Apuntarse a un grupo existente: lo hace el servidor (comprueba plazas y calcula el precio).
+        const joinRes = await base44.functions.invoke('joinGroupClass', {
+          booking_id: existingGroupBooking.id
         });
-        newBooking = { ...existingGroupBooking, id: existingGroupBooking.id, enrolled_students: updatedEnrolled, price: newPrice };
+        if (joinRes.data?.error || !joinRes.data?.booking) {
+          throw new Error(joinRes.data?.error || 'No se ha podido apuntar a la clase');
+        }
+        newBooking = joinRes.data.booking;
       } else if (classType === 'group') {
         // Create new group booking
         newBooking = await base44.entities.Booking.create({
