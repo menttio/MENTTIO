@@ -109,20 +109,9 @@ export default function Messages() {
     
     setConversations(sortedConversations);
 
-    // Get students for new chat (from bookings)
-    const allBookings = await base44.entities.Booking.filter({ 
-      teacher_id: teacher.id 
-    });
-    
-    const studentIds = [...new Set(allBookings.map(b => b.student_id))];
-    const allStudents = [];
-    
-    for (const studentId of studentIds) {
-      const students = await base44.entities.Student.filter({ id: studentId });
-      if (students.length > 0) {
-        allStudents.push(students[0]);
-      }
-    }
+    // Alumnos con los que el profesor ya tiene relación (el servidor los filtra).
+    const studentsRes = await base44.functions.invoke('teacherStudents', {});
+    const allStudents = studentsRes.data?.students || [];
     
     // Filter out students we already have conversations with
     const existingStudentIds = allConversations.map(c => c.student_id);

@@ -45,21 +45,16 @@ export default function MyClasses() {
   const loadBookings = async () => {
     try {
       const user = await base44.auth.me();
-      const [scheduledBookings, completedBookings, groupScheduled, groupCompleted] = await Promise.all([
+      const [scheduledBookings, completedBookings, groupRes] = await Promise.all([
         base44.entities.Booking.filter({ student_email: user.email, status: 'scheduled' }, 'date', 100),
         base44.entities.Booking.filter({ student_email: user.email, status: 'completed' }, '-date', 200),
-        base44.entities.Booking.filter({ class_type: 'group', status: 'scheduled' }, 'date', 200),
-        base44.entities.Booking.filter({ class_type: 'group', status: 'completed' }, '-date', 200),
+        // El servidor devuelve solo las clases de grupo en las que este alumno está apuntado.
+        base44.functions.invoke('myGroupClasses', {}),
       ]);
 
-      const allGroupBookings = [...groupScheduled, ...groupCompleted];
+      const allGroupBookings = groupRes.data?.bookings || [];
       const existingIds = new Set([...scheduledBookings, ...completedBookings].map(b => b.id));
-
-      // Include group bookings where this student is in enrolled_students
-      const enrolledGroupBookings = allGroupBookings.filter(b =>
-        !existingIds.has(b.id) &&
-        b.enrolled_students?.some(s => s.student_email === user.email)
-      );
+      const enrolledGroupBookings = allGroupBookings.filter(b => !existingIds.has(b.id));
 
       setBookings([...scheduledBookings, ...completedBookings, ...enrolledGroupBookings]);
 
