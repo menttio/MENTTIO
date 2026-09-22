@@ -27,6 +27,7 @@ import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import StudentsTour from '../components/teacher/StudentsTour';
+import FamilyReportDialog from '@/components/teacher/FamilyReportDialog';
 
 export default function MyStudents() {
   const [teacher, setTeacher] = useState(null);
@@ -52,65 +53,38 @@ export default function MyStudents() {
       ? `${import.meta.env.VITE_AUTOMATIONS_URL}/informe-progreso`
       : 'https://menttio-automations.TU-SUBDOMINIO.workers.dev/informe-progreso';
 
+  // El informe se genera en el servidor a partir de las clases reales y se envía al tutor legal
+  // si el alumno es menor. Antes se construía en el navegador y se mandaba a un endpoint abierto.
+  const [reportStudent, setReportStudent] = useState(null);
+
   const handleSendReports = async () => {
     setSendingReports(true);
     setSentCount(null);
     try {
-      const now = new Date();
-      const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-      const [year, month] = sendMonth.split('-');
-      const mesLabel = `${monthNames[parseInt(month) - 1]} ${year}`;
-
-      const studentMap = {};
-      for (const b of bookings) {
-        if (!b.date?.startsWith(sendMonth)) continue;
-        if (b.status === 'cancelled') continue;
-        const isPast = new Date(`${b.date}T${b.start_time || '00:00'}`) < now;
-        const isCompleted = b.status === 'completed' || (b.status === 'scheduled' && isPast);
-        if (!isCompleted) continue;
-
-        const email = b.student_email;
-        if (!email) continue;
-
-        if (!studentMap[email]) {
-          studentMap[email] = {
-            nombre: b.student_name || '',
-            email,
-            profesor: teacher?.full_name || '',
-            emailProfesor: teacher?.user_email || '',
-            mesLabel,
-            clases: [],
-            totalClases: 0,
-            totalPrecio: 0,
-          };
-        }
-        const precio = b.price || 0;
-        studentMap[email].clases.push({
-          fecha: b.date,
-          asignatura: b.subject_name || '',
-          precio,
-          valoracion: b.progress_rating || 0,
-          deberes: b.homework_done ?? null,
-          nota: b.progress_note || '',
-        });
-        studentMap[email].totalClases++;
-        studentMap[email].totalPrecio += precio;
-      }
-
-      const estudiantes = Object.values(studentMap);
-      if (estudiantes.length === 0) {
+      const conClases = new Set(
+        bookings
+          .filter((b) => b.date?.startsWith(sendMonth) && b.status !== 'cancelled' && b.student_id)
+          .map((b) => b.student_id)
+      );
+      if (conClases.size === 0) {
         setSentCount(0);
         return;
       }
-      estudiantes.forEach(e => e.clases.sort((a, b) => a.fecha.localeCompare(b.fecha)));
 
-      await fetch(INFORME_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mes: mesLabel, estudiantes }),
-      });
-
-      setSentCount(estudiantes.length);
+      let enviados = 0;
+      for (const studentId of conClases) {
+        try {
+          const res = await base44.functions.invoke('familyReport', {
+            student_id: studentId,
+            period: sendMonth,
+            enviar: true,
+          });
+          if (res.data?.enviado) enviados++;
+        } catch (err) {
+          console.error('informe', studentId, err);
+        }
+      }
+      setSentCount(enviados);
     } catch (e) {
       console.error(e);
       setSentCount(-1);
@@ -227,6 +201,12 @@ export default function MyStudents() {
           onComplete={() => setShowTour(false)}
         />
       )} */}
+
+      <FamilyReportDialog
+        student={reportStudent}
+        open={reportStudent !== null}
+        onOpenChange={(abierto) => !abierto && setReportStudent(null)}
+      />
 
       <div className="max-w-4xl mx-auto">
          {/* Header */}
