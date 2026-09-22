@@ -65,6 +65,23 @@ export async function runVideollamadas(env: Env): Promise<Record<string, unknown
     } catch (e) { result.errores.push(`grabacion ${b.booking_id}: ${(e as Error).message}`); }
   }
 
+  // ---------- PARTE C: conservación de datos (una vez al día, sobre las 03:00) ----------
+  const hora = now.getUTCHours();
+  const minuto = now.getUTCMinutes();
+  if (hora === 3 && minuto < 15 && env.BASE44_FUNCTIONS_URL && env.AUTOMATION_SECRET) {
+    try {
+      const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/dataRetention`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET },
+        // Solo lo seguro: huellas de IP y notificaciones viejas. Los mensajes no se tocan aquí.
+        body: JSON.stringify({ aplicar: true, incluir_mensajes: false }),
+      });
+      console.log("retention:", (await res.text()).slice(0, 300));
+    } catch (e) {
+      result.errores.push(`retention: ${(e as Error).message}`);
+    }
+  }
+
   return result;
 }
 
