@@ -1,0 +1,43 @@
+{
+  "name": "RateLimit",
+  "type": "object",
+  "properties": {
+    "ip_hash": {
+      "type": "string",
+      "description": "Huella an\u00f3nima e irreversible (SHA-256) de la IP"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "contacto"
+      ],
+      "default": "contacto",
+      "description": "Acci\u00f3n limitada"
+    }
+  },
+  "required": [
+    "ip_hash"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
