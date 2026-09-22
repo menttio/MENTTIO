@@ -34,7 +34,7 @@ export default function MyTeachers() {
 
         if (students[0].assigned_teachers?.length > 0) {
           const teacherIds = [...new Set(students[0].assigned_teachers.map(at => at.teacher_id))];
-          const teachersRes = await base44.functions.invoke('getPublicTeachers', {});
+          const teachersRes = await base44.functions.invoke('teachersDirectory', {});
           const teachersData = teachersRes.data?.teachers || [];
           setTeachers(teachersData.filter(t => teacherIds.includes(t.id)));
         }

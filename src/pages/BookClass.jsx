@@ -68,7 +68,7 @@ export default function BookClass() {
         const allSubjects = await base44.entities.Subject.list();
         setSubjects(allSubjects);
         
-        const teachersRes = await base44.functions.invoke('getPublicTeachers', {});
+        const teachersRes = await base44.functions.invoke('teachersDirectory', {});
         setTeachers(teachersRes.data?.teachers || []);
 
         const allAvailabilities = await base44.entities.Availability.list();

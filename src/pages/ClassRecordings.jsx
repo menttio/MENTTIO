@@ -53,7 +53,7 @@ export default function ClassRecordings() {
       const bookingsWithRecordings = await Promise.all(
         completed.map(async (booking) => {
           try {
-            const { data } = await base44.functions.invoke('getRecordingLink', { 
+            const { data } = await base44.functions.invoke('getRecordingLinkSecure', { 
               booking_id: booking.id 
             });
             return { ...booking, recording_url: data.recording_url || booking.recording_url };

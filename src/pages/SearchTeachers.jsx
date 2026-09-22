@@ -62,7 +62,7 @@ export default function SearchTeachers() {
 
       const [students, teachersRes, allSubjects] = await Promise.all([
         base44.entities.Student.filter({ user_email: user.email }),
-        base44.functions.invoke('getPublicTeachers', {}),
+        base44.functions.invoke('teachersDirectory', {}),
         base44.entities.Subject.list()
       ]);
 

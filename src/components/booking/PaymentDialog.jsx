@@ -27,7 +27,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
   const handleStripePayment = async () => {
     setProcessing(true);
     try {
-      const response = await base44.functions.invoke('createCheckout', {
+      const response = await base44.functions.invoke('createClassCheckout', {
         teacherId: booking.teacher_id,
         teacherName: booking.teacher_name,
         teacherEmail: booking.teacher_email,
