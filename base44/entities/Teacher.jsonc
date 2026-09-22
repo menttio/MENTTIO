@@ -137,7 +137,7 @@
     },
     "commission_percentage": {
       "type": "number",
-      "default": 25,
+      "default": 10,
       "description": "Porcentaje de comisi\u00f3n que retiene Menttio para el plan commission"
     },
     "subscription_exempt": {
