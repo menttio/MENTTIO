@@ -114,7 +114,7 @@ export default function TermsOfService() {
                 por las clases que reserves con los profesores.
               </p>
               <p className="text-gray-600 leading-relaxed">
-               <strong>Para Profesores:</strong> La suscripción está disponible en dos modalidades: Plan Básico (14,99€/mes) y Plan Premium (36,99€/mes). El Plan Premium incluye grabación y almacenamiento de clases en la nube; el Plan Básico no incluye esta funcionalidad. Los profesores del Plan Básico pueden disfrutar de 14 días de prueba gratuita al contratar por primera vez. Eres responsable de mantener tu perfil actualizado y de cumplir con las clases programadas.
+               <strong>Para Profesores:</strong> La suscripción está disponible en dos modalidades: Plan Esencial (12,99€/mes) y Plan Clase grabada (29,99€/mes). El Plan Clase grabada incluye la grabación y el almacenamiento de las clases, además de una cuenta de correo profesional; el Plan Esencial no incluye esas funciones. Existe además una modalidad sin cuota mensual en la que Menttio retiene un 10% de las clases cobradas a través de la plataforma. Ambos planes de suscripción incluyen 14 días de prueba gratuita al contratar por primera vez. Eres responsable de mantener tu perfil actualizado y de cumplir con las clases programadas.
               </p>
               <p className="text-gray-600 leading-relaxed">
                 Eres responsable de mantener la confidencialidad de tu contraseña y de todas las actividades 
