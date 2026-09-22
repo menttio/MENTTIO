@@ -7,25 +7,25 @@ const studentSteps = [
   {
     icon: UserCircle,
     title: 'Regístrate gratis',
-    description: 'Crea tu cuenta de alumno en pocos pasos y accede a una plataforma donde podrás encontrar profesores, reservar clases y consultar materiales.',
+    description: 'Tu profesor te invita y creas tu cuenta en un minuto. Desde ahí ves sus horarios, tus clases y tus materiales.',
     color: 'bg-blue-500'
   },
   {
     icon: Search,
-    title: 'Encuentra tu profesor',
-    description: 'Busca profesores según materia, nivel o disponibilidad y elige el que mejor se adapte a lo que necesitas.',
+    title: 'Elige hora con tu profesor',
+    description: 'Ves los huecos que tu profesor tiene libres y reservas el que te viene bien, sin cruzar mensajes para cuadrarlo.',
     color: 'bg-purple-500'
   },
   {
     icon: Calendar,
     title: 'Reserva tu clase',
-    description: 'Selecciona un horario disponible y gestiona tus clases desde un mismo lugar, de forma simple y organizada.',
+    description: 'Confirmas la clase y pagas con tarjeta si tu profesor lo tiene activado. El enlace de la videollamada te llega solo.',
     color: 'bg-pink-500'
   },
   {
     icon: CheckCircle,
-    title: 'Aprende y accede al contenido',
-    description: 'Asiste a tus clases, consulta materiales y accede a grabaciones si tu profesor las tiene activadas.',
+    title: 'Repasa cuando lo necesites',
+    description: 'Después de la clase tienes los apuntes y, si tu profesor graba, la grabación para volver a verla antes del examen.',
     color: 'bg-green-500'
   }
 ];
@@ -34,29 +34,29 @@ const teacherSteps = [
   {
     icon: UserCircle,
     // CAMBIO: título más concreto, descripción con dato de tiempo que reduce fricción
-    title: 'Crea tu perfil en 5 minutos',
-    description: 'Añade tus materias, experiencia, tarifas y disponibilidad. Tu perfil queda visible para alumnos que buscan profesor desde ese momento.',
+    title: 'Monta tu espacio en 5 minutos',
+    description: 'Añade tus materias, tus tarifas y tus horarios. Menttio es tu herramienta de trabajo: los alumnos los traes tú, y aquí los gestionas.',
     color: 'bg-orange-500'
   },
   {
     icon: Calendar,
     // CAMBIO: título más orientado al resultado, no a la acción
     title: 'Define cuándo quieres dar clases',
-    description: 'Marca tus huecos disponibles una sola vez. Los alumnos reservan solos dentro de tu horario — sin solapamientos, sin WhatsApps, sin interrupciones.',
+    description: 'Marca tus huecos una sola vez. Tus alumnos reservan dentro de ese horario, sin solapamientos y sin negociar la hora por mensajes.',
     color: 'bg-red-500'
   },
   {
     icon: Search,
     // CAMBIO: descripción más directa al beneficio, elimina "sin depender de múltiples herramientas" que es vago
-    title: 'Recibe reservas y gestiona tus alumnos',
-    description: 'Las reservas llegan automáticamente. Desde tu panel ves todos tus alumnos, su historial y sus clases pendientes. Todo en un solo lugar.',
+    title: 'Da la clase sin preparar nada más',
+    description: 'La videollamada se crea sola y tu alumno recibe el enlace. Tú solo entras y explicas.'
     color: 'bg-yellow-500'
   },
   {
     icon: CheckCircle,
     // CAMBIO: paso final reescrito — el original era una lista de features, este habla del estado al que llega el profesor
-    title: 'Enseña. Nosotros gestionamos el resto.',
-    description: 'Da tus clases, comparte materiales y graba las sesiones si quieres. Menttio se encarga de la organización para que tú solo tengas que enseñar.',
+    title: 'Al terminar, ya está todo hecho',
+    description: 'La grabación queda guardada en la ficha de la clase, los apuntes en su sitio y el pago registrado. Sin tareas pendientes.',
     color: 'bg-cyan-500'
   }
 ];

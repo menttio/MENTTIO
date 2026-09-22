@@ -7,7 +7,7 @@ import { createPageUrl } from '../../utils';
 const faqs = [
   {
     question: '¿Para quién está pensada Menttio?',
-    answer: 'Menttio está diseñada para profesores particulares que quieren dejar de perder tiempo organizando sus clases. Si das clases de forma independiente y quieres gestionar horarios, alumnos, pagos y contenido desde un solo lugar, Menttio es para ti. Los alumnos también pueden registrarse y reservar clases, pero el núcleo de la plataforma está pensado para el profesor.'
+    answer: 'Para profesores particulares que dan clase por videollamada, sobre todo de Matemáticas, Física y Química a ESO, Bachillerato y EBAU. Si ya tienes tus alumnos y los llevas a base de WhatsApp, calendario y Bizum, Menttio es para ti. Tus alumnos entran gratis para reservar, ver materiales y repasar las grabaciones.'
   },
   {
     question: '¿Cuánto cuesta la suscripción para profesores?',
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: '¿Puedo grabar mis clases y que mis alumnos las revisen después?',
-    answer: 'Sí, con el Plan Premium. Las clases quedan grabadas automáticamente y tus alumnos pueden acceder a ellas cuando quieran desde la plataforma. Es una de las funciones que más valoran tanto profesores como alumnos.'
+    answer: 'Sí, con el Plan Premium. La videollamada se crea sola, se graba y la grabación aparece en la ficha de la clase. Tu alumno la repasa cuando quiera. Cada grabación es privada: solo la ven el alumno que estuvo en esa clase y tú, y hace falta su permiso (o el de sus padres, si es menor de 14 años) para grabar.'
   },
   {
     question: '¿Puedo subir apuntes, ejercicios y materiales?',
@@ -34,8 +34,8 @@ const faqs = [
     answer: 'No. El registro y el uso de la plataforma es completamente gratuito para los alumnos. Solo pagan las clases directamente al profesor.'
   },
   {
-    question: '¿Cuánto tiempo tarda configurar mi perfil y empezar a recibir alumnos?',
-    answer: 'Menos de 5 minutos. Rellenas tu perfil, defines tu disponibilidad y ya estás listo para recibir reservas. No necesitas instalar nada ni tener conocimientos técnicos.'
+    question: '¿Menttio me consigue alumnos?',
+    answer: 'No, y preferimos decírtelo claro. Menttio no es un portal de anuncios ni te trae alumnos nuevos: es la herramienta con la que gestionas los que ya tienes. Lo que sí hace es ayudarte a conservarlos, porque con grabaciones, materiales y seguimiento das un servicio que pocos profesores particulares ofrecen.'
   }
 ];
 
