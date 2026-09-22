@@ -1,0 +1,73 @@
+{
+  "name": "FamilyReport",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "ID del alumno"
+    },
+    "student_name": {
+      "type": "string",
+      "description": "Nombre del alumno"
+    },
+    "teacher_id": {
+      "type": "string",
+      "description": "ID del profesor que lo env\u00eda"
+    },
+    "teacher_name": {
+      "type": "string",
+      "description": "Nombre del profesor"
+    },
+    "period": {
+      "type": "string",
+      "description": "Periodo del informe en formato AAAA-MM"
+    },
+    "sent_to": {
+      "type": "string",
+      "description": "Direcci\u00f3n a la que se envi\u00f3 (tutor legal o alumno)"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cu\u00e1ndo se envi\u00f3"
+    },
+    "classes_count": {
+      "type": "number",
+      "description": "Clases dadas en el periodo"
+    },
+    "hours": {
+      "type": "number",
+      "description": "Horas impartidas en el periodo"
+    },
+    "average_rating": {
+      "type": "number",
+      "description": "Valoraci\u00f3n media del progreso en el periodo"
+    }
+  },
+  "required": [
+    "student_id",
+    "period"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
