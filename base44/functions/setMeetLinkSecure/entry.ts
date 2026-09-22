@@ -3,6 +3,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 // Sustituye a setMeetLink, que aceptaba cualquier petición anónima y permitía cambiar el enlace
 // de videollamada de cualquier clase. Ahora solo pueden escribirlo el profesor de esa reserva
 // o la automatización (Cloudflare Worker) con la clave compartida AUTOMATION_SECRET.
+// La autorización se comprueba ANTES de consultar la reserva, para no revelar a un anónimo
+// si un identificador de clase existe o no.
 Deno.serve(async (req) => {
   try {
     if (req.method !== 'POST') {
@@ -12,6 +14,21 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const bookingId = String(body.booking_id || '').trim();
     const meetLink = String(body.meet_link || '').trim();
+
+    const base44 = createClientFromRequest(req);
+    const db = base44.asServiceRole;
+
+    const automationSecret = Deno.env.get('AUTOMATION_SECRET');
+    const providedKey = req.headers.get('x-automation-key') || '';
+    const isAutomation = Boolean(automationSecret) && providedKey === automationSecret;
+
+    let user = null;
+    if (!isAutomation) {
+      user = await base44.auth.me().catch(() => null);
+      if (!user?.email) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
 
     if (!bookingId || !meetLink) {
       return Response.json({ error: 'Faltan campos requeridos: booking_id y meet_link' }, { status: 400 });
@@ -30,24 +47,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Solo se admiten enlaces https de meet.google.com' }, { status: 400 });
     }
 
-    const base44 = createClientFromRequest(req);
-    const db = base44.asServiceRole;
-
-    const automationSecret = Deno.env.get('AUTOMATION_SECRET');
-    const providedKey = req.headers.get('x-automation-key') || '';
-    const isAutomation = Boolean(automationSecret) && providedKey === automationSecret;
-
     const booking = await db.entities.Booking.get(bookingId).catch(() => null);
     if (!booking) {
       return Response.json({ error: 'Reserva no encontrada' }, { status: 404 });
     }
 
     if (!isAutomation) {
-      const user = await base44.auth.me().catch(() => null);
-      const email = user?.email?.toLowerCase();
-      if (!email) {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      }
+      const email = (user.email || '').toLowerCase();
       const isTeacher = (booking.teacher_email || '').toLowerCase() === email;
       const isAdmin = user.role === 'admin';
       if (!isTeacher && !isAdmin) {
