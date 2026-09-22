@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
+import { esMenorDeEdadDigital, textoDe, CONSENT_VERSION } from '@/components/legal/consentTexts';
 
 export default function StudentSignupComplete() {
   const navigate = useNavigate();
@@ -21,12 +22,52 @@ export default function StudentSignupComplete() {
 
         const data = JSON.parse(signupData);
         
-        await base44.entities.Student.create({
+        const info = esMenorDeEdadDigital(data.birth_date);
+        const esMenor = info?.esMenor ?? false;
+        const ahora = new Date().toISOString();
+
+        const student = await base44.entities.Student.create({
           user_email: user.email,
           full_name: `${data.first_name} ${data.last_name}`,
           phone: data.phone,
+          birth_date: data.birth_date || undefined,
+          is_minor: esMenor,
+          guardian_name: esMenor ? data.guardian_name : undefined,
+          guardian_email: esMenor ? data.guardian_email : undefined,
+          guardian_relationship: esMenor ? data.guardian_relationship : undefined,
+          data_consent_date: ahora,
+          consent_version: CONSENT_VERSION,
+          recording_consent: Boolean(data.recording_consent),
+          recording_consent_date: ahora,
           assigned_teachers: []
         });
+
+        // Registro de consentimientos: qué se aceptó, quién lo aceptó y cuándo.
+        const comun = {
+          user_email: user.email,
+          student_id: student.id,
+          granted_by: esMenor ? 'tutor' : 'alumno',
+          guardian_name: esMenor ? data.guardian_name : undefined,
+          guardian_email: esMenor ? data.guardian_email : undefined,
+          text_version: CONSENT_VERSION,
+          event_date: ahora
+        };
+        try {
+          await base44.entities.Consent.create({
+            ...comun,
+            type: 'privacidad',
+            granted: true,
+            text_shown: textoDe('privacidad', esMenor)
+          });
+          await base44.entities.Consent.create({
+            ...comun,
+            type: 'grabacion',
+            granted: Boolean(data.recording_consent),
+            text_shown: textoDe('grabacion', esMenor)
+          });
+        } catch (consentError) {
+          console.error('Error guardando el consentimiento:', consentError);
+        }
 
         // Notificar nuevo alumno a n8n
         try {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
+import ConsentForm, { consentimientoCompleto } from '@/components/legal/ConsentForm';
 
 export default function StudentSignup() {
   const navigate = useNavigate();
@@ -16,7 +17,13 @@ export default function StudentSignup() {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    phone: ''
+    phone: '',
+    birth_date: '',
+    guardian_name: '',
+    guardian_email: '',
+    guardian_relationship: '',
+    privacy_consent: false,
+    recording_consent: false
   });
 
   const validatePhone = (phone) => {
@@ -56,6 +63,12 @@ export default function StudentSignup() {
     }
     
     if (formData.phone && !validatePhone(formData.phone)) {
+      return;
+    }
+
+    const faltaConsentimiento = consentimientoCompleto(formData);
+    if (faltaConsentimiento) {
+      alert(faltaConsentimiento);
       return;
     }
     
@@ -178,9 +191,13 @@ export default function StudentSignup() {
                 )}
               </div>
 
+              <div className="border-t pt-5">
+                <ConsentForm value={formData} onChange={setFormData} />
+              </div>
+
               <Button
                 type="submit"
-                disabled={!formData.first_name || !formData.last_name || !formData.phone || phoneError || loading}
+                disabled={!formData.first_name || !formData.last_name || !formData.phone || phoneError || loading || !formData.privacy_consent || !formData.birth_date}
                 className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
               >
                 {loading ? (
