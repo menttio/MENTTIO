@@ -81,7 +81,7 @@ export default function BetaChat() {
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap"
           >
-            Empieza gratis 30 días →
+            Empieza gratis 14 días →
           </a>
         </div>
       </header>
@@ -152,7 +152,7 @@ export default function BetaChat() {
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm font-semibold w-full py-2.5 rounded-full transition-colors"
         >
-          Empieza tu prueba gratuita de 30 días →
+          Empieza tu prueba gratuita de 14 días →
         </a>
       </div>
 
