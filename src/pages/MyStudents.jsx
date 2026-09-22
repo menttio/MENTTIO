@@ -371,6 +371,28 @@ export default function MyStudents() {
                               </span>
                             )}
                           </div>
+                          {/* Permisos del alumno: el profesor necesita saberlo antes de grabar */}
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {student.is_minor && (
+                              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">
+                                Menor de 14 años{student.guardian_name ? ` · tutor: ${student.guardian_name}` : ''}
+                              </span>
+                            )}
+                            {student.recording_consent ? (
+                              <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-900">
+                                Autoriza grabación
+                              </span>
+                            ) : (
+                              <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-900">
+                                No grabar sus clases
+                              </span>
+                            )}
+                            {student.consent_pendiente && (
+                              <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700">
+                                Consentimiento pendiente
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
