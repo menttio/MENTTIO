@@ -151,16 +151,14 @@ export default function MyStudents() {
           });
           const studentIdsFromBookings = [...studentIdsSet].filter(Boolean);
 
-          // Fetch each student by ID
+          // El servidor devuelve solo los alumnos de este profesor.
+          const studentsRes = await base44.functions.invoke('teacherStudents', {});
+          const myStudents = studentsRes.data?.students || [];
+          const idsFromBookings = new Set(studentIdsFromBookings.map(String));
           const studentMap = {};
-          await Promise.all(
-            studentIdsFromBookings.map(async (studentId) => {
-              const studentData = await base44.entities.Student.filter({ id: studentId });
-              if (studentData.length > 0) {
-                studentMap[studentId] = studentData[0];
-              }
-            })
-          );
+          myStudents.forEach((st) => {
+            if (idsFromBookings.has(String(st.id))) studentMap[st.id] = st;
+          });
 
           setStudents(Object.values(studentMap));
         }
