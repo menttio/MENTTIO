@@ -1,6 +1,7 @@
 import type { Env } from "./env";
 import * as r from "./routes";
 import { runVideollamadas } from "./cron";
+import { listarGrabaciones, aplicarAccesos, cerrarCarpeta, listPermissions } from "./grabaciones";
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
@@ -48,6 +49,32 @@ export default {
       return json(out);
     }
 
+
+    // Mantenimiento de permisos de las grabaciones (acceso nominal en lugar de enlace público).
+    // Protegido por la misma clave compartida que usa setMeetLinkAuto.
+    if (req.method === "POST" && url.pathname.startsWith("/mantenimiento/grabaciones")) {
+      const provided = req.headers.get("x-automation-key") ?? "";
+      if (!env.AUTOMATION_SECRET || provided !== env.AUTOMATION_SECRET) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+      const dryRun = url.searchParams.get("dry") === "1";
+      const accion = url.pathname.split("/").pop();
+      const body = req.headers.get("content-type")?.includes("json") ? await req.json().catch(() => ({})) : {};
+
+      if (accion === "listar") {
+        return json(await listarGrabaciones(env, url.searchParams.get("pageToken") ?? undefined, Number(url.searchParams.get("size") ?? 100)));
+      }
+      if (accion === "aplicar") {
+        return json(await aplicarAccesos(env, (body as any).items ?? [], dryRun));
+      }
+      if (accion === "cerrar-carpeta") {
+        return json(await cerrarCarpeta(env, dryRun));
+      }
+      if (accion === "permisos") {
+        return json({ permisos: await listPermissions(env, String((body as any).fileId ?? "")) });
+      }
+      return json({ error: "Acción no reconocida" }, 400);
+    }
 
     const route = ROUTES.find((rt) => rt.method === req.method && rt.path === url.pathname);
     if (!route) return json({ error: "Not found" }, 404);

@@ -1,6 +1,7 @@
 import type { Env } from "./env";
 import * as db from "./lib/supabase";
 import * as sheets from "./lib/sheets";
+import { asegurarAccesoGrabacion } from "./grabaciones";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
 import { sendEmail } from "./lib/gmail";
 import { normalizeText } from "./lib/util";
@@ -146,6 +147,16 @@ async function recuperarGrabacion(env: Env, b: Booking): Promise<boolean> {
   if (!file) return false; // todavía no está la grabación; se reintenta en el próximo tick
 
   const fileId: string = file.id;
+
+  // La grabación nace heredando los permisos de la carpeta. Se le da acceso nominal a quien
+  // estuvo en la clase (alumno y profesor); la carpeta ya no es pública.
+  try {
+    const destinatarios = [b.student_email, b.teacher_email].filter(Boolean) as string[];
+    if (destinatarios.length > 0) await asegurarAccesoGrabacion(env, fileId, destinatarios);
+  } catch (e) {
+    console.error(`permisos grabacion ${b.booking_id}:`, e);
+  }
+
   // Guardar en Supabase (control) y en la hoja GRABACIONES col F (lo que lee getRecordingLink).
   await db.update(env, "bookings_ledger", { booking_id: `eq.${b.booking_id}` }, { recording_url: fileId });
   try {
