@@ -183,7 +183,8 @@ export default function ManageSubjects() {
       setTeacher(prev => ({ ...prev, subjects: finalSubjects }));
 
       // Update all students that have this teacher assigned
-      const allStudents = await base44.entities.Student.list();
+      const studentsRes = await base44.functions.invoke('teacherStudents', {});
+      const allStudents = studentsRes.data?.students || [];
       for (const student of allStudents) {
         if (!student.assigned_teachers?.some(at => at.teacher_id === freshTeacher.id)) continue;
         const updatedAssignedTeachers = student.assigned_teachers.map(at => {
@@ -210,7 +211,8 @@ export default function ManageSubjects() {
       await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
 
       // Remove this subject from all students that have this teacher assigned
-      const allStudents = await base44.entities.Student.list();
+      const studentsRes = await base44.functions.invoke('teacherStudents', {});
+      const allStudents = studentsRes.data?.students || [];
       
       for (const student of allStudents) {
         if (student.assigned_teachers?.length > 0) {

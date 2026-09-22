@@ -74,7 +74,9 @@ export default function BookClass() {
         const allAvailabilities = await base44.entities.Availability.list();
         setAvailabilities(allAvailabilities);
 
-        const allBookings = await base44.entities.Booking.filter({ status: 'scheduled' });
+        // Solo datos de agenda (sin nombres ni emails de otros alumnos).
+        const slotsRes = await base44.functions.invoke('bookingSlots', {});
+        const allBookings = slotsRes.data?.bookings || [];
         setAllScheduledBookings(allBookings);
         // existingBookings = all scheduled (used differently per classType in availableSlots)
         setExistingBookings(allBookings);

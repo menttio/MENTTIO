@@ -56,7 +56,8 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
   const loadStudents = async () => {
     try {
       setLoading(true);
-      const allStudents = await base44.entities.Student.list();
+      const studentsRes = await base44.functions.invoke('teacherStudents', {});
+      const allStudents = studentsRes.data?.students || [];
       // Filter students who have assigned this teacher
       const studentsWithTeacher = allStudents.filter(student => 
         student.assigned_teachers?.some(at => at.teacher_id === teacher.id)
