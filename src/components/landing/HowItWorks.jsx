@@ -49,7 +49,7 @@ const teacherSteps = [
     icon: Search,
     // CAMBIO: descripción más directa al beneficio, elimina "sin depender de múltiples herramientas" que es vago
     title: 'Da la clase sin preparar nada más',
-    description: 'La videollamada se crea sola y tu alumno recibe el enlace. Tú solo entras y explicas.'
+    description: 'La videollamada se crea sola y tu alumno recibe el enlace. Tú solo entras y explicas.',
     color: 'bg-yellow-500'
   },
   {
