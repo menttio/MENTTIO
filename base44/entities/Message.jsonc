@@ -6,6 +6,14 @@
       "type": "string",
       "description": "ID de la conversaci\u00f3n"
     },
+    "student_email": {
+      "type": "string",
+      "description": "Email del alumno de la conversaci\u00f3n (control de acceso)"
+    },
+    "teacher_email": {
+      "type": "string",
+      "description": "Email del profesor de la conversaci\u00f3n (control de acceso)"
+    },
     "sender_type": {
       "type": "string",
       "enum": [
@@ -37,5 +45,52 @@
     "sender_type",
     "sender_id",
     "content"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.student_email": "{{user.email}}"
+        },
+        {
+          "data.teacher_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "data.student_email": "{{user.email}}"
+        },
+        {
+          "data.teacher_email": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.student_email": "{{user.email}}"
+        },
+        {
+          "data.teacher_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }
