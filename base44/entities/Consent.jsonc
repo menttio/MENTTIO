@@ -1,0 +1,87 @@
+{
+  "name": "Consent",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email de la persona a la que se refiere el consentimiento"
+    },
+    "student_id": {
+      "type": "string",
+      "description": "ID del alumno"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "privacidad",
+        "grabacion"
+      ],
+      "description": "Qu\u00e9 se consiente"
+    },
+    "granted": {
+      "type": "boolean",
+      "description": "true = concedido, false = retirado"
+    },
+    "granted_by": {
+      "type": "string",
+      "enum": [
+        "alumno",
+        "tutor"
+      ],
+      "description": "Qui\u00e9n lo otorga: el propio alumno (14 a\u00f1os o m\u00e1s) o su tutor legal"
+    },
+    "guardian_name": {
+      "type": "string",
+      "description": "Nombre del tutor que lo otorga, si procede"
+    },
+    "guardian_email": {
+      "type": "string",
+      "description": "Email del tutor que lo otorga, si procede"
+    },
+    "text_version": {
+      "type": "string",
+      "description": "Versi\u00f3n del texto mostrado al consentir"
+    },
+    "text_shown": {
+      "type": "string",
+      "description": "Texto exacto que se mostr\u00f3 y se acept\u00f3"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha y hora de la decisi\u00f3n"
+    }
+  },
+  "required": [
+    "user_email",
+    "type",
+    "granted"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
