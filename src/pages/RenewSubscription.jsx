@@ -45,7 +45,7 @@ export default function RenewSubscription() {
           subscription_expires: null,
           stripe_subscription_id: null,
           trial_active: false,
-          commission_percentage: 25,
+          commission_percentage: 10,
         });
         window.location.href = '/TeacherDashboard';
         return;
@@ -92,7 +92,7 @@ export default function RenewSubscription() {
             </CardTitle>
             <p className="text-sm md:text-base text-gray-500 mt-2">
               {teacher?.trial_active 
-                ? 'Tu período de prueba gratuito de 30 días ha finalizado. Selecciona un plan para continuar.'
+                ? 'Tu período de prueba gratuito de 14 días ha finalizado. Selecciona un plan para continuar.'
                 : 'Tu suscripción ha caducado. Renuévala para seguir ofreciendo tus clases.'}
             </p>
           </CardHeader>
@@ -114,9 +114,9 @@ export default function RenewSubscription() {
               className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
             >
               {renewing ? <Loader2 className="animate-spin" /> : (
-                selectedPlan === 'basic' ? 'Continuar con Plan Básico' :
-                selectedPlan === 'premium' ? 'Continuar con Plan Premium' :
-                'Activar Plan Comisión'
+                selectedPlan === 'basic' ? 'Continuar con Esencial' :
+                selectedPlan === 'premium' ? 'Continuar con Clase grabada' :
+                'Activar plan sin cuota'
               )}
             </Button>
 
