@@ -639,30 +639,30 @@ export default function TeacherSignup() {
                 <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-6">
                   {formData.subscription_plan === 'commission' ? (
                     <>
-                      <p className="text-sm text-gray-500 mb-2">Plan Comisión</p>
+                      <p className="text-sm text-gray-500 mb-2">Plan sin cuota</p>
                       <div className="text-4xl font-bold text-purple-600 mb-1">Sin cuota mensual</div>
                       <p className="text-sm text-gray-600 mt-2">
-                        Menttio retiene el <strong>25%</strong> de cada clase.<br/>
-                        Tú recibes el <strong>75%</strong> directamente del alumno por Bizum.
+                        Menttio retiene el <strong>10%</strong> de las clases que cobres a través de la plataforma.<br/>
+                        El resto es tuyo. Sin grabación de clases.
                       </p>
                     </>
                   ) : formData.subscription_plan === 'basic' ? (
                       <>
-                        <p className="text-sm text-gray-500 mb-1">Plan Básico</p>
-                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">30 días gratis</div>
+                        <p className="text-sm text-gray-500 mb-1">Plan Esencial</p>
+                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">14 días gratis</div>
                         <p className="text-sm text-gray-500">Prueba gratuita sin compromiso</p>
                         <p className="text-gray-500 mt-3 text-base">
-                          Después: <span className="font-bold text-[#404040]">14,99€/mes</span>
+                          Después: <span className="font-bold text-[#404040]">12,99€/mes</span>
                         </p>
                       </>
                     ) : (
                       <>
                         <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                         <div className="flex items-baseline justify-center gap-2">
-                          <span className="text-5xl font-bold text-[#404040]">36,99€</span>
+                          <span className="text-5xl font-bold text-[#404040]">29,99€</span>
                           <span className="text-gray-500">/mes</span>
                         </div>
-                        <p className="text-sm text-gray-600 mt-2">Plan Premium (con grabación de clases)</p>
+                        <p className="text-sm text-gray-600 mt-2">Plan Clase grabada (incluye grabación y correo profesional)</p>
                       </>
                     )}
                   </div>
@@ -674,19 +674,19 @@ export default function TeacherSignup() {
                           <Check className="text-white" size={20} />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 30 días</h4>
+                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 14 días</h4>
                            <div className="text-sm text-gray-700 space-y-2 text-left">
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 30 días son completamente gratis, sin cargos.</span>
+                               <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 14 días son completamente gratis, sin cargos.</span>
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Después de 30 días:</strong> Se procederá al cobro mensual de 14,99€ automáticamente mediante el método de pago que registres.</span>
+                               <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 12,99€ automáticamente mediante el método de pago que registres.</span>
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 30 días de forma totalmente gratuita, sin ningún cargo.</span>
+                               <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 14 días de forma totalmente gratuita, sin ningún cargo.</span>
                              </p>
                            </div>
                         </div>
@@ -701,7 +701,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 14,99€/mes (Plan Básico) o 36,99€/mes (Plan Premium)</p>
+                      <p>- La suscripción tiene un coste de 12,99€/mes (Plan Esencial) o 29,99€/mes (Plan Clase grabada)</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
