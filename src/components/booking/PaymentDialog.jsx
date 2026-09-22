@@ -27,17 +27,8 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
   const handleStripePayment = async () => {
     setProcessing(true);
     try {
+      // El precio ya no se envía desde el navegador: lo calcula el servidor a partir de la reserva.
       const response = await base44.functions.invoke('createClassCheckout', {
-        teacherId: booking.teacher_id,
-        teacherName: booking.teacher_name,
-        teacherEmail: booking.teacher_email,
-        subjectId: booking.subject_id,
-        subjectName: booking.subject_name,
-        date: booking.date,
-        startTime: booking.start_time,
-        endTime: booking.end_time,
-        duration: booking.duration_minutes,
-        price: booking.price,
         bookingId: booking.id
       });
 

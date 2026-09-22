@@ -108,12 +108,16 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
   await db.update(env, "bookings_ledger", { booking_id: `eq.${b.booking_id}` }, { meet_link: meet });
   if (env.BASE44_FUNCTIONS_URL) {
     try {
-      await fetch(`${env.BASE44_FUNCTIONS_URL}/setMeetLink`, {
+      await fetch(`${env.BASE44_FUNCTIONS_URL}/setMeetLinkSecure`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // Clave compartida: la función ya no acepta peticiones anónimas.
+          "x-automation-key": env.AUTOMATION_SECRET ?? "",
+        },
         body: JSON.stringify({ booking_id: b.booking_id, meet_link: meet }),
       });
-    } catch (e) { console.error(`setMeetLink ${b.booking_id}:`, e); }
+    } catch (e) { console.error(`setMeetLinkSecure ${b.booking_id}:`, e); }
   }
 
   // Emails: al alumno (simple) y al profesor (premium con recordatorio de grabar si es @menttio.com).
