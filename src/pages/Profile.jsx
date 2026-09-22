@@ -35,6 +35,7 @@ import {
 import { createPageUrl } from '../utils';
 import { resetOnboarding } from '../components/teacher/OnboardingTour';
 import { resetStudentOnboarding } from '../components/student/OnboardingTour';
+import RecordingConsentCard from '@/components/legal/RecordingConsentCard';
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
@@ -439,7 +440,11 @@ export default function Profile() {
           </TabsContent>
         </Tabs>
       ) : (
-        renderProfileContent()
+        <div className="space-y-6">
+          {renderProfileContent()}
+          {/* Permiso de grabación: se puede retirar en cualquier momento */}
+          <RecordingConsentCard student={profile} onChange={setProfile} />
+        </div>
       )}
     </div>
   );
