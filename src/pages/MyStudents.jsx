@@ -47,11 +47,6 @@ export default function MyStudents() {
 
   const currentMonth = format(new Date(), 'yyyy-MM');
 
-  // Antes apuntaba a n8n Cloud. Ahora al Cloudflare Worker (configurable por entorno).
-  const INFORME_WEBHOOK =
-    import.meta.env.VITE_AUTOMATIONS_URL
-      ? `${import.meta.env.VITE_AUTOMATIONS_URL}/informe-progreso`
-      : 'https://menttio-automations.TU-SUBDOMINIO.workers.dev/informe-progreso';
 
   // El informe se genera en el servidor a partir de las clases reales y se envía al tutor legal
   // si el alumno es menor. Antes se construía en el navegador y se mandaba a un endpoint abierto.
@@ -544,6 +539,14 @@ export default function MyStudents() {
                               >
                                 <Download size={13} className="mr-1.5" />
                                 Descargar PDF
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white h-8 text-xs"
+                                onClick={() => setReportStudent(student)}
+                              >
+                                <Send size={13} className="mr-1.5" />
+                                Informe para la familia
                               </Button>
                             </div>
                           </div>
