@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const BETA_TRIAL_DAYS = 30;
+const BETA_TRIAL_DAYS = 14;
 
 export default function BetaTeacherSignupPayment() {
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ export default function BetaTeacherSignupPayment() {
         const trialUsedRecords = await base44.entities.TrialUsed.filter({ email: user.email });
         const grantTrial = trialUsedRecords.length === 0;
 
-        // Calcular fechas de prueba (30 días para beta)
+        // Calcular fechas de prueba (14 días, igual que el registro normal)
         const now = new Date();
         const trialEndDate = new Date();
         trialEndDate.setDate(trialEndDate.getDate() + BETA_TRIAL_DAYS);
@@ -83,7 +83,7 @@ export default function BetaTeacherSignupPayment() {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
             subject: `Nuevo Profesor BETA - Menttio`,
-            body: `<h2>Nuevo Profesor Beta Registrado</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Teléfono:</strong> ${data.phone}</p><p><strong>Plan:</strong> Básico (Beta — 30 días prueba)</p><p><strong>Trial hasta:</strong> ${grantTrial ? trialEndDate.toLocaleDateString('es-ES') : 'No aplica (ya usó trial)'}</p>`
+            body: `<h2>Nuevo Profesor Beta Registrado</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Teléfono:</strong> ${data.phone}</p><p><strong>Plan:</strong> Esencial (Beta — 14 días prueba)</p><p><strong>Trial hasta:</strong> ${grantTrial ? trialEndDate.toLocaleDateString('es-ES') : 'No aplica (ya usó trial)'}</p>`
           });
         } catch { /* no crítico */ }
 
