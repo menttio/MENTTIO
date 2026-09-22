@@ -11,7 +11,8 @@ export default function Contact() {
     name: '',
     lastName: '',
     email: '',
-    message: ''
+    message: '',
+    website: '' // campo trampa contra formularios automáticos: si se rellena, se ignora el envío
   });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -21,22 +22,28 @@ export default function Contact() {
     setSending(true);
 
     try {
-      await base44.functions.invoke('sendContactEmail', {
+      const res = await base44.functions.invoke('contactMessage', {
         name: formData.name,
         lastName: formData.lastName,
         email: formData.email,
-        message: formData.message
+        message: formData.message,
+        website: formData.website
       });
 
+      if (!res.data?.success) {
+        alert(res.data?.error || 'No se ha podido enviar el mensaje. Inténtalo de nuevo.');
+        return;
+      }
+
       setSent(true);
-      setFormData({ name: '', lastName: '', email: '', message: '' });
-      
+      setFormData({ name: '', lastName: '', email: '', message: '', website: '' });
+
       setTimeout(() => {
         setSent(false);
       }, 5000);
     } catch (error) {
       console.error('Error sending email:', error);
-      alert('Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+      alert(error?.response?.data?.error || 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.');
     } finally {
       setSending(false);
     }
@@ -93,6 +100,17 @@ export default function Contact() {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Campo trampa: invisible para las personas, lo rellenan los robots de spam */}
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px' }}
+                />
                 <div>
                   <label className="block text-sm font-medium text-[#404040] mb-2">
                     Nombre *
