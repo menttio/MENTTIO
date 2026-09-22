@@ -26,6 +26,10 @@
       "type": "string",
       "description": "Email del profesor"
     },
+    "teacher_phone": {
+      "type": "string",
+      "description": "Tel\u00e9fono del profesor"
+    },
     "subject_id": {
       "type": "string",
       "description": "ID de la asignatura"
@@ -151,6 +155,7 @@
       "type": "string",
       "enum": [
         "pending",
+        "pending_confirmation",
         "paid",
         "refunded"
       ],
@@ -184,5 +189,50 @@
     "subject_id",
     "date",
     "start_time"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.student_email": "{{user.email}}"
+        },
+        {
+          "data.teacher_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "$or": [
+        {
+          "data.student_email": "{{user.email}}"
+        },
+        {
+          "data.teacher_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.teacher_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }
