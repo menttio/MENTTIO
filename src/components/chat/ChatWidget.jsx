@@ -61,7 +61,7 @@ export default function ChatWidget() {
     try {
       const allMessages = [...messages.filter(m => m.id !== 'welcome'), userMessage];
 
-      const response = await base44.functions.invoke('chatAssistant', {
+      const response = await base44.functions.invoke('salesAssistant', {
         messages: allMessages,
       });
 
