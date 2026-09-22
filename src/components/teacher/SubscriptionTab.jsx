@@ -67,7 +67,7 @@ export default function SubscriptionTab({ profile }) {
   const isTrial = data?.trial_active;
   const plan = data?.subscription_plan || profile?.subscription_plan || 'basic';
   const isCommission = plan === 'commission';
-  const planPrice = plan === 'premium' ? '36,99€' : plan === 'commission' ? 'Sin cuota' : '14,99€';
+  const planPrice = plan === 'premium' ? '29,99€' : plan === 'commission' ? 'Sin cuota' : '12,99€';
   const details = data?.subscription_details;
 
   // Dates
@@ -204,7 +204,7 @@ export default function SubscriptionTab({ profile }) {
         <Card className="border-purple-200 bg-purple-50">
           <CardContent className="p-5">
             <p className="font-semibold text-purple-800 mb-1">Plan Comisión activo</p>
-            <p className="text-sm text-purple-700">No pagas cuota mensual. Menttio retiene el 25% de cada clase y tú recibes el 75% directamente del alumno por Bizum.</p>
+            <p className="text-sm text-purple-700">No pagas cuota mensual. Menttio retiene el 10% de las clases que cobres a través de la plataforma; el resto es tuyo.</p>
           </CardContent>
         </Card>
       )}

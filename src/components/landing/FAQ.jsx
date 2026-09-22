@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     question: '¿Cuánto cuesta la suscripción para profesores?',
-    answer: 'Hay tres opciones: Plan Comisión (0€/mes, Menttio retiene un 25% por clase), Plan Básico por 14,99€/mes y Plan Premium por 36,99€/mes con grabación de clases incluida. Los planes de suscripción no tienen comisión por clase. Puedes cancelar en cualquier momento.'
+    answer: 'Dos planes y una puerta de entrada. Esencial: 12,99€/mes con todo salvo la grabación. Clase grabada: 29,99€/mes, que añade la grabación automática y tu correo profesional. Y si prefieres empezar sin cuota, 0€/mes con un 10% de las clases que cobres a través de la plataforma. Los planes de suscripción no tienen comisión, y puedes cancelar cuando quieras.'
   },
   {
     question: '¿Hay período de prueba gratuito?',
