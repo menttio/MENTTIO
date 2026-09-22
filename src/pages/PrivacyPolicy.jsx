@@ -356,11 +356,42 @@ export default function PrivacyPolicy() {
               </div>
               <h3 className="text-xl font-bold text-[#404040]">7. Retención de Datos</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed ml-11">
-              Conservamos tu información personal solo durante el tiempo necesario para cumplir con los 
-              fines descritos en esta política, salvo que la ley requiera o permita un período de retención 
-              más largo. Cuando elimines tu cuenta, borraremos o anonimizaremos tus datos personales.
-            </p>
+            <div className="ml-11 space-y-3 text-gray-600 leading-relaxed">
+              <p>
+                Conservamos cada dato solo el tiempo necesario, y lo borramos después de forma automática.
+                Estos son los plazos concretos:
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Avisos y notificaciones de la plataforma:</strong> 180 días.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Huella técnica del formulario de contacto</strong> (una marca cifrada e irreversible de la IP, para evitar el envío masivo): 7 días.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Conversaciones y mensajes:</strong> se eliminan tras 24 meses sin actividad.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Grabaciones de clases:</strong> mientras el alumno mantenga el permiso. Si lo retira o borra su cuenta, dejan de estar disponibles.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Clases y pagos:</strong> se conservan durante los plazos que exigen las obligaciones fiscales y contables, aunque cierres tu cuenta.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 text-[#404040]">•</span>
+                  <span><strong>Constancia de los consentimientos</strong> (qué se aceptó, quién y cuándo): se conserva mientras dure la relación y después el tiempo necesario para poder demostrarlo.</span>
+                </li>
+              </ul>
+              <p>
+                Cuando eliminas tu cuenta, borramos tu perfil, tus mensajes y tus notificaciones, y dejamos
+                solo lo que la ley obliga a conservar.
+              </p>
+            </div>
           </section>
 
           {/* Section 8 */}
