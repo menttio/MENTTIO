@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import ConsentGate from '@/components/legal/ConsentGate';
 
 export default function Layout({ children, currentPageName }) {
   const navigate = useNavigate();
@@ -567,6 +568,9 @@ export default function Layout({ children, currentPageName }) {
           {children}
         </div>
       </main>
+
+      {/* Pide el consentimiento a los alumnos que se registraron antes de pedirlo */}
+      <ConsentGate />
     </div>
   );
 }
