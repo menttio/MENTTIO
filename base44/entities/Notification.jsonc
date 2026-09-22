@@ -17,7 +17,9 @@
         "booking_modified",
         "booking_cancelled",
         "message_new",
-        "reminder_24h"
+        "reminder_24h",
+        "payment_pending_confirmation",
+        "payment_confirmed"
       ],
       "description": "Tipo de notificaci\u00f3n"
     },
@@ -49,5 +51,44 @@
     "type",
     "title",
     "message"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {},
+    "update": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }
