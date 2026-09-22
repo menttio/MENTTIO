@@ -133,7 +133,7 @@
         "commission"
       ],
       "default": "basic",
-      "description": "Plan de suscripci\u00f3n: basic (sin grabaci\u00f3n), premium (con grabaci\u00f3n), commission (sin cuota, 25% por clase)"
+      "description": "Plan de suscripci\u00f3n: basic (sin grabaci\u00f3n), premium (con grabaci\u00f3n), commission (sin cuota, 10% por clase)"
     },
     "commission_percentage": {
       "type": "number",
