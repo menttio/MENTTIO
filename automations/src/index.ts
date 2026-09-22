@@ -29,8 +29,8 @@ const ROUTES: Route[] = [
   { method: "POST", path: "/nuevo-profesor", secret: true, handler: (e, b) => r.nuevoRegistro(e, "profesor", b) },
   { method: "POST", path: "/registrar-profesor", secret: true, handler: (e, b) => r.registrarProfesor(e, b) },
   { method: "POST", path: "/eliminar-profesor", secret: true, handler: (e, b) => r.eliminarProfesor(e, b) },
-  // Llamado directamente desde el frontend (MyStudents.jsx) -> sin secreto, igual que hoy en n8n.
-  { method: "POST", path: "/informe-progreso", secret: false, handler: (e, b) => r.informeProgreso(e, b) },
+  // Ya no se llama desde el navegador: el informe lo envía Base44 (familyReport), autenticado.
+  { method: "POST", path: "/informe-progreso", secret: true, handler: (e, b) => r.informeProgreso(e, b) },
 ];
 
 export default {
