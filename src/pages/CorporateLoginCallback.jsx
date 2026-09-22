@@ -151,7 +151,7 @@ export default function CorporateLoginCallback() {
         sessionStorage.removeItem('subscription_plan');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        const stripeResp = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+        const stripeResp = await base44.functions.invoke('teacherSubscription', { subscription_plan });
         if (stripeResp.data.error) throw new Error(stripeResp.data.error);
         window.location.replace(stripeResp.data.url);
 
