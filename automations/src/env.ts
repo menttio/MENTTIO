@@ -21,4 +21,6 @@ export interface Env {
 
   // Cron -> Base44
   BASE44_FUNCTIONS_URL: string;
+  // Clave compartida con la función setMeetLinkSecure de Base44
+  AUTOMATION_SECRET: string;
 }
