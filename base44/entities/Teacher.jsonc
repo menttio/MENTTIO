@@ -67,11 +67,25 @@
     },
     "rating": {
       "type": "number",
-      "description": "Valoraci\u00f3n media del profesor"
+      "description": "Valoraci\u00f3n media del profesor (solo se muestra si tiene valoraciones reales)"
     },
     "total_classes": {
       "type": "number",
       "description": "Total de clases impartidas"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Perfil revisado por Menttio (identidad, titulaci\u00f3n y experiencia)"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Fecha de la revisi\u00f3n del perfil"
+    },
+    "verified_notes": {
+      "type": "string",
+      "description": "Qu\u00e9 se comprob\u00f3 en la revisi\u00f3n (uso interno)"
     },
     "teaching_methods": {
       "type": "array",
