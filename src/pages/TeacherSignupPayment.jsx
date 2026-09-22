@@ -131,7 +131,7 @@ export default function TeacherSignupPayment() {
           return;
         }
 
-        const response = await base44.functions.invoke('createTeacherSubscription', { subscription_plan });
+        const response = await base44.functions.invoke('teacherSubscription', { subscription_plan });
         if (response.data.error) throw new Error(response.data.error);
         window.location.replace(response.data.url);
 
