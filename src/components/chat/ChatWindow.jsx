@@ -80,6 +80,9 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
 
       await base44.entities.Message.create({
         conversation_id: conversation.id,
+        // Participantes: son los que dan acceso al mensaje (nadie más puede leerlo).
+        student_email: conversation.student_email,
+        teacher_email: conversation.teacher_email,
         sender_type: userRole,
         sender_id: userId,
         sender_name: userName,
