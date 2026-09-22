@@ -292,19 +292,20 @@ export default function Hero() {
           >
             <div className="inline-flex items-center gap-2 bg-[#404040] px-4 py-2 rounded-full mb-6">
               <Sparkles className="text-[#41f2c0]" size={16} />
-              <span className="text-white text-sm font-medium">Para profesores que quieren dejar de perder tiempo</span>
+              <span className="text-white text-sm font-medium">Para profesores particulares que dan clase online</span>
             </div>
             
             {/* CAMBIO: titular usando el gancho elegido, con más punch */}
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Deja de perder tiempo
-              <span className="block text-[#404040]">organizando tus clases.</span>
+              Da tu clase.
+              <span className="block text-[#404040]">Menttio hace el resto.</span>
             </h1>
             
             {/* CAMBIO: subtítulo más orientado al problema resuelto, no a features */}
             <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
-              Reservas automáticas, pagos centralizados, materiales siempre accesibles y clases grabadas.
-              Todo lo que necesitas para gestionar tu trabajo como profesor, en un solo lugar.
+              La videollamada se crea sola, la clase queda grabada para que tu alumno la repase, los apuntes
+              quedan guardados y el pago entra sin que persigas a nadie. Pensado para clases particulares
+              online de Matemáticas, Física y Química (ESO, Bachillerato y EBAU).
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-12">
@@ -314,7 +315,7 @@ export default function Hero() {
                 className="bg-[#404040] hover:bg-[#303030] text-white px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
               >
                 {/* CAMBIO: CTA más específico */}
-                Crea tu perfil gratis
+                Empieza gratis 14 días
                 <ArrowRight className="ml-2" size={18} />
               </Button>
               <Button
@@ -330,15 +331,15 @@ export default function Hero() {
             <div className="grid grid-cols-3 gap-3 md:gap-6">
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Calendar className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Sin solapamientos ni WhatsApps</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Videollamada creada sola</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Video className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Grabaciones y materiales incluidos</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Clase grabada para repasar</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
                 <Users className="text-[#41f2c0] mb-2 mx-auto" size={24} />
-                <div className="text-xs md:text-sm text-[#404040] font-medium">Alumnos y pagos en un solo lugar</div>
+                <div className="text-xs md:text-sm text-[#404040] font-medium">Cobro y seguimiento al día</div>
               </div>
             </div>
           </motion.div>
@@ -395,8 +396,8 @@ export default function Hero() {
                 className="absolute -bottom-4 -left-4 bg-[#404040] text-white rounded-2xl shadow-lg p-4 z-20"
               >
                 {/* CAMBIO: más orientado al beneficio */}
-                <div className="text-2xl font-bold">0 caos</div>
-                <div className="text-xs opacity-90">todo bajo control</div>
+                <div className="text-2xl font-bold">0 WhatsApps</div>
+                <div className="text-xs opacity-90">para organizar la clase</div>
               </motion.div>
             </div>
           </motion.div>

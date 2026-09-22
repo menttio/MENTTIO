@@ -4,52 +4,52 @@ import { motion } from 'framer-motion';
 
 const features = [
   {
-    icon: Calendar,
-    title: 'Agenda inteligente',
-    description: 'Define tu disponibilidad y olvídate de gestionar huecos manualmente. Tus alumnos solo ven los horarios que tú tienes libres, sin solapamientos ni confusiones.',
-    color: 'bg-blue-500'
-  },
-  {
-    icon: Users,
-    title: 'Gestión de alumnos',
-    description: 'Ten a todos tus alumnos organizados en un solo lugar. Consulta su historial, seguimiento y progreso sin depender de hojas de cálculo ni notas sueltas.',
-    color: 'bg-green-500'
-  },
-  {
-    icon: CreditCard,
-    title: 'Pagos integrados',
-    description: 'Cobra tus clases de forma automática y centralizada. Sin perseguir transferencias ni recordar quién te debe qué. Todo registrado y controlado desde la plataforma.',
-    color: 'bg-red-500'
-  },
-  {
-    icon: Zap,
-    title: 'Reservas automáticas',
-    description: 'Tus alumnos reservan, confirman y cancelan sin que tú tengas que intervenir. Menos WhatsApps, menos interrupciones, más tiempo para enseñar.',
-    color: 'bg-yellow-500'
-  },
-  {
     icon: Video,
-    title: 'Clases grabadas',
-    description: 'Graba tus sesiones automáticamente y deja que tus alumnos las reposen cuando quieran. Tú no haces nada extra — la plataforma lo gestiona por ti.',
-    color: 'bg-purple-500'
+    title: 'La clase queda grabada',
+    description: 'La videollamada se crea sola y la grabación aparece luego en la ficha de la clase. Tu alumno repasa antes del examen y tú no haces nada extra.',
+    color: 'bg-[#41f2c0]'
   },
   {
     icon: Cloud,
-    title: 'Materiales siempre accesibles',
-    description: 'Sube apuntes, ejercicios y recursos una sola vez y olvídate. Tus alumnos los encuentran organizados sin que tengas que reenviar nada por correo o WhatsApp.',
-    color: 'bg-cyan-500'
-  },
-  {
-    icon: MessageCircle,
-    title: 'Comunicación centralizada',
-    description: 'Habla con tus alumnos, resuelve dudas y comparte archivos desde un solo sitio. Sin saltar entre apps ni perder mensajes importantes.',
-    color: 'bg-pink-500'
+    title: 'Apuntes y ejercicios en su sitio',
+    description: 'Sube el material una vez y queda junto a la clase a la que pertenece. Se acabó reenviar el mismo PDF por WhatsApp cada semana.',
+    color: 'bg-purple-500'
   },
   {
     icon: BarChart3,
-    title: 'Panel de control de tu negocio',
-    description: 'Visualiza tus ingresos, horas impartidas y actividad por alumno. Toma decisiones con datos reales sobre cómo está funcionando tu trabajo como profesor.',
+    title: 'Seguimiento del alumno',
+    description: 'Apunta cómo ha ido cada clase y ten a mano su evolución. Cuando una familia pregunte qué tal va su hijo, tendrás la respuesta con datos.',
     color: 'bg-orange-500'
+  },
+  {
+    icon: CreditCard,
+    title: 'Cobro sin perseguir a nadie',
+    description: 'Tus alumnos pagan con tarjeta al reservar, o marcas el pago por Bizum. Siempre sabes quién te debe qué.',
+    color: 'bg-pink-500'
+  },
+  {
+    icon: Calendar,
+    title: 'Tu horario, tus normas',
+    description: 'Marcas tus huecos una vez y tus alumnos reservan solo ahí. Sin solapamientos y sin negociar la hora por mensajes.',
+    color: 'bg-blue-500'
+  },
+  {
+    icon: Zap,
+    title: 'Recordatorios automáticos',
+    description: 'Tus alumnos reciben el aviso y el enlace de la clase sin que tengas que escribirles. Menos olvidos y menos plantones.',
+    color: 'bg-yellow-500'
+  },
+  {
+    icon: MessageCircle,
+    title: 'Dudas en un solo sitio',
+    description: 'Las preguntas entre clase y clase quedan en la conversación del alumno, no perdidas entre chats personales.',
+    color: 'bg-green-500'
+  },
+  {
+    icon: Users,
+    title: 'Tus números claros',
+    description: 'Cuánto has ingresado, cuántas horas has dado y qué alumno viene más. Datos reales de tu actividad, sin hojas de cálculo.',
+    color: 'bg-indigo-500'
   }
 ];
 
@@ -64,10 +64,10 @@ export default function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl lg:text-5xl font-bold text-[#404040] mb-4">
-            Todo lo que necesitas para gestionar tu trabajo como profesor
+La parte aburrida de dar clase, resuelta
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Cada herramienta que usas hoy por separado — calendario, pagos, materiales, mensajes — reunida en un solo lugar.
+Tú te dedicas a explicar. Menttio se encarga de la videollamada, la grabación, los materiales, los recordatorios y el cobro.
           </p>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
