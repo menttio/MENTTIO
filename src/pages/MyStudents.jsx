@@ -152,7 +152,7 @@ export default function MyStudents() {
           const studentIdsFromBookings = [...studentIdsSet].filter(Boolean);
 
           // El servidor devuelve solo los alumnos de este profesor.
-          const studentsRes = await base44.functions.invoke('teacherStudents', {});
+          const studentsRes = await base44.functions.invoke('studentsOfTeacher', {});
           const myStudents = studentsRes.data?.students || [];
           const idsFromBookings = new Set(studentIdsFromBookings.map(String));
           const studentMap = {};

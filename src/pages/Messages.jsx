@@ -110,7 +110,7 @@ export default function Messages() {
     setConversations(sortedConversations);
 
     // Alumnos con los que el profesor ya tiene relación (el servidor los filtra).
-    const studentsRes = await base44.functions.invoke('teacherStudents', {});
+    const studentsRes = await base44.functions.invoke('studentsOfTeacher', {});
     const allStudents = studentsRes.data?.students || [];
     
     // Filter out students we already have conversations with

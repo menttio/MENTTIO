@@ -95,7 +95,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
   const loadStudents = async () => {
     setLoading(true);
     try {
-      const studentsRes = await base44.functions.invoke('teacherStudents', {});
+      const studentsRes = await base44.functions.invoke('studentsOfTeacher', {});
       const allStudents = studentsRes.data?.students || [];
       const studentsWithTeacher = allStudents.filter(s =>
         s.assigned_teachers?.some(at => at.teacher_id === teacher.id)
