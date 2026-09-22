@@ -361,7 +361,7 @@ export default function BetaTeacherSignup() {
                     <h4 className="font-semibold text-[#404040] mb-3">Términos y Condiciones</h4>
                     <div className="text-sm text-gray-600 space-y-2">
                       <p><strong>1. Aceptación de los términos</strong></p>
-                      <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
+                      <p>Al registrarte como profesor en Menttio, aceptas cumplir con estos términos y condiciones.</p>
                       <p><strong>2. Suscripción y pago</strong></p>
                       <p>- La suscripción tiene un coste de 12,99€/mes (plan Esencial)</p>
                       <p>- Se cobrará de forma automática cada mes tras los 14 días de prueba gratuita</p>
@@ -380,7 +380,7 @@ export default function BetaTeacherSignup() {
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                     <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={setAcceptedTerms} className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#41f2c0]" />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
-                      He leído y acepto los términos y condiciones, así como la política de privacidad de Menπio
+                      He leído y acepto los términos y condiciones, así como la política de privacidad de Menttio
                     </label>
                   </div>
 
