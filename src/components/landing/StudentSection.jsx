@@ -6,20 +6,20 @@ import { createPageUrl } from '../../utils';
 const benefits = [
   {
     icon: ShieldCheck,
-    title: 'Profesores verificados',
-    description: 'Todos nuestros profesores pasan por un proceso de verificación para garantizar calidad y seguridad.',
+    title: 'Repasa la clase cuando quieras',
+    description: 'Si tu profesor graba la clase, la tendrás disponible para volver a verla antes del examen, las veces que haga falta.',
     color: 'bg-[#41f2c0]/10 text-[#35d4a7]',
   },
   {
     icon: CalendarCheck,
-    title: 'Reserva fácil en segundos',
-    description: 'Elige tu profesor, selecciona horario y confirma tu clase en pocos pasos, sin llamadas ni esperas.',
+    title: 'Reserva sin mensajes ni esperas',
+    description: 'Ves los huecos libres de tu profesor y eliges el que te venga bien. Sin cadenas de WhatsApp para cuadrar la hora.',
     color: 'bg-purple-100 text-purple-600',
   },
   {
     icon: Lock,
-    title: 'Pagos seguros y protegidos',
-    description: 'Tus datos de pago están protegidos con la tecnología de Stripe, el estándar de seguridad del sector.',
+    title: 'Apuntes y pagos en un solo sitio',
+    description: 'El material de cada clase queda guardado y los pagos se hacen con tarjeta de forma segura mediante Stripe.',
     color: 'bg-blue-100 text-blue-600',
   },
 ];
@@ -30,13 +30,13 @@ export default function StudentSection() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1.5 bg-[#41f2c0]/15 text-[#35d4a7] text-sm font-semibold rounded-full mb-4">
-            Para alumnos y familias
+Para tus alumnos y sus familias
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-[#404040] mb-4">
-            ¿Buscas el profesor perfecto?
+Tu alumno no vuelve a perderse una explicación
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Encuentra al profesor ideal para tus necesidades, reserva clases en segundos y paga de forma segura. Todo en un solo lugar.
+Tus alumnos entran con su cuenta, reservan en tus horarios, encuentran los apuntes de cada clase y pueden volver a ver la grabación. Las familias ven que hay un método detrás.
           </p>
         </div>
 

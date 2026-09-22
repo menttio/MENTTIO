@@ -2,19 +2,19 @@ import React from 'react';
 import { X, Check } from 'lucide-react';
 
 const withoutItems = [
-  'Gestión manual de pagos y cobros',
-  'Alumnos perdidos por falta de seguimiento',
-  'Horarios desorganizados en papel o Excel',
-  'Sin historial de clases ni progreso',
-  'Comunicación caótica por WhatsApp',
+  'Crear la videollamada y mandar el enlace a mano, clase tras clase',
+  'La explicación se pierde: si el alumno no lo pilló, se repite en la siguiente',
+  'Reenviar los mismos apuntes por WhatsApp una y otra vez',
+  'Perseguir los pagos y llevar la cuenta de memoria',
+  'Cuadrar horarios a base de mensajes',
 ];
 
 const withItems = [
-  'Cobros automáticos y seguimiento de pagos',
-  'Recordatorios automáticos para tus alumnos',
-  'Calendario integrado y siempre actualizado',
-  'Historial completo de clases y progreso',
-  'Plataforma centralizada de comunicación',
+  'La videollamada se crea sola y el alumno recibe el enlace',
+  'La clase queda grabada y el alumno la repasa antes del examen',
+  'Los apuntes viven junto a la clase a la que pertenecen',
+  'El alumno paga al reservar y ves al instante quién debe qué',
+  'Tus huecos libres, visibles: el alumno elige y se acabó',
 ];
 
 export default function Comparison() {
@@ -26,7 +26,7 @@ export default function Comparison() {
             La diferencia es clara
           </h2>
           <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            Compara cómo trabajan los profesores particulares con y sin Menttio
+Lo que cambia en el día a día de un profesor particular online
           </p>
         </div>
 
