@@ -240,6 +240,42 @@ export default function PrivacyPolicy() {
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
                 <Shield className="text-[#41f2c0]" size={20} />
               </div>
+              <h3 className="text-xl font-bold text-[#404040]">Menores de edad</h3>
+            </div>
+            <div className="ml-11 space-y-3 text-gray-600 leading-relaxed">
+              <p>
+                Buena parte de nuestros alumnos son menores. Por eso pedimos la fecha de nacimiento al
+                registrarse: <strong>por debajo de los 14 años</strong>, el consentimiento para tratar sus datos
+                debe darlo su padre, madre o tutor legal (artículo 8 del RGPD y artículo 7 de la LOPDGDD).
+                En ese caso pedimos también el nombre y el correo del adulto responsable.
+              </p>
+              <p>
+                A partir de los 14 años, el alumno puede dar el consentimiento por sí mismo.
+              </p>
+              <p>
+                <strong>Grabación de las clases:</strong> es un permiso aparte y voluntario. Si no se autoriza,
+                las clases no se graban y no se muestra ninguna grabación. El permiso puede retirarse en
+                cualquier momento desde el perfil del alumno, sin dar explicaciones y sin perder el acceso al
+                resto del servicio. Cada grabación es accesible únicamente para el alumno que participó en esa
+                clase y su profesor.
+              </p>
+              <p>
+                Guardamos constancia de quién dio cada consentimiento, con qué texto y en qué fecha, y también
+                de cuándo se retira.
+              </p>
+              <p>
+                Si detectamos que una cuenta de un menor de 14 años se creó sin autorización del adulto
+                responsable, suspenderemos el tratamiento de sus datos hasta obtenerla. Si eres el padre, la
+                madre o el tutor y quieres revisar, corregir o eliminar los datos de tu hijo o hija, escríbenos.
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
+                <Shield className="text-[#41f2c0]" size={20} />
+              </div>
               <h3 className="text-xl font-bold text-[#404040]">5. Tus Derechos</h3>
             </div>
             <div className="ml-11 space-y-3">
