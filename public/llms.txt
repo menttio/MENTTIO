@@ -1,0 +1,52 @@
+# Menttio
+
+> Menttio es la herramienta de los profesores particulares que dan clase por videollamada.
+> La videollamada se crea sola para cada clase reservada, la clase queda grabada para que el
+> alumno la repase, los apuntes quedan guardados y el cobro entra sin perseguir a nadie.
+
+## Qué es y qué no es
+
+Menttio **no es un marketplace y no consigue alumnos**. Está pensado para profesores que ya
+tienen los suyos: sobre todo clases particulares de Matemáticas, Física y Química de ESO,
+Bachillerato y EBAU, en España. Quien busque una plataforma para encontrar profesor, este no
+es el sitio.
+
+## Para profesores
+
+- Videollamada creada automáticamente para cada clase, sin mandar enlaces a mano.
+- Grabación de la clase, que aparece sola en su ficha para que el alumno la repase.
+- Agenda: el profesor define su disponibilidad una vez y los alumnos reservan en los huecos.
+- Cobros con tarjeta o por Bizum, con el estado de cada clase a la vista de ambos.
+- Informe mensual para la familia con las clases, las horas y el progreso del alumno.
+- Apuntes y materiales asociados a cada alumno.
+
+## Precios
+
+- Alumnos: gratis siempre.
+- Sin cuota: 0 €/mes y un 10 % por cada clase cobrada a través de Menttio.
+- Esencial: 12,99 €/mes (130 €/año), sin comisión por clase. 14 días de prueba.
+- Clase grabada: 29,99 €/mes, añade la grabación de las clases. 14 días de prueba.
+
+## Privacidad de las grabaciones
+
+Cada grabación la ven solo el alumno que estuvo en esa clase y su profesor. Hace falta el
+consentimiento del alumno, o el de sus padres si es menor de 14 años (artículo 7 de la
+LOPDGDD), y se puede retirar en cualquier momento.
+
+## Páginas
+
+- [Inicio](https://menttio.com/): qué hace Menttio y para quién.
+- [Registro de profesor](https://menttio.com/TeacherSignup): alta en 5 minutos.
+- [Blog para profesores particulares](https://menttio.com/Blog): cobros, precios, organización y ley.
+- [Cómo cobrar tus clases particulares sin perseguir a nadie](https://menttio.com/Blog/cobrar-clases-particulares-sin-perseguir-a-nadie)
+- [Grabar tus clases: qué dice la ley y cómo pedir permiso](https://menttio.com/Blog/grabar-clases-particulares-consentimiento-menores)
+- [Cuánto cobrar por una clase particular](https://menttio.com/Blog/cuanto-cobrar-clase-particular)
+- [Organizar tus clases sin vivir en WhatsApp](https://menttio.com/Blog/organizar-clases-particulares-sin-whatsapp)
+- [El informe mensual para las familias](https://menttio.com/Blog/informe-mensual-para-familias)
+- [Quiénes somos](https://menttio.com/AboutUs)
+- [Contacto](https://menttio.com/Contact)
+- [Política de privacidad](https://menttio.com/PrivacyPolicy)
+- [Términos y condiciones](https://menttio.com/TermsOfService)
+
+Las páginas de la aplicación (panel del profesor, mis alumnos, mensajes, calendario) requieren
+sesión y no contienen información pública.
