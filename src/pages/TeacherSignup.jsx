@@ -37,7 +37,11 @@ export default function TeacherSignup() {
     education: '',
     experience_years: 0,
     subscription_plan: 'premium',
-    billing_period: 'mensual'
+    // Si vino de pulsar en la tabla de precios con el pago anual marcado, se respeta.
+    billing_period: (() => {
+      try { return sessionStorage.getItem('billing_period') === 'anual' ? 'anual' : 'mensual'; }
+      catch (_e) { return 'mensual'; }
+    })()
   });
 
   const [teacherSubjects, setTeacherSubjects] = useState([]);
