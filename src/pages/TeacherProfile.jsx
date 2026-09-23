@@ -115,11 +115,29 @@ export default function TeacherProfile() {
               <h2 className="text-xl md:text-2xl font-bold text-[#404040] mb-2">{teacher.full_name}</h2>
               
               <div className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-4 mb-3">
-                <div className="flex items-center gap-1">
-                  <Star className="text-yellow-400 fill-yellow-400" size={18} />
-                  <span className="font-semibold">{teacher.rating?.toFixed(1) || '5.0'}</span>
-                  <span className="text-gray-500 text-sm">({reviews.length} reseñas)</span>
-                </div>
+                {/* Antes ponía 5.0 cuando no había ninguna puntuación (`|| '5.0'`), es decir,
+                    una nota inventada. Ahora la media sale de las reseñas que de verdad
+                    puntuaron, y si no hay ninguna no se enseña nota. */}
+                {(() => {
+                  const puntuadas = reviews.filter((r) => r.rating > 0);
+                  if (puntuadas.length === 0) {
+                    return (
+                      <span className="text-gray-500 text-sm">
+                        {reviews.length > 0
+                          ? `${reviews.length} ${reviews.length === 1 ? 'reseña' : 'reseñas'}`
+                          : 'Todavía sin reseñas'}
+                      </span>
+                    );
+                  }
+                  const media = puntuadas.reduce((s, r) => s + r.rating, 0) / puntuadas.length;
+                  return (
+                    <div className="flex items-center gap-1">
+                      <Star className="text-yellow-400 fill-yellow-400" size={18} />
+                      <span className="font-semibold">{media.toFixed(1)}</span>
+                      <span className="text-gray-500 text-sm">({reviews.length} reseñas)</span>
+                    </div>
+                  );
+                })()}
                 <div className="flex items-center gap-2 text-gray-500">
                   <Calendar size={16} />
                   <span className="text-sm">{teacher.total_classes || 0} clases impartidas</span>
