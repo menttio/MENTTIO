@@ -61,13 +61,13 @@ export default function AdminCommissions() {
           <Percent className="text-purple-500" size={28} />
           Comisiones Pendientes
         </h1>
-        <p className="text-gray-500 mt-1 text-sm">Profesores en plan Comisión — clases completadas y desglose de pagos</p>
+        <p className="text-gray-500 mt-1 text-sm">Profesores en el plan sin cuota — clases completadas y desglose de pagos</p>
       </div>
 
       {data.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center text-gray-400">
-            No hay profesores en plan Comisión con clases completadas.
+            No hay profesores en el plan sin cuota con clases completadas.
           </CardContent>
         </Card>
       ) : (
@@ -81,7 +81,7 @@ export default function AdminCommissions() {
                     {teacher.full_name}
                   </CardTitle>
                   <Badge className="bg-purple-100 text-purple-700">
-                    Plan Comisión ({teacher.commission_percentage ?? 25}%)
+                    Sin cuota ({teacher.commission_percentage ?? 10}%)
                   </Badge>
                 </div>
                 <p className="text-sm text-gray-500">{teacher.user_email}</p>
