@@ -136,7 +136,7 @@ export default function Pricing() {
             <div className="w-8 h-8 bg-[#41f2c0] rounded-lg flex items-center justify-center flex-shrink-0">
               <Sparkles className="text-white" size={16} />
             </div>
-            <span className="text-gray-700 font-medium">Para alumnos es siempre <span className="text-[#41f2c0] font-bold">gratis</span></span>
+            <span className="text-gray-700 font-medium">Para alumnos es siempre <span className="text-[#0d7a5f] font-bold">gratis</span></span>
             <button
               onClick={handleGetStartedStudent}
               className="text-sm text-[#404040] font-semibold underline underline-offset-2 hover:text-[#41f2c0] transition-colors"
@@ -219,7 +219,7 @@ export default function Pricing() {
         >
           <p className="text-gray-500 text-sm">
             ¿Dudas sobre los precios?{' '}
-            <a href="/Contact" className="text-[#41f2c0] font-semibold hover:underline">
+            <a href="/Contact" className="text-[#0d7a5f] font-semibold underline">
               Contáctanos
             </a>
           </p>
