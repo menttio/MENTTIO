@@ -33,7 +33,7 @@ export default function BetaChat() {
     try {
       const allMessages = [...messages.filter(m => m.id !== 'welcome'), userMessage];
 
-      const response = await base44.functions.invoke('salesChat', {
+      const response = await base44.functions.invoke('asistenteVentas', {
         messages: allMessages,
       });
 
