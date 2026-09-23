@@ -346,7 +346,13 @@ export default function Layout({ children, currentPageName }) {
     ...(user?.role === 'admin' ? [{ name: 'Comisiones', icon: Settings, page: 'AdminCommissions' }] : []),
   ];
 
-  const navItems = userRole === 'teacher' ? teacherNavItems : studentNavItems;
+  const adminNavItems = [
+    { name: 'Comisiones', icon: Settings, page: 'AdminCommissions' },
+  ];
+
+  const navItems = userRole === 'teacher' ? teacherNavItems
+    : userRole === 'admin' ? adminNavItems
+    : studentNavItems;
 
   const handleLogout = () => {
     base44.auth.logout(createPageUrl('Home'));
@@ -498,7 +504,7 @@ export default function Layout({ children, currentPageName }) {
               Men<span className="text-[#41f2c0]">π</span>io
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              {userRole === 'teacher' ? 'Portal del Profesor' : 'Portal del Alumno'}
+              {userRole === 'teacher' ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : 'Portal del Alumno'}
             </p>
           </div>
 
