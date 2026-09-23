@@ -91,7 +91,17 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         console.log('👤 Usuario cargado:', currentUser);
         setUser(currentUser);
-        
+
+        // El administrador no tiene por qué ser además profesor o alumno. Sin esto, las
+        // páginas de administración quedaban inalcanzables: el flujo de abajo lo mandaba
+        // a UserNotRegistered por no encontrarle ficha.
+        const adminPages = ['AdminCommissions'];
+        if (currentUser.role === 'admin' && adminPages.includes(currentPageName)) {
+          setUserRole('admin');
+          setLoading(false);
+          return;
+        }
+
         // Check if user is a teacher
         console.log('🔍 Buscando profesor con email:', currentUser.email);
         // Si venimos del pago de Stripe, esperar a que el webhook procese la suscripción
