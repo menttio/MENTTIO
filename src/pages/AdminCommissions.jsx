@@ -2,9 +2,75 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Loader2, Percent, User } from 'lucide-react';
+import { Loader2, Percent, User, CreditCard, Check, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+
+// Puesta en marcha de los precios nuevos en Stripe. Se puede borrar cuando estén creados.
+function StripeCatalogSetup() {
+  const [estado, setEstado] = useState(null);
+  const [cargando, setCargando] = useState(false);
+
+  const ejecutar = async (aplicar) => {
+    setCargando(true);
+    try {
+      const res = await base44.functions.invoke('stripeCatalogSetup', { aplicar });
+      setEstado(res.data);
+    } catch (e) {
+      setEstado({ error: e.message });
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  return (
+    <Card className="mb-8 border-blue-200 bg-blue-50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2 text-blue-900">
+          <CreditCard size={18} />
+          Crear los precios nuevos en Stripe
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-blue-900">
+          Esencial 12,99 €/mes y 130 €/año; Clase grabada 29,99 €/mes y 300 €/año. Si un precio ya
+          existe no se duplica. Primero comprueba, luego crea.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" disabled={cargando} onClick={() => ejecutar(false)}>
+            {cargando ? <Loader2 className="animate-spin" size={16} /> : 'Comprobar sin crear nada'}
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white" disabled={cargando} onClick={() => ejecutar(true)}>
+            {cargando ? <Loader2 className="animate-spin" size={16} /> : 'Crear los precios'}
+          </Button>
+        </div>
+
+        {estado && (
+          <div className="bg-white rounded-xl p-4 text-sm space-y-2 border border-blue-200">
+            {estado.error && (
+              <p className="text-red-600 flex items-start gap-2"><AlertCircle size={16} className="mt-0.5" />{estado.error}</p>
+            )}
+            {estado.cuenta?.id && (
+              <p className="text-gray-500">Cuenta de Stripe: {estado.cuenta.id} ({estado.cuenta.pais}, {String(estado.cuenta.moneda || '').toUpperCase()})</p>
+            )}
+            {estado.precios && Object.entries(estado.precios).map(([k, v]) => (
+              <p key={k} className="flex items-start gap-2">
+                {String(v).startsWith('price_') && <Check size={16} className="text-green-600 mt-0.5" />}
+                <span className="text-gray-600">{k.replace('stripe_price_', '').replace('_', ' ')}:</span>
+                <strong className="text-[#404040] break-all">{v}</strong>
+              </p>
+            ))}
+            {estado.aplicar && <p className="text-green-700">Guardado. Ya puedes avisar de que están creados.</p>}
+            {estado.errores?.length > 0 && (
+              <p className="text-red-600">{estado.errores.join(' · ')}</p>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function AdminCommissions() {
   const [data, setData] = useState([]);
@@ -63,6 +129,8 @@ export default function AdminCommissions() {
         </h1>
         <p className="text-gray-500 mt-1 text-sm">Profesores en el plan sin cuota — clases completadas y desglose de pagos</p>
       </div>
+
+      <StripeCatalogSetup />
 
       {data.length === 0 ? (
         <Card>
