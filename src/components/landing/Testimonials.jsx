@@ -19,8 +19,18 @@ export default function Testimonials() {
     let cancelado = false;
     const cargar = async () => {
       try {
-        const lista = await base44.entities.Review.list('-created_date', 6);
-        if (!cancelado) setReviews((lista || []).filter((r) => r.comment && r.comment.trim().length > 20));
+        const lista = await base44.entities.Review.list('-created_date', 20);
+        // Solo las dejadas dentro de la plataforma. Las recogidas por formulario hablan del
+        // profesor ("explica muy bien"), no de la herramienta, así que su sitio es el perfil
+        // del profesor y no una portada que vende software a profesores.
+        if (!cancelado) {
+          setReviews(
+            (lista || [])
+              .filter((r) => r.source !== 'formulario')
+              .filter((r) => r.comment && r.comment.trim().length > 20)
+              .slice(0, 6),
+          );
+        }
       } catch (_e) {
         if (!cancelado) setReviews([]);
       } finally {
