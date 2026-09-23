@@ -74,15 +74,21 @@ const teacherPlans = [
     period: '/mes',
     description: 'Todo lo anterior, más la grabación',
     note: 'Incluye tu cuenta de correo profesional · 300€ al año si pagas anual',
-    cardClass: 'bg-gradient-to-br from-[#41f2c0] to-[#2ab88f] border-2 border-[#41f2c0] scale-105 shadow-2xl',
-    iconClass: 'bg-white/20',
-    iconColor: 'text-white',
+    // Esta tarjeta era un degradado menta con el texto en blanco: contraste 1,42, el mismo
+    // que corregimos en el resto del sitio. No salió en el escaneo porque axe no sabe medir
+    // contraste sobre un degradado y se lo salta en silencio.
+    //
+    // Ahora va en el gris corporativo con texto blanco (10,4:1). Destaca más que antes
+    // -es la única oscura de las tres- y se lee bien a plena luz.
+    cardClass: 'bg-[#404040] border-2 border-[#41f2c0] scale-105 shadow-2xl',
+    iconClass: 'bg-[#41f2c0]/20',
+    iconColor: 'text-[#41f2c0]',
     priceColor: 'text-white',
     textColor: 'text-white',
-    mutedColor: 'text-white/80',
-    checkBg: 'bg-[#404040]/30',
-    checkColor: 'text-white',
-    ctaClass: 'bg-white hover:bg-gray-100 text-[#0d7a5f] font-bold',
+    mutedColor: 'text-gray-300',
+    checkBg: 'bg-[#41f2c0]/25',
+    checkColor: 'text-[#41f2c0]',
+    ctaClass: 'bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold',
     ctaLabel: 'Empezar 14 días gratis',
     features: [
       { text: 'Reservas y calendario', included: true },
