@@ -219,7 +219,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             <div>
               <Label>Asignatura</Label>
               <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                <SelectTrigger className="mt-2">
+                <SelectTrigger aria-label="Asignatura" className="mt-2">
                   <SelectValue placeholder="Selecciona una asignatura" />
                 </SelectTrigger>
                 <SelectContent>
@@ -235,7 +235,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             <div>
               <Label>Nivel</Label>
               <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-                <SelectTrigger className="mt-2">
+                <SelectTrigger aria-label="Nivel" className="mt-2">
                   <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
                 <SelectContent>
@@ -247,8 +247,8 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             </div>
 
             <div>
-              <Label>Precio por hora (€)</Label>
-              <Input
+              <Label htmlFor="precio-por-hora">Precio por hora (€)</Label>
+              <Input id="precio-por-hora"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}

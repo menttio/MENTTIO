@@ -403,7 +403,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     setSelectedStudent(val);
                     setStep(2);
                   }}>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger aria-label="Selecciona un alumno" className="mt-2">
                       <SelectValue placeholder="Elige un alumno" />
                     </SelectTrigger>
                     <SelectContent>
@@ -434,7 +434,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     setSelectedSubject(subject);
                     setStep(3);
                   }}>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger aria-label="Selecciona la asignatura" className="mt-2">
                       <SelectValue placeholder="Elige una asignatura" />
                     </SelectTrigger>
                     <SelectContent>
@@ -534,9 +534,9 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
 
                 {/* Number of weeks */}
                 <div>
-                  <Label className="text-sm font-medium mb-2 block">¿Cuántas semanas?</Label>
+                  <Label htmlFor="cuantas-semanas" className="text-sm font-medium mb-2 block">¿Cuántas semanas?</Label>
                   <div className="flex items-center gap-3">
-                    <Input
+                    <Input id="cuantas-semanas"
                       type="number"
                       min={1}
                       max={52}

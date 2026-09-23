@@ -395,7 +395,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                     setSelectedStudent(val);
                     setStep(2);
                   }}>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger aria-label="Selecciona un alumno" className="mt-2">
                       <SelectValue placeholder="Elige un alumno" />
                     </SelectTrigger>
                     <SelectContent>
@@ -426,7 +426,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                     setSelectedSubject(subject);
                     setStep(3);
                   }}>
-                    <SelectTrigger className="mt-2">
+                    <SelectTrigger aria-label="Selecciona la asignatura" className="mt-2">
                       <SelectValue placeholder="Elige una asignatura" />
                     </SelectTrigger>
                     <SelectContent>

@@ -411,7 +411,7 @@ export default function ManageSubjects() {
             <div>
               <Label>Asignatura</Label>
               <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
-                <SelectTrigger className="mt-2">
+                <SelectTrigger aria-label="Asignatura" className="mt-2">
                   <SelectValue placeholder="Selecciona una asignatura" />
                 </SelectTrigger>
                 <SelectContent>
@@ -427,8 +427,8 @@ export default function ManageSubjects() {
 
             {selectedSubjectId === 'custom' && (
               <div>
-                <Label>Nombre de la asignatura</Label>
-                <Input
+                <Label htmlFor="nombre-de-la-asignatura">Nombre de la asignatura</Label>
+                <Input id="nombre-de-la-asignatura"
                   type="text"
                   value={customSubjectName}
                   onChange={(e) => setCustomSubjectName(e.target.value)}
@@ -441,7 +441,7 @@ export default function ManageSubjects() {
             <div>
               <Label>Nivel</Label>
               <Select value={selectedLevel} onValueChange={setSelectedLevel}>
-                <SelectTrigger className="mt-2">
+                <SelectTrigger aria-label="Nivel" className="mt-2">
                   <SelectValue placeholder="Selecciona el nivel" />
                 </SelectTrigger>
                 <SelectContent>
@@ -453,8 +453,8 @@ export default function ManageSubjects() {
             </div>
 
             <div>
-              <Label>Precio por hora individual (€)</Label>
-              <Input
+              <Label htmlFor="precio-por-hora-individual">Precio por hora individual (€)</Label>
+              <Input id="precio-por-hora-individual"
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
@@ -472,7 +472,7 @@ export default function ManageSubjects() {
               <div className="mb-3">
                 <Label className="text-xs">Máximo de alumnos por grupo</Label>
                 <Select value={maxGroupStudents || 'none'} onValueChange={(v) => setMaxGroupStudents(v === 'none' ? '' : v)}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger aria-label="Máximo de alumnos por grupo" className="mt-1">
                     <SelectValue placeholder="Sin clases grupales" />
                   </SelectTrigger>
                   <SelectContent>

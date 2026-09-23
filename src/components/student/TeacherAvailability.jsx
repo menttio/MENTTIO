@@ -59,7 +59,7 @@ export default function TeacherAvailability({ teacherId }) {
         <Button aria-label="Ver disponibilidad"
           variant="ghost"
           size="sm"
-          className="text-[#41f2c0] hover:text-[#0d7a5f] hover:bg-[#41f2c0]/10"
+          className="text-[#0d7a5f] hover:text-[#0b6650] hover:bg-[#41f2c0]/10"
         >
           <Clock size={18} />
         </Button>

@@ -427,7 +427,7 @@ export default function SearchTeachers() {
           <div className="py-4">
             <Label>Asignatura</Label>
             <Select value={assignSubject} onValueChange={setAssignSubject}>
-              <SelectTrigger className="mt-2">
+              <SelectTrigger aria-label="Asignatura" className="mt-2">
                 <SelectValue placeholder="Selecciona asignatura" />
               </SelectTrigger>
               <SelectContent>

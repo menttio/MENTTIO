@@ -72,8 +72,8 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
         <div className="space-y-6 py-4">
           {/* Bio */}
           <div>
-            <Label>Biografía</Label>
-            <Textarea
+            <Label htmlFor="biografia">Biografía</Label>
+            <Textarea id="biografia"
               value={formData.bio}
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               placeholder="Cuéntanos sobre ti..."
@@ -85,8 +85,8 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
           {/* Experience & Education */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label>Años de experiencia</Label>
-              <Input
+              <Label htmlFor="anos-de-experiencia">Años de experiencia</Label>
+              <Input id="anos-de-experiencia"
                 type="number"
                 value={formData.experience_years}
                 onChange={(e) => setFormData({ ...formData, experience_years: Number(e.target.value) })}
@@ -94,8 +94,8 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
               />
             </div>
             <div>
-              <Label>Formación académica</Label>
-              <Input
+              <Label htmlFor="formacion-academica">Formación académica</Label>
+              <Input id="formacion-academica"
                 value={formData.education}
                 onChange={(e) => setFormData({ ...formData, education: e.target.value })}
                 placeholder="Ej: Licenciado en Matemáticas"
@@ -106,9 +106,9 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
 
           {/* Teaching Methods */}
           <div>
-            <Label>Métodos de Enseñanza</Label>
+            <Label htmlFor="metodos-de-ensenanza">Métodos de Enseñanza</Label>
             <div className="flex gap-2 mt-2">
-              <Input
+              <Input id="metodos-de-ensenanza"
                 value={newItem.teaching_method}
                 onChange={(e) => setNewItem({ ...newItem, teaching_method: e.target.value })}
                 placeholder="Ej: Visual, Práctico..."
@@ -138,9 +138,9 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
 
           {/* Specializations */}
           <div>
-            <Label>Especializaciones</Label>
+            <Label htmlFor="especializaciones">Especializaciones</Label>
             <div className="flex gap-2 mt-2">
-              <Input
+              <Input id="especializaciones"
                 value={newItem.specialization}
                 onChange={(e) => setNewItem({ ...newItem, specialization: e.target.value })}
                 placeholder="Ej: Álgebra avanzada, Programación..."
@@ -170,9 +170,9 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
 
           {/* Languages */}
           <div>
-            <Label>Idiomas</Label>
+            <Label htmlFor="idiomas">Idiomas</Label>
             <div className="flex gap-2 mt-2">
-              <Input
+              <Input id="idiomas"
                 value={newItem.language}
                 onChange={(e) => setNewItem({ ...newItem, language: e.target.value })}
                 placeholder="Ej: Español, Inglés..."
@@ -202,9 +202,9 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
 
           {/* Certifications */}
           <div>
-            <Label>Certificaciones y Títulos</Label>
+            <Label htmlFor="certificaciones-y-titulos">Certificaciones y Títulos</Label>
             <div className="flex gap-2 mt-2">
-              <Input
+              <Input id="certificaciones-y-titulos"
                 value={newItem.certification}
                 onChange={(e) => setNewItem({ ...newItem, certification: e.target.value })}
                 placeholder="Ej: Certificado Cambridge C1..."
