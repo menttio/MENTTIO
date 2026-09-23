@@ -202,7 +202,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
                     </p>
                   </div>
                 </div>
-                <Button
+                <Button aria-label="Cerrar"
                   variant="ghost"
                   size="icon"
                   onClick={handleSkip}
@@ -244,7 +244,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
                     Anterior
                   </Button>
                 )}
-                <Button
+                <Button aria-label="Siguiente"
                   onClick={handleNext}
                   className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                   size="sm"

@@ -84,7 +84,7 @@ export default function WelcomeTour({ teacherId, teacherName, onComplete }) {
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] p-6 text-white relative">
-          <button
+          <button aria-label="Cerrar"
             onClick={handleSkip}
             className="absolute top-4 right-4 text-white/80 hover:text-white"
           >

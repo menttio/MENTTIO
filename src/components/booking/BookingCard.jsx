@@ -398,7 +398,7 @@ export default function BookingCard({
             {!isCancelled && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Button aria-label="Más opciones" variant="ghost" size="icon" className="h-8 w-8">
                     <MoreVertical size={16} />
                   </Button>
                 </DropdownMenuTrigger>

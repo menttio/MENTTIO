@@ -87,7 +87,7 @@ export default function NotificationList({
             </Button>
           )}
         </div>
-        <Button
+        <Button aria-label="Cerrar"
           variant="ghost"
           size="icon"
           onClick={onClose}

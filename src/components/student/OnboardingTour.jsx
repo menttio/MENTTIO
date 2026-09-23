@@ -73,7 +73,7 @@ export default function StudentOnboardingTour({ show, onClose }) {
           className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-md p-8"
         >
           {/* Skip */}
-          <button
+          <button aria-label="Cerrar"
             onClick={handleSkip}
             className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
           >

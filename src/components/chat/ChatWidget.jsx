@@ -231,7 +231,7 @@ export default function ChatWidget() {
             className="relative bg-white rounded-2xl shadow-lg px-4 py-2.5 flex items-center gap-2 border border-gray-100"
           >
             <span className="text-sm text-[#404040] font-medium whitespace-nowrap">¿Tienes dudas? ¡Pregúntame!</span>
-            <button onClick={dismissTooltip} className="text-gray-400 hover:text-gray-600 transition-colors ml-1">
+            <button aria-label="Cerrar" onClick={dismissTooltip} className="text-gray-400 hover:text-gray-600 transition-colors ml-1">
               <X size={14} />
             </button>
             {/* Arrow */}

@@ -56,7 +56,7 @@ export default function TeacherAvailability({ teacherId }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
+        <Button aria-label="Ver disponibilidad"
           variant="ghost"
           size="sm"
           className="text-[#41f2c0] hover:text-[#0d7a5f] hover:bg-[#41f2c0]/10"

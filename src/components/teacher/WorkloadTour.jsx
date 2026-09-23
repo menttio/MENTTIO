@@ -188,7 +188,7 @@ export default function WorkloadTour({ teacherId, onComplete }) {
             }}
           >
             {/* Close button */}
-            <button
+            <button aria-label="Cerrar"
               onClick={handleSkip}
               className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
             >
@@ -232,7 +232,7 @@ export default function WorkloadTour({ teacherId, onComplete }) {
                 {currentStep + 1} de {TOUR_STEPS.length}
               </span>
 
-              <Button
+              <Button aria-label="Terminar"
                 onClick={handleNext}
                 className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >

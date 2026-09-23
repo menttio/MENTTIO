@@ -155,7 +155,7 @@ export default function StripeConnectCard() {
               >
                 {connecting ? <Loader2 className="animate-spin" size={16} /> : 'Completar verificación'}
               </Button>
-              <Button variant="outline" onClick={loadStatus} size="icon">
+              <Button aria-label="Actualizar el estado" variant="outline" onClick={loadStatus} size="icon">
                 <RefreshCw size={16} />
               </Button>
             </div>
