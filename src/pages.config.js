@@ -56,7 +56,6 @@ import BookClass from './pages/BookClass';
 import ClassRecordings from './pages/ClassRecordings';
 import Contact from './pages/Contact';
 import CookiesPolicy from './pages/CookiesPolicy';
-import CorporateLoginCallback from './pages/CorporateLoginCallback';
 import Home from './pages/Home';
 import Landing from './pages/Landing';
 import LegalNotice from './pages/LegalNotice';
@@ -100,7 +99,6 @@ export const PAGES = {
     "ClassRecordings": ClassRecordings,
     "Contact": Contact,
     "CookiesPolicy": CookiesPolicy,
-    "CorporateLoginCallback": CorporateLoginCallback,
     "Home": Home,
     "Landing": Landing,
     "LegalNotice": LegalNotice,
