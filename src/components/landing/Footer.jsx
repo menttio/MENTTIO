@@ -97,20 +97,19 @@ export default function Footer() {
             © 2026 Menttio. Todos los derechos reservados.
           </p>
           
-          {/* Social Links */}
+          {/* Eran cuatro botones sin texto y sin destino: un lector de pantalla los anunciaba
+              como "botón" a secas, y al pulsarlos no pasaba nada. Queda el correo, que sí
+              lleva a algún sitio, con su nombre accesible. Los de redes volverán cuando haya
+              perfiles reales a los que enlazar. */}
           <div className="flex gap-4">
-            <button className="w-10 h-10 bg-gray-700 hover:bg-[#41f2c0] rounded-lg flex items-center justify-center transition-colors">
-              <Mail size={18} />
-            </button>
-            <button className="w-10 h-10 bg-gray-700 hover:bg-[#41f2c0] rounded-lg flex items-center justify-center transition-colors">
-              <Instagram size={18} />
-            </button>
-            <button className="w-10 h-10 bg-gray-700 hover:bg-[#41f2c0] rounded-lg flex items-center justify-center transition-colors">
-              <Twitter size={18} />
-            </button>
-            <button className="w-10 h-10 bg-gray-700 hover:bg-[#41f2c0] rounded-lg flex items-center justify-center transition-colors">
-              <Linkedin size={18} />
-            </button>
+            <a
+              href="mailto:menttio@menttio.com"
+              aria-label="Escríbenos a menttio@menttio.com"
+              title="Escríbenos por correo"
+              className="w-10 h-10 bg-gray-700 hover:bg-[#41f2c0] hover:text-[#404040] rounded-lg flex items-center justify-center transition-colors"
+            >
+              <Mail size={18} aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>
