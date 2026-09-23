@@ -83,15 +83,19 @@ export default function Hero() {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Cerrar el menú' : 'Abrir el menú'}
+              aria-expanded={mobileMenuOpen}
               className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
             >
-              {mobileMenuOpen ? <X className="text-white" size={24} /> : <Menu className="text-white" size={24} />}
+              {mobileMenuOpen ? <X className="text-white" size={24} aria-hidden="true" /> : <Menu className="text-white" size={24} aria-hidden="true" />}
             </button>
             
             <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-xl md:text-2xl font-bold text-[#41f2c0]">π</span>
             </div>
-            <h1 className="text-xl md:text-2xl font-bold text-white">Men<span className="text-[#404040]">π</span>io</h1>
+            {/* Era un segundo h1: la página tenía dos títulos de primer nivel y un lector de
+                pantalla no podía saber cuál era el de verdad. El logo no es el título. */}
+            <span className="text-xl md:text-2xl font-bold text-white" translate="no">Men<span className="text-[#404040]">π</span>io</span>
           </div>
           
           {/* Desktop Menu */}
