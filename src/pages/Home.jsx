@@ -14,9 +14,20 @@ import { createPageUrl } from '../utils';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
-  const [checking, setChecking] = useState(true);
+  // Antes esto empezaba en true y la portada no se pintaba hasta que el servidor contestaba
+  // si había sesión: todo visitante, aunque llegara de Google sin haber entrado nunca, se
+  // comía una ruedecita girando antes de leer una sola palabra. Ahora solo esperan quienes
+  // tienen señales de sesión; al resto se les pinta la portada de inmediato.
+  const [checking, setChecking] = useState(() => {
+    try {
+      return Boolean(localStorage.getItem('base44_access_token') || localStorage.getItem('token'));
+    } catch (_e) {
+      return false;
+    }
+  });
 
   useEffect(() => {
+    if (!checking) return;
     const checkSession = async () => {
       try {
         const isAuth = await base44.auth.isAuthenticated();
