@@ -109,11 +109,13 @@ export default function FAQ() {
           viewport={{ once: true }}
           className="text-center mt-14"
         >
-          <p className="text-gray-500 mb-5">¿Tienes más dudas? <a href="/Contact" className="text-[#41f2c0] font-semibold hover:underline">Contáctanos</a> o pruébalo tú mismo sin compromiso.</p>
+          <p className="text-gray-500 mb-5">¿Tienes más dudas? <a href="/Contact" className="text-[#0d7a5f] font-semibold underline">Contáctanos</a> o pruébalo tú mismo sin compromiso.</p>
           <Button
             onClick={() => window.location.href = createPageUrl('TeacherSignup')}
             size="lg"
-            className="bg-[#404040] hover:bg-[#303030] text-white font-bold px-8 py-6 text-lg rounded-xl shadow-lg"
+            /* En móvil este botón se salía de la pantalla y obligaba a hacer scroll lateral:
+               el texto es largo y no rompía de línea. Ahora ocupa el ancho y parte si hace falta. */
+            className="bg-[#404040] hover:bg-[#303030] text-white font-bold w-full sm:w-auto whitespace-normal px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg h-auto"
           >
             Empieza gratis — 14 días sin compromiso
           </Button>
