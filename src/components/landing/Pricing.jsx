@@ -140,12 +140,12 @@ export default function Pricing() {
         >
           <div className="inline-flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-6 py-3 shadow-sm">
             <div className="w-8 h-8 bg-[#41f2c0] rounded-lg flex items-center justify-center flex-shrink-0">
-              <Sparkles className="text-white" size={16} />
+              <Sparkles className="text-[#404040]" size={16} aria-hidden="true" />
             </div>
             <span className="text-gray-700 font-medium">Para alumnos es siempre <span className="text-[#0d7a5f] font-bold">gratis</span></span>
             <button
               onClick={handleGetStartedStudent}
-              className="text-sm text-[#404040] font-semibold underline underline-offset-2 hover:text-[#41f2c0] transition-colors"
+              className="text-sm text-[#404040] font-semibold underline underline-offset-2 hover:text-[#0d7a5f] transition-colors"
             >
               Regístrate →
             </button>
