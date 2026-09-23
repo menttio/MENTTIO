@@ -7,12 +7,12 @@ const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
 // Recibe los avisos de Stripe. Sustituye a stripeHook / stripeEvents / stripeWebhook.
 //
 // Contexto: hasta hoy el webhook de Stripe apuntaba a https://www.menttio.com a secas, es
-// decir, a la portada. Stripe recibía el HTML con un 200 y daba el aviso por entregado, pero
-// no lo procesaba nadie. Por eso ningún pago con tarjeta marcó nunca una clase como pagada.
+// decir, a la portada. Stripe recibia el HTML con un 200 y daba el aviso por entregado, pero
+// no lo procesaba nadie. Por eso ningun pago con tarjeta marco nunca una clase como pagada.
 //
-// La cuenta envía con la versión de API 2026-03-25.dahlia, que movió de sitio varios campos
-// respecto a la que usa el SDK. De ahí que aquí se lean de forma defensiva, probando tanto la
-// ubicación nueva como la antigua: si Stripe vuelve a cambiarlas, esto no se rompe en silencio.
+// La cuenta envia con la version de API 2026-03-25.dahlia, que movio de sitio varios campos
+// respecto a la que usa el SDK. De ahi que aqui se lean de forma defensiva, probando tanto la
+// ubicacion nueva como la antigua: si Stripe vuelve a cambiarlas, esto no se rompe en silencio.
 const POR_DEFECTO = {
   stripe_price_esencial_mensual: 'price_1UImwTHZYiECTxiywGeSWisR',
   stripe_price_esencial_anual: 'price_1UImwTHZYiECTxiygtqQyOWz',
@@ -38,12 +38,11 @@ async function catalogo(db) {
 function planDesdePrecio(mapa, priceId, importeCentimos, intervalo) {
   if (priceId && (priceId === mapa.stripe_price_grabacion_mensual || priceId === mapa.stripe_price_grabacion_anual)) return 'premium';
   if (priceId && (priceId === mapa.stripe_price_esencial_mensual || priceId === mapa.stripe_price_esencial_anual)) return 'basic';
-  // Respaldo por importe, con umbral distinto según el periodo de facturación.
   const umbral = intervalo === 'year' ? 20000 : 2000;
   return Number(importeCentimos) >= umbral ? 'premium' : 'basic';
 }
 
-/** El id de la suscripción cambió de sitio en las versiones nuevas de la API. */
+/** El id de la suscripcion cambio de sitio en las versiones nuevas de la API. */
 function subscriptionDeFactura(invoice) {
   return invoice?.subscription
     || invoice?.parent?.subscription_details?.subscription
@@ -52,7 +51,7 @@ function subscriptionDeFactura(invoice) {
     || null;
 }
 
-/** current_period_end pasó de la suscripción a cada línea. */
+/** current_period_end paso de la suscripcion a cada linea. */
 function finDePeriodo(subscription) {
   return subscription?.current_period_end
     || subscription?.items?.data?.[0]?.current_period_end
@@ -67,8 +66,8 @@ async function profesorDeCliente(db, customerId) {
   if (!customerId) return null;
   const teachers = await db.entities.Teacher.filter({ stripe_customer_id: customerId });
   if (teachers.length > 0) return teachers[0];
-  // Respaldo: si el profesor se registró sin pasar por el checkout, aún no tiene guardado
-  // el cliente de Stripe. Se busca por correo y se deja anotado para la próxima vez.
+  // Respaldo: si el profesor se registro sin pasar por el checkout, aun no tiene guardado
+  // el cliente de Stripe. Se busca por correo y se deja anotado para la proxima vez.
   try {
     const cliente = await stripe.customers.retrieve(customerId);
     const email = cliente?.email;
@@ -96,20 +95,19 @@ export default async function(req) {
   try {
     event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
   } catch (err) {
-    console.error('Firma del webhook no válida:', err.message);
+    console.error('Firma del webhook no valida:', err.message);
     return Response.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
   const db = createClientFromRequest(req).asServiceRole;
-  console.log(`Evento ${event.type} (API ${event.api_version || 'sin versión'})`);
+  console.log(`Evento ${event.type} (API ${event.api_version || 'sin version'})`);
 
   try {
     switch (event.type) {
-      // Pago suelto de una clase
       case 'checkout.session.completed': {
         const session = event.data.object;
         if (session.mode === 'subscription') {
-          console.log('Checkout de suscripción; se gestiona en invoice.payment_succeeded');
+          console.log('Checkout de suscripcion; se gestiona en invoice.payment_succeeded');
           break;
         }
         const bookingId = session.metadata?.booking_id || session.metadata?.bookingId || session.client_reference_id;
@@ -126,12 +124,11 @@ export default async function(req) {
         break;
       }
 
-      // Suscripción del profesor cobrada
       case 'invoice.payment_succeeded': {
         const invoice = event.data.object;
         const subscriptionId = subscriptionDeFactura(invoice);
         if (!subscriptionId) {
-          console.log('Factura sin suscripción asociada; nada que hacer');
+          console.log('Factura sin suscripcion asociada; nada que hacer');
           break;
         }
 
@@ -154,11 +151,10 @@ export default async function(req) {
           trial_active: false,
           trial_used: true,
         });
-        console.log(`Suscripción activada para ${teacher.id} (${plan}, hasta ${expira})`);
+        console.log(`Suscripcion activada para ${teacher.id} (${plan}, hasta ${expira})`);
         break;
       }
 
-      // Entra en prueba gratuita: hay que reflejarlo o la app lo manda a renovar.
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = event.data.object;
@@ -192,12 +188,12 @@ export default async function(req) {
           trial_active: false,
           stripe_subscription_id: null,
         });
-        console.log(`Suscripción desactivada para ${teacher.id}`);
+        console.log(`Suscripcion desactivada para ${teacher.id}`);
         break;
       }
 
       default:
-        // El destino escucha 236 tipos de evento; la inmensa mayoría no nos interesan.
+        // El destino escucha 236 tipos de evento; la inmensa mayoria no nos interesan.
         break;
     }
   } catch (err) {
