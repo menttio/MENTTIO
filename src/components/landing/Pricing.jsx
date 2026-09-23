@@ -91,7 +91,9 @@ const teacherPlans = [
       { text: 'Seguimiento del alumno', included: true },
       { text: 'Informe mensual para las familias', included: true },
       { text: 'Sin comisión por clase', included: true },
-      { text: 'La videollamada se graba sola y tu alumno la repasa', included: true },
+      // "Se graba sola" no es cierto hoy: el profesor tiene que darle a grabar en Meet (el
+      // cron le manda un recordatorio). Se deja la promesa en lo que sí se cumple.
+      { text: 'Grabas la clase con un botón y tu alumno la repasa cuando quiera', included: true },
       { text: 'Soporte prioritario', included: true },
     ],
   },
