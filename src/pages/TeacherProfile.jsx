@@ -278,27 +278,33 @@ export default function TeacherProfile() {
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h4 className="font-semibold text-[#404040]">{review.student_name}</h4>
+                          {/* Se muestra la fecha en que el alumno la escribió, no la de alta en la
+                              base de datos: en las recogidas por formulario no coinciden. */}
                           <p className="text-xs text-gray-500">
-                            {new Date(review.created_date).toLocaleDateString('es-ES', {
+                            {new Date(review.collected_at || review.created_date).toLocaleDateString('es-ES', {
                               year: 'numeric',
                               month: 'long',
                               day: 'numeric'
                             })}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star
-                              key={i}
-                              size={16}
-                              className={
-                                i < review.rating
-                                  ? 'text-yellow-400 fill-yellow-400'
-                                  : 'text-gray-300'
-                              }
-                            />
-                          ))}
-                        </div>
+                        {/* Sin puntuación no se pintan estrellas vacías: aparentaría un cero que
+                            el alumno nunca puso. Si no puntuó, no se enseña nada. */}
+                        {review.rating ? (
+                          <div className="flex items-center gap-1">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star
+                                key={i}
+                                size={16}
+                                className={
+                                  i < review.rating
+                                    ? 'text-yellow-400 fill-yellow-400'
+                                    : 'text-gray-300'
+                                }
+                              />
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                       {review.comment && (
                         <p className="text-gray-600">{review.comment}</p>
