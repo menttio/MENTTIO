@@ -33,7 +33,7 @@ const STEPS = [
   {
     icon: Library,
     title: 'Biblioteca de grabaciones',
-    description: 'En "Biblioteca" encontrarás las grabaciones de todas tus clases (disponible con profesores del plan Premium). Puedes repasar las sesiones cuando quieras.',
+    description: 'En "Biblioteca" encontrarás las grabaciones de todas tus clases (si tu profesor tiene la grabación activada). Puedes repasar las sesiones cuando quieras.',
     color: '#41f2c0',
   },
 ];
