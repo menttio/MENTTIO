@@ -51,7 +51,7 @@ export default function RenewSubscription() {
         return;
       }
 
-      const response = await base44.functions.invoke('teacherSubscription', {
+      const response = await base44.functions.invoke('subscriptionCheckout', {
         subscription_plan: selectedPlan
       });
 
