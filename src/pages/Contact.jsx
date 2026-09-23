@@ -75,9 +75,7 @@ export default function Contact() {
             </div>
             {/* La página no tenía ningún título de primer nivel: quien navega con lector de
                 pantalla no tenía forma de saber dónde estaba. */}
-            <CardTitle asChild>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#404040]">Contáctanos</h1>
-            </CardTitle>
+            <h1 className="text-2xl md:text-3xl font-bold text-[#404040] leading-none tracking-tight">Contáctanos</h1>
             <p className="text-sm md:text-base text-gray-500 mt-2">
               ¿Tienes alguna pregunta? Estamos aquí para ayudarte
             </p>
