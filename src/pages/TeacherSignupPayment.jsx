@@ -98,7 +98,7 @@ export default function TeacherSignupPayment() {
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: `Nuevo Profesor - ${subscription_plan === 'premium' ? 'Clase grabada' : subscription_plan === 'commission' ? 'Sin cuota' : 'Esencial'} - Menttio`,
+            subject: `Nuevo Profesor - ${subscription_plan === 'premium' ? 'Completo' : subscription_plan === 'commission' ? 'Sin cuota' : 'Esencial'} - Menttio`,
             body: `<h2>Nuevo Profesor Registrado</h2><p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Teléfono:</strong> ${data.phone}</p><p><strong>Plan:</strong> ${subscription_plan}</p>`
           });
         } catch (e) { /* no crítico */ }

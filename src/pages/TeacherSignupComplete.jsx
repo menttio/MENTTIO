@@ -139,7 +139,7 @@ export default function TeacherSignupComplete() {
         try {
           await base44.integrations.Core.SendEmail({
             to: 'menttio@menttio.com',
-            subject: `Nuevo Profesor Registrado (${subscriptionPlan === 'premium' ? 'Clase grabada' : 'Esencial'}) - Menttio`,
+            subject: `Nuevo Profesor Registrado (${subscriptionPlan === 'premium' ? 'Completo' : 'Esencial'}) - Menttio`,
             body: `
               <h2>Nuevo Profesor Registrado</h2>
               <p><strong>Nombre:</strong> ${data.first_name} ${data.last_name}</p>
@@ -147,7 +147,7 @@ export default function TeacherSignupComplete() {
               <p><strong>Teléfono:</strong> ${data.phone}</p>
               <p><strong>Formación:</strong> ${data.education}</p>
               <p><strong>Años de experiencia:</strong> ${data.experience_years || 'No especificado'}</p>
-              <p><strong>Plan:</strong> ${subscriptionPlan === 'premium' ? 'Clase grabada (29,99€, con grabaciones)' : 'Esencial (12,99€, sin grabaciones)'}</p>
+              <p><strong>Plan:</strong> ${subscriptionPlan === 'premium' ? 'Completo (29,99€, con grabaciones)' : 'Esencial (12,99€, sin grabaciones)'}</p>
               <p><strong>Período de prueba:</strong> 14 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
             `
           });

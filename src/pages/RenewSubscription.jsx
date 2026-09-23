@@ -115,7 +115,7 @@ export default function RenewSubscription() {
             >
               {renewing ? <Loader2 className="animate-spin" /> : (
                 selectedPlan === 'basic' ? 'Continuar con Esencial' :
-                selectedPlan === 'premium' ? 'Continuar con Clase grabada' :
+                selectedPlan === 'premium' ? 'Continuar con Completo' :
                 'Activar plan sin cuota'
               )}
             </Button>

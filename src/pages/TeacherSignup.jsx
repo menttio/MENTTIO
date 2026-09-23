@@ -658,7 +658,7 @@ export default function TeacherSignup() {
                           <span className="text-5xl font-bold text-[#404040]">29,99€</span>
                           <span className="text-gray-500">/mes</span>
                         </div>
-                        <p className="text-sm text-gray-600 mt-2">Plan Clase grabada (incluye la grabación de las clases)</p>
+                        <p className="text-sm text-gray-600 mt-2">plan Completo (incluye la grabación de las clases)</p>
                       </>
                     )}
                   </div>
@@ -697,7 +697,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 12,99€/mes (Plan Esencial) o 29,99€/mes (Plan Clase grabada)</p>
+                      <p>- La suscripción tiene un coste de 12,99€/mes (Plan Esencial) o 29,99€/mes (plan Completo)</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>

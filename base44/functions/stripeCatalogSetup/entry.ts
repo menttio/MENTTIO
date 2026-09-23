@@ -18,7 +18,7 @@ const CATALOGO = [
   },
   {
     plan: 'grabacion',
-    producto: 'Menttio Clase grabada',
+    producto: 'Menttio Completo',
     descripcion: 'Todo lo de Esencial y además la videollamada se graba sola para que el alumno la repase.',
     precios: [
       { clave: 'stripe_price_grabacion_mensual', lookup_key: 'menttio_grabacion_mensual', importe: 2999, intervalo: 'month' },

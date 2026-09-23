@@ -68,7 +68,7 @@ const teacherPlans = [
   {
     id: 'premium',
     icon: Crown,
-    name: 'Clase grabada',
+    name: 'Completo',
     badge: 'El que marca la diferencia',
     price: '29,99€',
     period: '/mes',

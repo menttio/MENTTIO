@@ -15,7 +15,7 @@ const plans = [
   },
   {
     id: 'premium',
-    name: 'Clase grabada',
+    name: 'Completo',
     price: '29,99€/mes',
     trial: '14 días gratis',
     description: 'La clase se graba y tu alumno la repasa',

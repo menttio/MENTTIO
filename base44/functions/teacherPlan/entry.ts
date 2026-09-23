@@ -35,7 +35,7 @@ export default async function(req) {
 
     const activo = Boolean(teacher.subscription_active || teacher.trial_active || teacher.subscription_exempt);
     const plan = teacher.subscription_plan || 'basic';
-    // Solo el plan Clase grabada incluye la grabacion. Durante la prueba gratuita tambien,
+    // Solo el plan Completo incluye la grabacion. Durante la prueba gratuita tambien,
     // porque la prueba es del plan que ha elegido.
     const puedeGrabar = activo && plan === 'premium';
 

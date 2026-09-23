@@ -34,7 +34,7 @@ function StripeCatalogSetup() {
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-blue-900">
-          Esencial 12,99 €/mes y 130 €/año; Clase grabada 29,99 €/mes y 300 €/año. Si un precio ya
+          Esencial 12,99 €/mes y 130 €/año; Completo 29,99 €/mes y 300 €/año. Si un precio ya
           existe no se duplica. Primero comprueba, luego crea.
         </p>
         <div className="flex flex-wrap gap-2">

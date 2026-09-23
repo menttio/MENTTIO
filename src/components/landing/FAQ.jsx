@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     question: '¿Cuánto cuesta la suscripción para profesores?',
-    answer: 'Dos planes y una puerta de entrada. Esencial: 12,99€/mes con todo salvo la grabación. Clase grabada: 29,99€/mes, que añade la grabación de las clases. Y si prefieres empezar sin cuota, 0€/mes con un 10% de las clases que cobres a través de la plataforma. Los planes de suscripción no tienen comisión, y puedes cancelar cuando quieras.'
+    answer: 'Dos planes y una puerta de entrada. Esencial: 12,99€/mes con todo salvo la grabación. Completo: 29,99€/mes, que añade la grabación de las clases. Y si prefieres empezar sin cuota, 0€/mes con un 10% de las clases que cobres a través de la plataforma. Los planes de suscripción no tienen comisión, y puedes cancelar cuando quieras.'
   },
   {
     question: '¿Hay período de prueba gratuito?',
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: '¿Puedo grabar mis clases y que mis alumnos las revisen después?',
-    answer: 'Sí, con el plan Clase grabada. La videollamada se crea sola; tú le das a grabar al empezar y la grabación aparece luego en la ficha de la clase, sin que tengas que descargarla ni enviarla. Tu alumno la repasa cuando quiera. Cada grabación es privada: solo la ven el alumno que estuvo en esa clase y tú, y hace falta su permiso (o el de sus padres, si es menor de 14 años) para grabar.'
+    answer: 'Sí, con el plan Completo. La videollamada se crea sola; tú le das a grabar al empezar y la grabación aparece luego en la ficha de la clase, sin que tengas que descargarla ni enviarla. Tu alumno la repasa cuando quiera. Cada grabación es privada: solo la ven el alumno que estuvo en esa clase y tú, y hace falta su permiso (o el de sus padres, si es menor de 14 años) para grabar.'
   },
   {
     question: '¿Puedo subir apuntes, ejercicios y materiales?',
