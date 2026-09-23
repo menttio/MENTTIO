@@ -202,7 +202,7 @@ export default function Pricing() {
                       {/* Lo no incluido iba en text-white/40 salvo en el plan sin cuota: blanco
                           sobre una tarjeta blanca, o sea invisible. Venia de cuando estas
                           tarjetas tenían fondo oscuro. Ahora todas son blancas. */}
-                      <span className={`text-sm ${feature.included ? plan.textColor : 'text-gray-400 line-through'}`}>
+                      <span className={`text-sm ${feature.included ? plan.textColor : 'text-gray-500 line-through'}`}>
                         {feature.text}
                       </span>
                     </li>
