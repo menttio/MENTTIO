@@ -48,7 +48,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
   const handleStripePayment = async () => {
     setProcessing(true);
     try {
-      const response = await base44.functions.invoke('classCheckout', { bookingId: booking.id });
+      const response = await base44.functions.invoke('classPayment', { bookingId: booking.id });
       if (response.data?.url) {
         sessionStorage.setItem('pending_stripe_booking_id', booking.id);
         window.location.href = response.data.url;
