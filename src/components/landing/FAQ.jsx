@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: '¿Puedo grabar mis clases y que mis alumnos las revisen después?',
-    answer: 'Sí, con el plan Clase grabada. La videollamada se crea sola, se graba y la grabación aparece en la ficha de la clase. Tu alumno la repasa cuando quiera. Cada grabación es privada: solo la ven el alumno que estuvo en esa clase y tú, y hace falta su permiso (o el de sus padres, si es menor de 14 años) para grabar.'
+    answer: 'Sí, con el plan Clase grabada. La videollamada se crea sola; tú le das a grabar al empezar y la grabación aparece luego en la ficha de la clase, sin que tengas que descargarla ni enviarla. Tu alumno la repasa cuando quiera. Cada grabación es privada: solo la ven el alumno que estuvo en esa clase y tú, y hace falta su permiso (o el de sus padres, si es menor de 14 años) para grabar.'
   },
   {
     question: '¿Puedo subir apuntes, ejercicios y materiales?',
