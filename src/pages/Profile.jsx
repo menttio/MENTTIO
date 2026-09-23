@@ -384,16 +384,27 @@ export default function Profile() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>¿Estás completamente seguro?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Esta acción no se puede deshacer. Se eliminarán permanentemente:
-                  <ul className="list-disc ml-6 mt-2 space-y-1">
-                    <li>Tu perfil de {userRole === 'teacher' ? 'profesor' : 'alumno'}</li>
-                    <li>Todas tus reservas de clases</li>
-                    <li>Tus conversaciones y mensajes</li>
-                    <li>Tus notificaciones</li>
-                    <li>Toda tu información personal</li>
-                  </ul>
+                <AlertDialogTitle>¿Seguro que quieres darte de baja?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div>
+                    <p className="font-medium text-[#404040]">Esto no se puede deshacer.</p>
+                    <p className="mt-2">Se borrarán:</p>
+                    <ul className="list-disc ml-6 mt-1 space-y-1">
+                      <li>Tu perfil de {userRole === 'teacher' ? 'profesor' : 'alumno'} y tus datos personales</li>
+                      <li>Tus conversaciones y mensajes</li>
+                      <li>Tus notificaciones</li>
+                      {userRole === 'teacher' && <li>Tu disponibilidad y tu suscripción, que se cancela</li>}
+                    </ul>
+                    <p className="mt-3">Se conservarán, <strong>sin tu nombre ni tu correo</strong>:</p>
+                    <ul className="list-disc ml-6 mt-1 space-y-1">
+                      <li>El registro de las clases dadas y lo que se pagó por ellas</li>
+                    </ul>
+                    <p className="mt-3 text-xs">
+                      {userRole === 'teacher'
+                        ? 'Las clases se conservan anónimas porque tus alumnos tienen derecho a su propio historial y porque son justificantes contables.'
+                        : 'Las clases se conservan anónimas porque tu profesor las necesita como justificante de lo que facturó. Dejarán de estar asociadas a ti.'}
+                    </p>
+                  </div>
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -402,7 +413,7 @@ export default function Profile() {
                   onClick={handleDeleteAccount}
                   className="bg-red-600 hover:bg-red-700"
                 >
-                  Sí, eliminar mi cuenta
+                  Sí, darme de baja
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
