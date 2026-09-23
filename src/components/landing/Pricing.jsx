@@ -121,6 +121,9 @@ export default function Pricing() {
   };
 
   const handleGetStartedTeacher = () => {
+    try {
+      sessionStorage.setItem('billing_period', anual ? 'anual' : 'mensual');
+    } catch (_e) { /* si el navegador lo bloquea, se elige otra vez en el registro */ }
     window.location.href = createPageUrl('TeacherSignup');
   };
 
@@ -163,6 +166,33 @@ export default function Pricing() {
         </motion.div>
 
         {/* Teacher plans */}
+        <div className="flex flex-col items-center gap-2 mb-10">
+          <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm" role="group" aria-label="Forma de pago">
+            <button
+              type="button"
+              onClick={() => setAnual(false)}
+              aria-pressed={!anual}
+              className={`px-5 py-2 text-sm rounded-lg transition-colors ${!anual ? 'bg-[#404040] text-white font-semibold' : 'text-gray-600 hover:text-[#404040]'}`}
+            >
+              Pago mensual
+            </button>
+            <button
+              type="button"
+              onClick={() => setAnual(true)}
+              aria-pressed={anual}
+              className={`px-5 py-2 text-sm rounded-lg transition-colors ${anual ? 'bg-[#404040] text-white font-semibold' : 'text-gray-600 hover:text-[#404040]'}`}
+            >
+              Pago anual
+              <span className={`ml-2 text-xs font-bold ${anual ? 'text-[#41f2c0]' : 'text-[#0d7a5f]'}`}>2 meses gratis</span>
+            </button>
+          </div>
+          {anual && (
+            <p className="text-xs text-gray-500">
+              Se cobra el año completo al contratar, sin los 14 días de prueba.
+            </p>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
           {teacherPlans.map((plan, index) => {
             const Icon = plan.icon;
