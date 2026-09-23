@@ -111,7 +111,7 @@ export default function RenewSubscription() {
             <Button
               onClick={handleRenew}
               disabled={renewing}
-              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-base md:text-lg py-5 md:py-6"
+              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-base md:text-lg py-5 md:py-6"
             >
               {renewing ? <Loader2 className="animate-spin" /> : (
                 selectedPlan === 'basic' ? 'Continuar con Esencial' :

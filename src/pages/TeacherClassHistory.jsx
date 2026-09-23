@@ -272,14 +272,14 @@ export default function TeacherClassHistory() {
               <Button
                 variant="outline"
                 onClick={() => setShowRecurringDialog(true)}
-                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040]"
               >
                 <Repeat size={16} className="mr-2" />
                 Recurrentes
               </Button>
               <Button
                 onClick={() => setShowCreateDialog(true)}
-                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >
                 <Plus size={18} className="mr-2" />
                 Crear Reserva

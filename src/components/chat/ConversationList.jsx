@@ -63,7 +63,7 @@ export default function ConversationList({
                     {conversation.last_message || 'Sin mensajes aún'}
                   </p>
                   {unreadCount > 0 && (
-                    <Badge className="bg-[#41f2c0] text-white flex-shrink-0">
+                    <Badge className="bg-[#41f2c0] text-[#404040] flex-shrink-0">
                       {unreadCount}
                     </Badge>
                   )}

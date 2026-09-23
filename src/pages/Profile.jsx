@@ -229,7 +229,7 @@ export default function Profile() {
               />
               <label
                 htmlFor="photo-upload"
-                className="absolute bottom-0 right-0 w-8 h-8 bg-[#41f2c0] rounded-full flex items-center justify-center text-white hover:bg-[#35d4a7] transition-colors cursor-pointer"
+                className="absolute bottom-0 right-0 w-8 h-8 bg-[#41f2c0] rounded-full flex items-center justify-center text-[#404040] hover:bg-[#35d4a7] transition-colors cursor-pointer"
               >
                 {uploadingPhoto ? (
                   <Loader2 className="animate-spin" size={16} />
@@ -318,7 +318,7 @@ export default function Profile() {
       <Button
         onClick={handleSave}
         disabled={saving}
-        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg mb-4"
+        className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg mb-4"
       >
         {saving ? (
           <Loader2 className="animate-spin" size={20} />

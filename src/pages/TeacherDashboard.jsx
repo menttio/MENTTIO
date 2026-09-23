@@ -289,7 +289,7 @@ export default function TeacherDashboard() {
             <Button
               size="sm"
               onClick={() => setShowRecurringDialog(true)}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white gap-1.5"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] gap-1.5"
             >
               <Repeat size={15} />
               <span className="hidden sm:inline">Clases recurrentes</span>
@@ -297,7 +297,7 @@ export default function TeacherDashboard() {
             </Button>
             <Link 
               to={createPageUrl('TeacherCalendar')}
-              className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
+              className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
             >
               Ver calendario <ChevronRight size={16} />
             </Link>

@@ -195,7 +195,7 @@ export default function Messages() {
         {availableContacts.length > 0 && (
           <Button
             onClick={() => setShowNewChat(true)}
-            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
           >
             <Plus size={18} className="mr-2" />
             Nueva conversación
@@ -283,7 +283,7 @@ export default function Messages() {
             <Button
               onClick={handleCreateConversation}
               disabled={!selectedContact || creating}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {creating ? <Loader2 className="animate-spin" /> : 'Crear conversación'}
             </Button>

@@ -174,7 +174,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
                 <div className={cn(
                   "max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3",
                   isOwnMessage 
-                    ? "bg-[#41f2c0] text-white" 
+                    ? "bg-[#41f2c0] text-[#404040]" 
                     : "bg-white text-[#404040] border border-gray-100"
                 )}>
                   <p className="text-sm break-words whitespace-pre-wrap">
@@ -213,7 +213,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
           <Button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white h-auto px-6"
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] h-auto px-6"
           >
             {sending ? (
               <Loader2 className="animate-spin" size={20} />

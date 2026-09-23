@@ -152,7 +152,7 @@ export default function AboutUs() {
               </Button>
             </a>
             <a href="/TeacherSignup" className="w-full sm:w-auto">
-              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white px-8 py-6 text-base md:text-lg rounded-xl w-full">
+              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] px-8 py-6 text-base md:text-lg rounded-xl w-full">
                 Soy Profesor
               </Button>
             </a>

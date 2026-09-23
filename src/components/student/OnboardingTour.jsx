@@ -125,7 +125,7 @@ export default function StudentOnboardingTour({ show, onClose }) {
               <Button
                 size="sm"
                 onClick={handleFinish}
-                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >
                 ¡Empezar!
               </Button>
@@ -133,7 +133,7 @@ export default function StudentOnboardingTour({ show, onClose }) {
               <Button
                 size="sm"
                 onClick={() => setStep(s => s + 1)}
-                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >
                 Siguiente
                 <ChevronRight size={16} className="ml-1" />

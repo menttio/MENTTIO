@@ -97,7 +97,7 @@ export default function PaymentSuccess() {
                 </p>
                 <Button
                   onClick={() => navigate(createPageUrl('MyClasses'))}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                 >
                   Ver mis clases
                 </Button>
@@ -117,7 +117,7 @@ export default function PaymentSuccess() {
                 </div>
                 <Button
                   onClick={() => navigate(createPageUrl('MyClasses'))}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                 >
                   Ver mis clases
                 </Button>

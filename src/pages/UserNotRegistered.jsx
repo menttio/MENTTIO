@@ -82,7 +82,7 @@ export default function UserNotRegistered() {
         <div className="space-y-3">
           <Button
             onClick={handleGoToRegister}
-            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 text-base rounded-xl"
+            className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 text-base rounded-xl"
           >
             Ir a registrarme <ArrowRight className="ml-2" />
           </Button>

@@ -79,7 +79,7 @@ export default function BetaChat() {
             href="https://menttio.com/TeacherSignup"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap"
+            className="hidden sm:inline-flex items-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap"
           >
             Empieza gratis 14 días →
           </a>
@@ -106,7 +106,7 @@ export default function BetaChat() {
                 <div
                   className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
                     msg.role === 'user'
-                      ? 'bg-[#41f2c0] text-white rounded-tr-sm'
+                      ? 'bg-[#41f2c0] text-[#404040] rounded-tr-sm'
                       : 'bg-white text-[#404040] rounded-tl-sm'
                   }`}
                 >
@@ -150,7 +150,7 @@ export default function BetaChat() {
           href="https://menttio.com/TeacherSignup"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm font-semibold w-full py-2.5 rounded-full transition-colors"
+          className="flex items-center justify-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-sm font-semibold w-full py-2.5 rounded-full transition-colors"
         >
           Empieza tu prueba gratuita de 14 días →
         </a>

@@ -87,7 +87,7 @@ export default function SelectRole() {
               <div className="space-y-3">
                 <Button
                   onClick={() => handleRoleSelect('student', 'login')}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                 >
                   Iniciar Sesión
                 </Button>
@@ -120,7 +120,7 @@ export default function SelectRole() {
               <div className="space-y-3">
                 <Button
                   onClick={() => handleRoleSelect('teacher', 'login')}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                 >
                   Iniciar Sesión
                 </Button>

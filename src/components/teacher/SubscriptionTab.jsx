@@ -182,7 +182,7 @@ export default function SubscriptionTab({ profile }) {
             <Button
               onClick={handlePortal}
               disabled={redirecting}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white shrink-0"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] shrink-0"
             >
               {redirecting ? (
                 <Loader2 className="animate-spin" size={16} />

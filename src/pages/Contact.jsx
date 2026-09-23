@@ -164,7 +164,7 @@ export default function Contact() {
                 <Button
                   type="submit"
                   disabled={!isFormValid || sending}
-                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
+                  className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg rounded-xl"
                 >
                   {sending ? (
                     <Loader2 className="animate-spin" />

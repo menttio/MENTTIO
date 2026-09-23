@@ -161,7 +161,7 @@ export default function ManageAvailability() {
             <Button
               onClick={saveRegularSchedule}
               disabled={saving}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {saving ? (
                 <Loader2 className="animate-spin" size={18} />

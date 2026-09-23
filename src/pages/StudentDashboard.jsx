@@ -268,7 +268,7 @@ export default function StudentDashboard() {
             <h2 className="text-xl font-semibold text-[#404040]">Mis Profesores</h2>
             <Link 
               to={createPageUrl('MyTeachers')}
-              className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
+              className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
             >
               Ver todos <ChevronRight size={16} />
             </Link>
@@ -360,7 +360,7 @@ export default function StudentDashboard() {
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
           <Link 
             to={createPageUrl('MyClasses')}
-            className="text-[#41f2c0] hover:text-[#35d4a7] flex items-center gap-1 text-sm font-medium"
+            className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
           >
             Ver todas <ChevronRight size={16} />
           </Link>
@@ -384,7 +384,7 @@ export default function StudentDashboard() {
               <h3 className="font-medium text-[#404040] mb-2">No tienes clases programadas</h3>
               <p className="text-gray-500 text-sm mb-4">¡Reserva tu primera clase ahora!</p>
               <Link to={createPageUrl('BookClass')}>
-                <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white">
+                <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]">
                   <Plus size={18} className="mr-2" />
                   Reservar Clase
                 </Button>

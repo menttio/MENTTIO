@@ -46,7 +46,7 @@ const teacherPlans = [
     note: 'Sin comisión por clase · 130€ al año si pagas anual',
     cardClass: 'bg-white border-2 border-gray-100 hover:border-[#41f2c0]',
     iconClass: 'bg-[#41f2c0]/15',
-    iconColor: 'text-[#2ab88f]',
+    iconColor: 'text-[#0d7a5f]',
     priceColor: 'text-[#404040]',
     textColor: 'text-gray-700',
     mutedColor: 'text-gray-500',
@@ -82,7 +82,7 @@ const teacherPlans = [
     mutedColor: 'text-white/80',
     checkBg: 'bg-[#404040]/30',
     checkColor: 'text-white',
-    ctaClass: 'bg-white hover:bg-gray-100 text-[#2ab88f] font-bold',
+    ctaClass: 'bg-white hover:bg-gray-100 text-[#0d7a5f] font-bold',
     ctaLabel: 'Empezar 14 días gratis',
     features: [
       { text: 'Reservas y calendario', included: true },

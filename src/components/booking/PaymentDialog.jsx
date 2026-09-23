@@ -223,7 +223,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
                   </Button>
                   <Button
                     onClick={() => setBizumConfirmed(true)}
-                    className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                    className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                   >
                     He enviado el pago
                   </Button>
@@ -254,7 +254,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
                   <Button
                     onClick={handleBizumConfirm}
                     disabled={processing}
-                    className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                    className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                   >
                     {processing ? <Loader2 className="animate-spin" /> : 'Confirmar'}
                   </Button>

@@ -79,7 +79,7 @@ export default function NotificationList({
               variant="ghost"
               size="sm"
               onClick={onMarkAllAsRead}
-              className="text-[#41f2c0] hover:text-[#35d4a7] text-xs"
+              className="text-[#41f2c0] hover:text-[#0d7a5f] text-xs"
             >
               <CheckCheck size={14} className="mr-1" />
               <span className="hidden sm:inline">Marcar todas como leídas</span>
@@ -148,7 +148,7 @@ export default function NotificationList({
                       {notification.message.length > 80 && (
                         <button
                           onClick={(e) => toggleExpanded(notification.id, e)}
-                          className="text-xs text-[#41f2c0] hover:text-[#35d4a7] font-medium flex items-center gap-1 mb-1"
+                          className="text-xs text-[#41f2c0] hover:text-[#0d7a5f] font-medium flex items-center gap-1 mb-1"
                         >
                           {expandedIds.has(notification.id) ? (
                             <>

@@ -126,7 +126,7 @@ export default function HowItWorks() {
               className="relative"
             >
               {/* Step number */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-[#41f2c0] text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg z-10">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-[#41f2c0] text-[#404040] rounded-full flex items-center justify-center font-bold text-sm shadow-lg z-10">
                 {index + 1}
               </div>
 

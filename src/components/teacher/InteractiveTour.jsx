@@ -310,7 +310,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
                 )}
                 <Button
                   onClick={handleNext}
-                  className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                  className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                   size="sm"
                 >
                   {currentStep === tourSteps.length - 1 ? (

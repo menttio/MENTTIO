@@ -207,7 +207,7 @@ export default function FamilyReportDialog({ student, open, onOpenChange }) {
           <Button
             onClick={enviar}
             disabled={enviando || cargando || !datos || datos.totalClases === 0}
-            className="w-full rounded-xl bg-[#41f2c0] py-5 text-white hover:bg-[#35d4a7]"
+            className="w-full rounded-xl bg-[#41f2c0] py-5 text-[#404040] hover:bg-[#35d4a7]"
           >
             {enviando ? <Loader2 className="animate-spin" /> : (<><Send size={16} className="mr-2" /> Enviar a la familia</>)}
           </Button>

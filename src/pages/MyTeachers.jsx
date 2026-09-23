@@ -114,7 +114,7 @@ export default function MyTeachers() {
             />
           </div>
           <Link to={createPageUrl('SearchTeachers')}>
-            <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white w-full sm:w-auto">
+            <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] w-full sm:w-auto">
               <Users size={18} className="mr-2" />
               Buscar más profesores
             </Button>
@@ -160,7 +160,7 @@ export default function MyTeachers() {
           </p>
           {!searchQuery && (
             <Link to={createPageUrl('SearchTeachers')}>
-              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white">
+              <Button className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]">
                 <Search size={18} className="mr-2" />
                 Buscar Profesores
               </Button>

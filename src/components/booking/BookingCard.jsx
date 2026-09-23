@@ -131,7 +131,7 @@ export default function BookingCard({
   }, [booking.id, booking.teacher_id, isCompleted]);
 
   const statusConfig = {
-    scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-white' },
+    scheduled: { label: 'Programada', color: 'bg-[#41f2c0] text-[#404040]' },
     completed: { label: 'Completada', color: 'bg-gray-100 text-gray-600' },
     cancelled: { label: 'Cancelada', color: 'bg-red-100 text-red-600' }
   };
@@ -491,7 +491,7 @@ export default function BookingCard({
               href={booking.meet_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-white text-sm rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-sm rounded-lg transition-colors"
             >
               <VideoIcon size={14} />
               Unirse a la videollamada
@@ -623,7 +623,7 @@ export default function BookingCard({
               href={booking.recording_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#41f2c0] hover:text-[#35d4a7] font-medium"
+              className="flex items-center gap-2 text-[#41f2c0] hover:text-[#0d7a5f] font-medium"
             >
               <Video size={18} />
               Ver grabación de la clase
@@ -672,7 +672,7 @@ export default function BookingCard({
                 variant="outline"
                 size="sm"
                 onClick={() => onReview(booking)}
-                className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white"
+                className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040]"
               >
                 <Star size={14} className="mr-2" />
                 Dejar una reseña

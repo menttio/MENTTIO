@@ -220,7 +220,7 @@ export default function MyStudents() {
              <Button
                onClick={handleSendReports}
                disabled={sendingReports}
-               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white h-9 text-sm"
+               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] h-9 text-sm"
              >
                {sendingReports
                  ? <><Loader2 size={14} className="animate-spin mr-1.5" />Enviando...</>
@@ -464,7 +464,7 @@ export default function MyStudents() {
                                       booking.status === 'cancelled' && "bg-red-100 text-red-600",
                                       booking.status === 'completed' && "bg-gray-100 text-gray-600",
                                       booking.status === 'scheduled' && new Date(booking.date) >= new Date()
-                                        ? "bg-[#41f2c0] text-white"
+                                        ? "bg-[#41f2c0] text-[#404040]"
                                         : "bg-gray-100 text-gray-600"
                                     )}>
                                       {booking.status === 'cancelled' ? 'Cancelada' :
@@ -525,7 +525,7 @@ export default function MyStudents() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white h-8 text-xs"
+                                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040] h-8 text-xs"
                                 onClick={() => {
                                   const month = reportMonths[student.id] || currentMonth;
                                   const studentBookings = bookings.filter(b => b.student_id === student.id);
@@ -542,7 +542,7 @@ export default function MyStudents() {
                               </Button>
                               <Button
                                 size="sm"
-                                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white h-8 text-xs"
+                                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] h-8 text-xs"
                                 onClick={() => setReportStudent(student)}
                               >
                                 <Send size={13} className="mr-1.5" />

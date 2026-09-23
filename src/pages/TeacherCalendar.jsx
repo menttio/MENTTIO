@@ -320,7 +320,7 @@ export default function TeacherCalendar() {
                     >
                       <span className={cn(
                         "w-7 h-7 flex items-center justify-center rounded-full text-sm",
-                        isSelected && "bg-[#41f2c0] text-white",
+                        isSelected && "bg-[#41f2c0] text-[#404040]",
                         isToday(day) && !isSelected && "border-2 border-[#41f2c0] text-[#41f2c0]"
                       )}>
                         {format(day, 'd')}
@@ -434,7 +434,7 @@ export default function TeacherCalendar() {
                         <div className="flex items-center gap-2 mb-2">
                           <Clock className={isGroup ? "text-purple-500" : "text-[#41f2c0]"} size={14} />
                           <span className="font-medium text-sm">{booking.start_time} - {booking.end_time}</span>
-                          <Badge className={cn("ml-auto text-xs", isGroup ? "bg-purple-500 text-white" : "bg-[#41f2c0] text-white")}>
+                          <Badge className={cn("ml-auto text-xs", isGroup ? "bg-purple-500 text-[#404040]" : "bg-[#41f2c0] text-[#404040]")}>
                             {isGroup ? `Grupal ${enrolled}/${booking.max_students || 4}` : 'Individual'}
                           </Badge>
                         </div>

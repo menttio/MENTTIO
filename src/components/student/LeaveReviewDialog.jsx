@@ -134,7 +134,7 @@ export default function LeaveReviewDialog({ booking, student, open, onClose, onS
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
           >
             {saving ? <Loader2 className="animate-spin" /> : 'Enviar Reseña'}
           </Button>

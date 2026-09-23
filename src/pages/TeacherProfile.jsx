@@ -86,7 +86,7 @@ export default function TeacherProfile() {
         </div>
         <Button
           onClick={() => setShowEditDialog(true)}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white edit-profile-btn w-full md:w-auto"
+          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] edit-profile-btn w-full md:w-auto"
         >
           <Edit size={16} className="mr-2" />
           Editar Perfil

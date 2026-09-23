@@ -368,7 +368,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                       s.num < step 
-                        ? 'bg-[#41f2c0] text-white'
+                        ? 'bg-[#41f2c0] text-[#404040]'
                         : s.num === step
                           ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
                           : 'border-2 border-gray-200 text-gray-300'

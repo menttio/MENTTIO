@@ -114,7 +114,7 @@ export default function StudentProgress() {
             />
             <button
               onClick={() => downloadReport({ studentName: student?.full_name || 'Alumno', month: reportMonth, bookings })}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#41f2c0] text-[#41f2c0] text-sm font-medium hover:bg-[#41f2c0] hover:text-white transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#41f2c0] text-[#41f2c0] text-sm font-medium hover:bg-[#41f2c0] hover:text-[#404040] transition-colors"
             >
               <Download size={14} />
               Descargar informe

@@ -98,7 +98,7 @@ export default function BookingCalendar({
                 available && "cursor-pointer hover:bg-[#41f2c0]/10",
                 !available && "text-gray-300 cursor-not-allowed",
                 isPast && available && allowPast && "text-gray-400",
-                isSelected && "bg-[#41f2c0] text-white hover:bg-[#41f2c0] font-bold",
+                isSelected && "bg-[#41f2c0] text-[#404040] hover:bg-[#41f2c0] font-bold",
                 isToday(day) && !isSelected && "border-2 border-gray-300"
               )}
             >

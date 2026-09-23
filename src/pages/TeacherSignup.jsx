@@ -278,7 +278,7 @@ export default function TeacherSignup() {
                   }
                   handleGoToLogin();
                 }}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg"
               >
                 Ir a Iniciar Sesión
                 <ArrowRight size={18} className="ml-2" />
@@ -504,7 +504,7 @@ export default function TeacherSignup() {
                       }
                     }}
                     disabled={!canContinueStep1}
-                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6"
+                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6"
                   >
                     Continuar
                     <ArrowRight size={18} className="ml-2" />
@@ -542,7 +542,7 @@ export default function TeacherSignup() {
                       <Button
                         onClick={addSubject}
                         size="sm"
-                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                       >
                         <Plus size={16} className="mr-2" />
                         Añadir
@@ -619,7 +619,7 @@ export default function TeacherSignup() {
                   <Button
                     onClick={() => setStep(3)}
                     disabled={!canContinueStep2}
-                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 mt-6"
+                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 mt-6"
                   >
                     Continuar
                     <ArrowRight size={18} className="ml-2" />
@@ -750,7 +750,7 @@ export default function TeacherSignup() {
                   <Button
                     onClick={handleFinalize}
                     disabled={!canFinalize || saving}
-                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg"
+                    className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg"
                   >
                     {saving ? <Loader2 className="animate-spin" /> : (
                       formData.subscription_plan === 'commission' ? 'Completar Registro' : 'Configurar Método de Pago'

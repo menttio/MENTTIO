@@ -593,7 +593,7 @@ export default function BookClass() {
         </p>
         <Button 
           onClick={() => navigate(createPageUrl('SearchTeachers'))}
-          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+          className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
         >
           Buscar Profesores
         </Button>
@@ -628,7 +628,7 @@ export default function BookClass() {
             >
               <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold ${
                 s.num < step 
-                  ? 'bg-[#41f2c0] text-white'
+                  ? 'bg-[#41f2c0] text-[#404040]'
                   : s.num === step
                     ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
                     : 'border-2 border-gray-200 text-gray-300'
@@ -928,7 +928,7 @@ export default function BookClass() {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
                 <Button
                   onClick={() => setStep(5)}
-                  className={cn("w-full text-white py-5 md:py-6", classType === 'group' ? "bg-purple-500 hover:bg-purple-600" : "bg-[#41f2c0] hover:bg-[#35d4a7]")}
+                  className={cn("w-full text-[#404040] py-5 md:py-6", classType === 'group' ? "bg-purple-500 hover:bg-purple-600" : "bg-[#41f2c0] hover:bg-[#35d4a7]")}
                 >
                   Continuar <ChevronRight size={18} className="ml-2" />
                 </Button>
@@ -1014,7 +1014,7 @@ export default function BookClass() {
                 <Button
                   onClick={handleConfirmBooking}
                   disabled={saving}
-                  className={cn("w-full text-white py-5 md:py-6 text-base md:text-lg", classType === 'group' ? "bg-purple-500 hover:bg-purple-600" : "bg-[#41f2c0] hover:bg-[#35d4a7]")}
+                  className={cn("w-full text-[#404040] py-5 md:py-6 text-base md:text-lg", classType === 'group' ? "bg-purple-500 hover:bg-purple-600" : "bg-[#41f2c0] hover:bg-[#35d4a7]")}
                 >
                   {saving ? <Loader2 className="animate-spin" /> : <><Check size={20} className="mr-2" />Confirmar Reserva</>}
                 </Button>

@@ -32,7 +32,7 @@ export default function GroupPricingInfo({ durationHours = 1, teacherGroupPrices
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 text-xs text-[#41f2c0] hover:text-[#35d4a7] underline underline-offset-2"
+        className="inline-flex items-center gap-1 text-xs text-[#41f2c0] hover:text-[#0d7a5f] underline underline-offset-2"
       >
         <Info size={13} />
         Ver precios grupales

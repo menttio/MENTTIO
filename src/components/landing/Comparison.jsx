@@ -55,7 +55,7 @@ Lo que cambia en el día a día de un profesor particular online
           <div className="bg-white rounded-2xl border-2 border-[#41f2c0]/40 overflow-hidden shadow-sm">
             <div className="bg-[#41f2c0]/10 px-6 py-4 flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-[#41f2c0]/20 flex items-center justify-center">
-                <Check className="text-[#35d4a7]" size={18} />
+                <Check className="text-[#0d7a5f]" size={18} />
               </div>
               <h3 className="font-bold text-[#404040] text-lg">Con Menttio</h3>
             </div>
@@ -63,7 +63,7 @@ Lo que cambia en el día a día de un profesor particular online
               {withItems.map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-[#41f2c0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="text-[#35d4a7]" size={12} />
+                    <Check className="text-[#0d7a5f]" size={12} />
                   </div>
                   <span className="text-[#404040] font-medium">{item}</span>
                 </li>

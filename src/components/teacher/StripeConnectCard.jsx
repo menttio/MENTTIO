@@ -123,7 +123,7 @@ export default function StripeConnectCard() {
             <Button
               onClick={handleConnect}
               disabled={connecting}
-              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {connecting ? (
                 <Loader2 className="animate-spin mr-2" size={16} />

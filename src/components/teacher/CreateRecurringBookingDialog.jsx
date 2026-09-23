@@ -377,7 +377,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     >
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
                         num < step
-                          ? 'bg-[#41f2c0] text-white'
+                          ? 'bg-[#41f2c0] text-[#404040]'
                           : num === step
                             ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
                             : 'border-2 border-gray-200 text-gray-300'
@@ -496,7 +496,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                             className={cn(
                               "w-9 h-9 rounded-lg text-xs font-medium transition-all border",
                               addingDay === d.value
-                                ? "bg-[#41f2c0] text-white border-[#41f2c0]"
+                                ? "bg-[#41f2c0] text-[#404040] border-[#41f2c0]"
                                 : "bg-white text-gray-600 border-gray-200 hover:border-[#41f2c0]"
                             )}
                           >
@@ -523,7 +523,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     <Button
                       onClick={addRule}
                       disabled={addingDay === null || !addingTime}
-                      className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                      className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
                       size="sm"
                     >
                       <Plus size={16} className="mr-1" />

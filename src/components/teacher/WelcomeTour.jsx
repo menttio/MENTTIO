@@ -150,7 +150,7 @@ export default function WelcomeTour({ teacherId, teacherName, onComplete }) {
             {!isLastStep ? (
               <Button
                 onClick={handleNext}
-                className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >
                 Siguiente
                 <ArrowRight size={18} className="ml-2" />
@@ -158,7 +158,7 @@ export default function WelcomeTour({ teacherId, teacherName, onComplete }) {
             ) : (
               <Button
                 onClick={handleComplete}
-                className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+                className="flex-1 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
               >
                 <Check size={18} className="mr-2" />
                 ¡Empezar!

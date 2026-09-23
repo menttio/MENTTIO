@@ -450,7 +450,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
           <Button
             onClick={handleSave}
             disabled={!selectedDate || !selectedTime || saving}
-            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+            className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
           >
             {saving ? <Loader2 className="animate-spin" /> : 'Guardar cambios'}
           </Button>

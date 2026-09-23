@@ -141,7 +141,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             <Button
               onClick={handleAdd}
               size="sm"
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               <Plus size={16} className="mr-1" />
               Añadir
@@ -171,7 +171,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                         <p className="font-medium text-[#404040]">{subject.subject_name}</p>
                         <Badge variant="secondary" className="text-xs">{subject.level}</Badge>
                       </div>
-                      <Badge className="bg-[#41f2c0] text-white text-xs mt-1">
+                      <Badge className="bg-[#41f2c0] text-[#404040] text-xs mt-1">
                         {subject.price_per_hour}€/hora
                       </Badge>
                     </div>
@@ -267,7 +267,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             <Button
               onClick={handleSave}
               disabled={!selectedSubjectId || !selectedLevel || !price || saving}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}
             </Button>

@@ -121,7 +121,7 @@ export default function StudentSignup() {
 
             <Button
               onClick={handleGoToLogin}
-              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
+              className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg rounded-xl"
             >
               Ir a iniciar sesión <ArrowRight className="ml-2" />
             </Button>
@@ -198,7 +198,7 @@ export default function StudentSignup() {
               <Button
                 type="submit"
                 disabled={!formData.first_name || !formData.last_name || !formData.phone || phoneError || loading || !formData.privacy_consent || !formData.birth_date}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-5 md:py-6 text-base md:text-lg rounded-xl"
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-5 md:py-6 text-base md:text-lg rounded-xl"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" />

@@ -265,7 +265,7 @@ export default function ManageSubjects() {
           </div>
           <Button
             onClick={handleAdd}
-            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-white add-subject-button"
+            className="w-full sm:w-auto bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] add-subject-button"
           >
             <Plus size={18} className="mr-2" />
             Añadir Asignatura
@@ -281,7 +281,7 @@ export default function ManageSubjects() {
                 onClick={() => setLevelFilter(lvl)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all border ${
                   levelFilter === lvl
-                    ? 'bg-[#41f2c0] text-white border-[#41f2c0]'
+                    ? 'bg-[#41f2c0] text-[#404040] border-[#41f2c0]'
                     : 'bg-white text-gray-600 border-gray-200 hover:border-[#41f2c0]'
                 }`}
               >
@@ -374,7 +374,7 @@ export default function ManageSubjects() {
             <p className="text-gray-500 mb-6">Añade las materias que impartes para que los alumnos puedan reservar clases contigo</p>
             <Button
               onClick={handleAdd}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               <Plus size={18} className="mr-2" />
               Añadir Primera Asignatura
@@ -513,7 +513,7 @@ export default function ManageSubjects() {
             <Button
               onClick={handleSave}
               disabled={!selectedSubjectId || !selectedLevel || !price || (selectedSubjectId === 'custom' && !customSubjectName.trim()) || saving}
-              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white"
+              className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}
             </Button>

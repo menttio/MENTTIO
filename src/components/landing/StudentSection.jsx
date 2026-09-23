@@ -8,7 +8,7 @@ const benefits = [
     icon: ShieldCheck,
     title: 'Repasa la clase cuando quieras',
     description: 'Si tu profesor graba la clase, la tendrás disponible para volver a verla antes del examen, las veces que haga falta.',
-    color: 'bg-[#41f2c0]/10 text-[#35d4a7]',
+    color: 'bg-[#41f2c0]/10 text-[#0d7a5f]',
   },
   {
     icon: CalendarCheck,
@@ -29,7 +29,7 @@ export default function StudentSection() {
     <section className="py-20 bg-white">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-[#41f2c0]/15 text-[#35d4a7] text-sm font-semibold rounded-full mb-4">
+          <span className="inline-block px-4 py-1.5 bg-[#41f2c0]/15 text-[#0d7a5f] text-sm font-semibold rounded-full mb-4">
 Para tus alumnos y sus familias
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-[#404040] mb-4">
@@ -55,7 +55,7 @@ Tus alumnos entran con su cuenta, reservan en tus horarios, encuentran los apunt
         <div className="text-center">
           <Link
             to={createPageUrl('StudentSignup')}
-            className="inline-block px-8 py-4 bg-[#41f2c0] hover:bg-[#35d4a7] text-white font-semibold rounded-xl text-lg transition-colors shadow-lg shadow-[#41f2c0]/30"
+            className="inline-block px-8 py-4 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-semibold rounded-xl text-lg transition-colors shadow-lg shadow-[#41f2c0]/30"
           >
             Encontrar mi profesor
           </Link>

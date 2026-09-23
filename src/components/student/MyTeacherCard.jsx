@@ -50,7 +50,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
               {assignedSubjects.map((subject, idx) => (
                 <Badge 
                   key={idx}
-                  className="bg-[#41f2c0] text-white"
+                  className="bg-[#41f2c0] text-[#404040]"
                 >
                   {subject.subject_name} - {subject.level}
                 </Badge>

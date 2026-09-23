@@ -121,7 +121,7 @@ function TeacherCard({ teacher, idx }) {
           <span className="text-sm text-gray-400"> /hora</span>
         </div>
         <Link to={createPageUrl('StudentSignup')}>
-          <Button size="sm" className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white">
+          <Button size="sm" className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]">
             Reservar
           </Button>
         </Link>
@@ -140,7 +140,7 @@ export default function PublicTeachersSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <span className="inline-block bg-[#41f2c0]/10 text-[#2ab88f] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-block bg-[#41f2c0]/10 text-[#0d7a5f] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
             Profesores disponibles
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#404040] mb-4">
@@ -164,7 +164,7 @@ export default function PublicTeachersSection() {
           className="text-center mt-10"
         >
           <Link to={createPageUrl('StudentSignup')}>
-            <Button variant="outline" className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white px-8">
+            <Button variant="outline" className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040] px-8">
               Registrarse para ver todos los profesores
             </Button>
           </Link>

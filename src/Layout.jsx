@@ -518,7 +518,7 @@ export default function Layout({ children, currentPageName }) {
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative",
                   currentPageName === item.page
-                    ? "bg-[#41f2c0] text-white shadow-lg shadow-[#41f2c0]/30"
+                    ? "bg-[#41f2c0] text-[#404040] shadow-lg shadow-[#41f2c0]/30"
                     : "text-[#404040] hover:bg-gray-100"
                 )}
               >

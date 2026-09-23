@@ -131,7 +131,7 @@ export default function ConsentGate() {
         <Button
           onClick={guardar}
           disabled={guardando}
-          className="mt-6 w-full rounded-xl bg-[#41f2c0] py-5 text-base text-white hover:bg-[#35d4a7]"
+          className="mt-6 w-full rounded-xl bg-[#41f2c0] py-5 text-base text-[#404040] hover:bg-[#35d4a7]"
         >
           {guardando ? <Loader2 className="animate-spin" /> : 'Guardar y continuar'}
         </Button>

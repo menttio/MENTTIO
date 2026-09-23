@@ -238,7 +238,7 @@ export default function TeacherCard({
               variant="outline"
               onClick={handleStartChat}
               disabled={startingChat}
-              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-white flex-1 md:flex-initial"
+              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040] flex-1 md:flex-initial"
             >
               <MessageCircle size={16} className="mr-1" />
               {startingChat ? 'Abriendo...' : 'Chatear'}
@@ -257,7 +257,7 @@ export default function TeacherCard({
               <Button
                 size="sm"
                 onClick={() => onAssign?.(teacher)}
-                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-1 md:flex-initial"
+                className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] flex-1 md:flex-initial"
               >
                 <Plus size={16} className="mr-1" />
                 Añadir

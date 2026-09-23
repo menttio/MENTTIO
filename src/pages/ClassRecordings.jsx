@@ -336,7 +336,7 @@ export default function ClassRecordings() {
                       <Button
                         size="sm"
                         onClick={() => window.open(booking.recording_url, '_blank')}
-                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white flex-shrink-0 w-full md:w-auto"
+                        className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] flex-shrink-0 w-full md:w-auto"
                       >
                         <Play size={16} className="mr-2" />
                         Ver clase

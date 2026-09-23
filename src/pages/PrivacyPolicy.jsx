@@ -352,7 +352,7 @@ export default function PrivacyPolicy() {
                 entre webs ni entre visitas, y no elabora perfiles. Por eso no te pedimos permiso
                 para ello. Solo obtenemos datos agregados (páginas vistas, país, tipo de
                 dispositivo y desde qué web llegaste). Puedes consultar su
-                {' '}<a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer" className="text-[#2ab88f] underline">información del servicio</a>.
+                {' '}<a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer" className="text-[#0d7a5f] underline">información del servicio</a>.
               </p>
             </div>
           </section>

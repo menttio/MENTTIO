@@ -151,7 +151,7 @@ export default function BetaTeacherSignup() {
               </p>
               <Button
                 onClick={handleGoToLogin}
-                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg"
+                className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-6 text-lg"
               >
                 Ir a Iniciar Sesión
                 <ArrowRight size={18} className="ml-2" />
@@ -262,7 +262,7 @@ export default function BetaTeacherSignup() {
                     </ul>
                   </div>
 
-                  <Button onClick={() => { if (validateStep1()) setStep(2); }} disabled={!canContinueStep1} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6">
+                  <Button onClick={() => { if (validateStep1()) setStep(2); }} disabled={!canContinueStep1} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-6">
                     Continuar <ArrowRight size={18} className="ml-2" />
                   </Button>
                 </motion.div>
@@ -284,7 +284,7 @@ export default function BetaTeacherSignup() {
                         </div>
                       </div>
                     </div>
-                    <Button onClick={addSubject} size="sm" className="bg-[#41f2c0] hover:bg-[#35d4a7] text-white">
+                    <Button onClick={addSubject} size="sm" className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]">
                       <Plus size={16} className="mr-2" /> Añadir
                     </Button>
                   </div>
@@ -323,7 +323,7 @@ export default function BetaTeacherSignup() {
                     </div>
                   )}
 
-                  <Button onClick={() => setStep(3)} disabled={!canContinueStep2} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 mt-6">
+                  <Button onClick={() => setStep(3)} disabled={!canContinueStep2} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-6 mt-6">
                     Continuar <ArrowRight size={18} className="ml-2" />
                   </Button>
                 </motion.div>
@@ -384,7 +384,7 @@ export default function BetaTeacherSignup() {
                     </label>
                   </div>
 
-                  <Button onClick={handleFinalize} disabled={!acceptedTerms} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-white py-6 text-lg">
+                  <Button onClick={handleFinalize} disabled={!acceptedTerms} className="w-full bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] py-6 text-lg">
                     Configurar Método de Pago
                     <ArrowRight size={18} className="ml-2" />
                   </Button>

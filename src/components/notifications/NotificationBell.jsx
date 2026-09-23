@@ -111,7 +111,7 @@ export default function NotificationBell({ userEmail }) {
           <Bell size={20} />
           {unreadCount > 0 && (
             <Badge 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-[#41f2c0] text-white text-xs"
+              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-[#41f2c0] text-[#404040] text-xs"
             >
               {unreadCount}
             </Badge>

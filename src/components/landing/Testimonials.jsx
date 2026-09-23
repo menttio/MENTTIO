@@ -55,7 +55,7 @@ export default function Testimonials() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#41f2c0]/10 px-4 py-1.5 text-sm font-medium text-[#2ab88f]">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#41f2c0]/10 px-4 py-1.5 text-sm font-medium text-[#0d7a5f]">
               <Sparkles size={16} />
               Estamos empezando
             </span>
@@ -89,7 +89,7 @@ export default function Testimonials() {
             </p>
             <Link
               to={createPageUrl('SelectRole')}
-              className="mt-5 inline-block rounded-xl bg-[#41f2c0] px-6 py-3 font-medium text-white transition-colors hover:bg-[#35d4a7]"
+              className="mt-5 inline-block rounded-xl bg-[#41f2c0] px-6 py-3 font-medium text-[#404040] transition-colors hover:bg-[#35d4a7]"
             >
               Probar Menttio
             </Link>

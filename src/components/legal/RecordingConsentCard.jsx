@@ -78,7 +78,7 @@ export default function RecordingConsentCard({ student, onChange }) {
               type="button"
               disabled={guardando || autoriza}
               onClick={() => cambiar(true)}
-              className="rounded-xl bg-[#41f2c0] text-white hover:bg-[#35d4a7]"
+              className="rounded-xl bg-[#41f2c0] text-[#404040] hover:bg-[#35d4a7]"
             >
               {guardando ? <Loader2 className="animate-spin" size={18} /> : 'Autorizar grabación'}
             </Button>

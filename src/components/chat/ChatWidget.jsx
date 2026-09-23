@@ -155,7 +155,7 @@ export default function ChatWidget() {
                     <div
                       className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed shadow-sm ${
                         msg.role === 'user'
-                          ? 'bg-[#41f2c0] text-white rounded-tr-sm'
+                          ? 'bg-[#41f2c0] text-[#404040] rounded-tr-sm'
                           : 'bg-white text-[#404040] rounded-tl-sm'
                       }`}
                     >
