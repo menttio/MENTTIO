@@ -6,7 +6,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 // cambiar la comision o el numero de Bizum antes de que se pinte en pantalla.
 //
 // Reglas:
-//  - Plan mensual (Esencial / Clase grabada): Menttio no cobra nada. El Bizum va al telefono
+//  - Plan mensual (Esencial / Completo): Menttio no cobra nada. El Bizum va al telefono
 //    del profesor y la tarjeta solo esta disponible si ha conectado su cuenta de Stripe.
 //  - Plan sin cuota (comision): el cobro se centraliza en Menttio. El Bizum va al telefono de
 //    Menttio y el profesor cobra su parte a final de mes; por tarjeta, Stripe reparte al momento.
