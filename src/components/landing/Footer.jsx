@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Instagram, Twitter, Linkedin } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
