@@ -12,11 +12,11 @@
     },
     "student_id": {
       "type": "string",
-      "description": "ID del alumno"
+      "description": "ID del alumno (vac\u00edo en las recogidas por formulario)"
     },
     "student_name": {
       "type": "string",
-      "description": "Nombre del alumno"
+      "description": "Nombre a mostrar. En las an\u00f3nimas va el curso o la edad, nunca el nombre"
     },
     "booking_id": {
       "type": "string",
@@ -26,21 +26,38 @@
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Valoraci\u00f3n de 1 a 5 estrellas"
+      "description": "Valoraci\u00f3n de 1 a 5 estrellas. Vac\u00edo si el alumno no puntu\u00f3: no se inventa"
     },
     "comment": {
       "type": "string",
       "description": "Comentario o rese\u00f1a"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "plataforma",
+        "formulario"
+      ],
+      "default": "plataforma",
+      "description": "De d\u00f3nde sali\u00f3: dejada en la app, o recogida en un formulario aparte"
+    },
+    "collected_at": {
+      "type": "string",
+      "description": "Fecha real en que el alumno la escribi\u00f3 (AAAA-MM-DD), que no tiene por qu\u00e9 ser la de alta"
+    },
+    "consent_note": {
+      "type": "string",
+      "description": "Qu\u00e9 autoriz\u00f3 exactamente el alumno al darla"
     }
   },
   "required": [
-    "teacher_id",
-    "student_id",
-    "rating"
+    "teacher_id"
   ],
   "rls": {
     "read": {},
-    "create": {},
+    "create": {
+      "created_by_id": "{{user.id}}"
+    },
     "update": {
       "$or": [
         {
