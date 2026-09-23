@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Sparkles, Crown, X, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -42,8 +42,11 @@ const teacherPlans = [
     badge: null,
     price: '12,99€',
     period: '/mes',
+    priceAnual: '130€',
+    periodAnual: '/año',
+    noteAnual: 'Equivale a 10,83€ al mes · ahorras 25,88€',
     description: '14 días gratis, sin compromiso',
-    note: 'Sin comisión por clase · 130€ al año si pagas anual',
+    note: 'Sin comisión por clase',
     cardClass: 'bg-white border-2 border-gray-100 hover:border-[#41f2c0]',
     iconClass: 'bg-[#41f2c0]/15',
     iconColor: 'text-[#0d7a5f]',
@@ -72,8 +75,11 @@ const teacherPlans = [
     badge: 'El que marca la diferencia',
     price: '29,99€',
     period: '/mes',
+    priceAnual: '300€',
+    periodAnual: '/año',
+    noteAnual: 'Equivale a 25€ al mes · ahorras 59,88€',
     description: 'Todo lo anterior, más la grabación',
-    note: 'Sin comisión por clase · 300€ al año si pagas anual',
+    note: 'Sin comisión por clase',
     // Esta tarjeta era un degradado menta con el texto en blanco: contraste 1,42, el mismo
     // que corregimos en el resto del sitio. No salió en el escaneo porque axe no sabe medir
     // contraste sobre un degradado y se lo salta en silencio.
@@ -106,6 +112,10 @@ const teacherPlans = [
 ];
 
 export default function Pricing() {
+  // El pago anual se anunciaba en la letra pequeña y no habia forma de elegirlo. Este
+  // interruptor cambia los importes y viaja hasta la pasarela a traves del registro.
+  const [anual, setAnual] = useState(false);
+
   const handleGetStartedStudent = () => {
     window.location.href = createPageUrl('SelectRole') + '?role=student';
   };
@@ -184,10 +194,16 @@ export default function Pricing() {
 
                 <div className="mb-5">
                   <div className="flex items-baseline gap-1">
-                    <span className={`text-4xl font-bold ${plan.priceColor}`}>{plan.price}</span>
-                    <span className={`text-sm ${plan.mutedColor}`}>{plan.period}</span>
+                    <span className={`text-4xl font-bold ${plan.priceColor}`}>
+                      {anual && plan.priceAnual ? plan.priceAnual : plan.price}
+                    </span>
+                    <span className={`text-sm ${plan.mutedColor}`}>
+                      {anual && plan.periodAnual ? plan.periodAnual : plan.period}
+                    </span>
                   </div>
-                  <p className={`text-xs mt-1 ${plan.mutedColor}`}>{plan.note}</p>
+                  <p className={`text-xs mt-1 ${plan.mutedColor}`}>
+                    {anual && plan.noteAnual ? plan.noteAnual : plan.note}
+                  </p>
                 </div>
 
                 <ul className="space-y-3 mb-6">
