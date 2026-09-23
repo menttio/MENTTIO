@@ -1,0 +1,34 @@
+# Las zonas privadas no deben rastrearse: no contienen datos accesibles sin sesion, pero
+# indexarlas llena Google de paginas vacias y reparte mal la autoridad del dominio.
+User-agent: *
+Allow: /
+
+Disallow: /TeacherDashboard
+Disallow: /TeacherCalendar
+Disallow: /TeacherClassHistory
+Disallow: /TeacherWorkload
+Disallow: /ManageAvailability
+Disallow: /ManageSubjects
+Disallow: /MyStudents
+Disallow: /MyClasses
+Disallow: /MyTeachers
+Disallow: /StudentDashboard
+Disallow: /StudentProgress
+Disallow: /ClassRecordings
+Disallow: /BookClass
+Disallow: /Messages
+Disallow: /Profile
+Disallow: /ReviewsHistory
+Disallow: /AdminCommissions
+Disallow: /PaymentSuccess
+Disallow: /AuthRedirect
+Disallow: /UserNotRegistered
+Disallow: /RenewSubscription
+Disallow: /TeacherSignupPayment
+Disallow: /TeacherSignupComplete
+Disallow: /StudentSignupComplete
+Disallow: /BetaTeacherSignup
+Disallow: /BetaTeacherSignupPayment
+Disallow: /beta
+
+Sitemap: https://menttio.com/sitemap.xml
