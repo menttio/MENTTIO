@@ -3,7 +3,7 @@ import Hero from '../components/landing/Hero';
 import Features from '../components/landing/Features';
 import Comparison from '../components/landing/Comparison';
 import HowItWorks from '../components/landing/HowItWorks';
-import PublicTeachersSection from '../components/landing/PublicTeachersSection';
+import FinalCTA from '../components/landing/FinalCTA';
 import StudentSection from '../components/landing/StudentSection';
 import Pricing from '../components/landing/Pricing';
 import Testimonials from '../components/landing/Testimonials';
@@ -50,7 +50,7 @@ export default function Home() {
       setChecking(false);
     };
     checkSession();
-  }, []);
+  }, [checking]);
 
   if (checking) {
     return (
@@ -62,15 +62,20 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* El orden persigue una conversación: primero el dolor que ya conoce, luego cómo se
+          quita, luego cuánto cuesta, y las dudas al final. El precio ya no queda enterrado
+          tras cinco secciones, y la página termina pidiendo algo en vez de en el pie.
+          Se ha retirado PublicTeachersSection: hablaba como un marketplace ("elige el
+          profesor que mejor se adapta a ti") y enseñaba un escaparate casi vacío. */}
       <Hero />
-      <Features />
       <Comparison />
+      <Features />
       <HowItWorks />
       <StudentSection />
-      <PublicTeachersSection />
       <Pricing />
       <Testimonials />
       <FAQ />
+      <FinalCTA />
       <Footer />
     </div>
   );
