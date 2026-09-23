@@ -187,13 +187,16 @@ export default function Pricing() {
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-center gap-2.5">
-                      <div className={`w-5 h-5 ${feature.included ? plan.checkBg : 'bg-red-100'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                      <div className={`w-5 h-5 ${feature.included ? plan.checkBg : 'bg-red-100'} rounded-full flex items-center justify-center flex-shrink-0`} aria-hidden="true">
                         {feature.included
                           ? <Check className={plan.checkColor} size={12} />
-                          : <X className="text-red-400" size={12} />
+                          : <X className="text-red-700" size={12} />
                         }
                       </div>
-                      <span className={`text-sm ${feature.included ? plan.textColor : (plan.id === 'comision' ? 'text-gray-400 line-through' : 'text-white/40 line-through')}`}>
+                      {/* Lo no incluido iba en text-white/40 salvo en el plan sin cuota: blanco
+                          sobre una tarjeta blanca, o sea invisible. Venia de cuando estas
+                          tarjetas tenían fondo oscuro. Ahora todas son blancas. */}
+                      <span className={`text-sm ${feature.included ? plan.textColor : 'text-gray-400 line-through'}`}>
                         {feature.text}
                       </span>
                     </li>
