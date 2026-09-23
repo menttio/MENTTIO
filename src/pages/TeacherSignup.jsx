@@ -232,16 +232,12 @@ export default function TeacherSignup() {
       console.log(`  - ${key} (${value?.length} chars):`, value?.substring(0, 100));
     }
     
-    if (formData.subscription_plan === 'premium') {
-      // Premium: ir directo a CorporateLoginCallback, no necesita login previo
-      console.log('🏢 Plan premium: redirigiendo a CorporateLoginCallback...');
-      window.location.href = createPageUrl('TeacherSignupPayment');
-    } else {
-      const nextUrl = createPageUrl('TeacherSignupPayment');
-      console.log('🔗 URL de redirección tras login:', nextUrl);
-      console.log('🚀 Llamando a base44.auth.redirectToLogin...');
-      base44.auth.redirectToLogin(nextUrl);
-    }
+    // Los dos planes de pago siguen el mismo camino. Antes, el de grabación saltaba el login
+    // porque acababa creando una cuenta corporativa aparte; eso ya no existe, así que el
+    // profesor se identifica con su Google de siempre en los dos casos.
+    const nextUrl = createPageUrl('TeacherSignupPayment');
+    console.log('🔗 URL de redirección tras login:', nextUrl);
+    base44.auth.redirectToLogin(nextUrl);
     console.log('═══════════════════════════════════════════════════════');
   };
 
