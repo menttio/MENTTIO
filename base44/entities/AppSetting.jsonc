@@ -1,0 +1,45 @@
+{
+  "name": "AppSetting",
+  "type": "object",
+  "description": "Ajustes de configuraci\u00f3n de la app en pares clave/valor. Solo el administrador.",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Nombre del ajuste, por ejemplo stripe_price_esencial_mensual"
+    },
+    "value": {
+      "type": "string",
+      "description": "Valor del ajuste"
+    },
+    "note": {
+      "type": "string",
+      "description": "Para qu\u00e9 sirve y de d\u00f3nde sali\u00f3"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
