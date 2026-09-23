@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
 
     const update = { enrolled_students: updatedEnrolled, price: newPrice };
     if (teacher.subscription_plan === 'commission') {
-      const pct = Number(teacher.commission_percentage ?? 25);
+      const pct = Number(teacher.commission_percentage ?? 10);
       update.platform_fee = Number((newPrice * pct / 100).toFixed(2));
       update.teacher_payout = Number((newPrice * (1 - pct / 100)).toFixed(2));
     }

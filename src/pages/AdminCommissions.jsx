@@ -25,7 +25,7 @@ export default function AdminCommissions() {
         const results = await Promise.all(
           commissionTeachers.map(async (teacher) => {
             const bookings = await base44.entities.Booking.filter({ teacher_id: teacher.id, status: 'completed' });
-            const pct = teacher.commission_percentage ?? 25;
+            const pct = teacher.commission_percentage ?? 10;
             const platformFeeTotal = bookings.reduce((s, b) => s + (b.platform_fee ?? (b.price || 0) * pct / 100), 0);
             const teacherPayoutTotal = bookings.reduce((s, b) => s + (b.teacher_payout ?? (b.price || 0) * (1 - pct / 100)), 0);
             return { teacher, bookings, platformFeeTotal, teacherPayoutTotal };
@@ -116,7 +116,7 @@ export default function AdminCommissions() {
                       </thead>
                       <tbody>
                         {bookings.map((b) => {
-                          const pct = teacher.commission_percentage ?? 25;
+                          const pct = teacher.commission_percentage ?? 10;
                           const fee = b.platform_fee ?? (b.price || 0) * pct / 100;
                           const payout = b.teacher_payout ?? (b.price || 0) * (1 - pct / 100);
                           return (

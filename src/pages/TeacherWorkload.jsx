@@ -73,7 +73,7 @@ export default function TeacherWorkload() {
   };
 
   const isCommission = teacher?.subscription_plan === 'commission';
-  const commissionPct = teacher?.commission_percentage ?? 25;
+  const commissionPct = teacher?.commission_percentage ?? 10;
   const calcPayout = (price) => isCommission ? (price || 0) * (1 - commissionPct / 100) : (price || 0);
 
   const stats = useMemo(() => {
@@ -701,7 +701,7 @@ export default function TeacherWorkload() {
                     <p className="text-sm text-green-600 font-medium mb-1">Total recibirás tú ({100 - commissionPct}%)</p>
                     <p className="text-2xl font-bold text-green-700">
                       {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
-                        const pct = teacher.commission_percentage ?? 25;
+                        const pct = teacher.commission_percentage ?? 10;
                         return s + (b.teacher_payout ?? (b.price || 0) * (1 - pct / 100));
                       }, 0).toFixed(2)}€
                     </p>
@@ -712,7 +712,7 @@ export default function TeacherWorkload() {
                     <p className="text-sm text-purple-600 font-medium mb-1">Comisión Menttio ({commissionPct}%)</p>
                     <p className="text-2xl font-bold text-purple-700">
                       {bookings.filter(b => b.status === 'completed').reduce((s, b) => {
-                        const pct = teacher.commission_percentage ?? 25;
+                        const pct = teacher.commission_percentage ?? 10;
                         return s + (b.platform_fee ?? (b.price || 0) * pct / 100);
                       }, 0).toFixed(2)}€
                     </p>
@@ -748,7 +748,7 @@ export default function TeacherWorkload() {
                           .filter(b => b.status === 'completed')
                           .sort((a, b) => new Date(b.date) - new Date(a.date))
                           .map((b) => {
-                            const pct = teacher.commission_percentage ?? 25;
+                            const pct = teacher.commission_percentage ?? 10;
                             const fee = b.platform_fee ?? (b.price || 0) * pct / 100;
                             const payout = b.teacher_payout ?? (b.price || 0) * (1 - pct / 100);
                             return (

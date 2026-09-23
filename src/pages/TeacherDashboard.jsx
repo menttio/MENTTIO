@@ -85,7 +85,7 @@ export default function TeacherDashboard() {
   });
 
   const isCommission = teacher?.subscription_plan === 'commission';
-  const commissionPct = teacher?.commission_percentage ?? 25;
+  const commissionPct = teacher?.commission_percentage ?? 10;
 
   const calcPayout = (price) => isCommission ? (price || 0) * (1 - commissionPct / 100) : (price || 0);
 

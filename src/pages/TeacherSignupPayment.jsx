@@ -103,7 +103,7 @@ export default function TeacherSignupPayment() {
           subscription_active: isCommission ? true : grantTrial,
           subscription_expires: isCommission ? null : (grantTrial ? trialEndDate.toISOString().split('T')[0] : null),
           subscription_plan,
-          commission_percentage: isCommission ? 25 : undefined,
+          commission_percentage: isCommission ? 10 : undefined,
           trial_used: isCommission ? false : !grantTrial,
           trial_active: isCommission ? false : grantTrial,
           trial_start_date: isCommission ? null : (grantTrial ? now.toISOString().split('T')[0] : null),

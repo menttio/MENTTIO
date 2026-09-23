@@ -391,7 +391,7 @@ export default function BookClass() {
 
       // Calculate commission fields for commission-plan teachers
       const isCommissionTeacher = selectedTeacher.subscription_plan === 'commission';
-      const commissionPct = selectedTeacher.commission_percentage ?? 25;
+      const commissionPct = selectedTeacher.commission_percentage ?? 10;
       const price = calculatePrice();
       const commissionFields = isCommissionTeacher
         ? { platform_fee: parseFloat((price * commissionPct / 100).toFixed(2)), teacher_payout: parseFloat((price * (1 - commissionPct / 100)).toFixed(2)) }
