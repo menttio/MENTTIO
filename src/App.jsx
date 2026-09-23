@@ -10,6 +10,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import BetaChat from './pages/BetaChat';
 import AdminCommissions from './pages/AdminCommissions';
+import Articulo from './pages/Articulo';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -61,6 +62,13 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      {/* Cada articulo con su propia direccion. Las rutas de pages.config son fijas, asi
+          que esta se declara aparte porque lleva el identificador del articulo. */}
+      <Route path="/Blog/:slug" element={
+        <LayoutWrapper currentPageName="Blog">
+          <Articulo />
+        </LayoutWrapper>
+      } />
       <Route path="/beta" element={<BetaChat />} />
       <Route path="/AdminCommissions" element={
         <LayoutWrapper currentPageName="AdminCommissions">
