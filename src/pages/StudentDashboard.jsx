@@ -312,7 +312,7 @@ export default function StudentDashboard() {
                                   {teacher.rating?.toFixed(1) || '5.0'}
                                 </span>
                               </div>
-                              {teacher.corporate_email?.includes('@menttio.com') && (
+                              {(teacher.subscription_plan === 'premium' || teacher.corporate_email?.includes('@menttio.com')) && (
                                 <Badge className="bg-green-100 text-green-700 border border-green-200 text-xs flex items-center gap-1">
                                   <Video size={10} />
                                   <span>Grabación</span>
