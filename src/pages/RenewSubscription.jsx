@@ -15,6 +15,7 @@ export default function RenewSubscription() {
   const [loading, setLoading] = useState(true);
   const [renewing, setRenewing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('premium');
+  const [periodo, setPeriodo] = useState('mensual');
 
   useEffect(() => {
     const loadTeacher = async () => {
@@ -52,7 +53,8 @@ export default function RenewSubscription() {
       }
 
       const response = await base44.functions.invoke('subscriptionCheckout', {
-        subscription_plan: selectedPlan
+        subscription_plan: selectedPlan,
+        billing_period: periodo,
       });
 
       if (response.data.error) {
@@ -104,6 +106,8 @@ export default function RenewSubscription() {
               <PlanSelector
                 selected={selectedPlan}
                 onChange={setSelectedPlan}
+                periodo={periodo}
+                onPeriodoChange={setPeriodo}
                 showTrial={!teacher?.trial_used}
               />
             </div>

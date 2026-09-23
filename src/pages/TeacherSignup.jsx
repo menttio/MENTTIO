@@ -36,7 +36,8 @@ export default function TeacherSignup() {
     email_personal: '',
     education: '',
     experience_years: 0,
-    subscription_plan: 'premium'
+    subscription_plan: 'premium',
+    billing_period: 'mensual'
   });
 
   const [teacherSubjects, setTeacherSubjects] = useState([]);
@@ -164,6 +165,8 @@ export default function TeacherSignup() {
     
     sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
     sessionStorage.setItem('subscription_plan', formData.subscription_plan);
+    // El periodo viaja con el plan: sin esto, elegir el pago anual no llegaba a la pasarela.
+    sessionStorage.setItem('billing_period', formData.billing_period || 'mensual');
     
     // Verificación inmediata
     const saved = sessionStorage.getItem('teacher_signup_data');
@@ -490,6 +493,8 @@ export default function TeacherSignup() {
                     <PlanSelector
                       selected={formData.subscription_plan}
                       onChange={(plan) => setFormData({ ...formData, subscription_plan: plan })}
+                      periodo={formData.billing_period}
+                      onPeriodoChange={(p) => setFormData({ ...formData, billing_period: p })}
                     />
                   </div>
 

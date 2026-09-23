@@ -55,6 +55,7 @@ export default function TeacherSignupPayment() {
           if (teacher.subscription_active || teacher.trial_active || teacher.subscription_exempt) {
             sessionStorage.removeItem('teacher_signup_data');
             sessionStorage.removeItem('subscription_plan');
+        sessionStorage.removeItem('billing_period');
             sessionStorage.removeItem('teacher_signup_in_progress');
             window.location.href = createPageUrl('TeacherDashboard');
             return;
@@ -105,6 +106,7 @@ export default function TeacherSignupPayment() {
 
         sessionStorage.removeItem('teacher_signup_data');
         sessionStorage.removeItem('subscription_plan');
+        sessionStorage.removeItem('billing_period');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
         // Plan commission: no Stripe needed, go directly to dashboard
@@ -113,7 +115,8 @@ export default function TeacherSignupPayment() {
           return;
         }
 
-        const response = await base44.functions.invoke('subscriptionCheckout', { subscription_plan });
+        const billing_period = sessionStorage.getItem('billing_period') || 'mensual';
+        const response = await base44.functions.invoke('subscriptionCheckout', { subscription_plan, billing_period });
         if (response.data.error) throw new Error(response.data.error);
         window.location.replace(response.data.url);
 
