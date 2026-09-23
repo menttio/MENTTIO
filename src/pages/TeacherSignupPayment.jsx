@@ -26,35 +26,17 @@ export default function TeacherSignupPayment() {
 
         const data = JSON.parse(signupData);
 
-        // ── PLAN PREMIUM: crear cuenta corporativa vía n8n y mostrar pantalla "revisa tu correo" ──
-        if (subscription_plan === 'premium') {
-          // 1. Llamar a n8n para crear la cuenta corporativa
-          const corpResponse = await base44.functions.invoke('createCorporateUser', {
-            nombre: data.first_name,
-            apellidos: data.last_name,
-            email_personal: data.email_personal
-          });
-
-          if (!corpResponse.data?.email) {
-            throw new Error(corpResponse.data?.error || 'No se pudo crear la cuenta corporativa.');
-          }
-
-          // 2. Guardar el email corporativo (sin contraseña) para que CorporateLoginCallback
-          //    sepa qué cuenta esperar cuando el usuario inicie sesión
-          localStorage.setItem('corporate_credentials', JSON.stringify({
-            email: corpResponse.data.email,
-            signup_data: data,
-            subscription_plan,
-            pending_corporate: false,
-            expires_at: Date.now() + 60 * 60 * 1000 // TTL: 60 minutos
-          }));
-
-          // 3. Mostrar pantalla "revisa tu correo" → el usuario inicia sesión manualmente
-          window.location.href = createPageUrl('CorporateLoginCallback');
-          return;
-        }
-
-        // ── PLAN BASIC: flujo normal con login personal ──
+        // Antes, quien elegía el plan con grabación no entraba en la aplicación: se le creaba
+        // una cuenta corporativa @menttio.com y se le mandaba a "revisa tu correo" para que
+        // volviera a identificarse con una cuenta de Google recién creada que no era la suya.
+        //
+        // Aquello existía por una limitación de Google Meet: solo dejaba grabar a quien
+        // perteneciera a la organización del anfitrión. Ya no hace falta: el worker crea la
+        // sala y hace coanfitrión al profesor, que graba con su correo de siempre.
+        //
+        // Además estaba roto, porque la creación de esas cuentas iba contra n8n, que ya no
+        // está en servicio: elegir el plan de 29,99 € daba error. Ahora los dos planes de pago
+        // siguen el mismo camino, sin muros de por medio.
 
         // Verificar autenticación
         let user;
