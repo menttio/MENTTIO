@@ -45,7 +45,7 @@ export default function StripeConnectCard() {
   const handleConnect = async () => {
     setConnecting(true);
     try {
-      const res = await base44.functions.invoke('connectStripeAccount');
+      const res = await base44.functions.invoke('stripeOnboarding');
       if (res.data?.url) {
         window.location.href = res.data.url;
       }
