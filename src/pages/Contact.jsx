@@ -71,10 +71,12 @@ export default function Contact() {
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="w-20 h-20 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-4">
-              <Mail className="text-[#41f2c0]" size={40} />
+              <Mail className="text-[#0d7a5f]" size={40} aria-hidden="true" />
             </div>
-            <CardTitle className="text-2xl md:text-3xl font-bold text-[#404040]">
-              Contáctanos
+            {/* La página no tenía ningún título de primer nivel: quien navega con lector de
+                pantalla no tenía forma de saber dónde estaba. */}
+            <CardTitle asChild>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#404040]">Contáctanos</h1>
             </CardTitle>
             <p className="text-sm md:text-base text-gray-500 mt-2">
               ¿Tienes alguna pregunta? Estamos aquí para ayudarte
