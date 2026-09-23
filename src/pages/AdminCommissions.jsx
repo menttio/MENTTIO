@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Loader2, Percent, User, CreditCard, Check, AlertCircle } from 'lucide-react';
+import { Loader2, Percent, User, CreditCard, Check, AlertCircle, Smartphone, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -72,6 +72,124 @@ function StripeCatalogSetup() {
   );
 }
 
+const eur = (n) => `${Number(n || 0).toFixed(2).replace('.', ',')}€`;
+
+/**
+ * Bizums del plan sin cuota pendientes de confirmar.
+ *
+ * En ese plan el alumno le hace el Bizum a Menttio, no al profesor. Cuando el alumno decía
+ * "ya lo he enviado", la clase se quedaba en el limbo: se avisaba al profesor, que no es
+ * quien había recibido el dinero, y nadie podía darla por pagada. Esto lo cierra.
+ */
+function BizumsPendientes() {
+  const [datos, setDatos] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [actuando, setActuando] = useState(null);
+
+  const cargar = async () => {
+    setCargando(true);
+    try {
+      const r = await base44.functions.invoke('bizumAdmin', { accion: 'listar' });
+      setDatos(r.data);
+    } catch (e) {
+      setDatos({ error: e.message });
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => { cargar(); }, []);
+
+  const actuar = async (bookingId, accion) => {
+    setActuando(bookingId + accion);
+    try {
+      await base44.functions.invoke('bizumAdmin', { accion, bookingId });
+      await cargar();
+    } catch (e) {
+      alert('No se ha podido completar: ' + e.message);
+    } finally {
+      setActuando(null);
+    }
+  };
+
+  const lista = datos?.pendientes || [];
+
+  return (
+    <Card className="mb-8">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Smartphone size={18} className="text-[#0d7a5f]" aria-hidden="true" />
+          Bizums pendientes de confirmar
+          {lista.length > 0 && (
+            <Badge className="bg-orange-100 text-orange-800">{lista.length}</Badge>
+          )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {cargando ? (
+          <div className="py-6 flex justify-center"><Loader2 className="animate-spin text-[#41f2c0]" /></div>
+        ) : lista.length === 0 ? (
+          <p className="text-gray-500 text-sm py-2">
+            Nada pendiente. Aquí aparecen los Bizums que los alumnos dicen haberte enviado, para
+            que confirmes que han llegado.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-500">
+              Comprueba cada uno en tu app de Bizum antes de confirmarlo. Al confirmar, la clase
+              queda pagada y se anota lo que le debes al profesor.
+            </p>
+            {lista.map((b) => (
+              <div key={b.id} className="border border-gray-200 rounded-xl p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-[#404040]">
+                      {b.alumno} — {b.asignatura}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {b.fecha} a las {b.hora} · con {b.profesor}
+                    </p>
+                    <p className="text-sm mt-1 text-gray-600">
+                      Cobrado <strong>{eur(b.precio)}</strong> · para el profesor{' '}
+                      <strong>{eur(b.para_el_profesor)}</strong> · para ti{' '}
+                      <strong>{eur(b.comision)}</strong> ({b.comision_pct}%)
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={actuando === b.id + 'rechazar'}
+                      onClick={() => actuar(b.id, 'rechazar')}
+                    >
+                      <X size={14} className="mr-1" aria-hidden="true" /> No me consta
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
+                      disabled={actuando === b.id + 'confirmar'}
+                      onClick={() => actuar(b.id, 'confirmar')}
+                    >
+                      {actuando === b.id + 'confirmar'
+                        ? <Loader2 className="animate-spin" size={14} />
+                        : <><Check size={14} className="mr-1" aria-hidden="true" /> Lo he recibido</>}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="bg-gray-50 rounded-xl p-4 text-sm text-[#404040]">
+              Si confirmas todo lo pendiente: <strong>{eur(datos.total_para_profesores)}</strong> a
+              repartir entre los profesores a final de mes y{' '}
+              <strong>{eur(datos.total_menttio)}</strong> para Menttio.
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function AdminCommissions() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -129,6 +247,8 @@ export default function AdminCommissions() {
         </h1>
         <p className="text-gray-500 mt-1 text-sm">Profesores en el plan sin cuota — clases completadas y desglose de pagos</p>
       </div>
+
+      <BizumsPendientes />
 
       <StripeCatalogSetup />
 
