@@ -637,7 +637,7 @@ export default function BookingCard({
           <div className="border-t border-gray-100 pt-4 mt-4">
             <div className="flex items-center gap-2 text-gray-400 text-sm">
               <Video size={16} />
-              <span>Grabación no disponible (el profesor tiene el plan básico)</span>
+              <span>Tu profesor no tiene activada la grabación de clases</span>
             </div>
           </div>
         )}
