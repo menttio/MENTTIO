@@ -73,7 +73,7 @@ const teacherPlans = [
     price: '29,99€',
     period: '/mes',
     description: 'Todo lo anterior, más la grabación',
-    note: 'Incluye tu cuenta de correo profesional · 300€ al año si pagas anual',
+    note: 'Sin comisión por clase · 300€ al año si pagas anual',
     // Esta tarjeta era un degradado menta con el texto en blanco: contraste 1,42, el mismo
     // que corregimos en el resto del sitio. No salió en el escaneo porque axe no sabe medir
     // contraste sobre un degradado y se lo salta en silencio.

@@ -304,7 +304,7 @@ export default function TeacherSignup() {
           </h2>
           <p className="text-gray-600">
             {formData.subscription_plan === 'premium' 
-              ? 'Estamos configurando tu cuenta corporativa, esto tomará unos segundos'
+              ? 'Estamos preparando tu perfil, esto tomará unos segundos'
               : 'Configurando tu perfil de profesor, esto tomará unos segundos'}
           </p>
         </motion.div>
@@ -658,7 +658,7 @@ export default function TeacherSignup() {
                           <span className="text-5xl font-bold text-[#404040]">29,99€</span>
                           <span className="text-gray-500">/mes</span>
                         </div>
-                        <p className="text-sm text-gray-600 mt-2">Plan Clase grabada (incluye grabación y correo profesional)</p>
+                        <p className="text-sm text-gray-600 mt-2">Plan Clase grabada (incluye la grabación de las clases)</p>
                       </>
                     )}
                   </div>

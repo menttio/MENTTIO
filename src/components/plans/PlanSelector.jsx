@@ -19,7 +19,7 @@ const plans = [
     price: '29,99€/mes',
     trial: '14 días gratis',
     description: 'La clase se graba y tu alumno la repasa',
-    features: ['Todo lo del plan Esencial', 'Grabación automática de las clases', 'Correo profesional @menttio.com'],
+    features: ['Todo lo del plan Esencial', 'Grabación de las clases', 'Soporte prioritario'],
     color: 'border-yellow-400',
     badge: 'Recomendado',
   },
