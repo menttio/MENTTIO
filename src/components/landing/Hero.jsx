@@ -105,11 +105,10 @@ export default function Hero() {
             <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
               Precios
             </button>
-            <button onClick={() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
-              Testimonios
-            </button>
+            {/* Se quita "Testimonios" del menú: lleva a una sección que dice, con razón, que
+                todavía no hay opiniones. No hace falta invitar a nadie a ir a verla. */}
             <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
-              FAQ
+              Preguntas frecuentes
             </button>
             <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors">
               Sobre nosotros
@@ -255,16 +254,10 @@ export default function Hero() {
                   Precios
                 </button>
                 <button 
-                  onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
-                  className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
-                >
-                  Testimonios
-                </button>
-                <button 
                   onClick={() => { setMobileMenuOpen(false); setTimeout(() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' }), 300); }} 
                   className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors"
                 >
-                  FAQ
+                  Preguntas frecuentes
                 </button>
                 <a href="/AboutUs" className="block w-full text-left px-4 py-2 text-[#404040] hover:bg-[#41f2c0]/10 rounded-lg font-medium transition-colors">
                   Sobre nosotros
