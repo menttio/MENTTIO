@@ -168,7 +168,7 @@ export default function Profile() {
   const handleDeleteAccount = async () => {
     setDeleting(true);
     try {
-      await base44.functions.invoke('deleteAccount');
+      await base44.functions.invoke('closeAccount');
       
       // Clear all auth data and force logout
       await base44.auth.logout();
@@ -361,8 +361,8 @@ export default function Profile() {
       {/* Delete Account Section */}
       <Card className="border-red-200 bg-red-50">
         <CardHeader>
-          <CardTitle className="text-red-600">Eliminar Cuenta</CardTitle>
-          <CardDescription>Esta acción es permanente y no se puede deshacer</CardDescription>
+          <CardTitle className="text-red-600">Darme de baja</CardTitle>
+          <CardDescription>Se borran tus datos personales. Las clases dadas se conservan sin tu nombre.</CardDescription>
         </CardHeader>
         <CardContent>
           <AlertDialog>
@@ -377,7 +377,7 @@ export default function Profile() {
                 ) : (
                   <>
                     <Trash2 size={20} className="mr-2" />
-                    Eliminar mi cuenta
+                    Darme de baja
                   </>
                 )}
               </Button>
