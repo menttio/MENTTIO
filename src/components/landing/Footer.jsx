@@ -25,7 +25,8 @@ export default function Footer() {
             <Button
               onClick={handleGetStarted}
               size="lg"
-              className="bg-white text-[#41f2c0] hover:bg-gray-100 px-8 py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
+              /* Menta sobre blanco daba 1,42:1. El gris corporativo sobre blanco da 10:1. */
+              className="bg-white text-[#404040] hover:bg-gray-100 px-8 py-6 text-base md:text-lg rounded-xl shadow-xl font-semibold w-full sm:w-auto"
             >
               Crea tu perfil gratis
             </Button>
