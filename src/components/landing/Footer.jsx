@@ -74,7 +74,8 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-300">
               <li><a href="/AboutUs" className="hover:text-[#41f2c0] transition-colors">Sobre nosotros</a></li>
               <li><a href="/Blog" className="hover:text-[#41f2c0] transition-colors">Blog</a></li>
-              <li><button className="hover:text-[#41f2c0] transition-colors">Trabaja con nosotros</button></li>
+              {/* Era un botón sin acción: se podía pulsar y no pasaba nada. Lleva a contacto. */}
+              <li><a href="/Contact" className="hover:text-[#41f2c0] transition-colors">Trabaja con nosotros</a></li>
               <li><a href="/Contact" className="hover:text-[#41f2c0] transition-colors">Contacto</a></li>
             </ul>
           </div>
