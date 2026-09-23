@@ -93,3 +93,36 @@
     font-family: 'Fraunces', serif;
   }
 }
+/* Texto de los articulos del blog. El contenido viene como HTML, asi que Tailwind no lo
+   alcanza con clases: se le dan estilos aqui para que se lea bien y respire. */
+.articulo h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #404040;
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.articulo p {
+  margin-bottom: 1.15rem;
+  color: #4b4b4b;
+}
+.articulo ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin-bottom: 1.25rem;
+}
+.articulo li {
+  margin-bottom: 0.6rem;
+  color: #4b4b4b;
+}
+.articulo strong { color: #333333; }
+.articulo blockquote {
+  border-left: 4px solid #41f2c0;
+  background: #f6fffb;
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  margin: 1.5rem 0;
+}
+.articulo blockquote p { margin-bottom: 0; font-style: italic; }
+.articulo em { color: #555; }
