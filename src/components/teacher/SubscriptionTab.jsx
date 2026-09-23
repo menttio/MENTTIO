@@ -203,7 +203,7 @@ export default function SubscriptionTab({ profile }) {
       {isCommission && (
         <Card className="border-purple-200 bg-purple-50">
           <CardContent className="p-5">
-            <p className="font-semibold text-purple-800 mb-1">Plan Comisión activo</p>
+            <p className="font-semibold text-purple-800 mb-1">Plan sin cuota activo</p>
             <p className="text-sm text-purple-700">No pagas cuota mensual. Menttio retiene el 10% de las clases que cobres a través de la plataforma; el resto es tuyo.</p>
           </CardContent>
         </Card>
