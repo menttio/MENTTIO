@@ -49,21 +49,25 @@ export default function ClassRecordings() {
         .filter(b => b.status === 'completed' || (b.status === 'scheduled' && !isAfter(parseISO(b.date), startOfDay(new Date()))))
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       
-      // Obtener links de grabación desde Google Sheets
-      const bookingsWithRecordings = await Promise.all(
-        completed.map(async (booking) => {
-          try {
-            const { data } = await base44.functions.invoke('recordingLink', { 
-              booking_id: booking.id 
-            });
-            return { ...booking, recording_url: data.recording_url || booking.recording_url };
-          } catch (error) {
-            console.error(`Error obteniendo link para booking ${booking.id}:`, error);
-            return booking;
-          }
-        })
-      );
-      
+      // El enlace de la grabación se pide al servidor, no se lee de la reserva, porque en la
+      // reserva no se puede comprobar si el alumno sigue autorizando la grabación. Una sola
+      // llamada para todas las clases: antes se hacía una por clase.
+      let bookingsWithRecordings = completed;
+      if (completed.length > 0) {
+        try {
+          const { data } = await base44.functions.invoke('recordingUrl', {
+            booking_ids: completed.map(b => b.id)
+          });
+          const grabaciones = data?.recordings || {};
+          bookingsWithRecordings = completed.map(booking => ({
+            ...booking,
+            recording_url: grabaciones[booking.id]?.recording_url || null
+          }));
+        } catch (error) {
+          console.error('Error obteniendo los enlaces de grabación:', error);
+        }
+      }
+
       setBookings(bookingsWithRecordings);
     } catch (error) {
       console.error(error);
