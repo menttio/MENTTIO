@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
 // Shared logic to build n8n payload and send to webhook
 async function sendToN8N(bookingData) {

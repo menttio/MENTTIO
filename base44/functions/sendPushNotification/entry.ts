@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import webpush from 'npm:web-push@3.6.7';
 
 Deno.serve(async (req) => {
