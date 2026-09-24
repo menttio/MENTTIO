@@ -623,7 +623,7 @@ export default function BookingCard({
               href={booking.recording_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#41f2c0] hover:text-[#0d7a5f] font-medium"
+              className="flex items-center gap-2 text-[#0d7a5f] hover:text-[#095e49] font-medium"
             >
               <Video size={18} />
               Ver grabación de la clase
