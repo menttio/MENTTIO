@@ -4,6 +4,12 @@
   incluidas las privadas (panel del profesor, mis alumnos, mensajes, comisiones) y el
   registro beta con su enlace secreto. Aquí van solo las páginas públicas, más los
   artículos del blog, que el generador no podía conocer porque llevan identificador.
+
+  Los artículos van como /Blog?articulo=<slug> y no como /Blog/<slug>: Base44 sólo
+  prerenderiza rutas fijas, así que a las direcciones con barra les entregaba la
+  instantánea del índice del blog. Google recibía los cinco artículos con el mismo
+  título, la misma descripción y el mismo contenido. Con el identificador en la query
+  sí se prerenderizan, porque "articulo" está en content_query_params.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -22,31 +28,31 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://menttio.com/Blog/cobrar-clases-particulares-sin-perseguir-a-nadie</loc>
+    <loc>https://menttio.com/Blog?articulo=cobrar-clases-particulares-sin-perseguir-a-nadie</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://menttio.com/Blog/grabar-clases-particulares-consentimiento-menores</loc>
+    <loc>https://menttio.com/Blog?articulo=grabar-clases-particulares-consentimiento-menores</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://menttio.com/Blog/cuanto-cobrar-clase-particular</loc>
+    <loc>https://menttio.com/Blog?articulo=cuanto-cobrar-clase-particular</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://menttio.com/Blog/organizar-clases-particulares-sin-whatsapp</loc>
+    <loc>https://menttio.com/Blog?articulo=organizar-clases-particulares-sin-whatsapp</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://menttio.com/Blog/informe-mensual-para-familias</loc>
+    <loc>https://menttio.com/Blog?articulo=informe-mensual-para-familias</loc>
     <lastmod>2026-09-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
