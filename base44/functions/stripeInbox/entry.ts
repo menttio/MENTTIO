@@ -2,7 +2,27 @@ import Stripe from 'npm:stripe@17.5.0';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
 const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
-const webhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
+
+// Dos secretos posibles. Desde que los cobros de clase son cargos directos, sus eventos
+// nacen en la cuenta del profesor y solo llegan a un destino que escuche cuentas conectadas.
+// Si ese destino es otro distinto del de las suscripciones, trae su propia firma, asi que se
+// prueban los dos. Con un unico destino que escuche ambas cosas, sobra el segundo.
+const secretosWebhook = [
+  Deno.env.get('STRIPE_WEBHOOK_SECRET'),
+  Deno.env.get('STRIPE_WEBHOOK_SECRET_CONNECT'),
+].filter(Boolean);
+
+async function verificar(body, signature) {
+  let ultimoError = null;
+  for (const secreto of secretosWebhook) {
+    try {
+      return await stripe.webhooks.constructEventAsync(body, signature, secreto);
+    } catch (err) {
+      ultimoError = err;
+    }
+  }
+  throw ultimoError || new Error('No hay ningun secreto de webhook configurado');
+}
 
 // Recibe los avisos de Stripe. Sustituye a stripeHook / stripeEvents / stripeWebhook.
 //
@@ -93,14 +113,16 @@ export default async function(req) {
 
   let event;
   try {
-    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+    event = await verificar(body, signature);
   } catch (err) {
     console.error('Firma del webhook no valida:', err.message);
     return Response.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
   const db = createClientFromRequest(req).asServiceRole;
-  console.log(`Evento ${event.type} (API ${event.api_version || 'sin version'})`);
+  // event.account solo viene cuando el evento nace en una cuenta conectada: es como se
+  // distingue el cobro de una clase (cuenta del profesor) de una suscripcion (cuenta Menttio).
+  console.log(`Evento ${event.type} (API ${event.api_version || 'sin version'})${event.account ? ` de la cuenta ${event.account}` : ''}`);
 
   try {
     switch (event.type) {
