@@ -23,8 +23,11 @@ function ponerMeta(nombre, valor, porPropiedad = false) {
   return el;
 }
 
-export default function Articulo() {
-  const { slug } = useParams();
+// El identificador llega por la ruta (/Blog/<slug>, los enlaces ya compartidos) o como
+// propiedad desde el índice (/Blog?articulo=<slug>, que es la que Base44 prerenderiza).
+export default function Articulo({ slug: slugProp }) {
+  const params = useParams();
+  const slug = slugProp || params.slug;
   const articulo = articuloPorSlug(slug);
 
   useEffect(() => {
@@ -41,7 +44,9 @@ export default function Articulo() {
     const canonical =
       document.querySelector('link[rel="canonical"]') || document.createElement('link');
     canonical.setAttribute('rel', 'canonical');
-    canonical.setAttribute('href', `https://menttio.com/Blog/${articulo.slug}`);
+    // Siempre la dirección con query: es la única que Google recibe ya renderizada, y así
+    // las dos formas de llegar al artículo no compiten entre sí como contenido duplicado.
+    canonical.setAttribute('href', `https://menttio.com/Blog?articulo=${articulo.slug}`);
     if (!canonical.parentNode) document.head.appendChild(canonical);
 
     const ld = document.createElement('script');
