@@ -38,11 +38,11 @@ LOPDGDD), y se puede retirar en cualquier momento.
 - [Inicio](https://menttio.com/): qué hace Menttio y para quién.
 - [Registro de profesor](https://menttio.com/TeacherSignup): alta en 5 minutos.
 - [Blog para profesores particulares](https://menttio.com/Blog): cobros, precios, organización y ley.
-- [Cómo cobrar tus clases particulares sin perseguir a nadie](https://menttio.com/Blog/cobrar-clases-particulares-sin-perseguir-a-nadie)
-- [Grabar tus clases: qué dice la ley y cómo pedir permiso](https://menttio.com/Blog/grabar-clases-particulares-consentimiento-menores)
-- [Cuánto cobrar por una clase particular](https://menttio.com/Blog/cuanto-cobrar-clase-particular)
-- [Organizar tus clases sin vivir en WhatsApp](https://menttio.com/Blog/organizar-clases-particulares-sin-whatsapp)
-- [El informe mensual para las familias](https://menttio.com/Blog/informe-mensual-para-familias)
+- [Cómo cobrar tus clases particulares sin perseguir a nadie](https://menttio.com/Blog?articulo=cobrar-clases-particulares-sin-perseguir-a-nadie)
+- [Grabar tus clases: qué dice la ley y cómo pedir permiso](https://menttio.com/Blog?articulo=grabar-clases-particulares-consentimiento-menores)
+- [Cuánto cobrar por una clase particular](https://menttio.com/Blog?articulo=cuanto-cobrar-clase-particular)
+- [Organizar tus clases sin vivir en WhatsApp](https://menttio.com/Blog?articulo=organizar-clases-particulares-sin-whatsapp)
+- [El informe mensual para las familias](https://menttio.com/Blog?articulo=informe-mensual-para-familias)
 - [Quiénes somos](https://menttio.com/AboutUs)
 - [Contacto](https://menttio.com/Contact)
 - [Política de privacidad](https://menttio.com/PrivacyPolicy)
