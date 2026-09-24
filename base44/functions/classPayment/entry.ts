@@ -106,6 +106,18 @@ export default async function(req) {
       comision_pct: String(pct),
     };
 
+    // CARGO DIRECTO: la sesion se crea EN LA CUENTA DEL PROFESOR, no en la de Menttio.
+    //
+    // Antes era un cargo con destino (transfer_data + on_behalf_of) y el comentario decia que
+    // asi la comision de Stripe la soportaba el profesor. Es falso: en los cargos con destino
+    // las comisiones de Stripe las paga SIEMPRE la plataforma. Se comprobo con el primer cobro
+    // real: 20 EUR al profesor y -0,55 EUR en el saldo de Menttio. Con un profesor activo eso
+    // son mas comisiones que cuota; a mas clases, mas se pierde.
+    //
+    // Con cargo directo el profesor es el comerciante: cobra el, Stripe le descuenta a el su
+    // comision exacta (sea cual sea la tarjeta) y Menttio no llega a tocar el dinero. Que es
+    // justo lo que la app promete. La comision de Menttio del plan sin cuota se sigue
+    // reteniendo igual, con application_fee_amount, que tambien vale sobre cargos directos.
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -127,13 +139,11 @@ export default async function(req) {
       client_reference_id: String(booking.id),
       metadata,
       payment_intent_data: {
-        // El dinero va a la cuenta del profesor y Stripe retiene ahi mismo la comision de
-        // Menttio. Con on_behalf_of, ademas, la comision de Stripe la soporta el profesor.
-        transfer_data: { destination: teacher.stripe_connect_account_id },
-        on_behalf_of: teacher.stripe_connect_account_id,
         ...(feeCents > 0 ? { application_fee_amount: feeCents } : {}),
         metadata,
       },
+    }, {
+      stripeAccount: teacher.stripe_connect_account_id,
     });
 
     return Response.json({ url: session.url, id: session.id });
