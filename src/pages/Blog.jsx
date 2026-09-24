@@ -1,25 +1,39 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { ARTICULOS } from '@/data/articulos';
+import { ARTICULOS, articuloPorSlug } from '@/data/articulos';
+import Articulo from './Articulo';
 
 /**
- * Índice del blog.
+ * Índice del blog, y también el artículo cuando la dirección lleva ?articulo=<slug>.
  *
  * Antes los artículos se abrían en una ventana emergente desde aquí: ninguno tenía dirección
- * propia, así que Google no podía indexarlos y nadie podía compartir uno. Ahora cada tarjeta
- * es un enlace de verdad a /Blog/<slug>.
+ * propia, así que Google no podía indexarlos y nadie podía compartir uno. Se les dio la suya,
+ * /Blog/<slug>, y seguía sin servir: Base44 sólo prerenderiza rutas fijas, así que a esas
+ * direcciones les entregaba la instantánea del índice. Los cinco artículos llegaban a Google
+ * con el mismo título, la misma descripción y el mismo contenido: cinco copias de /Blog.
+ *
+ * Con el identificador en la query, Base44 sí los prerenderiza, porque `content_query_params`
+ * incluye "articulo". La ruta con barra se conserva para no romper enlaces ya compartidos,
+ * pero la canónica y el mapa del sitio apuntan a esta.
  */
 export default function Blog() {
+  const [searchParams] = useSearchParams();
+  const slug = searchParams.get('articulo');
+  const articulo = slug ? articuloPorSlug(slug) : null;
+
   useEffect(() => {
+    if (articulo) return; // el título lo pone el artículo
     const previo = document.title;
     document.title = 'Blog para profesores particulares | Menttio';
     return () => {
       document.title = previo;
     };
-  }, []);
+  }, [articulo]);
+
+  if (articulo) return <Articulo slug={slug} />;
 
   return (
     <div className="min-h-screen bg-[#f2f2f2]">
@@ -50,7 +64,7 @@ export default function Blog() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <Link to={`/Blog/${a.slug}`} className="block h-full group">
+              <Link to={`/Blog?articulo=${a.slug}`} className="block h-full group">
                 <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-44 overflow-hidden">
                     <img
