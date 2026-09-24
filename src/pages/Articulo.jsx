@@ -61,7 +61,7 @@ export default function Articulo({ slug: slugProp }) {
       inLanguage: 'es',
       author: { '@type': 'Organization', name: 'Menttio' },
       publisher: { '@type': 'Organization', name: 'Menttio' },
-      mainEntityOfPage: `https://menttio.com/Blog/${articulo.slug}`,
+      mainEntityOfPage: `https://menttio.com/Blog?articulo=${articulo.slug}`,
     });
     document.head.appendChild(ld);
 
@@ -150,7 +150,7 @@ export default function Articulo({ slug: slugProp }) {
               {otros.map((a) => (
                 <Link
                   key={a.slug}
-                  to={`/Blog/${a.slug}`}
+                  to={`/Blog?articulo=${a.slug}`}
                   className="block rounded-xl border border-gray-200 p-5 hover:border-[#41f2c0] transition-colors"
                 >
                   <p className="text-xs font-semibold text-[#0d7a5f] mb-1">{a.category}</p>
