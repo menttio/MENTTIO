@@ -41,6 +41,11 @@
     "is_unavailable": {
       "type": "boolean",
       "description": "Si es true, marca el d\u00eda como no disponible"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre esta disponibilidad"
     }
   },
   "required": [

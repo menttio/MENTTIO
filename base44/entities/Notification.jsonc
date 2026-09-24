@@ -43,6 +43,11 @@
       "type": "boolean",
       "default": false,
       "description": "Si la notificaci\u00f3n ha sido le\u00edda"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre esta notificaci\u00f3n"
     }
   },
   "required": [

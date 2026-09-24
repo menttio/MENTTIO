@@ -48,6 +48,11 @@
     "consent_note": {
       "type": "string",
       "description": "Qu\u00e9 autoriz\u00f3 exactamente el alumno al darla"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre esta rese\u00f1a"
     }
   },
   "required": [

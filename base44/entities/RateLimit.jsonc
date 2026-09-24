@@ -14,6 +14,11 @@
       ],
       "default": "contacto",
       "description": "Acci\u00f3n limitada"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre este registro"
     }
   },
   "required": [

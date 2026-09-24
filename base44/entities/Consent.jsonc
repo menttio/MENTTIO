@@ -50,6 +50,11 @@
       "type": "string",
       "format": "date-time",
       "description": "Fecha y hora de la decisi\u00f3n"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre este consentimiento"
     }
   },
   "required": [

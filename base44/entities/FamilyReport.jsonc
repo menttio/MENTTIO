@@ -42,6 +42,11 @@
     "average_rating": {
       "type": "number",
       "description": "Valoraci\u00f3n media del progreso en el periodo"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre este informe"
     }
   },
   "required": [

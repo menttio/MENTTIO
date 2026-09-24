@@ -10,6 +10,11 @@
       "type": "string",
       "format": "date",
       "description": "Fecha en que se registr\u00f3 el uso del trial"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre este registro"
     }
   },
   "required": [

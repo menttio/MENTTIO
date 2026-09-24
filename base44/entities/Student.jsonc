@@ -92,6 +92,11 @@
     "google_calendar_tokens": {
       "type": "object",
       "description": "Tokens de acceso de Google Calendar"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre este alumno"
     }
   },
   "required": [

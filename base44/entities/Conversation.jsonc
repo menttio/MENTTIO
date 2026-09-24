@@ -48,6 +48,11 @@
       "type": "number",
       "default": 0,
       "description": "Mensajes no le\u00eddos por el profesor"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Aclaraci\u00f3n en texto libre sobre esta conversaci\u00f3n"
     }
   },
   "required": [
