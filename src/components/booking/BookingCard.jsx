@@ -616,19 +616,20 @@ export default function BookingCard({
           </div>
         )}
 
-        {/* Recording Link - Solo si el profesor tiene plan premium */}
+        {/* La grabación no se enlaza desde aquí: el permiso del alumno se puede retirar en
+            cualquier momento y hay que comprobarlo al mostrarla, cosa que una tarjeta dentro
+            de una lista no puede hacer sin una consulta por clase. Se enlaza la pantalla de
+            grabaciones, que sí lo comprueba. */}
         {isCompleted && booking.recording_url && teacher?.subscription_plan === 'premium' && (
           <div className="border-t border-gray-100 pt-4 mt-4">
-            <a
-              href={booking.recording_url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={createPageUrl('ClassRecordings')}
               className="flex items-center gap-2 text-[#0d7a5f] hover:text-[#095e49] font-medium"
             >
               <Video size={18} />
               Ver grabación de la clase
               <ExternalLink size={14} />
-            </a>
+            </Link>
           </div>
         )}
 
