@@ -37,8 +37,25 @@ export default function RecordingConsentCard({ student, onChange }) {
         text_shown: textoDe('grabacion', esMenor),
         event_date: ahora,
       });
+      // Retirar el permiso tiene que afectar también a lo ya grabado, no solo al futuro.
+      let ocultadas = 0;
+      if (!nuevoValor) {
+        try {
+          const { data } = await base44.functions.invoke('revokeRecordings', {});
+          ocultadas = data?.cleared || 0;
+        } catch (e) {
+          console.error('No se han podido ocultar las grabaciones anteriores:', e);
+        }
+      }
+
       onChange?.({ ...student, recording_consent: nuevoValor, recording_consent_date: ahora });
-      setMensaje(nuevoValor ? 'Permiso concedido.' : 'Permiso retirado. Tus próximas clases no se grabarán.');
+      setMensaje(
+        nuevoValor
+          ? 'Permiso concedido.'
+          : ocultadas > 0
+            ? `Permiso retirado. Tus próximas clases no se grabarán y se han ocultado ${ocultadas} grabaci${ocultadas === 1 ? 'ón' : 'ones'} anterior${ocultadas === 1 ? '' : 'es'}.`
+            : 'Permiso retirado. Tus próximas clases no se grabarán.'
+      );
     } catch (e) {
       console.error(e);
       setMensaje('No se ha podido guardar. Inténtalo de nuevo.');
