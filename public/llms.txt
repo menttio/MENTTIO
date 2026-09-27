@@ -7,9 +7,9 @@
 ## Qué es y qué no es
 
 Menttio **no es un marketplace y no consigue alumnos**. Está pensado para profesores que ya
-tienen los suyos: sobre todo clases particulares de Matemáticas, Física y Química de ESO,
-Bachillerato y EBAU, en España. Quien busque una plataforma para encontrar profesor, este no
-es el sitio.
+tienen los suyos: clases particulares por videollamada, de cualquier asignatura y cualquier
+nivel —ESO, Bachillerato, EBAU, idiomas, universidad u oposiciones—, en España. Quien busque
+una plataforma para encontrar profesor, este no es el sitio.
 
 ## Para profesores
 
