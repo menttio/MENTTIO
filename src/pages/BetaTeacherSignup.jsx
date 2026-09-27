@@ -16,9 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-// ⚠️ Token secreto — solo quienes tengan el link correcto acceden
 import { idAsignaturaPropia } from './TeacherSignup';
 
+// ⚠️ Token secreto — solo quienes tengan el link correcto acceden
 const BETA_TOKEN = 'beta2024menttio';
 
 export default function BetaTeacherSignup() {
