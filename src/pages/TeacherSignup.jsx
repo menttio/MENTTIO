@@ -72,11 +72,14 @@ export default function TeacherSignup() {
   const updateSubject = (index, field, value) => {
     const updated = [...teacherSubjects];
     if (field === 'subject_id') {
+      // "otra" deja escribir el nombre a mano. Sin esto, un profesor de una asignatura que no
+      // esté en la lista no podía terminar el registro: el desplegable era obligatorio y no
+      // tenía escapatoria. Dentro de la app sí existía esa opción, pero en el alta no.
       const subject = subjects.find(s => s.id === value);
-      updated[index] = { 
-        ...updated[index], 
-        subject_id: value, 
-        subject_name: subject?.name || '' 
+      updated[index] = {
+        ...updated[index],
+        subject_id: value,
+        subject_name: value === 'otra' ? '' : (subject?.name || ''),
       };
     } else if (field === 'price_per_hour') {
       const price = parseFloat(value) || 0;
@@ -143,7 +146,11 @@ export default function TeacherSignup() {
   };
 
   const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education && formData.experience_years >= 0;
-  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
+  // Con "otra" hay que haber escrito el nombre; con una de la lista basta con haberla elegido.
+  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(
+    s => s.subject_id && s.level && s.price_per_hour > 0 &&
+      (s.subject_id !== 'otra' || (s.subject_name || '').trim().length > 1)
+  );
   const canFinalize = acceptedTerms;
 
   const handleFinalize = () => {
@@ -577,8 +584,19 @@ export default function TeacherSignup() {
                                     {s.name}
                                   </SelectItem>
                                 ))}
+                                <SelectItem value="otra">Otra (escríbela tú)</SelectItem>
                               </SelectContent>
                             </Select>
+                            {ts.subject_id === 'otra' && (
+                              <Input
+                                className="mt-2"
+                                placeholder="¿Qué asignatura das?"
+                                aria-label="Nombre de la asignatura"
+                                maxLength={60}
+                                value={ts.subject_name}
+                                onChange={(e) => updateSubject(idx, 'subject_name', e.target.value)}
+                              />
+                            )}
                           </div>
                           <div className="w-full md:w-32">
                             <Select
