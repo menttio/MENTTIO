@@ -26,7 +26,7 @@ export function idAsignaturaPropia(nombre) {
     .trim()
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/\p{M}/gu, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
   return base ? `propia:${base}` : null;
