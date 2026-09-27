@@ -301,8 +301,8 @@ export default function Hero() {
             {/* CAMBIO: subtítulo más orientado al problema resuelto, no a features */}
             <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
               La videollamada se crea sola, la clase queda grabada para que tu alumno la repase, los apuntes
-              quedan guardados y el pago entra sin que persigas a nadie. Pensado para clases particulares
-              online de Matemáticas, Física y Química (ESO, Bachillerato y EBAU).
+              quedan guardados y el pago entra sin que persigas a nadie. Pensado para quien da clases
+              particulares online, de la asignatura que sea.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-12">
