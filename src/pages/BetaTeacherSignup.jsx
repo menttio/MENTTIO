@@ -17,6 +17,8 @@ import {
 } from '@/components/ui/select';
 
 // ⚠️ Token secreto — solo quienes tengan el link correcto acceden
+import { idAsignaturaPropia } from './TeacherSignup';
+
 const BETA_TOKEN = 'beta2024menttio';
 
 export default function BetaTeacherSignup() {
@@ -118,10 +120,14 @@ export default function BetaTeacherSignup() {
       phone: formData.phone,
       education: formData.education,
       experience_years: formData.experience_years,
-      // Igual que en "Gestionar asignaturas": la propia va con subject_id null y nombre libre.
+      // Una asignatura escrita a mano lleva su propio identificador, derivado del nombre.
       subjects: teacherSubjects.map(s =>
         s.subject_id === 'otra'
-          ? { ...s, subject_id: null, subject_name: (s.subject_name || '').trim() }
+          ? {
+              ...s,
+              subject_id: idAsignaturaPropia(s.subject_name),
+              subject_name: (s.subject_name || '').trim(),
+            }
           : s
       ),
       is_beta: true,
