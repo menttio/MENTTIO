@@ -168,7 +168,13 @@ export default function TeacherSignup() {
       phone: formData.phone,
       education: formData.education,
       experience_years: formData.experience_years,
-      subjects: teacherSubjects
+      // Una asignatura propia se guarda con subject_id null y el nombre a pelo, que es el
+      // mismo formato que usa "Gestionar asignaturas". "otra" sólo existe en el desplegable.
+      subjects: teacherSubjects.map(s =>
+        s.subject_id === 'otra'
+          ? { ...s, subject_id: null, subject_name: (s.subject_name || '').trim() }
+          : s
+      )
     };
     
     console.log('💾 GUARDANDO datos en sessionStorage...');
