@@ -65,8 +65,10 @@ export default function Home() {
       {/* El orden persigue una conversación: primero el dolor que ya conoce, luego cómo se
           quita, luego cuánto cuesta, y las dudas al final. El precio ya no queda enterrado
           tras cinco secciones, y la página termina pidiendo algo en vez de en el pie.
-          Se ha retirado PublicTeachersSection: hablaba como un marketplace ("elige el
-          profesor que mejor se adapta a ti") y enseñaba un escaparate casi vacío. */}
+          Se retiró el escaparate de profesores: hablaba como un marketplace ("elige el
+          profesor que mejor se adapta a ti") y enseñaba una vitrina casi vacía. El componente
+          se ha borrado del todo, porque quedaba ahí con el nombre, la titulación, la foto, el
+          precio y la valoración de cuatro profesores reales escritos a mano. */}
       <Hero />
       <Comparison />
       <Features />
