@@ -7,7 +7,7 @@ import { createPageUrl } from '../../utils';
 const faqs = [
   {
     question: '¿Para quién está pensada Menttio?',
-    answer: 'Para profesores particulares que dan clase por videollamada, sobre todo de Matemáticas, Física y Química a ESO, Bachillerato y EBAU. Si ya tienes tus alumnos y los llevas a base de WhatsApp, calendario y Bizum, Menttio es para ti. Tus alumnos entran gratis para reservar, ver materiales y repasar las grabaciones.'
+    answer: 'Para profesores particulares que dan clase por videollamada, de cualquier asignatura y cualquier nivel: ESO, Bachillerato, EBAU, idiomas, universidad u oposiciones. Si ya tienes tus alumnos y los llevas a base de WhatsApp, calendario y Bizum, Menttio es para ti. Tus alumnos entran gratis para reservar, ver materiales y repasar las grabaciones.'
   },
   {
     question: '¿Cuánto cuesta la suscripción para profesores?',
