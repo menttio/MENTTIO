@@ -118,7 +118,12 @@ export default function BetaTeacherSignup() {
       phone: formData.phone,
       education: formData.education,
       experience_years: formData.experience_years,
-      subjects: teacherSubjects,
+      // Igual que en "Gestionar asignaturas": la propia va con subject_id null y nombre libre.
+      subjects: teacherSubjects.map(s =>
+        s.subject_id === 'otra'
+          ? { ...s, subject_id: null, subject_name: (s.subject_name || '').trim() }
+          : s
+      ),
       is_beta: true,
     };
     sessionStorage.setItem('teacher_signup_data', JSON.stringify(signupData));
