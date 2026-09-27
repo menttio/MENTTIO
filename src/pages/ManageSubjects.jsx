@@ -22,6 +22,7 @@ import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, ChevronDown, C
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import SubjectsTour from '../components/teacher/SubjectsTour';
+import { idAsignaturaPropia } from './TeacherSignup';
 
 export default function ManageSubjects() {
   const [teacher, setTeacher] = useState(null);
