@@ -18,6 +18,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+// Identificador estable para una asignatura que el profesor escribe a mano. Guardarlas todas
+// con null, como se hacía, las vuelve indistinguibles: la pantalla de reservar agrupa por
+// identificador, así que un profesor con dos asignaturas propias sólo le enseñaría una al alumno.
+export function idAsignaturaPropia(nombre) {
+  const base = (nombre || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return base ? `propia:${base}` : null;
+}
+
 export default function TeacherSignup() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -172,7 +186,11 @@ export default function TeacherSignup() {
       // mismo formato que usa "Gestionar asignaturas". "otra" sólo existe en el desplegable.
       subjects: teacherSubjects.map(s =>
         s.subject_id === 'otra'
-          ? { ...s, subject_id: null, subject_name: (s.subject_name || '').trim() }
+          ? {
+              ...s,
+              subject_id: idAsignaturaPropia(s.subject_name),
+              subject_name: (s.subject_name || '').trim(),
+            }
           : s
       )
     };
