@@ -142,7 +142,10 @@ export default function ManageSubjects() {
       const builtGroupPrices = buildGroupPrices();
 
       const entry = {
-        subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : null,
+        // Una asignatura propia lleva identificador derivado de su nombre. Antes iban todas
+        // con null y eran indistinguibles entre sí: la pantalla de reservar agrupa por
+        // identificador, así que dos asignaturas propias se le enseñaban al alumno como una.
+        subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : idAsignaturaPropia(subjectName),
         subject_name: subjectName,
         level: selectedLevel,
         price_per_hour: parseFloat(price),
