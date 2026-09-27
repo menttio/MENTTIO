@@ -68,8 +68,14 @@ export default function BetaTeacherSignup() {
   const updateSubject = (index, field, value) => {
     const updated = [...teacherSubjects];
     if (field === 'subject_id') {
+      // "otra" deja escribir el nombre a mano: sin esto, quien da una asignatura que no está
+      // en la lista no podía terminar el registro.
       const subject = subjects.find(s => s.id === value);
-      updated[index] = { ...updated[index], subject_id: value, subject_name: subject?.name || '' };
+      updated[index] = {
+        ...updated[index],
+        subject_id: value,
+        subject_name: value === 'otra' ? '' : (subject?.name || ''),
+      };
     } else if (field === 'price_per_hour') {
       updated[index] = { ...updated[index], [field]: Math.max(0, Math.min(999, parseFloat(value) || 0)) };
     } else {
@@ -99,7 +105,10 @@ export default function BetaTeacherSignup() {
   };
 
   const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education;
-  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(s => s.subject_id && s.level && s.price_per_hour > 0);
+  const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(
+    s => s.subject_id && s.level && s.price_per_hour > 0 &&
+      (s.subject_id !== 'otra' || (s.subject_name || '').trim().length > 1)
+  );
 
   const handleFinalize = () => {
     const signupData = {
@@ -298,8 +307,21 @@ export default function BetaTeacherSignup() {
                           <div className="flex-1 min-w-0">
                             <Select value={ts.subject_id} onValueChange={(v) => updateSubject(idx, 'subject_id', v)}>
                               <SelectTrigger><SelectValue placeholder="Selecciona asignatura" /></SelectTrigger>
-                              <SelectContent>{subjects.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}</SelectContent>
+                              <SelectContent>
+                                {subjects.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                                <SelectItem value="otra">Otra (escríbela tú)</SelectItem>
+                              </SelectContent>
                             </Select>
+                            {ts.subject_id === 'otra' && (
+                              <Input
+                                className="mt-2"
+                                placeholder="¿Qué asignatura das?"
+                                aria-label="Nombre de la asignatura"
+                                maxLength={60}
+                                value={ts.subject_name}
+                                onChange={(e) => updateSubject(idx, 'subject_name', e.target.value)}
+                              />
+                            )}
                           </div>
                           <div className="w-full md:w-32">
                             <Select value={ts.level} onValueChange={(v) => updateSubject(idx, 'level', v)}>
