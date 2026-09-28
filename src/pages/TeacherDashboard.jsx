@@ -22,14 +22,13 @@ import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import ManageSubjectsCard from '../components/teacher/ManageSubjectsCard';
 import CreateRecurringBookingDialog from '../components/teacher/CreateRecurringBookingDialog';
-import OnboardingTour, { shouldShowOnboarding } from '../components/teacher/OnboardingTour';
+
 
 export default function TeacherDashboard() {
   const [teacher, setTeacher] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showTour, setShowTour] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const [showRecurringDialog, setShowRecurringDialog] = useState(false);
 
   const loadData = async () => {
@@ -41,13 +40,10 @@ export default function TeacherDashboard() {
         const teacherData = teachers[0];
         setTeacher(teacherData);
         
-        // Show tour if not completed
+        // Una sola bienvenida. Antes saltaban dos a la vez: este recorrido y un carrusel
+        // genérico de cuatro diapositivas, superpuestos, nada más entrar por primera vez.
         if (!teacherData.tour_completed) {
           setShowTour(true);
-        }
-        // Show onboarding on first visit
-        if (shouldShowOnboarding()) {
-          setShowOnboarding(true);
         }
 
         // Only fetch scheduled (for upcoming) + this month completed (for earnings stats)
@@ -115,7 +111,6 @@ export default function TeacherDashboard() {
 
   return (
     <>
-      <OnboardingTour show={showOnboarding} onClose={() => setShowOnboarding(false)} />
       
         <div className="max-w-6xl mx-auto">
           {/* Welcome Section */}
