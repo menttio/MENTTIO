@@ -6,17 +6,24 @@ import { Check, ChevronRight, BookOpen, Clock, CreditCard, CalendarCheck, Users 
 import { createPageUrl } from '../../utils';
 
 /**
- * Lo que le falta al profesor para poder dar su primera clase, con el estado real de su
- * cuenta.
+ * Lo que le falta al profesor para poder dar su primera clase, con el estado real de su cuenta.
  *
- * Sustituye a un carrusel de bienvenida que se pasaba a golpe de "siguiente" y no se
- * recordaba. Esto se queda hasta que está hecho, sobrevive a recargar y a cambiar de
- * dispositivo porque no guarda nada: mira los datos cada vez.
+ * Sustituye a un carrusel de bienvenida que se pasaba a golpe de "siguiente" y no se recordaba.
+ * Esto se queda hasta que está hecho, sobrevive a recargar y a cambiar de dispositivo porque no
+ * guarda nada: mira los datos cada vez.
  *
- * Las tres primeras son imprescindibles —sin ellas un alumno no puede reservar— y son las que
- * deciden si la tarjeta se enseña. Las otras dos son mejoras, y no la mantienen en pantalla
- * para siempre: un profesor que no quiera conectar su calendario no tiene por qué cargar con
- * un recordatorio eterno.
+ * Qué manda y qué no: el registro **ya obliga** a dar de alta una asignatura con su precio y un
+ * teléfono válido. Esas dos casillas nacen tachadas siempre, así que no pueden decidir si la
+ * tarjeta se ve — la primera versión lo hacía y la tarjeta se escondía sola nada más
+ * registrarse, que es justo lo contrario de lo que se busca. Se siguen mostrando porque
+ * confirman que el alta fue bien, pero no cuentan.
+ *
+ * Lo que de verdad separa a un profesor recién registrado de su primera clase son dos cosas:
+ * su disponibilidad y tener un alumno. Esas dos son las que mantienen la tarjeta en pantalla.
+ *
+ * Los cobros con tarjeta y el calendario van como opcionales: por Bizum no hay nada que
+ * configurar, y quien no quiera conectar su calendario no tiene por qué cargar con un
+ * recordatorio eterno.
  */
 export default function SetupChecklist({ teacher }) {
   const [disponibilidad, setDisponibilidad] = useState(null);
@@ -48,17 +55,14 @@ export default function SetupChecklist({ teacher }) {
   // medio segundo tarde a que parpadee diciendo que falta algo que ya está hecho.
   if (!teacher || disponibilidad === null || alumnos === null) return null;
 
-  const cobraPorBizum = Boolean((teacher.phone || '').trim());
-  const esComision = teacher.subscription_plan === 'commission';
-
   const tareas = [
     {
       clave: 'asignaturas',
-      necesaria: true,
+      necesaria: false,
       hecha: Array.isArray(teacher.subjects) && teacher.subjects.length > 0,
       icono: BookOpen,
-      titulo: 'Añade tus asignaturas y tus precios',
-      porque: 'Sin esto tus alumnos no pueden reservarte.',
+      titulo: 'Tus asignaturas y tus precios',
+      porque: 'Es lo que verán tus alumnos al reservarte.',
       destino: 'ManageSubjects',
     },
     {
@@ -67,18 +71,25 @@ export default function SetupChecklist({ teacher }) {
       hecha: disponibilidad > 0,
       icono: Clock,
       titulo: 'Marca cuándo puedes dar clase',
-      porque: 'Son los huecos que verá tu alumno al elegir hora.',
+      porque: 'Sin horas marcadas nadie puede reservarte, aunque te encuentre.',
       destino: 'ManageAvailability',
     },
     {
-      clave: 'cobros',
+      clave: 'alumnos',
       necesaria: true,
-      hecha: Boolean(teacher.stripe_connect_enabled) || cobraPorBizum,
+      hecha: alumnos > 0,
+      icono: Users,
+      titulo: 'Trae a tu primer alumno',
+      porque: 'Entra gratis con su correo y desde ahí ya puede reservarte.',
+      destino: 'MyStudents',
+    },
+    {
+      clave: 'cobros',
+      necesaria: false,
+      hecha: Boolean(teacher.stripe_connect_enabled),
       icono: CreditCard,
-      titulo: 'Elige cómo quieres cobrar',
-      porque: esComision
-        ? 'Con tarjeta el reparto es automático; por Bizum hace falta tu teléfono.'
-        : 'Conecta tu cuenta para cobrar con tarjeta, o deja tu teléfono para Bizum.',
+      titulo: 'Acepta pagos con tarjeta',
+      porque: 'El dinero va directo a tu cuenta. Si cobras por Bizum, no necesitas esto.',
       destino: 'Profile',
     },
     {
@@ -89,15 +100,6 @@ export default function SetupChecklist({ teacher }) {
       titulo: 'Conecta tu Google Calendar',
       porque: 'Tus citas personales bloquean esas horas y nadie te reserva encima.',
       destino: 'Profile',
-    },
-    {
-      clave: 'alumnos',
-      necesaria: false,
-      hecha: alumnos > 0,
-      icono: Users,
-      titulo: 'Trae a tu primer alumno',
-      porque: 'Entra gratis y desde ahí ya puede reservarte.',
-      destino: 'MyStudents',
     },
   ];
 
