@@ -100,7 +100,16 @@ export default function StudentSignupComplete() {
         }
 
         sessionStorage.removeItem('student_signup_data');
-        window.location.href = createPageUrl('StudentDashboard');
+
+        // Si vino por el enlace de invitación de un profesor, se vuelve allí para terminar de
+        // asignarle. Si no, el alumno aterrizaría en su panel sin profesor y tendría que ir a
+        // buscarlo entre los demás, que es justo lo que el enlace viene a evitar.
+        let invitacion = null;
+        try { invitacion = localStorage.getItem('menttio_invitacion_profesor'); } catch (_e) { /* modo privado */ }
+
+        window.location.href = invitacion
+          ? `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`
+          : createPageUrl('StudentDashboard');
       } catch (error) {
         console.error('Error completing signup:', error);
         setError(error.message);
