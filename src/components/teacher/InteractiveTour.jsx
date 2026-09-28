@@ -60,10 +60,10 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Se medía 100 ms después de lanzar un desplazamiento *animado*, que tarda bastante más:
-    // las coordenadas se tomaban con el elemento aún en movimiento y ya no se corregian nunca.
-    // De ahí que el mensaje apareciera descuadrado respecto al recuadro que resalta.
-    // Ahora el desplazamiento es instantáneo y se mide en el fotograma siguiente, ya quieto.
+    // Se mide en el fotograma siguiente en vez de 100 ms después: el retardo fijo era una
+    // apuesta sobre cuándo estaría pintada la página, y si tardaba más se medía un elemento
+    // que aún no estaba en su sitio. (El descuadre que se veía no era por esto, sino por el
+    // centrado del mensaje: está explicado abajo.)
     const raf = requestAnimationFrame(() => requestAnimationFrame(updateTooltipPosition));
 
     window.addEventListener('resize', updateTooltipPosition);
