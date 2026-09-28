@@ -12,8 +12,11 @@ import { createPageUrl } from '../../utils';
  */
 export default function FinalCTA() {
   const tranquilizadores = [
-    '14 días gratis, sin tarjeta',
-    'Cancelas cuando quieras',
+    // Decía "sin tarjeta" y era mentira a partir de hoy: la tarjeta se pide al empezar la
+    // prueba para que el cobro entre solo el día 15. Lo que sí es cierto, y es lo que importa,
+    // es que no se cobra nada durante los 14 días.
+    '14 días gratis, no se cobra nada hasta el día 15',
+    'Cancelas cuando quieras y no se te cobra',
     'Tus alumnos no pagan nada',
   ];
 
