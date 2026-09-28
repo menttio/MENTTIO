@@ -86,6 +86,7 @@ import TeacherSignupPayment from './pages/TeacherSignupPayment';
 import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
+import Invitacion from './pages/Invitacion';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "Contact": Contact,
     "CookiesPolicy": CookiesPolicy,
     "Home": Home,
+    "Invitacion": Invitacion,
     "Landing": Landing,
     "LegalNotice": LegalNotice,
     "ManageAvailability": ManageAvailability,
