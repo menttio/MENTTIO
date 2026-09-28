@@ -237,26 +237,33 @@ export default function Invitacion() {
           ) : (
             <>
               <fieldset className="mb-5">
-                <legend className="text-sm font-medium text-[#404040] mb-2">
+                <legend className="text-sm font-medium text-[#404040] mb-1">
                   ¿De qué te da clase?
                 </legend>
+                <p className="text-xs text-gray-500 mb-2">
+                  Marca todas las que te dé. Puedes cambiarlo después.
+                </p>
                 <div className="space-y-2">
                   {profesor.subjects.map((s) => {
                     const valor = `${s.subject_id}|${s.level}`;
+                    const marcada = elecciones.includes(valor);
                     return (
                       <label
                         key={valor}
                         className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-colors ${
-                          eleccion === valor ? 'border-[#41f2c0] bg-[#41f2c0]/10' : 'border-gray-200 hover:border-gray-300'
+                          marcada ? 'border-[#41f2c0] bg-[#41f2c0]/10' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <input
-                          type="radio"
-                          name="materia"
+                          type="checkbox"
                           value={valor}
-                          checked={eleccion === valor}
-                          onChange={(e) => setEleccion(e.target.value)}
-                          className="accent-[#0d7a5f]"
+                          checked={marcada}
+                          onChange={() => setElecciones((previas) =>
+                            previas.includes(valor)
+                              ? previas.filter((v) => v !== valor)
+                              : [...previas, valor],
+                          )}
+                          className="accent-[#0d7a5f] w-4 h-4"
                         />
                         <span className="text-[#404040]">
                           {s.subject_name}
@@ -273,10 +280,14 @@ export default function Invitacion() {
 
               <Button
                 onClick={aceptar}
-                disabled={!eleccion || guardando}
+                disabled={elecciones.length === 0 || guardando}
                 className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold w-full"
               >
-                {guardando ? <Loader2 className="animate-spin" size={18} /> : `Unirme a ${profesor.full_name.split(' ')[0]}`}
+                {guardando
+                  ? <Loader2 className="animate-spin" size={18} />
+                  : elecciones.length > 1
+                    ? `Unirme a ${profesor.full_name.split(' ')[0]} en ${elecciones.length} asignaturas`
+                    : `Unirme a ${profesor.full_name.split(' ')[0]}`}
               </Button>
             </>
           )}
