@@ -212,13 +212,19 @@ export default function Invitacion() {
       {!sesion && (
         <>
           <Button
-            onClick={() => { window.location.href = createPageUrl('SelectRole') + '?role=student'; }}
+            onClick={() => {
+              // Directo a identificarse con Google. No se pasa por la pantalla de elegir rol:
+              // quien abre el enlace de un profesor es un alumno, y preguntarle el rol solo
+              // añade un paso y el riesgo de que se registre como profesor por error.
+              // AuthRedirect ve la invitación guardada y le lleva al registro de alumno.
+              base44.auth.redirectToLogin(createPageUrl('AuthRedirect'));
+            }}
             className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold w-full"
           >
             Entrar y unirme
           </Button>
           <p className="text-xs text-gray-500 mt-3 text-center">
-            Al volver te asignaremos con {profesor.full_name.split(' ')[0]} automáticamente.
+            Entras con tu cuenta de Google y vuelves aquí para terminar. Es gratis.
           </p>
         </>
       )}
