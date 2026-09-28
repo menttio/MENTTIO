@@ -205,6 +205,10 @@ export default function MyStudents() {
       />
 
       <div className="max-w-4xl mx-auto">
+         {/* El enlace para traerse a los alumnos. Va arriba del todo mientras no haya ninguno:
+             es lo primero que necesita un profesor que acaba de entrar. */}
+         <InviteStudentsCard teacher={teacher} />
+
          {/* Header */}
          <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
            <div>
