@@ -180,24 +180,71 @@ export default async function(req) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
         const subscription = event.data.object;
-        if (subscription.status !== 'trialing') break;
+
+        // Antes esto solo miraba el estado 'trialing' y se iba en cualquier otro caso. Con lo
+        // cual, cuando una prueba terminaba sin pagar, Menttio no se enteraba nunca: el
+        // profesor se quedaba con subscription_active a true para siempre, con acceso
+        // completo y gratis. Ahora se traduce cada estado de Stripe a acceso o no acceso.
+        //
+        // past_due conserva el acceso a proposito: Stripe sigue reintentando el cobro durante
+        // unas tres semanas antes de rendirse, y ese es el margen de cortesia. Al llegar a
+        // unpaid o canceled se corta.
+        const estado = subscription.status;
+        const enPrueba = estado === 'trialing';
+        const activa = enPrueba || estado === 'active' || estado === 'past_due';
 
         const item = subscription.items?.data?.[0];
         const mapa = await catalogo(db);
         const plan = planDesdePrecio(mapa, item?.price?.id, item?.price?.unit_amount, item?.price?.recurring?.interval);
         const finPrueba = aFecha(subscription.trial_end);
+        const expira = aFecha(finDePeriodo(subscription)) || finPrueba;
 
         const teacher = await profesorDeCliente(db, subscription.customer);
         if (!teacher) break;
 
         await db.entities.Teacher.update(teacher.id, {
-          subscription_active: true,
+          subscription_active: activa,
           subscription_plan: plan,
-          trial_active: true,
-          ...(finPrueba ? { trial_end_date: finPrueba, subscription_expires: finPrueba } : {}),
+          trial_active: enPrueba,
+          ...(enPrueba && finPrueba ? { trial_end_date: finPrueba } : {}),
+          ...(expira ? { subscription_expires: expira } : {}),
           stripe_subscription_id: subscription.id,
         });
-        console.log(`Prueba activa para ${teacher.id} (${plan}, hasta ${finPrueba})`);
+
+        // La prueba se da por usada cuando la suscripcion existe de verdad, no cuando se abre
+        // la pantalla de pago: quien la abria y la cerraba sin terminar se quedaba sin prueba.
+        if (enPrueba) {
+          try {
+            const correo = teacher.user_email;
+            if (correo) {
+              const yaProbo = await db.entities.TrialUsed.filter({ email: correo });
+              if (yaProbo.length === 0) {
+                await db.entities.TrialUsed.create({
+                  email: correo,
+                  used_date: new Date().toISOString().split('T')[0],
+                });
+              }
+            }
+          } catch (e) {
+            console.error('TrialUsed (no critico):', e.message);
+          }
+        }
+
+        console.log(`Suscripcion de ${teacher.id}: ${estado} -> ${activa ? 'con acceso' : 'sin acceso'} (${plan}, hasta ${expira})`);
+        break;
+      }
+
+      case 'invoice.payment_failed': {
+        // No se corta el acceso aqui: Stripe reintenta durante semanas y avisara por
+        // customer.subscription.updated cuando de la suscripcion por perdida. Esto solo deja
+        // rastro para poder verlo en los registros sin entrar en el panel de Stripe.
+        const invoice = event.data.object;
+        const teacher = await profesorDeCliente(db, invoice.customer);
+        console.warn(
+          `Cobro fallido de ${invoice.amount_due != null ? invoice.amount_due / 100 : '?'} EUR` +
+          `${teacher ? ` al profesor ${teacher.id} (${teacher.user_email})` : ` del cliente ${invoice.customer}`}` +
+          `; intento ${invoice.attempt_count ?? '?'}`,
+        );
         break;
       }
 
