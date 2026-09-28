@@ -20,69 +20,37 @@ import {
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
+// Tres pasos, y en el orden en que hay que hacerlos.
+//
+// Eran nueve, y los cuatro primeros explicaban "Ingresos del mes", "Tus alumnos", "Total de
+// clases" y "Tu valoración": a alguien que acaba de registrarse le enseñaban cuatro casillas
+// a cero y una valoración que no existe. Los demás describían dónde está cada botón, que se
+// averigua solo pulsando. Aquí queda únicamente lo que hay que hacer para poder dar la
+// primera clase, que es lo único que importa el primer día.
+//
+// Lo demás no desaparece: cada pantalla tiene su propio recorrido, que salta cuando el
+// profesor llega a ella y ya sabe para qué está mirando eso.
 const tourSteps = [
   {
-    target: '.stats-earnings',
-    title: 'Ingresos del mes',
-    content: 'Aquí verás tus ganancias mensuales actualizadas en tiempo real con cada clase completada.',
-    icon: DollarSign,
-    position: 'bottom'
-  },
-  {
-    target: '.stats-students',
-    title: 'Tus alumnos',
-    content: 'Número total de alumnos únicos que han reservado clases contigo.',
-    icon: Users,
-    position: 'bottom'
-  },
-  {
-    target: '.stats-classes',
-    title: 'Total de clases',
-    content: 'Todas las clases que has impartido desde que te registraste.',
+    target: '.subjects-card',
+    title: 'Empieza por tus asignaturas',
+    content: 'Añade lo que das y a qué precio la hora. Sin esto tus alumnos no pueden reservarte.',
     icon: BookOpen,
-    position: 'bottom'
-  },
-  {
-    target: '.stats-rating',
-    title: 'Tu valoración',
-    content: 'Calificación promedio basada en las reseñas de tus alumnos.',
-    icon: Star,
-    position: 'bottom'
-  },
-  {
-    target: '.action-calendar',
-    title: 'Mi Calendario',
-    content: 'Accede a tu calendario completo donde verás todas tus clases programadas en formato mensual.',
-    icon: Calendar,
-    position: 'right'
+    position: 'top'
   },
   {
     target: '.action-availability',
-    title: 'Gestiona tu disponibilidad',
-    content: 'Define tu horario semanal y marca los días y horas en los que estás disponible para dar clases.',
+    title: 'Luego, cuándo puedes',
+    content: 'Marca tus horas libres de la semana. Es lo que verán tus alumnos al elegir hueco.',
     icon: Clock,
     position: 'right'
   },
   {
-    target: '.action-students',
-    title: 'Mis Alumnos',
-    content: 'Consulta información detallada de cada alumno, historial de clases y su progreso.',
-    icon: Users,
-    position: 'right'
-  },
-  {
-    target: '.subjects-card',
-    title: 'Gestiona tus asignaturas',
-    content: 'Añade o elimina asignaturas que impartes y ajusta tus precios por hora cuando lo necesites.',
-    icon: BookOpen,
-    position: 'top'
-  },
-  {
-    target: '.upcoming-classes',
-    title: 'Próximas clases',
-    content: 'Accede rápidamente a tus próximas clases programadas con toda la información relevante.',
+    target: '.action-calendar',
+    title: 'Y aquí aparecerán las clases',
+    content: 'Cada reserva crea sola su videollamada. No tienes que mandar ningún enlace.',
     icon: Calendar,
-    position: 'top'
+    position: 'right'
   }
 ];
 
