@@ -41,13 +41,21 @@ export default function AuthRedirect() {
         try { invitacion = localStorage.getItem('menttio_invitacion_profesor'); } catch (_e) { /* modo privado */ }
 
         if (invitacion) {
-          const alumnos = await base44.entities.Student.filter({ user_email: user.email });
-          sessionStorage.removeItem('selected_role');
-          sessionStorage.removeItem('role_action');
-          window.location.href = alumnos.length > 0
-            ? `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`
-            : createPageUrl('StudentSignup');
-          return;
+          // Salvo que quien entra sea un profesor: es normal que el propio profesor abra su
+          // enlace para comprobarlo y luego entre a su panel desde el mismo navegador. Sin
+          // esta comprobación, la invitación guardada le mandaría a registrarse como alumno.
+          const profesores = await base44.entities.Teacher.filter({ user_email: user.email });
+          if (profesores.length > 0) {
+            try { localStorage.removeItem('menttio_invitacion_profesor'); } catch (_e) { /* modo privado */ }
+          } else {
+            const alumnos = await base44.entities.Student.filter({ user_email: user.email });
+            sessionStorage.removeItem('selected_role');
+            sessionStorage.removeItem('role_action');
+            window.location.href = alumnos.length > 0
+              ? `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`
+              : createPageUrl('StudentSignup');
+            return;
+          }
         }
 
         // Check if there's a selected role from SelectRole page
