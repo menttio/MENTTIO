@@ -111,7 +111,18 @@ export default function TeacherDashboard() {
 
   return (
     <>
-      
+      {/* El recorrido se importaba y se activaba su estado, pero no se dibujaba en ningún
+          sitio: nunca llegó a verlo nadie. El único que aparecía era un carrusel genérico que
+          guardaba en localStorage que ya se había visto, asi que al segundo registro desde el
+          mismo navegador tampoco salia. */}
+      {showTour && teacher && (
+        <InteractiveTour
+          teacherId={teacher.id}
+          teacherName={teacher.full_name}
+          onComplete={() => setShowTour(false)}
+        />
+      )}
+
         <div className="max-w-6xl mx-auto">
           {/* Welcome Section */}
           <motion.div
