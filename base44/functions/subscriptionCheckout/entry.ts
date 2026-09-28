@@ -81,18 +81,19 @@ export default async function(req) {
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'subscription',
-      // La tarjeta se pide al EMPEZAR la prueba, no al terminarla. Antes iba con
-      // payment_method_collection: 'if_required', que teniendo una prueba por delante
-      // significa que Stripe no la pedia: a los 14 dias no habia con que cobrar, la factura
-      // quedaba impagada y habia que perseguir a cada profesor uno a uno. Ahora el dia 15 el
-      // cobro entra solo, y quien no pensaba pagar lo dice el primer dia.
+      // Durante la prueba no se pide tarjeta, a proposito: el publico es profesores en frio,
+      // que no conocen Menttio de nada, y pedirles la tarjeta el primer dia hunde el registro.
+      // El cobro se pide al terminar los 14 dias, cuando ya han visto si les sirve: Layout
+      // detecta la prueba vencida y les manda a RenewSubscription sin salida posible.
+      ...(darPrueba ? { payment_method_collection: 'if_required' } : {}),
       line_items: [{ price, quantity: 1 }],
       subscription_data: {
         ...(darPrueba
           ? {
               trial_period_days: DIAS_PRUEBA,
-              // Cinturon: si aun asi acabara sin metodo de pago, que se cancele en vez de
-              // quedarse como una suscripcion viva que no cobra nada.
+              // Sin tarjeta al vencer, la suscripcion se cancela en vez de quedarse impagada
+              // acumulando facturas y reintentos. Esto es lo que cierra el ciclo limpio:
+              // Stripe cancela, avisa por webhook, y el profesor pasa a no tener acceso.
               trial_settings: { end_behavior: { missing_payment_method: 'cancel' } },
             }
           : {}),
