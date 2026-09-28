@@ -60,13 +60,15 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      updateTooltipPosition();
-    }, 100);
+    // Se medía 100 ms después de lanzar un desplazamiento *animado*, que tarda bastante más:
+    // las coordenadas se tomaban con el elemento aún en movimiento y ya no se corregian nunca.
+    // De ahí que el mensaje apareciera descuadrado respecto al recuadro que resalta.
+    // Ahora el desplazamiento es instantáneo y se mide en el fotograma siguiente, ya quieto.
+    const raf = requestAnimationFrame(() => requestAnimationFrame(updateTooltipPosition));
 
     window.addEventListener('resize', updateTooltipPosition);
     return () => {
-      clearTimeout(timer);
+      cancelAnimationFrame(raf);
       window.removeEventListener('resize', updateTooltipPosition);
     };
   }, [currentStep]);
