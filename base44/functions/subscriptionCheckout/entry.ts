@@ -81,10 +81,21 @@ export default async function(req) {
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'subscription',
-      ...(darPrueba ? { payment_method_collection: 'if_required' } : {}),
+      // La tarjeta se pide al EMPEZAR la prueba, no al terminarla. Antes iba con
+      // payment_method_collection: 'if_required', que teniendo una prueba por delante
+      // significa que Stripe no la pedia: a los 14 dias no habia con que cobrar, la factura
+      // quedaba impagada y habia que perseguir a cada profesor uno a uno. Ahora el dia 15 el
+      // cobro entra solo, y quien no pensaba pagar lo dice el primer dia.
       line_items: [{ price, quantity: 1 }],
       subscription_data: {
-        ...(darPrueba ? { trial_period_days: DIAS_PRUEBA } : {}),
+        ...(darPrueba
+          ? {
+              trial_period_days: DIAS_PRUEBA,
+              // Cinturon: si aun asi acabara sin metodo de pago, que se cancele en vez de
+              // quedarse como una suscripcion viva que no cobra nada.
+              trial_settings: { end_behavior: { missing_payment_method: 'cancel' } },
+            }
+          : {}),
         metadata,
       },
       metadata,
@@ -92,16 +103,10 @@ export default async function(req) {
       cancel_url: `${req.headers.get('origin')}/TeacherDashboard?setup=cancelled`,
     });
 
-    try {
-      if (yaProbo.length === 0) {
-        await db.entities.TrialUsed.create({
-          email: user.email,
-          used_date: new Date().toISOString().split('T')[0],
-        });
-      }
-    } catch (e) {
-      console.error('TrialUsed (no crítico):', e.message);
-    }
+    // La prueba NO se marca como usada aqui. Se marcaba al crear la sesion de pago, asi que
+    // quien abria la pantalla y la cerraba sin terminar se quedaba sin prueba para siempre y
+    // la siguiente vez le cobraban desde el primer dia. Ahora la marca stripeInbox cuando la
+    // suscripcion existe de verdad.
 
     try {
       const teachers = await db.entities.Teacher.filter({ user_email: user.email });
