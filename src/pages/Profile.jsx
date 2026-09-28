@@ -33,7 +33,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { createPageUrl } from '../utils';
-import { resetOnboarding } from '../components/teacher/OnboardingTour';
 import { resetStudentOnboarding } from '../components/student/OnboardingTour';
 import RecordingConsentCard from '@/components/legal/RecordingConsentCard';
 
@@ -341,9 +340,18 @@ export default function Profile() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
+              onClick={async () => {
                 if (userRole === 'teacher') {
-                  resetOnboarding();
+                  // El recorrido del profesor se marca en su ficha, no en el navegador: antes
+                  // se guardaba en localStorage y reaparecía al entrar desde otro dispositivo.
+                  try {
+                    const profesores = await base44.entities.Teacher.filter({ user_email: user?.email });
+                    if (profesores[0]) {
+                      await base44.entities.Teacher.update(profesores[0].id, { tour_completed: false });
+                    }
+                  } catch (e) {
+                    console.error('No se pudo reiniciar el tutorial:', e);
+                  }
                   window.location.href = createPageUrl('TeacherDashboard');
                 } else {
                   resetStudentOnboarding();
