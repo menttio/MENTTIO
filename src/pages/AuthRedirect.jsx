@@ -29,6 +29,27 @@ export default function AuthRedirect() {
           return;
         }
 
+        // Invitación de un profesor: el alumno ha llegado por su enlace, así que no hay nada
+        // que preguntarle sobre su rol. Si ya tiene ficha vuelve a la invitación a elegir
+        // asignatura; si no, al registro de alumno, que al terminar le devuelve allí.
+        //
+        // Va antes que la comprobación de rol a propósito: por la otra rama, un alumno nuevo
+        // acaba en UserNotRegistered, que para alguien que acaba de llegar es un callejón sin
+        // salida. Es decir, el enlace del profesor no habría servido para nadie nuevo, que es
+        // justo para quien existe.
+        let invitacion = null;
+        try { invitacion = localStorage.getItem('menttio_invitacion_profesor'); } catch (_e) { /* modo privado */ }
+
+        if (invitacion) {
+          const alumnos = await base44.entities.Student.filter({ user_email: user.email });
+          sessionStorage.removeItem('selected_role');
+          sessionStorage.removeItem('role_action');
+          window.location.href = alumnos.length > 0
+            ? `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`
+            : createPageUrl('StudentSignup');
+          return;
+        }
+
         // Check if there's a selected role from SelectRole page
         const selectedRole = sessionStorage.getItem('selected_role');
         const roleAction = sessionStorage.getItem('role_action');
