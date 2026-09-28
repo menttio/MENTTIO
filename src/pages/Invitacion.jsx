@@ -27,7 +27,10 @@ export default function Invitacion() {
   const [error, setError] = useState('');
   const [alumno, setAlumno] = useState(null);
   const [sesion, setSesion] = useState(null);
-  const [eleccion, setEleccion] = useState('');
+  // Varias a la vez: un profesor puede darle a un mismo alumno Matematicas y Fisica, o la
+  // misma asignatura en dos niveles. Obligarle a elegir una sola dejaba el resto sin asignar
+  // y el alumno no podria reservarlas.
+  const [elecciones, setElecciones] = useState([]);
   const [guardando, setGuardando] = useState(false);
   const [hecho, setHecho] = useState(false);
 
@@ -55,7 +58,7 @@ export default function Invitacion() {
         setProfesor(data.teacher);
         if (data.teacher.subjects?.length === 1) {
           const s = data.teacher.subjects[0];
-          setEleccion(`${s.subject_id}|${s.level}`);
+          setElecciones([`${s.subject_id}|${s.level}`]);
         }
       } catch (_e) {
         setError('Esta invitación no es válida. Pídele a tu profesor que te la vuelva a mandar.');
