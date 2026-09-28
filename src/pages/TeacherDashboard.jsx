@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import InteractiveTour from '../components/teacher/InteractiveTour';
+import SetupChecklist from '../components/teacher/SetupChecklist';
 import { 
   Calendar, 
   Users, 
@@ -137,6 +138,10 @@ export default function TeacherDashboard() {
           {format(now, "EEEE, d 'de' MMMM", { locale: es })} · {scheduledClasses} {scheduledClasses === 1 ? 'clase programada' : 'clases programadas'}
         </p>
       </motion.div>
+
+      {/* Lo que le falta para dar su primera clase. Se quita sola al completarse, y va antes
+          que las estadísticas porque el primer día esas son cuatro ceros. */}
+      <SetupChecklist teacher={teacher} />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
