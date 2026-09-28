@@ -27,6 +27,7 @@ import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import StudentsTour from '../components/teacher/StudentsTour';
+import InviteStudentsCard from '../components/teacher/InviteStudentsCard';
 import FamilyReportDialog from '@/components/teacher/FamilyReportDialog';
 
 export default function MyStudents() {
