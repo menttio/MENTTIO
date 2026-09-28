@@ -77,9 +77,19 @@ export default function Invitacion() {
     cargar();
   }, [idProfesor]);
 
-  const yaAsignado = Boolean(
-    alumno?.assigned_teachers?.some((a) => a.teacher_id === idProfesor),
+  // Asignaturas de este profesor que al alumno todavia le faltan. Se mira asignatura por
+  // asignatura, no solo si ya tiene al profesor: si no, quien ya tuviera Matematicas con el y
+  // volviera al enlace para anadir Fisica se encontraba con un "ya estas" y sin poder hacerlo.
+  const asignadas = alumno?.assigned_teachers || [];
+  const pendientes = (profesor?.subjects || []).filter(
+    (s) => !asignadas.some(
+      (a) => a.teacher_id === idProfesor
+        && String(a.subject_id) === String(s.subject_id)
+        && (a.level || '') === (s.level || ''),
+    ),
   );
+  const tieneAlgunaConEl = asignadas.some((a) => a.teacher_id === idProfesor);
+  const yaAsignado = tieneAlgunaConEl && pendientes.length === 0;
 
   const aceptar = async () => {
     if (!alumno || elecciones.length === 0) return;
@@ -229,7 +239,7 @@ export default function Invitacion() {
 
       {sesion && alumno && (
         <>
-          {profesor.subjects.length === 0 ? (
+          {pendientes.length === 0 ? (
             <p className="text-sm text-gray-600">
               {profesor.full_name.split(' ')[0]} todavía no ha publicado sus asignaturas.
               Avísale y vuelve a abrir este enlace.
@@ -244,7 +254,7 @@ export default function Invitacion() {
                   Marca todas las que te dé. Puedes cambiarlo después.
                 </p>
                 <div className="space-y-2">
-                  {profesor.subjects.map((s) => {
+                  {pendientes.map((s) => {
                     const valor = `${s.subject_id}|${s.level}`;
                     const marcada = elecciones.includes(valor);
                     return (
