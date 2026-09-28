@@ -67,8 +67,19 @@ export default async function(req) {
     }
 
     // Una sola prueba gratuita por correo, y solo en las mensuales.
+    // Se mira en dos sitios a proposito. TrialUsed lo escribe stripeInbox cuando la
+    // suscripcion existe de verdad, asi que si ese aviso se perdiera quedaria la puerta
+    // abierta a encadenar pruebas; la ficha del profesor guarda ademas trial_used, que se
+    // marca tanto al cobrar como cuando Layout detecta la prueba vencida.
     const yaProbo = await db.entities.TrialUsed.filter({ email: user.email });
-    const darPrueba = yaProbo.length === 0 && !anual;
+    let profesorYaProbo = false;
+    try {
+      const fichas = await db.entities.Teacher.filter({ user_email: user.email });
+      profesorYaProbo = fichas.some((t) => t.trial_used === true);
+    } catch (e) {
+      console.error('No se pudo comprobar trial_used:', e.message);
+    }
+    const darPrueba = yaProbo.length === 0 && !profesorYaProbo && !anual;
 
     const metadata = {
       base44_user_email: user.email,
