@@ -219,13 +219,9 @@ export default function TeacherWorkload() {
 
   return (
     <>
-      {/* Temporarily disabled tour */}
-      {/* {showTour && teacher && (
-        <WorkloadTour
-          teacherId={teacher.id}
-          onComplete={() => setShowTour(false)}
-        />
-      )} */}
+      {/* Esta pantalla tenía su propio recorrido guiado, desactivado desde hace tiempo con un
+          comentario. El componente se ha borrado: nadie lo importaba y sólo quedaba aquí, sin
+          uso. Si algún día hace falta, se copia de SubjectsTour, que es igual. */}
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
