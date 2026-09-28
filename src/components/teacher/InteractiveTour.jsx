@@ -82,42 +82,41 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
       
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
+      element.scrollIntoView({ block: 'center' });
+
+      // Se centra el mensaje sobre el elemento restando medio ancho. Antes se ponía su borde
+      // izquierdo en el centro del elemento, así que sobre una tarjeta ancha aparecía corrido
+      // media tarjeta hacia la derecha.
+      //
+      // Y se han quitado dos apaños por número de paso ("para los primeros 4", "para los pasos
+      // 5, 6 y 7") que desplazaban el mensaje a mano. Se escribieron para el recorrido de nueve
+      // pasos que había antes; al recortarlo a tres, esos índices ya apuntaban a otra cosa.
+      const tooltipWidth = Math.min(500, window.innerWidth - 32);
+      const tooltipHeight = 250; // estimada: basta para no salirse por arriba
+      const margen = 16;
+      const dentro = (v) => Math.max(margen, Math.min(v, window.innerWidth - tooltipWidth - margen));
+      const centrado = dentro(rect.left + scrollLeft + rect.width / 2 - tooltipWidth / 2);
+      const aMediaAltura = rect.top + scrollTop + rect.height / 2 - tooltipHeight / 2;
+
       let top, left;
-      const tooltipWidth = Math.min(500, window.innerWidth - 32); // Ancho del tooltip con margen de 16px por lado
-      const tooltipHeight = 250; // Altura estimada del tooltip
-      
       if (step.position === 'bottom') {
         top = rect.bottom + scrollTop + 20;
-        // Para los primeros 4 pasos (stats cards), desplazar más a la izquierda
-        if (currentStep >= 0 && currentStep <= 3) {
-          left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2) - 180, window.innerWidth - tooltipWidth - 16));
-        } else {
-          left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2), window.innerWidth - tooltipWidth - 16));
-        }
+        left = centrado;
       } else if (step.position === 'top') {
-        top = rect.top + scrollTop - tooltipHeight - 20;
-        left = Math.max(16, Math.min(rect.left + scrollLeft + (rect.width / 2), window.innerWidth - tooltipWidth - 16));
-      } else if (step.position === 'right') {
-        // Para los pasos 5, 6 y 7 (action cards), subir verticalmente
-        if (currentStep >= 4 && currentStep <= 6) {
-          top = rect.top + scrollTop + (rect.height / 2) - 60;
-        } else {
-          top = rect.top + scrollTop + (rect.height / 2);
-        }
-        // Asegurar que el tooltip no se salga de la pantalla
-        const calculatedLeft = rect.right + scrollLeft + 20;
-        left = Math.min(calculatedLeft, window.innerWidth - tooltipWidth - 16);
-        // Si no cabe a la derecha, mostrarlo a la izquierda
-        if (calculatedLeft + tooltipWidth > window.innerWidth - 16) {
-          left = Math.max(16, rect.left + scrollLeft - tooltipWidth - 20);
-        }
+        top = Math.max(scrollTop + margen, rect.top + scrollTop - tooltipHeight - 20);
+        left = centrado;
       } else if (step.position === 'left') {
-        top = rect.top + scrollTop + (rect.height / 2);
-        left = Math.max(16, rect.left + scrollLeft - tooltipWidth - 20);
+        top = aMediaAltura;
+        left = Math.max(margen, rect.left + scrollLeft - tooltipWidth - 20);
+      } else {
+        // A la derecha, y si no cabe, al otro lado.
+        top = aMediaAltura;
+        const aDerecha = rect.right + scrollLeft + 20;
+        left = aDerecha + tooltipWidth > window.innerWidth - margen
+          ? Math.max(margen, rect.left + scrollLeft - tooltipWidth - 20)
+          : aDerecha;
       }
-      
+
       setTooltipPosition({ top, left, position: step.position });
       
       // Add highlight class
