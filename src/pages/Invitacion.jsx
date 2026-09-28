@@ -82,30 +82,36 @@ export default function Invitacion() {
   );
 
   const aceptar = async () => {
-    if (!alumno || !eleccion) return;
+    if (!alumno || elecciones.length === 0) return;
     setGuardando(true);
     try {
-      const [subjectId, level] = eleccion.split('|');
-      const materia = profesor.subjects.find(
-        (s) => String(s.subject_id) === subjectId && (s.level || '') === level,
-      );
-
-      const nueva = {
-        teacher_id: profesor.id,
-        teacher_name: profesor.full_name,
-        subject_id: subjectId === 'null' ? null : subjectId,
-        subject_name: materia?.subject_name || '',
-        level,
-      };
-
       const actuales = alumno.assigned_teachers || [];
-      const repetida = actuales.some(
-        (a) => a.teacher_id === profesor.id && String(a.subject_id) === subjectId && (a.level || '') === level,
-      );
 
-      if (!repetida) {
+      const nuevas = elecciones
+        .map((valor) => {
+          const [subjectId, level] = valor.split('|');
+          const materia = profesor.subjects.find(
+            (s) => String(s.subject_id) === subjectId && (s.level || '') === level,
+          );
+          return {
+            teacher_id: profesor.id,
+            teacher_name: profesor.full_name,
+            subject_id: subjectId === 'null' ? null : subjectId,
+            subject_name: materia?.subject_name || '',
+            level,
+          };
+        })
+        // Si ya tenia alguna de estas con este profesor, se deja como esta: el enlace se puede
+        // abrir dos veces y no deben salir duplicadas.
+        .filter((n) => !actuales.some(
+          (a) => a.teacher_id === n.teacher_id
+            && String(a.subject_id) === String(n.subject_id)
+            && (a.level || '') === (n.level || ''),
+        ));
+
+      if (nuevas.length > 0) {
         await base44.entities.Student.update(alumno.id, {
-          assigned_teachers: [...actuales, nueva],
+          assigned_teachers: [...actuales, ...nuevas],
         });
       }
 
