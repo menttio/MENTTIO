@@ -234,6 +234,37 @@ export default async function(req) {
         break;
       }
 
+      case 'customer.subscription.trial_will_end': {
+        // Stripe lo lanza 3 dias antes de que termine la prueba. Con este modelo no hay
+        // tarjeta guardada, asi que nadie va a cobrar solo: este correo es literalmente el
+        // unico momento en que el profesor decide si sigue. Sin el, el dia 15 se encuentra la
+        // puerta cerrada sin haberlo visto venir, que es la peor forma de perder un cliente.
+        const subscription = event.data.object;
+        const teacher = await profesorDeCliente(db, subscription.customer);
+        if (!teacher || !teacher.user_email) break;
+
+        const fin = aFecha(subscription.trial_end);
+        const cuando = fin ? new Date(fin + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'long' }) : 'dentro de tres dias';
+        const nombre = (teacher.full_name || '').split(' ')[0] || 'Hola';
+
+        try {
+          await db.integrations.Core.SendEmail({
+            to: teacher.user_email,
+            subject: 'Te quedan 3 dias de prueba en Menttio',
+            from_name: 'Menttio',
+            body: `<p>${nombre},</p>
+<p>Tu prueba de Menttio termina el <strong>${cuando}</strong>. A partir de ese dia, para seguir usandola hay que elegir plan: no se te ha cobrado nada hasta ahora y no hay ningun cargo pendiente.</p>
+<p>Si quieres continuar, entra en Menttio y te lo pedira al abrir. Si no, no tienes que hacer nada: tu cuenta se queda parada y tus datos siguen ahi por si vuelves.</p>
+<p>Y si lo dejas, te agradeceria mucho que me contestaras a este correo diciendome por que. Es lo que mas me sirve.</p>
+<p>Raul — Menttio</p>`,
+          });
+          console.log(`Aviso de fin de prueba enviado a ${teacher.user_email} (termina ${fin})`);
+        } catch (e) {
+          console.error('No se pudo avisar del fin de prueba:', e.message);
+        }
+        break;
+      }
+
       case 'invoice.payment_failed': {
         // No se corta el acceso aqui: Stripe reintenta durante semanas y avisara por
         // customer.subscription.updated cuando de la suscripcion por perdida. Esto solo deja
