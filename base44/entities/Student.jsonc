@@ -79,6 +79,10 @@
           },
           "subject_name": {
             "type": "string"
+          },
+          "level": {
+            "type": "string",
+            "description": "Nivel: ESO, Bachillerato, Universidad... Faltaba en el esquema, asi que Base44 lo descartaba al guardar aunque el codigo lo enviara, y ninguna pantalla podia distinguir Matematicas de ESO de Matematicas de Bachillerato."
           }
         }
       },
