@@ -74,7 +74,17 @@
          así que no requiere consentimiento previo (LSSI art. 22.2). El token es público. -->
     <script defer type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "1194680c15394064ad6a27d6f471ff77"}'></script>
 
-    <link rel="manifest" href="/manifest.json" />
+    <!-- Manifest propio. El que genera Base44 (/manifest.json) toma el short_name del nombre
+         de la app, que es el título largo para buscadores: en la pantalla de inicio del móvil
+         el icono salía rotulado "Menttio — Softw…". El nombre bueno para Google y el bueno
+         para un icono no son el mismo, y aquí mandan los 12 caracteres que caben debajo.
+         Va en otra ruta porque /manifest.json lo intercepta Base44 con una redirección. -->
+    <link rel="manifest" href="/app.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Menttio" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#404040" />
+    <link rel="apple-touch-icon" href="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/694471e9c204eb0088437b85/e55b7c217_2.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
