@@ -14,7 +14,11 @@ import {
   Info
 } from 'lucide-react';
 
-export default function StripeConnectCard() {
+// El texto cambia según el plan. El que había estaba escrito sólo para los de cuota mensual y
+// a un profesor del plan sin cuota le decía tres cosas falsas: que Menttio no se lleva nada,
+// un ejemplo con la cuenta equivocada, y que podía cobrar por Bizum como alternativa.
+export default function StripeConnectCard({ plan }) {
+  const esComision = plan === 'commission';
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
@@ -96,18 +100,29 @@ export default function StripeConnectCard() {
           <div className="space-y-1">
             <p>
               Stripe cobra una comisión de aprox. <strong>1,5% + 0,25€</strong> por cada pago con tarjeta (tarjetas europeas).
-              El alumno paga el importe completo de la clase, y tú recibes ese importe <strong>menos la comisión de Stripe</strong>.
-              Menttio no aplica ninguna comisión adicional.
+              El alumno paga el importe completo de la clase y tú recibes ese importe <strong>menos la comisión de Stripe</strong>
+              {esComision ? <> y <strong>menos el 10% de Menttio</strong>, que se retiene en el momento del cobro.</> : <>. Menttio no aplica ninguna comisión adicional.</>}
             </p>
             <p className="text-blue-700">
-              Ejemplo: clase de <strong>20€</strong> → tú recibes <strong>19,45€</strong> (20€ − 0,30€ − 0,25€).
+              {esComision
+                ? <>Ejemplo: clase de <strong>20€</strong> → tú recibes <strong>17,45€</strong> (20€ − 2€ de Menttio − 0,55€ de Stripe).</>
+                : <>Ejemplo: clase de <strong>20€</strong> → tú recibes <strong>19,45€</strong> (20€ − 0,30€ − 0,25€).</>}
             </p>
-            <p className="text-blue-600 text-xs mt-1">
-              ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas.
-            </p>
-            <p className="text-blue-700 text-xs mt-2 pt-2 border-t border-blue-200">
-              Como alternativa, tus alumnos también pueden pagarte por <strong>Bizum</strong> directamente a tu teléfono, sin ninguna comisión.
-            </p>
+            {esComision ? (
+              <p className="text-blue-700 text-xs mt-2 pt-2 border-t border-blue-200">
+                En tu plan, <strong>las clases se cobran sólo con tarjeta</strong>: es así como se aplica el 10% y por eso
+                no hay cuota mensual. Hasta que esto no esté activo, tus alumnos no pueden reservarte.
+              </p>
+            ) : (
+              <>
+                <p className="text-blue-600 text-xs mt-1">
+                  ⚠️ <strong>Recomendado si eres autónomo</strong> o necesitas registrar los pagos de tus alumnos como facturas.
+                </p>
+                <p className="text-blue-700 text-xs mt-2 pt-2 border-t border-blue-200">
+                  Como alternativa, tus alumnos también pueden pagarte por <strong>Bizum</strong> directamente a tu teléfono, sin ninguna comisión.
+                </p>
+              </>
+            )}
           </div>
         </div>
 
