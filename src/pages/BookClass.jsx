@@ -145,8 +145,25 @@ export default function BookClass() {
       .filter(teacher => {
         if (!teacher) return false;
         // Verify teacher still teaches this subject
-        return teacher.subjects?.some(s => s.subject_id === selectedSubject);
+        if (!teacher.subjects?.some(s => s.subject_id === selectedSubject)) return false;
+        // En el plan sin cuota las clases solo se pagan con tarjeta, porque es la unica forma
+        // de retener la comision en el momento del cobro. Un profesor de ese plan que todavia
+        // no tenga los cobros activos no puede recibir reservas: si pudiera, el alumno se
+        // encontraria una clase que no hay manera de pagar.
+        if (teacher.subscription_plan === 'commission' && !teacher.stripe_connect_enabled) return false;
+        return true;
       });
+  }, [selectedSubject, student, teachers]);
+
+  // Profesores que se han quedado fuera por no tener los cobros activos. Se avisa en vez de
+  // hacerlos desaparecer sin mas: para el alumno, un profesor suyo que ya no aparece es un
+  // fallo de la aplicacion, no una explicacion.
+  const profesoresSinCobros = useMemo(() => {
+    if (!selectedSubject || !student?.assigned_teachers?.length) return [];
+    return student.assigned_teachers
+      .filter(at => at.subject_id === selectedSubject)
+      .map(at => teachers.find(t => t.id === at.teacher_id))
+      .filter(t => t && t.subscription_plan === 'commission' && !t.stripe_connect_enabled);
   }, [selectedSubject, student, teachers]);
 
   // Helper function to generate slots every 30 minutes from time ranges
@@ -792,6 +809,20 @@ export default function BookClass() {
                   </div>
                 ) : (
                   <p className="text-gray-500 text-center py-8">No hay profesores asignados para esta asignatura</p>
+                )}
+
+                {profesoresSinCobros.length > 0 && (
+                  <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <p className="text-sm text-[#404040] font-medium mb-1">
+                      {profesoresSinCobros.length === 1
+                        ? `${profesoresSinCobros[0].full_name} todavía no puede recibir reservas`
+                        : 'Algunos de tus profesores todavía no pueden recibir reservas'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Le falta terminar de configurar los cobros. Avísale y en cuanto lo haga
+                      podrás reservar con normalidad.
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
