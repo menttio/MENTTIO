@@ -37,7 +37,8 @@ export default function CobrosObligatoriosDialog({ teacher }) {
 
   const ir = () => {
     try { sessionStorage.setItem(CLAVE, 'true'); } catch (_e) { /* modo privado */ }
-    window.location.href = createPageUrl('Profile');
+    // Directo a la pestaña de datos de pago, no al perfil a secas: ver pestanaInicial en Profile.
+    window.location.href = `${createPageUrl('Profile')}?tab=pago`;
   };
 
   return (
