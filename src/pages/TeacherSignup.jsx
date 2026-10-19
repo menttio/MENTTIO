@@ -631,6 +631,7 @@ export default function TeacherSignup() {
                                 <SelectValue placeholder="Nivel" />
                               </SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="Primaria">Primaria</SelectItem>
                                 <SelectItem value="ESO">ESO</SelectItem>
                                 <SelectItem value="Bachillerato">Bachillerato</SelectItem>
                                 <SelectItem value="Universidad">Universidad</SelectItem>

@@ -279,7 +279,7 @@ export default function ManageSubjects() {
         {/* Level filter tabs */}
         {teacher?.subjects?.length > 0 && (
           <div className="flex gap-2 mb-5 flex-wrap">
-            {['all', 'ESO', 'Bachillerato', 'Universidad'].map(lvl => (
+            {['all', 'Primaria', 'ESO', 'Bachillerato', 'Universidad'].map(lvl => (
               <button
                 key={lvl}
                 onClick={() => setLevelFilter(lvl)}
@@ -449,6 +449,7 @@ export default function ManageSubjects() {
                   <SelectValue placeholder="Selecciona el nivel" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Primaria">Primaria</SelectItem>
                   <SelectItem value="ESO">ESO</SelectItem>
                   <SelectItem value="Bachillerato">Bachillerato</SelectItem>
                   <SelectItem value="Universidad">Universidad</SelectItem>

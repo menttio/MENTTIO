@@ -338,6 +338,7 @@ export default function BetaTeacherSignup() {
                             <Select value={ts.level} onValueChange={(v) => updateSubject(idx, 'level', v)}>
                               <SelectTrigger><SelectValue placeholder="Nivel" /></SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="Primaria">Primaria</SelectItem>
                                 <SelectItem value="ESO">ESO</SelectItem>
                                 <SelectItem value="Bachillerato">Bachillerato</SelectItem>
                                 <SelectItem value="Universidad">Universidad</SelectItem>

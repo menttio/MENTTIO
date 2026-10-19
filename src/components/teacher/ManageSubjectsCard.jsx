@@ -239,6 +239,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                   <SelectValue placeholder="Selecciona un nivel" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="Primaria">Primaria</SelectItem>
                   <SelectItem value="ESO">ESO</SelectItem>
                   <SelectItem value="Bachillerato">Bachillerato</SelectItem>
                   <SelectItem value="Universidad">Universidad</SelectItem>
