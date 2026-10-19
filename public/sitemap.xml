@@ -5,11 +5,11 @@
   registro beta con su enlace secreto. Aquí van solo las páginas públicas, más los
   artículos del blog, que el generador no podía conocer porque llevan identificador.
 
-  Los artículos van como /Blog?articulo=<slug> y no como /Blog/<slug>: Base44 sólo
-  prerenderiza rutas fijas, así que a las direcciones con barra les entregaba la
-  instantánea del índice del blog. Google recibía los cinco artículos con el mismo
-  título, la misma descripción y el mismo contenido. Con el identificador en la query
-  sí se prerenderizan, porque "articulo" está en content_query_params.
+  Cada articulo tiene su propia ruta fija. Base44 no prerenderiza el contenido de ninguna
+  pagina -sirve el esqueleto vacio y el texto lo pinta el navegador-, pero si inyecta el
+  titulo, la descripcion y el canonico, y lo hace POR RUTA. Con /Blog?articulo=<slug> los
+  cinco articulos heredaban las etiquetas de /Blog y llegaban a Google como cinco paginas
+  identicas. Con ruta propia, cada uno tiene las suyas.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>

@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { ARTICULOS, articuloPorSlug } from '@/data/articulos';
+import { createPageUrl } from '../utils';
 import Articulo from './Articulo';
 
 /**

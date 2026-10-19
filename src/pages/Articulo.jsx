@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ARTICULOS, articuloPorSlug } from '@/data/articulos';
+import { createPageUrl } from '../utils';
 
 /**
  * Un artículo, en su propia dirección.
@@ -24,7 +25,8 @@ function ponerMeta(nombre, valor, porPropiedad = false) {
 }
 
 // El identificador llega por la ruta (/Blog/<slug>, los enlaces ya compartidos) o como
-// propiedad desde el índice (/Blog?articulo=<slug>, que es la que Base44 prerenderiza).
+// propiedad desde su ruta fija (/CobrarClasesParticulares y las demas), que es la que
+// recibe su propio titulo y descripcion del servidor.
 export default function Articulo({ slug: slugProp }) {
   const params = useParams();
   const slug = slugProp || params.slug;
