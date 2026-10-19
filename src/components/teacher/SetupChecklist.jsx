@@ -55,6 +55,8 @@ export default function SetupChecklist({ teacher }) {
   // medio segundo tarde a que parpadee diciendo que falta algo que ya está hecho.
   if (!teacher || disponibilidad === null || alumnos === null) return null;
 
+  const esComision = teacher.subscription_plan === 'commission';
+
   const tareas = [
     {
       clave: 'asignaturas',
@@ -84,12 +86,18 @@ export default function SetupChecklist({ teacher }) {
       destino: 'MyStudents',
     },
     {
+      // En el plan sin cuota esto NO es opcional: ese plan solo admite tarjeta, porque es la
+      // unica forma de retener la comision al cobrar. Sin los cobros activos el profesor no
+      // aparece como reservable para sus alumnos, asi que mas vale que lo sepa aqui y no
+      // cuando un alumno le escriba diciendo que no puede reservarle.
       clave: 'cobros',
-      necesaria: false,
+      necesaria: esComision,
       hecha: Boolean(teacher.stripe_connect_enabled),
       icono: CreditCard,
-      titulo: 'Acepta pagos con tarjeta',
-      porque: 'El dinero va directo a tu cuenta. Si cobras por Bizum, no necesitas esto.',
+      titulo: esComision ? 'Activa los cobros con tarjeta' : 'Acepta pagos con tarjeta',
+      porque: esComision
+        ? 'Imprescindible en tu plan: hasta que no esté listo, tus alumnos no pueden reservarte.'
+        : 'El dinero va directo a tu cuenta. Si cobras por Bizum, no necesitas esto.',
       destino: 'Profile',
     },
     {
