@@ -96,9 +96,11 @@ export default function SetupChecklist({ teacher }) {
       icono: CreditCard,
       titulo: esComision ? 'Activa los cobros con tarjeta' : 'Acepta pagos con tarjeta',
       porque: esComision
-        ? 'Imprescindible en tu plan: hasta que no esté listo, tus alumnos no pueden reservarte.'
+        ? 'Hasta que no esté listo, tus alumnos no pueden reservarte.'
         : 'El dinero va directo a tu cuenta. Si cobras por Bizum, no necesitas esto.',
       destino: 'Profile',
+      // Bloquea la cuenta entera, no es una mejora como las demás: se pinta distinta.
+      bloquea: esComision,
     },
     {
       clave: 'calendario',
@@ -152,29 +154,38 @@ export default function SetupChecklist({ teacher }) {
                   className={`flex items-center gap-3 rounded-xl p-3 border transition-colors ${
                     t.hecha
                       ? 'border-transparent bg-gray-50'
-                      : 'border-gray-200 hover:border-[#41f2c0] hover:bg-[#41f2c0]/5'
+                      : t.bloquea
+                        ? 'border-2 border-[#b45309] bg-[#fffbeb] hover:bg-[#fef3c7]'
+                        : 'border-gray-200 hover:border-[#41f2c0] hover:bg-[#41f2c0]/5'
                   }`}
                 >
                   <span
                     className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                      t.hecha ? 'bg-[#41f2c0]' : 'bg-gray-100'
+                      t.hecha ? 'bg-[#41f2c0]' : t.bloquea ? 'bg-[#fde68a]' : 'bg-gray-100'
                     }`}
                     aria-hidden="true"
                   >
                     {t.hecha
                       ? <Check size={16} className="text-[#404040]" />
-                      : <Icono size={16} className="text-gray-500" />}
+                      : <Icono size={16} className={t.bloquea ? 'text-[#b45309]' : 'text-gray-500'} />}
                   </span>
 
                   <span className="flex-1 min-w-0">
                     <span className={`block font-medium ${t.hecha ? 'text-gray-400 line-through' : 'text-[#404040]'}`}>
                       {t.titulo}
-                      {!t.necesaria && !t.hecha && (
+                      {t.bloquea && !t.hecha && (
+                        <span className="ml-2 text-xs font-bold text-[#b45309] uppercase tracking-wide">
+                          Obligatorio
+                        </span>
+                      )}
+                      {!t.necesaria && !t.bloquea && !t.hecha && (
                         <span className="ml-2 text-xs font-normal text-gray-500">(opcional)</span>
                       )}
                     </span>
                     {!t.hecha && (
-                      <span className="block text-xs text-gray-500 mt-0.5">{t.porque}</span>
+                      <span className={`block text-xs mt-0.5 ${t.bloquea ? 'text-[#92400e] font-medium' : 'text-gray-500'}`}>
+                        {t.porque}
+                      </span>
                     )}
                   </span>
 
