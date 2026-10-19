@@ -104,6 +104,19 @@ export default function Profile() {
 
   const [photoError, setPhotoError] = useState('');
 
+  // Permite entrar directamente a una pestaña con ?tab=pago, en vez de aterrizar siempre en
+  // los datos personales y tener que buscarla. Lo usa el aviso de cobros obligatorios: mandar
+  // a alguien a "configura los cobros" y dejarle en otra pantalla es mandarle a buscarse la
+  // vida. Se lee al montar, que es cuando llega la navegación.
+  const pestanaInicial = (() => {
+    try {
+      const tab = new URLSearchParams(window.location.search).get('tab');
+      return tab === 'pago' ? 'pago' : 'perfil';
+    } catch (_e) {
+      return 'perfil';
+    }
+  })();
+
   const handlePhotoUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -440,7 +453,7 @@ export default function Profile() {
       </div>
 
       {userRole === 'teacher' ? (
-        <Tabs defaultValue="perfil">
+        <Tabs defaultValue={pestanaInicial}>
           <TabsList className="w-full mb-6">
             <TabsTrigger value="perfil" className="flex-1">
               <User size={16} className="mr-2" />
