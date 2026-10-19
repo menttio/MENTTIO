@@ -4,6 +4,7 @@ import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
 import InteractiveTour from '../components/teacher/InteractiveTour';
 import SetupChecklist from '../components/teacher/SetupChecklist';
+import CobrosObligatoriosDialog from '../components/teacher/CobrosObligatoriosDialog';
 import { 
   Calendar, 
   Users, 
@@ -112,6 +113,10 @@ export default function TeacherDashboard() {
 
   return (
     <>
+      {/* Va aquí porque es donde aterriza el profesor al identificarse. Bloquea, pero sólo una
+          vez por sesión: ver CobrosObligatoriosDialog. */}
+      <CobrosObligatoriosDialog teacher={teacher} />
+
       {/* El recorrido se importaba y se activaba su estado, pero no se dibujaba en ningún
           sitio: nunca llegó a verlo nadie. El único que aparecía era un carrusel genérico que
           guardaba en localStorage que ya se había visto, asi que al segundo registro desde el
