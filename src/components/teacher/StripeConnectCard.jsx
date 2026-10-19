@@ -183,7 +183,10 @@ export default function StripeConnectCard({ plan }) {
               <CheckCircle className="text-green-600 shrink-0 mt-0.5" size={18} />
               <div className="text-sm text-green-800">
                 <p className="font-medium mb-1">Cuenta activa</p>
-                <p>Los pagos con tarjeta de tus alumnos se transferirán directamente a tu cuenta bancaria. Menos la comisión de Stripe (~1,5% + 0,25€).</p>
+                <p>
+                  Los pagos con tarjeta de tus alumnos se transferirán directamente a tu cuenta bancaria.
+                  Menos la comisión de Stripe (~1,5% + 0,25€){esComision ? ' y el 10% de Menttio' : ''}.
+                </p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
