@@ -198,7 +198,7 @@ export default function SubscriptionTab({ profile }) {
       )}
 
       {/* Stripe Connect - cobros de clases */}
-      <StripeConnectCard />
+      <StripeConnectCard plan={plan} />
 
       {isCommission && (
         <Card className="border-purple-200 bg-purple-50">
