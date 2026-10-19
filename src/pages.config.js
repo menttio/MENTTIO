@@ -87,6 +87,12 @@ import TeacherWorkload from './pages/TeacherWorkload';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegistered from './pages/UserNotRegistered';
 import Invitacion from './pages/Invitacion';
+import CobrarClasesParticulares from './pages/CobrarClasesParticulares';
+import GrabarClasesLey from './pages/GrabarClasesLey';
+import CuantoCobrarClaseParticular from './pages/CuantoCobrarClaseParticular';
+import OrganizarClasesSinWhatsapp from './pages/OrganizarClasesSinWhatsapp';
+import InformeMensualFamilias from './pages/InformeMensualFamilias';
+
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +108,11 @@ export const PAGES = {
     "CookiesPolicy": CookiesPolicy,
     "Home": Home,
     "Invitacion": Invitacion,
+    "CobrarClasesParticulares": CobrarClasesParticulares,
+    "GrabarClasesLey": GrabarClasesLey,
+    "CuantoCobrarClaseParticular": CuantoCobrarClaseParticular,
+    "OrganizarClasesSinWhatsapp": OrganizarClasesSinWhatsapp,
+    "InformeMensualFamilias": InformeMensualFamilias,
     "Landing": Landing,
     "LegalNotice": LegalNotice,
     "ManageAvailability": ManageAvailability,
