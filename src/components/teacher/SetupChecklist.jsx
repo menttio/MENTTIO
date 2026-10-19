@@ -99,6 +99,8 @@ export default function SetupChecklist({ teacher }) {
         ? 'Hasta que no esté listo, tus alumnos no pueden reservarte.'
         : 'El dinero va directo a tu cuenta. Si cobras por Bizum, no necesitas esto.',
       destino: 'Profile',
+      // Los cobros estan en su propia pestana: se enlaza alli directamente.
+      parametros: '?tab=pago',
       // Bloquea la cuenta entera, no es una mejora como las demás: se pinta distinta.
       bloquea: esComision,
     },
@@ -150,7 +152,7 @@ export default function SetupChecklist({ teacher }) {
             return (
               <li key={t.clave}>
                 <Link
-                  to={createPageUrl(t.destino)}
+                  to={`${createPageUrl(t.destino)}${t.parametros || ''}`}
                   className={`flex items-center gap-3 rounded-xl p-3 border transition-colors ${
                     t.hecha
                       ? 'border-transparent bg-gray-50'
