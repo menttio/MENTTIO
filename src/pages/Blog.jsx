@@ -64,7 +64,7 @@ export default function Blog() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
             >
-              <Link to={`/Blog?articulo=${a.slug}`} className="block h-full group">
+              <Link to={createPageUrl(a.ruta)} className="block h-full group">
                 <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="h-44 overflow-hidden">
                     <img

@@ -12,6 +12,7 @@
 export const ARTICULOS = [
   {
     slug: 'cobrar-clases-particulares-sin-perseguir-a-nadie',
+    ruta: 'CobrarClasesParticulares',
     title: 'Cómo cobrar tus clases particulares sin perseguir a nadie',
     description:
       'Bizum, transferencia, efectivo o tarjeta: ventajas y problemas reales de cada forma de cobrar clases particulares, y cómo dejar de reclamar pagos.',
@@ -56,6 +57,7 @@ export const ARTICULOS = [
   },
   {
     slug: 'grabar-clases-particulares-consentimiento-menores',
+    ruta: 'GrabarClasesLey',
     title: 'Grabar tus clases particulares: qué dice la ley y cómo pedir permiso',
     description:
       'Grabar una clase con un alumno menor de edad exige consentimiento. Qué dice el RGPD, por qué los 14 años son la frontera y cómo pedirlo bien.',
@@ -109,6 +111,7 @@ export const ARTICULOS = [
   },
   {
     slug: 'cuanto-cobrar-clase-particular',
+    ruta: 'CuantoCobrarClaseParticular',
     title: 'Cuánto cobrar por una clase particular (y cómo subir el precio)',
     description:
       'Cómo fijar el precio de tus clases particulares partiendo de tus números, no de lo que cobra el vecino, y cómo subirlo a los alumnos que ya tienes.',
@@ -148,6 +151,7 @@ export const ARTICULOS = [
   },
   {
     slug: 'organizar-clases-particulares-sin-whatsapp',
+    ruta: 'OrganizarClasesSinWhatsapp',
     title: 'Organizar tus clases particulares sin vivir en WhatsApp',
     description:
       'Cambios de hora, recordatorios, enlaces de videollamada y apuntes: por qué WhatsApp se queda corto para organizar clases particulares y qué hacer.',
@@ -182,6 +186,7 @@ export const ARTICULOS = [
   },
   {
     slug: 'informe-mensual-para-familias',
+    ruta: 'InformeMensualFamilias',
     title: 'El informe mensual para las familias: qué contar y qué no',
     description:
       'Quien paga las clases de un menor es su familia, y lo que quiere saber es si avanza. Cómo montar un informe mensual útil y honesto.',

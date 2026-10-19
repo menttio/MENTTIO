@@ -46,7 +46,7 @@ export default function Articulo({ slug: slugProp }) {
     canonical.setAttribute('rel', 'canonical');
     // Siempre la dirección con query: es la única que Google recibe ya renderizada, y así
     // las dos formas de llegar al artículo no compiten entre sí como contenido duplicado.
-    canonical.setAttribute('href', `https://menttio.com/Blog?articulo=${articulo.slug}`);
+    canonical.setAttribute('href', `https://menttio.com/${articulo.ruta}`);
     if (!canonical.parentNode) document.head.appendChild(canonical);
 
     const ld = document.createElement('script');
@@ -61,7 +61,7 @@ export default function Articulo({ slug: slugProp }) {
       inLanguage: 'es',
       author: { '@type': 'Organization', name: 'Menttio' },
       publisher: { '@type': 'Organization', name: 'Menttio' },
-      mainEntityOfPage: `https://menttio.com/Blog?articulo=${articulo.slug}`,
+      mainEntityOfPage: `https://menttio.com/${articulo.ruta}`,
     });
     document.head.appendChild(ld);
 
@@ -150,7 +150,7 @@ export default function Articulo({ slug: slugProp }) {
               {otros.map((a) => (
                 <Link
                   key={a.slug}
-                  to={`/Blog?articulo=${a.slug}`}
+                  to={createPageUrl(a.ruta)}
                   className="block rounded-xl border border-gray-200 p-5 hover:border-[#41f2c0] transition-colors"
                 >
                   <p className="text-xs font-semibold text-[#0d7a5f] mb-1">{a.category}</p>
