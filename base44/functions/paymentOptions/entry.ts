@@ -69,9 +69,18 @@ export default async function(req) {
     const profesorTarjeta = redondea(precio - comision - stripeEstimado);
     const profesorBizum = redondea(precio - comision);
 
+    // En el plan sin cuota solo se admite tarjeta.
+    //
+    // Ese plan vive de retener el 10 % en el momento del cobro, y eso solo ocurre si el dinero
+    // pasa por Stripe. Por Bizum el alumno paga integro al telefono que se le ensene y Menttio
+    // se queda reclamando una deuda a fin de mes: funciona con el dueno, no con un desconocido.
+    // Asi que en vez de perseguir el cobro, no se ofrece esa via.
+    //
+    // En los planes de cuota mensual el Bizum sigue estando: alli Menttio no se lleva nada de
+    // la clase y le da igual por donde entre el dinero del alumno.
     const metodos = [];
     if (conectado) metodos.push('tarjeta');
-    metodos.push('bizum');
+    if (!esComision) metodos.push('bizum');
 
     return Response.json({
       plan: teacher.subscription_plan || 'basic',
@@ -82,10 +91,13 @@ export default async function(req) {
         motivo_no_disponible: conectado ? null : 'El profesor aun no ha configurado los cobros con tarjeta',
       },
       bizum: {
-        telefono: esComision ? BIZUM_MENTTIO : (booking.teacher_phone || teacher.phone || ''),
-        titular: esComision ? 'Menttio' : (booking.teacher_name || teacher.full_name || 'Tu profesor'),
-        // En el plan sin cuota el dinero lo recibe Menttio y reparte despues.
-        cobra_menttio: esComision,
+        disponible: !esComision,
+        telefono: esComision ? '' : (booking.teacher_phone || teacher.phone || ''),
+        titular: esComision ? '' : (booking.teacher_name || teacher.full_name || 'Tu profesor'),
+        cobra_menttio: false,
+        motivo_no_disponible: esComision
+          ? 'En el plan sin cuota las clases se pagan con tarjeta'
+          : null,
       },
       desglose: {
         precio,
