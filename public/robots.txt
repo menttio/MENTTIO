@@ -22,6 +22,8 @@ Disallow: /ReviewsHistory
 Disallow: /AdminCommissions
 Disallow: /PaymentSuccess
 Disallow: /AuthRedirect
+Disallow: /BetaChat
+Disallow: /CorporateLoginCallback
 Disallow: /UserNotRegistered
 Disallow: /RenewSubscription
 Disallow: /TeacherSignupPayment
