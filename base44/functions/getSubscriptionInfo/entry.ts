@@ -65,6 +65,29 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Un profesor exento tiene acceso indefinido y no se le cobra nada, asi que su estado no
+    // depende de Stripe. Hay que cortar aqui, ANTES de consultar Stripe: mas abajo se sincroniza
+    // desde Stripe sin mirar la exencion, y una suscripcion cancelada (por ejemplo al acabar la
+    // prueba sin tarjeta) le pondria subscription_active a false y le quitaria el plan.
+    if (teacher.subscription_exempt) {
+      console.log('Profesor exento: activo de forma indefinida, no se consulta Stripe');
+      result.subscription_active = true;
+      result.trial_active = false;
+      result.subscription_expires = null;
+      result.trial_end_date = null;
+
+      const arreglos = {};
+      if (teacher.subscription_active !== true) arreglos.subscription_active = true;
+      if (teacher.trial_active !== false) arreglos.trial_active = false;
+      if (teacher.subscription_expires) arreglos.subscription_expires = null;
+      if (Object.keys(arreglos).length > 0) {
+        console.log('Exento con la ficha descuadrada, corrigiendo:', arreglos);
+        await base44.asServiceRole.entities.Teacher.update(teacher.id, arreglos);
+      }
+
+      return Response.json(result);
+    }
+
     // Si no tiene stripe_subscription_id, usamos los datos de la entidad
     if (!teacher.stripe_subscription_id) {
       const nowDate = new Date();
@@ -72,43 +95,44 @@ Deno.serve(async (req) => {
 
       let trialActive = teacher.trial_active || false;
       let subscriptionActive = teacher.subscription_active || false;
+      const esComision = teacher.subscription_plan === 'commission';
 
-      if (teacher.subscription_exempt) {
-        // Exento: siempre activo, nunca trial
-        subscriptionActive = true;
-        trialActive = false;
-      } else {
-        // Verificar si el trial ha expirado
-        if (trialActive && teacher.trial_end_date) {
-          const trialEnd = new Date(teacher.trial_end_date);
-          if (trialEnd < nowDate) {
-            trialActive = false;
-            subscriptionActive = false;
-            console.log('Trial expirado localmente, corrigiendo BD...');
-            await base44.asServiceRole.entities.Teacher.update(teacher.id, {
-              trial_active: false,
-              trial_used: true,
-              subscription_active: false,
-            });
-          }
+      // Los exentos ya han salido arriba; aqui solo quedan los planes de pago y el de comision.
+
+      // Verificar si el trial ha expirado
+      if (trialActive && teacher.trial_end_date) {
+        const trialEnd = new Date(teacher.trial_end_date);
+        if (trialEnd < nowDate) {
+          trialActive = false;
+          // El plan comision no tiene cuota mensual: cuando se le acaba la prueba sigue
+          // teniendo acceso. Si aqui lo dejaramos en false, Layout lo mandaria a renovar
+          // una suscripcion que su plan no incluye.
+          subscriptionActive = esComision;
+          console.log('Trial expirado localmente, corrigiendo BD...');
+          await base44.asServiceRole.entities.Teacher.update(teacher.id, {
+            trial_active: false,
+            trial_used: true,
+            subscription_active: esComision,
+            subscription_expires: esComision ? null : teacher.subscription_expires,
+          });
         }
+      }
 
-        // Verificar si la suscripción (no trial) ha expirado
-        if (subscriptionActive && !trialActive && teacher.subscription_expires) {
-          const expiry = new Date(teacher.subscription_expires);
-          if (expiry < nowDate) {
-            subscriptionActive = false;
-            console.log('Suscripcion expirada localmente, corrigiendo BD...');
-            await base44.asServiceRole.entities.Teacher.update(teacher.id, { subscription_active: false });
-          }
+      // Verificar si la suscripción (no trial) ha expirado. El plan comision no caduca nunca.
+      if (subscriptionActive && !trialActive && teacher.subscription_expires && !esComision) {
+        const expiry = new Date(teacher.subscription_expires);
+        if (expiry < nowDate) {
+          subscriptionActive = false;
+          console.log('Suscripcion expirada localmente, corrigiendo BD...');
+          await base44.asServiceRole.entities.Teacher.update(teacher.id, { subscription_active: false });
         }
       }
 
       result.subscription_active = subscriptionActive;
       result.trial_active = trialActive;
       result.trial_end_date = teacher.trial_end_date || null;
-      result.subscription_expires = teacher.subscription_expires || null;
-      console.log('Resultado local (sin Stripe):', { subscriptionActive, trialActive });
+      result.subscription_expires = esComision ? null : (teacher.subscription_expires || null);
+      console.log('Resultado local (sin Stripe):', { subscriptionActive, trialActive, esComision });
       return Response.json(result);
     }
 
