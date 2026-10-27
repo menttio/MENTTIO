@@ -411,6 +411,49 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
+  // Pagina privada con el rol sin resolver. Pintar el portal aqui es lo que produjo el fallo
+  // que vio el alumno que entro con una cuenta sin ficha: menu de alumno completo, su nombre
+  // como "Usuario" y todas las secciones en blanco, porque las paginas consultan por un id de
+  // perfil que no existe. Mejor decirle lo que pasa y darle una salida.
+  if (!userRole || userRole === 'new') {
+    return (
+      <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="text-orange-500" size={24} />
+          </div>
+          <h1 className="text-xl font-medium text-[#404040] mb-2">
+            Esta cuenta no tiene perfil en Menttio
+          </h1>
+          <p className="text-gray-500 mb-2">
+            Has iniciado sesión correctamente, pero <span className="font-medium">{user?.email || 'esta cuenta'}</span> no
+            está dada de alta como alumno ni como profesor, así que no hay nada que mostrar aquí.
+          </p>
+          <p className="text-gray-500 mb-6">
+            Si te registraste con otro correo, cierra sesión y entra con ese.
+          </p>
+          <div className="flex flex-col gap-3">
+            <Button
+              className="bg-[#41f2c0] text-[#404040] hover:bg-[#35d4a7]"
+              onClick={() => { window.location.href = createPageUrl('StudentSignup'); }}
+            >
+              Registrarme como alumno
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => { window.location.href = createPageUrl('TeacherSignup'); }}
+            >
+              Soy profesor
+            </Button>
+            <Button variant="ghost" className="text-gray-500" onClick={handleLogout}>
+              Cerrar sesión
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f2f2f2]">
 
