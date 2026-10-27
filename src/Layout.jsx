@@ -92,11 +92,23 @@ export default function Layout({ children, currentPageName }) {
         console.log('👤 Usuario cargado:', currentUser);
         setUser(currentUser);
 
+        // auth.me() puede resolver a null o a un objeto incompleto: sesion caducada, o una
+        // cuenta de Google que autentica pero no tiene usuario en la app. Sin esta guarda, el
+        // currentUser.role de abajo lanza un TypeError que cae en el catch, y el catch solo
+        // escribia en consola: el visitante se quedaba con el portal del alumno pintado y
+        // todas las secciones vacias, sin manera de salir.
+        if (!currentUser?.email) {
+          console.warn('⚠️ Sin usuario resuelto en una pagina privada, a la home');
+          setUserRole(null);
+          window.location.href = createPageUrl('Home');
+          return;
+        }
+
         // El administrador no tiene por qué ser además profesor o alumno. Sin esto, las
         // páginas de administración quedaban inalcanzables: el flujo de abajo lo mandaba
         // a UserNotRegistered por no encontrarle ficha.
         const adminPages = ['AdminCommissions'];
-        if (currentUser.role === 'admin' && adminPages.includes(currentPageName)) {
+        if (currentUser?.role === 'admin' && adminPages.includes(currentPageName)) {
           setUserRole('admin');
           setLoading(false);
           return;
@@ -319,6 +331,13 @@ export default function Layout({ children, currentPageName }) {
         }
       } catch (error) {
         console.error('❌ Error loading user:', error);
+        // No dejar al visitante dentro de una pagina privada con el rol sin resolver: antes
+        // se quedaba con el portal del alumno pintado y vacio, que parece una cuenta rota.
+        // Si no sabemos quien es, no hay nada que pueda hacer aqui.
+        setUserRole(null);
+        if (!publicPages.includes(currentPageName)) {
+          window.location.href = createPageUrl('Home');
+        }
       } finally {
         console.log('✅ Carga de usuario finalizada');
         setLoading(false);
@@ -356,9 +375,14 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Comisiones', icon: Settings, page: 'AdminCommissions' },
   ];
 
-  const navItems = userRole === 'teacher' ? teacherNavItems
+  // Ojo con el orden: antes el ultimo caso era studentNavItems sin condicion, asi que
+  // cualquier rol que no fuese teacher ni admin -incluido null y 'new'- pintaba el menu
+  // completo del alumno. Un fallo al resolver el perfil se veia como una cuenta de alumno
+  // con todas las secciones en blanco. Ahora cada rol se nombra y el resto no pinta menu.
+  const navItems = (userRole === 'teacher' || userRole === 'expired_teacher') ? teacherNavItems
     : userRole === 'admin' ? adminNavItems
-    : studentNavItems;
+    : userRole === 'student' ? studentNavItems
+    : [];
 
   const handleLogout = () => {
     base44.auth.logout(createPageUrl('Home'));
@@ -510,7 +534,7 @@ export default function Layout({ children, currentPageName }) {
               Men<span className="text-[#41f2c0]">π</span>io
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              {userRole === 'teacher' ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : 'Portal del Alumno'}
+              {(userRole === 'teacher' || userRole === 'expired_teacher') ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : userRole === 'student' ? 'Portal del Alumno' : 'Menttio'}
             </p>
           </div>
 
