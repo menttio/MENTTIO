@@ -143,7 +143,13 @@ export default function Layout({ children, currentPageName }) {
           setProfile(teacher);
           
           // Check if trial is active (has access during trial period)
-          if (teacher.trial_active && teacher.trial_end_date) {
+          // El plan comision no tiene cuota y los exentos tampoco pagan, asi que a ninguno de
+          // los dos se le puede cortar el acceso por una prueba vencida. Sin esta condicion la
+          // rama de abajo se ejecuta antes que las comprobaciones de comision y exencion (mas
+          // abajo en esta misma funcion) y los manda a RenewSubscription a renovar algo que no
+          // deben: le paso a David Owolewa, en comision con una prueba caducada en mayo.
+          if (teacher.trial_active && teacher.trial_end_date
+              && teacher.subscription_plan !== 'commission' && !teacher.subscription_exempt) {
             const trialEndDate = new Date(teacher.trial_end_date + 'T23:59:59');
             const now = new Date();
             
