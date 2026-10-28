@@ -135,14 +135,21 @@ export default function TeacherCard({
             {teacher.full_name}
           </h3>
           
-          {/* Rating */}
+          {/* Rating.
+              Antes ponía 5,0 a todo profesor sin valoraciones (`|| '5.0'`): a un alumno se le
+              ensenaba una nota perfecta inventada, que es lo que hace que nadie se crea las
+              notas de estas webs. Si no hay valoraciones, se dice. */}
           <div className="flex items-center gap-2 mt-1">
-            <div className="flex items-center gap-1">
-              <Star className="text-yellow-400 fill-yellow-400" size={14} />
-              <span className="text-sm font-medium text-[#404040]">
-                {teacher.rating?.toFixed(1) || '5.0'}
-              </span>
-            </div>
+            {teacher.rating > 0 ? (
+              <div className="flex items-center gap-1">
+                <Star className="text-yellow-400 fill-yellow-400" size={14} />
+                <span className="text-sm font-medium text-[#404040]">
+                  {teacher.rating.toFixed(1)}
+                </span>
+              </div>
+            ) : (
+              <span className="text-sm text-gray-400">Sin valoraciones todavía</span>
+            )}
             <span className="text-gray-300">•</span>
             <span className="text-sm text-gray-500">
               {teacher.total_classes || 0} clases
