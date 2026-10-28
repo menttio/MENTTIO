@@ -107,9 +107,18 @@ export default function StudentSignupComplete() {
         let invitacion = null;
         try { invitacion = localStorage.getItem('menttio_invitacion_profesor'); } catch (_e) { /* modo privado */ }
 
-        window.location.href = invitacion
-          ? `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`
-          : createPageUrl('StudentDashboard');
+        // Lo mismo si viene del enlace de reseñas: acaba de crear la ficha solo para poder
+        // dejarla, así que se le devuelve al formulario y no a un panel vacío.
+        let resena = null;
+        try { resena = localStorage.getItem('menttio_resena_profesor'); } catch (_e) { /* modo privado */ }
+
+        if (invitacion) {
+          window.location.href = `${createPageUrl('Invitacion')}?p=${encodeURIComponent(invitacion)}`;
+        } else if (resena) {
+          window.location.href = `${createPageUrl('DejarResena')}?p=${encodeURIComponent(resena)}`;
+        } else {
+          window.location.href = createPageUrl('StudentDashboard');
+        }
       } catch (error) {
         console.error('Error completing signup:', error);
         setError(error.message);
