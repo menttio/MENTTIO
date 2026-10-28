@@ -436,7 +436,9 @@ export default function TeacherCalendar() {
                           <Clock className={isGroup ? "text-purple-500" : "text-[#41f2c0]"} size={14} />
                           <span className="font-medium text-sm">{booking.start_time} - {booking.end_time}</span>
                           <Badge className={cn("ml-auto text-xs", isGroup ? "bg-purple-500 text-[#404040]" : "bg-[#41f2c0] text-[#404040]")}>
-                            {isGroup ? `Grupal ${enrolled}/${booking.max_students || 4}` : 'Individual'}
+                            {isGroup
+                              ? `Grupal ${enrolled}${plazasReserva(booking) === null ? '' : '/' + plazasReserva(booking)}`
+                              : 'Individual'}
                           </Badge>
                         </div>
                         <div className="flex items-center gap-2 mb-1">

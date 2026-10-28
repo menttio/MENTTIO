@@ -130,7 +130,12 @@ export default function SearchTeachers() {
         
         // Price filter
         if (priceRange !== 'all' && teacher.subjects?.length > 0) {
-          const avgPrice = teacher.subjects.reduce((sum, s) => sum + (s.price_per_hour || 0), 0) / teacher.subjects.length;
+          // Solo cuentan las asignaturas con precio individual: una que solo se da en grupo
+          // no tiene price_per_hour y antes entraba como 0, bajando la media artificialmente.
+          const individuales = preciosIndividuales(teacher.subjects);
+          const avgPrice = individuales.length
+            ? individuales.reduce((sum, p) => sum + p, 0) / individuales.length
+            : 0;
           if (priceRange === 'low' && avgPrice > 20) return false;
           if (priceRange === 'medium' && (avgPrice < 20 || avgPrice > 40)) return false;
           if (priceRange === 'high' && avgPrice < 40) return false;
@@ -148,15 +153,12 @@ export default function SearchTeachers() {
       .sort((a, b) => {
         if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
         if (sortBy === 'classes') return (b.total_classes || 0) - (a.total_classes || 0);
-        if (sortBy === 'price_low') {
-          const priceA = a.subjects?.[0]?.price_per_hour || 0;
-          const priceB = b.subjects?.[0]?.price_per_hour || 0;
-          return priceA - priceB;
-        }
-        if (sortBy === 'price_high') {
-          const priceA = a.subjects?.[0]?.price_per_hour || 0;
-          const priceB = b.subjects?.[0]?.price_per_hour || 0;
-          return priceB - priceA;
+        if (sortBy === 'price_low' || sortBy === 'price_high') {
+          const barato = (t) => {
+            const ps = preciosIndividuales(t.subjects);
+            return ps.length ? Math.min(...ps) : Infinity;
+          };
+          return sortBy === 'price_low' ? barato(a) - barato(b) : barato(b) - barato(a);
         }
         return 0;
       });
@@ -442,7 +444,7 @@ export default function SearchTeachers() {
                     <div className="flex items-center justify-between w-full gap-2">
                       <span>{subject.subject_name}</span>
                       <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{subject.level}</span>
-                      <span className="text-gray-500">{subject.price_per_hour}€/h</span>
+                      <span className="text-gray-500">{textoPrecio(subject) || 'Consultar'}</span>
                       {isTeacherAssigned(selectedTeacher?.id, subject.subject_id, subject.level) && (
                         <Check className="text-green-500" size={16} />
                       )}

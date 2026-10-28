@@ -133,7 +133,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
   const calculatePrice = () => {
     if (!teacher || !selectedSubject) return 0;
     const subjectInfo = teacher.subjects?.find(s => s.subject_id === selectedSubject.subject_id);
-    return subjectInfo ? (subjectInfo.price_per_hour * duration) / 60 : 0;
+    return subjectInfo ? precioClase(subjectInfo, { tipo: 'individual', duracionMinutos: duration }) : 0;
   };
 
   const addRule = () => {

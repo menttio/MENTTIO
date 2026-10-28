@@ -285,8 +285,8 @@ export default function Invitacion() {
                         <span className="text-[#404040]">
                           {s.subject_name}
                           {s.level && <span className="text-gray-500"> · {s.level}</span>}
-                          {s.price_per_hour != null && (
-                            <span className="text-gray-500"> · {s.price_per_hour} €/h</span>
+                          {textoPrecio(s) && (
+                            <span className="text-gray-500"> · {textoPrecio(s)}</span>
                           )}
                         </span>
                       </label>

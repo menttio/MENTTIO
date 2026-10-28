@@ -210,7 +210,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
     if (!teacher || !selectedSubject) return 0;
     const subjectInfo = teacher.subjects?.find(s => s.subject_id === selectedSubject.subject_id);
     if (!subjectInfo) return 0;
-    return (subjectInfo.price_per_hour * duration) / 60;
+    return precioClase(subjectInfo, { tipo: 'individual', duracionMinutos: duration });
   };
 
   const handleSlotSelect = (date, time) => {
