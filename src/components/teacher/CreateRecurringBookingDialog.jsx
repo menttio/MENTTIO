@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { precioClase } from '@/lib/asignaturas';
+import {
+  precioClase,
+  daIndividual,
+  daGrupal,
+  grupoIndefinido,
+  maxAlumnosGrupo,
+} from '@/lib/asignaturas';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +25,8 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { User, BookOpen, Loader2, Check, Plus, X, Repeat, Calendar, AlertTriangle } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { User, Users, BookOpen, Loader2, Check, Plus, X, Repeat, Calendar, AlertTriangle } from 'lucide-react';
 import { format, addDays, addWeeks, getDay, nextDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -63,9 +70,10 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
   const [saving, setSaving] = useState(false);
 
   const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [availableSubjects, setAvailableSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const [classType, setClassType] = useState(null); // 'individual' | 'group'
+  const [selectedStudent, setSelectedStudent] = useState(null);     // individual
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]); // grupal
 
   // Recurrence config: array of { day: number, time: string }
   const [recurrenceRules, setRecurrenceRules] = useState([]);
@@ -84,8 +92,10 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       loadBookings();
     } else {
       setStep(1);
-      setSelectedStudent(null);
       setSelectedSubject(null);
+      setClassType(null);
+      setSelectedStudent(null);
+      setSelectedStudentIds([]);
       setRecurrenceRules([]);
       setAddingDay(null);
       setAddingTime('');
@@ -119,21 +129,60 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
     }
   };
 
-  useEffect(() => {
-    if (selectedStudent) {
-      const studentObj = students.find(s => s.id === selectedStudent);
-      const assignments = studentObj?.assigned_teachers?.filter(
-        at => at.teacher_id === teacher.id
-      ) || [];
-      setAvailableSubjects(assignments);
-      setSelectedSubject(null);
-    }
-  }, [selectedStudent, teacher, students]);
+  // Asignaturas del profesor que se pueden dar de alguna forma. Salen de su ficha, que es la
+  // que lleva el tipo de clase y los precios, y no de lo que tenga asignado un alumno.
+  const asignaturasDelProfesor = useMemo(
+    () => (teacher?.subjects || []).filter(s => daIndividual(s) || daGrupal(s)),
+    [teacher]
+  );
 
+  const tiposAsignatura = useMemo(() => ({
+    individual: daIndividual(selectedSubject),
+    group: daGrupal(selectedSubject),
+  }), [selectedSubject]);
+
+  const topeGrupo = useMemo(() => maxAlumnosGrupo(selectedSubject), [selectedSubject]);
+
+  // El nivel se compara solo si la asignacion del alumno lo trae: las antiguas se guardaron
+  // sin nivel y de otro modo no saldria ningun alumno.
+  const alumnosDeLaAsignatura = useMemo(() => {
+    if (!selectedSubject) return [];
+    return students.filter(st => (st.assigned_teachers || []).some(at =>
+      at.teacher_id === teacher.id
+      && at.subject_id === selectedSubject.subject_id
+      && (!at.level || !selectedSubject.level || at.level === selectedSubject.level)
+    ));
+  }, [students, selectedSubject, teacher]);
+
+  const alumnosElegidos = useMemo(() => {
+    if (classType === 'group') {
+      return selectedStudentIds.map(id => students.find(s => s.id === id)).filter(Boolean);
+    }
+    const uno = students.find(s => s.id === selectedStudent);
+    return uno ? [uno] : [];
+  }, [classType, selectedStudentIds, selectedStudent, students]);
+
+  const alternarAlumno = (id) => {
+    setSelectedStudentIds(previos => {
+      if (previos.includes(id)) return previos.filter(x => x !== id);
+      // topeGrupo null significa grupo indefinido: no hay limite que respetar.
+      if (topeGrupo !== null && previos.length >= topeGrupo) return previos;
+      return [...previos, id];
+    });
+  };
+
+  const puedeSeguirConAlumnos = classType === 'group'
+    ? selectedStudentIds.length >= 1
+    : Boolean(selectedStudent);
+
+  // Precio POR ALUMNO de cada una de las clases de la serie.
   const calculatePrice = () => {
-    if (!teacher || !selectedSubject) return 0;
-    const subjectInfo = teacher.subjects?.find(s => s.subject_id === selectedSubject.subject_id);
-    return subjectInfo ? precioClase(subjectInfo, { tipo: 'individual', duracionMinutos: duration }) : 0;
+    if (!selectedSubject) return 0;
+    return precioClase(selectedSubject, {
+      tipo: classType === 'group' ? 'group' : 'individual',
+      duracionMinutos: duration,
+      numAlumnos: classType === 'group' ? Math.max(alumnosElegidos.length, 1) : 1,
+    });
   };
 
   const addRule = () => {
