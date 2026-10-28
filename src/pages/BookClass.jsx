@@ -745,6 +745,59 @@ export default function BookClass() {
           </motion.div>
         )}
 
+        {/* Step 3: Select Teacher */}
+        {step === 3 && (
+          <motion.div
+            key="step2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-[#404040]">
+                    Elige tu profesor
+                  </h2>
+                  <Button variant="ghost" onClick={() => setStep(2)} className="text-gray-500">
+                    <ChevronLeft size={18} className="mr-1" />Volver
+                  </Button>
+                </div>
+
+                {teachersForSubject.length > 0 ? (
+                  <div className="grid gap-4">
+                    {teachersForSubject.map((teacher) => (
+                      <button
+                        key={teacher.id}
+                        onClick={() => { setSelectedTeacher(teacher); setStep(4); }}
+                        className="w-full text-left"
+                      >
+                        <TeacherCard teacher={teacher} selectedSubject={selectedSubject} showActions={false} />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-8">No hay profesores asignados para esta asignatura</p>
+                )}
+
+                {profesoresSinCobros.length > 0 && (
+                  <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                    <p className="text-sm text-[#404040] font-medium mb-1">
+                      {profesoresSinCobros.length === 1
+                        ? `${profesoresSinCobros[0].full_name} todavía no puede recibir reservas`
+                        : 'Algunos de tus profesores todavía no pueden recibir reservas'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Le falta terminar de configurar los cobros. Avísale y en cuanto lo haga
+                      podrás reservar con normalidad.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Step 2: Select class type */}
         {step === 2 && (
           <motion.div
@@ -818,59 +871,6 @@ export default function BookClass() {
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Step 3: Select Teacher */}
-        {step === 3 && (
-          <motion.div
-            key="step2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-[#404040]">
-                    Elige tu profesor
-                  </h2>
-                  <Button variant="ghost" onClick={() => setStep(2)} className="text-gray-500">
-                    <ChevronLeft size={18} className="mr-1" />Volver
-                  </Button>
-                </div>
-
-                {teachersForSubject.length > 0 ? (
-                  <div className="grid gap-4">
-                    {teachersForSubject.map((teacher) => (
-                      <button
-                        key={teacher.id}
-                        onClick={() => { setSelectedTeacher(teacher); setStep(4); }}
-                        className="w-full text-left"
-                      >
-                        <TeacherCard teacher={teacher} selectedSubject={selectedSubject} showActions={false} />
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-8">No hay profesores asignados para esta asignatura</p>
-                )}
-
-                {profesoresSinCobros.length > 0 && (
-                  <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                    <p className="text-sm text-[#404040] font-medium mb-1">
-                      {profesoresSinCobros.length === 1
-                        ? `${profesoresSinCobros[0].full_name} todavía no puede recibir reservas`
-                        : 'Algunos de tus profesores todavía no pueden recibir reservas'}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Le falta terminar de configurar los cobros. Avísale y en cuanto lo haga
-                      podrás reservar con normalidad.
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </motion.div>
