@@ -59,7 +59,9 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
     setEditingSubject(subject);
     setSelectedSubjectId(subject.subject_id);
     setSelectedLevel(subject.level);
-    setPrice(subject.price_per_hour.toString());
+    // Una asignatura que solo se da en grupo no tiene precio individual: sin el ?? aqui
+    // reventaba al abrir el dialogo (price_per_hour es null).
+    setPrice((subject.price_per_hour ?? '').toString());
     setShowDialog(true);
   };
 
@@ -78,10 +80,13 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
 
       let updatedSubjects;
       if (editingSubject) {
-        // Update existing - find by original subject_id and level
+        // Update existing - find by original subject_id and level.
+        // El ...s conserva la configuracion que esta tarjeta no edita (tipo de clase, tramos
+        // grupales, grupo indefinido). Sin el, editar el precio desde el panel borraba todo eso
+        // y la asignatura se quedaba sin clases grupales sin avisar.
         updatedSubjects = currentSubjects.map(s =>
           s.subject_id === editingSubject.subject_id && s.level === editingSubject.level
-            ? { subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
+            ? { ...s, subject_id: selectedSubjectId, subject_name: selectedSubject.name, level: selectedLevel, price_per_hour: parseFloat(price) }
             : s
         );
       } else {
@@ -99,7 +104,9 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
             subject_id: selectedSubjectId,
             subject_name: selectedSubject.name,
             level: selectedLevel,
-            price_per_hour: parseFloat(price)
+            offers_individual: true,
+            price_per_hour: parseFloat(price),
+            offers_group: false
           }
         ];
       }
