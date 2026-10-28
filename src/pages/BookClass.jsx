@@ -865,11 +865,18 @@ export default function BookClass() {
             </div>
 
             {classType === 'group' && (
-              <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center gap-2">
-                <Users size={16} className="text-purple-500 flex-shrink-0" />
-                <span className="text-sm text-purple-700">
-                  Los horarios con 🟣 ya tienen alumnos apuntados — puedes unirte a precio reducido
-                </span>
+              <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-start gap-2">
+                <Users size={16} className="text-purple-500 flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-purple-700">
+                  <p>
+                    Los horarios con 🟣 ya tienen alumnos apuntados
+                    {grupoIndefinido(asignaturaElegida) ? '' : ' — puedes unirte a precio reducido'}
+                  </p>
+                  {/* Aqui ya se sabe el profesor, asi que el cuadro ensena sus tarifas reales. */}
+                  <div className="mt-1">
+                    <GroupPricingInfo asignatura={asignaturaElegida} durationHours={duration / 60} />
+                  </div>
+                </div>
               </div>
             )}
 
