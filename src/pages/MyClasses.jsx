@@ -188,6 +188,7 @@ export default function MyClasses() {
                 onEdit={(b) => setEditingBooking(b)}
                 onRefresh={loadBookings}
                 onReview={(b) => setReviewingBooking(b)}
+                studentId={student?.id || null}
               />
             </motion.div>
           ))}
