@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
+import { textoPrecio, preciosIndividuales } from '@/lib/asignaturas';
 import { 
   Search, 
   Filter, 

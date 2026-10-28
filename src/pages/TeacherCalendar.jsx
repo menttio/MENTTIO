@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
+import { plazasReserva } from '@/lib/asignaturas';
 import { 
   ChevronLeft, 
   ChevronRight, 
