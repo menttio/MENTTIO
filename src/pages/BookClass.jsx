@@ -646,8 +646,8 @@ export default function BookClass() {
       {/* Progress Steps */}
       <div className="flex items-center gap-2 md:gap-4 mb-8 overflow-x-auto pb-2">
         {[
-          { num: 1, label: 'Tipo' },
-          { num: 2, label: 'Asignatura' },
+          { num: 1, label: 'Asignatura' },
+          { num: 2, label: 'Tipo' },
           { num: 3, label: 'Profesor' },
           { num: 4, label: 'Fecha y Hora' },
           { num: 5, label: 'Confirmar' }
@@ -682,8 +682,8 @@ export default function BookClass() {
 
       {/* Step Content */}
       <AnimatePresence mode="wait">
-        {/* Step 2: Select Subject */}
-        {step === 2 && (
+        {/* Step 1: Select Subject */}
+        {step === 1 && (
           <motion.div
             key="step1"
             initial={{ opacity: 0, x: 20 }}
@@ -696,16 +696,7 @@ export default function BookClass() {
                   <h2 className="text-xl font-semibold text-[#404040]">
                     ¿Qué asignatura quieres estudiar?
                   </h2>
-                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500">
-                    <ChevronLeft size={18} className="mr-1" />Volver
-                  </Button>
                 </div>
-                {classType === 'group' && (
-                  <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center gap-2">
-                    <Users size={16} className="text-purple-500 flex-shrink-0" />
-                    <span className="text-sm text-purple-700">Clase grupal</span>
-                  </div>
-                )}
                 <div className="grid gap-3">
                   {availableSubjects.map((subject) => (
                     <button
@@ -713,7 +704,10 @@ export default function BookClass() {
                       onClick={() => {
                         setSelectedSubject(subject.id);
                         setSelectedTeacher(null);
-                        setStep(3);
+                        // El tipo depende de la asignatura, asi que al cambiarla hay que
+                        // olvidar el que estuviera elegido antes.
+                        setClassType(null);
+                        setStep(2);
                       }}
                       className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md ${
                         selectedSubject === subject.id 
@@ -735,8 +729,8 @@ export default function BookClass() {
           </motion.div>
         )}
 
-        {/* Step 1: Select class type */}
-        {step === 1 && (
+        {/* Step 2: Select class type */}
+        {step === 2 && (
           <motion.div
             key="step0"
             initial={{ opacity: 0, x: 20 }}
@@ -745,19 +739,26 @@ export default function BookClass() {
           >
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-[#404040] mb-2">
-                  ¿Qué tipo de clase quieres reservar?
-                </h2>
+                <div className="flex items-start justify-between mb-2 gap-2">
+                  <h2 className="text-xl font-semibold text-[#404040]">
+                    ¿Qué tipo de clase quieres reservar?
+                  </h2>
+                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500 flex-shrink-0">
+                    <ChevronLeft size={18} className="mr-1" />Volver
+                  </Button>
+                </div>
                 <p className="text-sm text-gray-500 mb-6">
                   {tiposDisponibles.individual && tiposDisponibles.group
-                    ? 'Elige entre clase individual o clase grupal'
-                    : 'Estas son las opciones que ofrecen tus profesores'}
+                    ? `Esto es lo que se puede reservar de ${nombreAsignaturaElegida}`
+                    : `Única opción disponible en ${nombreAsignaturaElegida}`}
                 </p>
                 <div className="grid gap-4">
-                  {/* Solo se ofrece el tipo de clase que algun profesor del alumno imparte. */}
+                  {/* Una asignatura puede darse solo individual, solo en grupo o de las dos
+                      formas, y eso cambia de una asignatura a otra del mismo profesor: por eso
+                      se pregunta despues de elegir la asignatura y no antes. */}
                   {tiposDisponibles.individual && (
                   <button
-                    onClick={() => { setClassType('individual'); setStep(2); }}
+                    onClick={() => { setClassType('individual'); setStep(3); }}
                     className="p-5 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md border-gray-100"
                   >
                     <div className="flex items-center gap-4">
@@ -774,7 +775,7 @@ export default function BookClass() {
 
                   {tiposDisponibles.group && (
                     <button
-                      onClick={() => { setClassType('group'); setStep(2); }}
+                      onClick={() => { setClassType('group'); setStep(3); }}
                       className="p-5 rounded-xl border-2 text-left transition-all hover:border-purple-400 hover:shadow-md border-gray-100"
                     >
                       <div className="flex items-center gap-4">
