@@ -88,7 +88,12 @@
     },
     "max_students": {
       "type": "number",
-      "description": "N\u00famero m\u00e1ximo de alumnos (solo clases grupales, 2-4)"
+      "description": "N\u00famero m\u00e1ximo de alumnos (solo clases grupales, 2-4). Null cuando group_unlimited es true"
+    },
+    "group_unlimited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Clase grupal sin l\u00edmite de plazas: el profesor configur\u00f3 la asignatura con grupo indefinido"
     },
     "enrolled_students": {
       "type": "array",
