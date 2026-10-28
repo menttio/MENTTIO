@@ -102,34 +102,35 @@ export default function BookClass() {
     loadData();
   }, []);
 
-  // Que tipos de clase se pueden reservar DE LA ASIGNATURA ELEGIDA. Se calcula despues de
-  // elegirla a proposito: un mismo profesor puede dar Matematicas en grupo y Fisica solo
-  // individual, asi que preguntar el tipo antes de la asignatura ofrecia opciones que luego
-  // no existian y dejaba la pantalla de profesores vacia.
-  const tiposDisponibles = useMemo(() => {
-    const vacio = { individual: false, group: false };
-    if (!selectedSubject || !student?.assigned_teachers?.length || !teachers.length) return vacio;
-    const variantes = student.assigned_teachers
-      .filter(at => at.subject_id === selectedSubject)
-      .flatMap(at => {
-        const teacher = teachers.find(t => t.id === at.teacher_id);
-        // Un profesor del plan sin cuota y sin cobros activos no puede recibir reservas, asi
-        // que tampoco debe aportar tipos de clase a este paso.
-        if (!teacher) return [];
-        if (teacher.subscription_plan === 'commission' && !teacher.stripe_connect_enabled) return [];
-        return (teacher.subjects || []).filter(s => s.subject_id === at.subject_id);
-      });
-    return {
-      individual: variantes.some(daIndividual),
-      group: variantes.some(daGrupal),
-    };
-  }, [selectedSubject, student, teachers]);
-
-  // La asignatura concreta elegida con el profesor elegido: de ahi salen el precio y el tope.
+  // La asignatura concreta del profesor elegido: de ahi salen el precio, el tipo de clase y
+  // el tope del grupo.
+  //
+  // Se filtra tambien por nivel cuando la asignacion del alumno lo trae. Un profesor puede
+  // tener la misma asignatura en dos niveles (Matematicas de ESO y de Bachillerato) con precios
+  // distintos, y buscar solo por subject_id devuelve siempre la primera: el alumno de
+  // Bachillerato podia acabar pagando la tarifa de ESO. Las asignaciones antiguas se guardaron
+  // sin nivel, asi que si no viene se acepta la primera que coincida.
   const asignaturaElegida = useMemo(() => {
     if (!selectedTeacher || !selectedSubject) return null;
-    return selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject) || null;
-  }, [selectedTeacher, selectedSubject]);
+    const asignacion = (student?.assigned_teachers || []).find(
+      at => at.teacher_id === selectedTeacher.id && at.subject_id === selectedSubject
+    );
+    const candidatas = (selectedTeacher.subjects || []).filter(s => s.subject_id === selectedSubject);
+    if (asignacion?.level) {
+      const exacta = candidatas.find(s => s.level === asignacion.level);
+      if (exacta) return exacta;
+    }
+    return candidatas[0] || null;
+  }, [selectedTeacher, selectedSubject, student]);
+
+  // Que tipos de clase se pueden reservar con ESE profesor en ESA asignatura. Se pregunta
+  // despues de elegir profesor y asignatura a proposito: el tipo depende de las dos cosas, asi
+  // que preguntarlo antes ofrecia opciones que luego no existian y dejaba la pantalla
+  // siguiente vacia.
+  const tiposDisponibles = useMemo(() => ({
+    individual: daIndividual(asignaturaElegida),
+    group: daGrupal(asignaturaElegida),
+  }), [asignaturaElegida]);
 
   const topeGrupo = useMemo(() => maxAlumnosGrupo(asignaturaElegida), [asignaturaElegida]);
 
@@ -182,10 +183,10 @@ export default function BookClass() {
       .map(at => teachers.find(t => t.id === at.teacher_id))
       .filter(teacher => {
         if (!teacher) return false;
-        // Verify teacher still teaches this subject, en el tipo de clase elegido
-        const asignatura = teacher.subjects?.find(s => s.subject_id === selectedSubject);
-        if (!asignatura) return false;
-        if (classType === 'group' ? !daGrupal(asignatura) : !daIndividual(asignatura)) return false;
+        // Verify teacher still teaches this subject y que la de de alguna forma. El tipo de
+        // clase se elige en el paso siguiente, asi que aqui no se filtra por el.
+        const asignaturas = (teacher.subjects || []).filter(s => s.subject_id === selectedSubject);
+        if (!asignaturas.some(s => daIndividual(s) || daGrupal(s))) return false;
         // En el plan sin cuota las clases solo se pagan con tarjeta, porque es la unica forma
         // de retener la comision en el momento del cobro. Un profesor de ese plan que todavia
         // no tenga los cobros activos no puede recibir reservas: si pudiera, el alumno se
@@ -193,7 +194,7 @@ export default function BookClass() {
         if (teacher.subscription_plan === 'commission' && !teacher.stripe_connect_enabled) return false;
         return true;
       });
-  }, [selectedSubject, student, teachers, classType]);
+  }, [selectedSubject, student, teachers]);
 
   // Profesores que se han quedado fuera por no tener los cobros activos. Se avisa en vez de
   // hacerlos desaparecer sin mas: para el alumno, un profesor suyo que ya no aparece es un
