@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { Users, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
+import { Users, User, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
+import { asignaturaCompleta } from '@/lib/asignaturas';
 import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -622,7 +623,8 @@ export default function TeacherSignup() {
                   ) : (
                     <div className="space-y-3">
                       {teacherSubjects.map((ts, idx) => (
-                        <div key={idx} className="flex flex-col md:flex-row gap-3 items-stretch md:items-center p-3 bg-gray-50 rounded-xl">
+                        <div key={idx} className="p-3 bg-gray-50 rounded-xl">
+                        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
                           <div className="flex-1 min-w-0">
                             <Select
                               value={ts.subject_id}
@@ -667,27 +669,127 @@ export default function TeacherSignup() {
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="flex items-center gap-2 flex-1 md:flex-initial">
-                            <Input
-                              type="number"
-                              value={ts.price_per_hour}
-                              onChange={(e) => updateSubject(idx, 'price_per_hour', e.target.value)}
-                              placeholder="20"
-                              min="0"
-                              max="999"
-                              step="0.5"
-                              className="w-20 md:w-24 text-right"
-                            />
-                            <span className="text-sm text-gray-500 font-medium whitespace-nowrap">€/h</span>
-                          </div>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => removeSubject(idx)}
-                            className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                            className="text-red-500 hover:text-red-600 hover:bg-red-50 self-end md:self-auto"
+                            aria-label="Quitar asignatura"
                           >
                             <Trash2 size={18} />
                           </Button>
+                        </div>
+
+                        {/* Tipo de clase. Un profesor puede dar solo individuales, solo grupales o las dos. */}
+                        <div className="mt-3 pt-3 border-t border-gray-200 space-y-3">
+                          <p className="text-xs font-semibold text-[#404040]">¿Cómo la das? Marca al menos una opción.</p>
+
+                          <div className="bg-white rounded-lg border border-gray-200 p-3">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <Checkbox
+                                checked={ts.offers_individual !== false}
+                                onCheckedChange={(v) => updateSubject(idx, 'offers_individual', v === true)}
+                                aria-label="Clases individuales"
+                              />
+                              <User size={14} className="text-[#41f2c0]" />
+                              <span className="text-sm font-medium text-[#404040]">Clases individuales</span>
+                            </label>
+                            {ts.offers_individual !== false && (
+                              <div className="mt-2 flex items-center gap-2">
+                                <Input
+                                  type="number"
+                                  value={ts.price_per_hour}
+                                  onChange={(e) => updateSubject(idx, 'price_per_hour', e.target.value)}
+                                  placeholder="20"
+                                  min="0"
+                                  max="999"
+                                  step="0.5"
+                                  className="w-24 text-right h-9"
+                                  aria-label="Precio por hora individual"
+                                />
+                                <span className="text-sm text-gray-500 font-medium whitespace-nowrap">€/h</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="bg-white rounded-lg border border-gray-200 p-3">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <Checkbox
+                                checked={ts.offers_group === true}
+                                onCheckedChange={(v) => updateSubject(idx, 'offers_group', v === true)}
+                                aria-label="Clases grupales"
+                              />
+                              <Users size={14} className="text-purple-500" />
+                              <span className="text-sm font-medium text-[#404040]">Clases grupales</span>
+                            </label>
+
+                            {ts.offers_group === true && (
+                              <div className="mt-2 space-y-2">
+                                <Select
+                                  value={ts.group_unlimited ? 'indefinido' : (ts.max_group_students ? String(ts.max_group_students) : '')}
+                                  onValueChange={(v) => updateGrupo(idx, v)}
+                                >
+                                  <SelectTrigger aria-label="Número de alumnos por grupo" className="h-9">
+                                    <SelectValue placeholder="Número de alumnos" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="2">Hasta 2 alumnos</SelectItem>
+                                    <SelectItem value="3">Hasta 3 alumnos</SelectItem>
+                                    <SelectItem value="4">Hasta 4 alumnos</SelectItem>
+                                    <SelectItem value="indefinido">Indefinido (sin límite)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+
+                                {ts.group_unlimited ? (
+                                  <div className="p-2 bg-purple-50 rounded-lg border border-purple-100">
+                                    <div className="flex items-center gap-2">
+                                      <Input
+                                        type="number"
+                                        value={ts.group_price_per_person ?? ''}
+                                        onChange={(e) => updateSubject(idx, 'group_price_per_person', e.target.value)}
+                                        placeholder="12"
+                                        min="0"
+                                        max="999"
+                                        step="0.5"
+                                        className="w-24 text-right h-9"
+                                        aria-label="Precio por hora y por persona"
+                                      />
+                                      <span className="text-xs text-gray-500">€/h por persona</span>
+                                    </div>
+                                    <p className="text-xs text-purple-600 mt-1">Cada alumno paga esto, entren los que entren.</p>
+                                  </div>
+                                ) : ts.max_group_students ? (
+                                  <div className="p-2 bg-purple-50 rounded-lg border border-purple-100 space-y-1.5">
+                                    <p className="text-xs font-medium text-purple-700">Precio por persona según cuántos sean:</p>
+                                    {Array.from({ length: parseInt(ts.max_group_students) - 1 }, (_, i) => i + 2).map(n => (
+                                      <div key={n} className="flex items-center gap-2">
+                                        <span className="text-xs text-gray-600 w-20 shrink-0">{n} alumnos:</span>
+                                        <Input
+                                          type="number"
+                                          value={(ts.group_prices || {})[String(n)] ?? ''}
+                                          onChange={(e) => updateTramo(idx, n, e.target.value)}
+                                          placeholder="15"
+                                          min="0"
+                                          max="999"
+                                          step="0.5"
+                                          className="w-20 text-right h-8 text-sm"
+                                          aria-label={`Precio por persona con ${n} alumnos`}
+                                        />
+                                        <span className="text-xs text-gray-400">€/h</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : null}
+                              </div>
+                            )}
+                          </div>
+
+                          {ts.offers_individual === false && ts.offers_group !== true && (
+                            <p className="text-xs text-red-500">
+                              Marca individuales, grupales o las dos: si no, nadie podrá reservarte esta asignatura.
+                            </p>
+                          )}
+                        </div>
                         </div>
                       ))}
                     </div>
