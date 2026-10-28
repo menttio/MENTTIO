@@ -93,21 +93,32 @@ export default function BookClass() {
     loadData();
   }, []);
 
-  // Check if any assigned teacher has group prices configured
-  const anyTeacherHasGroupPrices = useMemo(() => {
-    if (!student?.assigned_teachers?.length || !teachers.length) return false;
-    const assignedTeacherIds = [...new Set(student.assigned_teachers.map(at => at.teacher_id))];
-    return assignedTeacherIds.some(id => {
-      const teacher = teachers.find(t => t.id === id);
-      if (!teacher?.subjects) return false;
-      return teacher.subjects.some(s => {
-        const gp = s.group_prices;
-        return gp && Object.keys(gp).length > 0 && Object.values(gp).some(v => v > 0);
-      });
+  // Que tipos de clase se pueden reservar: depende de lo que hayan marcado los profesores
+  // asignados en cada asignatura. Sin esto, el alumno podia elegir "individual" con un profesor
+  // que solo da grupales y acababa en una reserva sin precio.
+  const tiposDisponibles = useMemo(() => {
+    const vacio = { individual: false, group: false };
+    if (!student?.assigned_teachers?.length || !teachers.length) return vacio;
+    const asignaturasDelAlumno = student.assigned_teachers.flatMap(at => {
+      const teacher = teachers.find(t => t.id === at.teacher_id);
+      return (teacher?.subjects || []).filter(s => s.subject_id === at.subject_id);
     });
+    return {
+      individual: asignaturasDelAlumno.some(daIndividual),
+      group: asignaturasDelAlumno.some(daGrupal),
+    };
   }, [student, teachers]);
 
-  // Get unique subjects from assigned teachers (only those that still exist in teacher's subjects)
+  // La asignatura concreta elegida con el profesor elegido: de ahi salen el precio y el tope.
+  const asignaturaElegida = useMemo(() => {
+    if (!selectedTeacher || !selectedSubject) return null;
+    return selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject) || null;
+  }, [selectedTeacher, selectedSubject]);
+
+  const topeGrupo = useMemo(() => maxAlumnosGrupo(asignaturaElegida), [asignaturaElegida]);
+
+  // Get unique subjects from assigned teachers (only those that still exist in teacher's subjects
+  // and que se den en el tipo de clase elegido)
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
@@ -115,7 +126,9 @@ export default function BookClass() {
     student.assigned_teachers.forEach(at => {
       // Verify the teacher still has this subject
       const teacher = teachers.find(t => t.id === at.teacher_id);
-      const teacherStillHasSubject = teacher?.subjects?.some(s => s.subject_id === at.subject_id);
+      const asignatura = teacher?.subjects?.find(s => s.subject_id === at.subject_id);
+      const teacherStillHasSubject = Boolean(asignatura)
+        && (classType === 'group' ? daGrupal(asignatura) : daIndividual(asignatura));
       
       if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
         // Get subject name from subjects array for reliability
@@ -128,7 +141,7 @@ export default function BookClass() {
     });
     
     return Array.from(subjectMap.values());
-  }, [student, teachers, subjects]);
+  }, [student, teachers, subjects, classType]);
 
   // Get teachers for selected subject - ONLY from assigned teachers
   const teachersForSubject = useMemo(() => {
@@ -144,8 +157,10 @@ export default function BookClass() {
       .map(at => teachers.find(t => t.id === at.teacher_id))
       .filter(teacher => {
         if (!teacher) return false;
-        // Verify teacher still teaches this subject
-        if (!teacher.subjects?.some(s => s.subject_id === selectedSubject)) return false;
+        // Verify teacher still teaches this subject, en el tipo de clase elegido
+        const asignatura = teacher.subjects?.find(s => s.subject_id === selectedSubject);
+        if (!asignatura) return false;
+        if (classType === 'group' ? !daGrupal(asignatura) : !daIndividual(asignatura)) return false;
         // En el plan sin cuota las clases solo se pagan con tarjeta, porque es la unica forma
         // de retener la comision en el momento del cobro. Un profesor de ese plan que todavia
         // no tenga los cobros activos no puede recibir reservas: si pudiera, el alumno se
@@ -153,7 +168,7 @@ export default function BookClass() {
         if (teacher.subscription_plan === 'commission' && !teacher.stripe_connect_enabled) return false;
         return true;
       });
-  }, [selectedSubject, student, teachers]);
+  }, [selectedSubject, student, teachers, classType]);
 
   // Profesores que se han quedado fuera por no tener los cobros activos. Se avisa en vez de
   // hacerlos desaparecer sin mas: para el alumno, un profesor suyo que ya no aparece es un
