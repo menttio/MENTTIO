@@ -646,11 +646,16 @@ export default function BookingCard({
                 return (
                   <div key={idx} className="flex items-center gap-1 px-3 py-2 bg-gray-50 rounded-lg text-sm group">
                     {isBase64 || file.url ? (
+                      // Los archivos subidos viven en otro dominio, y ahi el navegador se
+                      // salta el atributo download: el enlace abre el PDF en vez de bajarlo.
+                      // Se abre en otra pestana para no sacar a nadie de la app a medias.
                       <a
                         href={file.url}
-                        download={file.name}
+                        download={isBase64 ? file.name : undefined}
+                        target={isBase64 ? undefined : '_blank'}
+                        rel={isBase64 ? undefined : 'noopener noreferrer'}
                         className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
-                        title={`Descargar ${file.name}`}
+                        title={isBase64 ? `Descargar ${file.name}` : `Abrir ${file.name}`}
                       >
                         <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
                         <span className="truncate">{file.name}</span>
