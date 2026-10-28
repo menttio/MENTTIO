@@ -16,6 +16,7 @@ function sanitize(booking) {
     duration_minutes: booking.duration_minutes,
     class_type: booking.class_type,
     max_students: booking.max_students,
+    group_unlimited: booking.group_unlimited ?? false,
     price: booking.price,
     status: booking.status,
     // Solo el identificador: sin nombres ni emails de otros alumnos.

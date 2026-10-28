@@ -36,7 +36,13 @@ Deno.serve(async (req) => {
           subject_id: s.subject_id ?? null,
           subject_name: s.subject_name || '',
           level: s.level || '',
+          offers_individual: s.offers_individual ?? null,
           price_per_hour: s.price_per_hour ?? null,
+          offers_group: s.offers_group ?? null,
+          group_unlimited: s.group_unlimited ?? null,
+          group_price_per_person: s.group_price_per_person ?? null,
+          max_group_students: s.max_group_students ?? null,
+          group_prices: s.group_prices ?? null,
         })),
       },
     });
