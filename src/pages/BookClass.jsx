@@ -978,21 +978,38 @@ export default function BookClass() {
                   <Card className="mt-3">
                     <CardContent className="p-4">
                       <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1">
-                        <Users size={13} /> Participantes actuales
+                        <Users size={13} /> Quién va a estar en la clase
                       </p>
                       <div className="space-y-1.5">
+                        {/* El nombre del profesor sale del profesor ya elegido. La lista de
+                            reservas que recibe el navegador no trae nombres: la manda
+                            bookingSlots a proposito sin ellos, porque son datos de otras
+                            personas (y muchas veces de menores). Antes se leia
+                            existingGroupBooking.teacher_name, que no existe, y la tarjeta
+                            salia vacia. */}
                         <div className="flex items-center gap-2 text-sm">
-                          <UserCheck size={14} className="text-[#41f2c0]" />
-                          <span className="text-gray-600">{existingGroupBooking.teacher_name}</span>
-                          <Badge className="text-[10px] bg-[#41f2c0]/10 text-[#41f2c0] ml-auto">Profesor</Badge>
+                          <UserCheck size={14} className="text-[#0d7a5f]" />
+                          <span className="text-gray-700">{selectedTeacher?.full_name}</span>
+                          <Badge className="text-[10px] bg-[#41f2c0] text-[#404040] ml-auto">Profesor</Badge>
                         </div>
-                        {existingGroupBooking.enrolled_students?.map((s, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
+
+                        <div className="flex items-center gap-2 text-sm">
+                          <User size={14} className="text-purple-400" />
+                          <span className="text-gray-700">Tú</span>
+                          <Badge className="text-[10px] bg-purple-500 text-white ml-auto">Te apuntas ahora</Badge>
+                        </div>
+
+                        {(existingGroupBooking.enrolled_students || []).map((s, i) => (
+                          <div key={s.student_id || i} className="flex items-center gap-2 text-sm">
                             <User size={14} className="text-purple-400" />
-                            <span className="text-gray-600">{s.student_name}</span>
+                            <span className="text-gray-500">Alumno {i + 1}</span>
+                            <Badge variant="secondary" className="text-[10px] ml-auto">Ya apuntado</Badge>
                           </div>
                         ))}
                       </div>
+                      <p className="text-[10px] text-gray-400 mt-2">
+                        No mostramos el nombre de los demás alumnos.
+                      </p>
                       <p className="text-xs text-purple-600 mt-2 font-medium">
                         Precio estimado: {(() => {
                           const count = (existingGroupBooking.enrolled_students?.length || 0) + 1;
