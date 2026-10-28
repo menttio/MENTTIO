@@ -40,7 +40,7 @@ export default function FinalCTA() {
           size="lg"
           className="bg-[#404040] hover:bg-[#303030] text-white px-8 py-6 text-lg rounded-xl shadow-xl w-full sm:w-auto"
         >
-          Empieza gratis 14 días
+          Empieza gratis 30 días
           <ArrowRight className="ml-2" size={18} />
         </Button>
 

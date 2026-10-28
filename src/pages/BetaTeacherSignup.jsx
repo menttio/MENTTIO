@@ -381,7 +381,7 @@ export default function BetaTeacherSignup() {
                         <Check className="text-white" size={20} />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-[#404040] mb-2">✨ Prueba gratuita de 14 días</h4>
+                        <h4 className="font-semibold text-[#404040] mb-2">✨ Prueba gratuita de 30 días</h4>
                         <div className="text-sm text-gray-700 space-y-1">
                           <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Los primeros 30 días son completamente gratis</strong>, sin ningún cargo.</span></p>
                           <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Después de 30 días:</strong> cobro automático de 12,99€/mes.</span></p>

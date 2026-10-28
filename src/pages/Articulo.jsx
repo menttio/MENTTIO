@@ -139,7 +139,7 @@ export default function Articulo({ slug: slugProp }) {
           </p>
           <a href="/SelectRole">
             <Button className="bg-[#404040] hover:bg-[#303030] text-white px-8 py-5 text-base rounded-xl">
-              Empieza gratis 14 días
+              Empieza gratis 30 días
               <ArrowRight size={18} className="ml-2" aria-hidden="true" />
             </Button>
           </a>

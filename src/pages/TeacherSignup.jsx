@@ -853,7 +853,7 @@ export default function TeacherSignup() {
                           <Check className="text-white" size={20} />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 14 días</h4>
+                          <h4 className="font-semibold text-[#404040] mb-2 text-left">✨ Prueba gratuita de 30 días</h4>
                            <div className="text-sm text-gray-700 space-y-2 text-left">
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>

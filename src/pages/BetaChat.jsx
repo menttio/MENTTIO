@@ -81,7 +81,7 @@ export default function BetaChat() {
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-sm font-semibold px-4 py-2 rounded-full transition-colors whitespace-nowrap"
           >
-            Empieza gratis 14 días →
+            Empieza gratis 30 días →
           </a>
         </div>
       </header>

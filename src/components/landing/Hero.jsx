@@ -312,7 +312,7 @@ export default function Hero() {
                 className="bg-[#404040] hover:bg-[#303030] text-white px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
               >
                 {/* CAMBIO: CTA más específico */}
-                Empieza gratis 14 días
+                Empieza gratis 30 días
                 <ArrowRight className="ml-2" size={18} />
               </Button>
               <Button
