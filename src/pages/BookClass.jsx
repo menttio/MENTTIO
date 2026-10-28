@@ -125,13 +125,6 @@ export default function BookClass() {
     };
   }, [selectedSubject, student, teachers]);
 
-  const nombreAsignaturaElegida = useMemo(() => {
-    if (!selectedSubject) return 'esta asignatura';
-    return subjects.find(s => s.id === selectedSubject)?.name
-      || availableSubjects.find(s => s.id === selectedSubject)?.name
-      || 'esta asignatura';
-  }, [selectedSubject, subjects, availableSubjects]);
-
   // La asignatura concreta elegida con el profesor elegido: de ahi salen el precio y el tope.
   const asignaturaElegida = useMemo(() => {
     if (!selectedTeacher || !selectedSubject) return null;
@@ -165,6 +158,15 @@ export default function BookClass() {
     
     return Array.from(subjectMap.values());
   }, [student, teachers, subjects]);
+
+  // Se declara despues de availableSubjects porque lo usa: puesto antes, leer la dependencia
+  // en el array del useMemo revienta con un ReferenceError (const todavia sin inicializar).
+  const nombreAsignaturaElegida = useMemo(() => {
+    if (!selectedSubject) return 'esta asignatura';
+    return subjects.find(s => s.id === selectedSubject)?.name
+      || availableSubjects.find(s => s.id === selectedSubject)?.name
+      || 'esta asignatura';
+  }, [selectedSubject, subjects, availableSubjects]);
 
   // Get teachers for selected subject - ONLY from assigned teachers
   const teachersForSubject = useMemo(() => {
