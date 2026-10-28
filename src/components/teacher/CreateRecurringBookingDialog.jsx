@@ -424,7 +424,8 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
     }
   };
 
-  const stepLabels = ['Alumno', 'Asignatura', 'Recurrencia', 'Confirmar'];
+  // La asignatura va primero porque de ella depende si la clase puede ser grupal.
+  const stepLabels = ['Asignatura', 'Tipo', classType === 'group' ? 'Alumnos' : 'Alumno', 'Recurrencia', 'Confirmar'];
 
   return (
     <>
@@ -476,72 +477,196 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
               })}
             </div>
 
-            {/* Step 1: Student */}
+            {/* Step 1: Asignatura */}
             {step === 1 && (
               <div>
-                <Label className="text-sm font-medium">Selecciona un alumno</Label>
-                {students.length > 0 ? (
-                  <Select value={selectedStudent} onValueChange={(val) => {
-                    setSelectedStudent(val);
-                    setStep(2);
-                  }}>
-                    <SelectTrigger aria-label="Selecciona un alumno" className="mt-2">
-                      <SelectValue placeholder="Elige un alumno" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {students.map(s => (
-                        <SelectItem key={s.id} value={s.id}>
-                          <div className="flex items-center gap-2">
-                            <User size={14} />
-                            <span>{s.full_name}</span>
-                            <span className="text-xs text-gray-400">({s.user_email})</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <p className="text-gray-500 text-sm mt-2">No tienes alumnos asignados aún</p>
-                )}
-              </div>
-            )}
-
-            {/* Step 2: Subject */}
-            {step === 2 && (
-              <div>
                 <Label className="text-sm font-medium">Selecciona la asignatura</Label>
-                {availableSubjects.length > 0 ? (
-                  <Select value={selectedSubject?.subject_id} onValueChange={(val) => {
-                    const subject = availableSubjects.find(s => s.subject_id === val);
-                    setSelectedSubject(subject);
-                    setStep(3);
-                  }}>
+                {asignaturasDelProfesor.length > 0 ? (
+                  <Select
+                    value={selectedSubject ? `${selectedSubject.subject_id}|${selectedSubject.level || ''}` : undefined}
+                    onValueChange={(val) => {
+                      const [id, nivel] = val.split('|');
+                      setSelectedSubject(asignaturasDelProfesor.find(
+                        s => s.subject_id === id && (s.level || '') === nivel
+                      ));
+                      // Cambiar de asignatura invalida el tipo y los alumnos elegidos.
+                      setClassType(null);
+                      setSelectedStudent(null);
+                      setSelectedStudentIds([]);
+                      setStep(2);
+                    }}
+                  >
                     <SelectTrigger aria-label="Selecciona la asignatura" className="mt-2">
                       <SelectValue placeholder="Elige una asignatura" />
                     </SelectTrigger>
                     <SelectContent>
-                      {availableSubjects.map(s => (
-                        <SelectItem key={s.subject_id} value={s.subject_id}>
+                      {asignaturasDelProfesor.map(s => (
+                        <SelectItem
+                          key={`${s.subject_id}|${s.level || ''}`}
+                          value={`${s.subject_id}|${s.level || ''}`}
+                        >
                           <div className="flex items-center gap-2">
                             <BookOpen size={14} />
                             <span>{s.subject_name}</span>
-                            <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{s.level}</span>
+                            {s.level && <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded">{s.level}</span>}
                           </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 ) : (
-                  <p className="text-gray-500 text-sm mt-2">Este alumno no tiene asignaturas contigo</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    No tienes asignaturas configuradas. Añádelas en "Mis Asignaturas".
+                  </p>
                 )}
+              </div>
+            )}
+
+            {/* Step 2: Tipo de clase */}
+            {step === 2 && selectedSubject && (
+              <div>
+                <Label className="text-sm font-medium">¿Individual o grupal?</Label>
+                <p className="text-xs text-gray-500 mt-1 mb-3">
+                  Esto es lo que tienes configurado en {selectedSubject.subject_name}
+                  {selectedSubject.level ? ` de ${selectedSubject.level}` : ''}.
+                </p>
+                <div className="grid gap-3">
+                  {tiposAsignatura.individual && (
+                    <button
+                      onClick={() => { setClassType('individual'); setSelectedStudentIds([]); setStep(3); }}
+                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] border-gray-100"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
+                          <User className="text-[#41f2c0]" size={18} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#404040] text-sm">Clase individual</p>
+                          <p className="text-xs text-gray-500">
+                            Un alumno · {precioClase(selectedSubject, { tipo: 'individual', duracionMinutos: duration }).toFixed(2)}€ por clase
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+                  {tiposAsignatura.group && (
+                    <button
+                      onClick={() => { setClassType('group'); setSelectedStudent(null); setStep(3); }}
+                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-purple-400 border-gray-100"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                          <Users className="text-purple-500" size={18} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#404040] text-sm">Clase grupal</p>
+                          <p className="text-xs text-gray-500">
+                            {grupoIndefinido(selectedSubject)
+                              ? `Sin límite de alumnos · ${precioClase(selectedSubject, { tipo: 'group', duracionMinutos: duration, numAlumnos: 1 }).toFixed(2)}€ por alumno`
+                              : `Hasta ${topeGrupo} alumnos · el precio por alumno baja según cuántos entren`}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  )}
+                </div>
                 <Button variant="outline" onClick={() => setStep(1)} className="mt-4" size="sm">
                   Volver
                 </Button>
               </div>
             )}
 
-            {/* Step 3: Recurrence Config */}
-            {step === 3 && (
+            {/* Step 3: Alumno o alumnos */}
+            {step === 3 && selectedSubject && classType && (
+              <div>
+                {classType === 'group' ? (
+                  <>
+                    <Label className="text-sm font-medium">Selecciona los alumnos</Label>
+                    <p className="text-xs text-gray-500 mt-1 mb-3">
+                      {topeGrupo === null ? 'Sin límite de alumnos.' : `Máximo ${topeGrupo} alumnos.`}
+                      {' '}Seleccionados: {selectedStudentIds.length}
+                    </p>
+                    {alumnosDeLaAsignatura.length > 0 ? (
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {alumnosDeLaAsignatura.map(st => {
+                          const marcado = selectedStudentIds.includes(st.id);
+                          const tope = topeGrupo !== null && !marcado && selectedStudentIds.length >= topeGrupo;
+                          return (
+                            <label
+                              key={st.id}
+                              className={cn(
+                                'flex items-center gap-3 p-2.5 rounded-lg border transition-colors',
+                                tope ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:border-purple-300',
+                                marcado ? 'border-purple-400 bg-purple-50' : 'border-gray-200'
+                              )}
+                            >
+                              <Checkbox
+                                checked={marcado}
+                                disabled={tope}
+                                onCheckedChange={() => alternarAlumno(st.id)}
+                                aria-label={st.full_name}
+                              />
+                              <User size={14} className="text-gray-400" />
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium text-[#404040] truncate">{st.full_name}</p>
+                                <p className="text-xs text-gray-500 truncate">{st.user_email}</p>
+                              </div>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm mt-2">
+                        Ningún alumno tiene asignada esta asignatura contigo todavía.
+                      </p>
+                    )}
+                    {selectedStudentIds.length > 0 && (
+                      <p className="text-xs text-purple-700 mt-3">
+                        {calculatePrice().toFixed(2)}€ por alumno y clase
+                        {' · '}{(calculatePrice() * selectedStudentIds.length).toFixed(2)}€ por clase en total
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Label className="text-sm font-medium">Selecciona un alumno</Label>
+                    {alumnosDeLaAsignatura.length > 0 ? (
+                      <Select value={selectedStudent} onValueChange={setSelectedStudent}>
+                        <SelectTrigger aria-label="Selecciona un alumno" className="mt-2">
+                          <SelectValue placeholder="Elige un alumno" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {alumnosDeLaAsignatura.map(st => (
+                            <SelectItem key={st.id} value={st.id}>
+                              <div className="flex items-center gap-2">
+                                <User size={14} />
+                                <span>{st.full_name}</span>
+                                <span className="text-xs text-gray-400">({st.user_email})</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <p className="text-gray-500 text-sm mt-2">
+                        Ningún alumno tiene asignada esta asignatura contigo todavía.
+                      </p>
+                    )}
+                  </>
+                )}
+                <div className="flex gap-2 mt-4">
+                  <Button variant="outline" onClick={() => setStep(2)} size="sm">Volver</Button>
+                  {puedeSeguirConAlumnos && (
+                    <Button onClick={() => setStep(4)} className="bg-[#41f2c0] hover:bg-[#35d4a7]" size="sm">
+                      Continuar
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Recurrence Config */}
+            {step === 4 && (
               <div className="space-y-5">
                 <div>
                   <Label className="text-sm font-medium mb-3 block">Días y horas de clase</Label>
@@ -634,9 +759,9 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button variant="outline" onClick={() => setStep(2)} size="sm">Volver</Button>
+                  <Button variant="outline" onClick={() => setStep(3)} size="sm">Volver</Button>
                   <Button
-                    onClick={() => setStep(4)}
+                    onClick={() => setStep(5)}
                     disabled={recurrenceRules.length === 0}
                     className="bg-[#41f2c0] hover:bg-[#35d4a7]"
                     size="sm"
@@ -647,21 +772,29 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
               </div>
             )}
 
-            {/* Step 4: Confirm */}
-            {step === 4 && (
+            {/* Step 5: Confirm */}
+            {step === 5 && (
               <div className="space-y-4">
                 {/* Summary */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-500">Alumno</p>
-                    <p className="font-medium text-sm">{students.find(s => s.id === selectedStudent)?.full_name}</p>
+                    <p className="text-xs text-gray-500">
+                      {classType === 'group' ? `Alumnos (${alumnosElegidos.length})` : 'Alumno'}
+                    </p>
+                    <p className="font-medium text-sm">{alumnosElegidos.map(a => a.full_name).join(', ')}</p>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <p className="text-xs text-gray-500">Asignatura</p>
-                    <p className="font-medium text-sm">{selectedSubject?.subject_name}</p>
+                    <p className="font-medium text-sm">
+                      {selectedSubject?.subject_name}
+                      {selectedSubject?.level ? ` · ${selectedSubject.level}` : ''}
+                      {classType === 'group' ? ' · grupal' : ''}
+                    </p>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-500">Precio por clase</p>
+                    <p className="text-xs text-gray-500">
+                      {classType === 'group' ? 'Precio por alumno y clase' : 'Precio por clase'}
+                    </p>
                     <p className="font-medium text-sm text-[#41f2c0]">{calculatePrice().toFixed(2)}€</p>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
@@ -697,7 +830,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button variant="outline" onClick={() => setStep(3)} size="sm">Volver</Button>
+                  <Button variant="outline" onClick={() => setStep(4)} size="sm">Volver</Button>
                   <Button
                     onClick={handleConfirm}
                     disabled={saving || validBookings.length === 0}
