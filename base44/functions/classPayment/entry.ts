@@ -9,6 +9,7 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 // /PaymentSuccess y /MyClasses. Al terminar de pagar, el alumno aterrizaba en un "no existe
 // en esta aplicacion": el cobro se habia hecho, pero el alumno se quedaba pensando que no.
 // Venia asi desde el principio y nadie lo detecto porque nunca se habia pagado con tarjeta.
+
 // Tarifas por hora que el profesor tiene puestas para esa asignatura. Sirven de lista blanca:
 // el importe de la reserva tiene que salir de una de ellas.
 function allowedPrices(teacher, subjectId) {
