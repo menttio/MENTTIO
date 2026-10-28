@@ -362,10 +362,12 @@ export default function BookingCard({
               {isGroup ? <Users className="text-purple-500" size={24} /> : <BookOpen className="text-[#41f2c0]" size={24} />}
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-semibold text-[#404040]">{booking.subject_name}</h3>
                 {isGroup && (
-                  <Badge className="bg-purple-100 text-purple-700 text-xs">
+                  // whitespace-nowrap para que "Grupal 1/4" no se parta por el espacio y acabe
+                  // en dos lineas dentro de la etiqueta cuando la tarjeta es estrecha.
+                  <Badge className="bg-purple-100 text-purple-700 text-xs whitespace-nowrap shrink-0">
                     Grupal {(booking.enrolled_students?.length || 0)}{plazasReserva(booking) === null ? '' : `/${plazasReserva(booking)}`}
                   </Badge>
                 )}
