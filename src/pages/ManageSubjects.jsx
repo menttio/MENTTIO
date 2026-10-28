@@ -369,32 +369,48 @@ export default function ManageSubjects() {
                     </div>
                   </div>
 
-                  <div className={`flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg ${idx === 0 ? 'subject-card-price' : ''}`}>
-                    <DollarSign className="text-[#41f2c0]" size={20} />
-                    <div>
-                      <p className="text-2xl font-bold text-[#41f2c0]">{subject.price_per_hour}€</p>
-                      <p className="text-xs text-gray-600">por hora (individual)</p>
-                    </div>
-                  </div>
-                  {subject.max_group_students && parseInt(subject.max_group_students) >= 2 && (
-                    <div className="mt-3 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                      <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1">
-                        <Users size={12} /> Clases grupales (máx. {subject.max_group_students} alumnos)
-                      </p>
-                      <div className="space-y-1">
-                        {Array.from({ length: parseInt(subject.max_group_students) - 1 }, (_, i) => i + 2).map(n => {
-                          const gp = subject.group_prices || {};
-                          const priceVal = gp[String(n)] ?? gp[n] ?? null;
-                          return (
-                            <div key={n} className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500">{n} alumnos:</span>
-                              <span className="font-semibold text-purple-700">
-                                {priceVal != null && priceVal !== '' ? `${priceVal}€/h por persona` : <span className="text-gray-400">No configurado</span>}
-                              </span>
-                            </div>
-                          );
-                        })}
+                  {daIndividual(subject) && (
+                    <div className={`flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg ${idx === 0 ? 'subject-card-price' : ''}`}>
+                      <DollarSign className="text-[#41f2c0]" size={20} />
+                      <div>
+                        <p className="text-2xl font-bold text-[#41f2c0]">{subject.price_per_hour}€</p>
+                        <p className="text-xs text-gray-600">por hora (individual)</p>
                       </div>
+                    </div>
+                  )}
+                  {daGrupal(subject) && (
+                    <div className={`p-3 bg-purple-50 rounded-lg border border-purple-100 ${daIndividual(subject) ? 'mt-3' : ''}`}>
+                      <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1">
+                        <Users size={12} />
+                        {grupoIndefinido(subject)
+                          ? 'Clases grupales (sin límite de alumnos)'
+                          : `Clases grupales (máx. ${subject.max_group_students} alumnos)`}
+                      </p>
+                      {grupoIndefinido(subject) ? (
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-gray-500">Por persona:</span>
+                          <span className="font-semibold text-purple-700">
+                            {subject.group_price_per_person != null && subject.group_price_per_person !== ''
+                              ? `${subject.group_price_per_person}€/h por persona`
+                              : <span className="text-gray-400">No configurado</span>}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          {Array.from({ length: Math.max(parseInt(subject.max_group_students) - 1, 0) }, (_, i) => i + 2).map(n => {
+                            const gp = subject.group_prices || {};
+                            const priceVal = gp[String(n)] ?? gp[n] ?? null;
+                            return (
+                              <div key={n} className="flex items-center justify-between text-xs">
+                                <span className="text-gray-500">{n} alumnos:</span>
+                                <span className="font-semibold text-purple-700">
+                                  {priceVal != null && priceVal !== '' ? `${priceVal}€/h por persona` : <span className="text-gray-400">No configurado</span>}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   )}
                 </CardContent>
