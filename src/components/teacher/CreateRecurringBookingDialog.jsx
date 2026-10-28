@@ -246,8 +246,21 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
     setSaving(true);
 
     try {
-      const studentObj = students.find(s => s.id === selectedStudent);
+      const esGrupo = classType === 'group';
+      const alumnos = alumnosElegidos;
+      if (alumnos.length === 0) throw new Error('No hay alumnos seleccionados');
       const price = calculatePrice();
+
+      // En el plan sin cuota Menttio retiene su parte de cada clase. Faltaba en este dialogo:
+      // las series que creaba el profesor se guardaban sin comision.
+      const esComision = teacher.subscription_plan === 'commission';
+      const pctComision = teacher.commission_percentage ?? 10;
+      const camposComision = esComision
+        ? {
+            platform_fee: parseFloat((price * pctComision / 100).toFixed(2)),
+            teacher_payout: parseFloat((price * (1 - pctComision / 100)).toFixed(2)),
+          }
+        : {};
 
       // Fetch Google Calendar events for the full range if teacher has it connected
       let googleEvents = [];
@@ -303,10 +316,6 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       const createdBookings = await Promise.all(
         bookingsToCreate.map(b =>
           base44.entities.Booking.create({
-            student_id: studentObj.id,
-            student_name: studentObj.full_name,
-            student_email: studentObj.user_email,
-            student_phone: studentObj.phone || '',
             teacher_id: teacher.id,
             teacher_name: teacher.full_name,
             teacher_email: teacher.user_email,
@@ -320,7 +329,27 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
             price,
             status: 'scheduled',
             payment_status: 'pending',
-            files: []
+            files: [],
+            ...camposComision,
+            ...(esGrupo
+              ? {
+                  class_type: 'group',
+                  max_students: topeGrupo,
+                  group_unlimited: topeGrupo === null,
+                  enrolled_students: alumnos.map(a => ({
+                    student_id: a.id,
+                    student_name: a.full_name,
+                    student_email: a.user_email,
+                    payment_status: 'pending',
+                  })),
+                }
+              : {
+                  class_type: 'individual',
+                  student_id: alumnos[0].id,
+                  student_name: alumnos[0].full_name,
+                  student_email: alumnos[0].user_email,
+                  student_phone: alumnos[0].phone || '',
+                }),
           })
         )
       );
@@ -330,10 +359,11 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         await base44.functions.invoke('notifyN8NBulk', {
           bookings: createdBookings.map(b => ({
             booking_id: b.id,
-            student_id: studentObj.id,
-            student_name: studentObj.full_name,
-            student_email: studentObj.user_email,
-            student_phone: studentObj.phone || '',
+            class_type: esGrupo ? 'group' : 'individual',
+            student_id: esGrupo ? null : alumnos[0].id,
+            student_name: esGrupo ? alumnos.map(a => a.full_name).join(', ') : alumnos[0].full_name,
+            student_email: esGrupo ? alumnos.map(a => a.user_email).join(', ') : alumnos[0].user_email,
+            student_phone: esGrupo ? '' : (alumnos[0].phone || ''),
             teacher_name: teacher.full_name,
             teacher_email: teacher.user_email,
             teacher_phone: teacher.phone || '',
@@ -348,16 +378,18 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         console.error('Error notifying n8n bulk:', e);
       }
 
-      // Single notification to student summarizing all classes
-      await base44.entities.Notification.create({
-        user_id: studentObj.id,
-        user_email: studentObj.user_email,
-        type: 'booking_new',
-        title: 'Clases recurrentes creadas',
-        message: `${teacher.full_name} ha programado ${createdBookings.length} clases recurrentes de ${selectedSubject.subject_name} contigo`,
-        related_id: createdBookings[0]?.id,
-        link_page: 'MyClasses'
-      });
+      // Un solo aviso por alumno resumiendo toda la serie
+      for (const alumno of alumnos) {
+        await base44.entities.Notification.create({
+          user_id: alumno.id,
+          user_email: alumno.user_email,
+          type: 'booking_new',
+          title: esGrupo ? 'Clases grupales recurrentes creadas' : 'Clases recurrentes creadas',
+          message: `${teacher.full_name} ha programado ${createdBookings.length} clases recurrentes${esGrupo ? ' grupales' : ''} de ${selectedSubject.subject_name} contigo`,
+          related_id: createdBookings[0]?.id,
+          link_page: 'MyClasses'
+        });
+      }
 
       // Sync Google Calendar for teacher
       if (teacher.google_calendar_connected) {
