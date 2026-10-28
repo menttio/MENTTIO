@@ -85,9 +85,16 @@ function tramoGrupal(asignatura, numAlumnos) {
  */
 export function precioClase(asignatura, { tipo = 'individual', duracionMinutos = 60, numAlumnos = 1 } = {}) {
   if (!asignatura) return 0;
-  const porHora = tipo === 'group'
-    ? precioGrupalPorHora(asignatura, numAlumnos)
-    : (Number(asignatura.price_per_hour) || 0);
+  let porHora;
+  if (tipo === 'group') {
+    porHora = precioGrupalPorHora(asignatura, numAlumnos);
+  } else if (daIndividual(asignatura)) {
+    porHora = Number(asignatura.price_per_hour) || 0;
+  } else {
+    // La asignatura no se da individual pero el profesor esta creando una clase a mano para un
+    // alumno: mejor cobrar la tarifa de grupo que dejar la clase a 0 € sin que se entere nadie.
+    porHora = precioGrupalPorHora(asignatura, 1);
+  }
   return (porHora * duracionMinutos) / 60;
 }
 
