@@ -9,12 +9,17 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 // /PaymentSuccess y /MyClasses. Al terminar de pagar, el alumno aterrizaba en un "no existe
 // en esta aplicacion": el cobro se habia hecho, pero el alumno se quedaba pensando que no.
 // Venia asi desde el principio y nadie lo detecto porque nunca se habia pagado con tarjeta.
+// Tarifas por hora que el profesor tiene puestas para esa asignatura. Sirven de lista blanca:
+// el importe de la reserva tiene que salir de una de ellas.
 function allowedPrices(teacher, subjectId) {
   const prices = [];
   const subjects = Array.isArray(teacher?.subjects) ? teacher.subjects : [];
   for (const s of subjects) {
     if (String(s.subject_id) !== String(subjectId)) continue;
     if (typeof s.price_per_hour === 'number') prices.push(s.price_per_hour);
+    // El precio por persona del grupo indefinido es una tarifa mas: sin esto, una clase de
+    // grupo sin limite se quedaba fuera de la lista blanca y el alumno no podia pagarla.
+    if (typeof s.group_price_per_person === 'number') prices.push(s.group_price_per_person);
     if (s.group_prices && typeof s.group_prices === 'object') {
       for (const value of Object.values(s.group_prices)) {
         if (typeof value === 'number') prices.push(value);
@@ -67,9 +72,15 @@ export default async function(req) {
     if (!Number.isFinite(price) || price <= 0) {
       return Response.json({ error: 'La reserva no tiene un precio valido' }, { status: 400 });
     }
-    const valid = allowedPrices(teacher, booking.subject_id);
+    // Las tarifas son POR HORA y el importe de la reserva es por la duracion real, asi que hay
+    // que llevarlas a la duracion antes de comparar. Antes se comparaba la tarifa por hora con
+    // el importe total: una clase de 90 minutos a 25 €/h cuesta 37,50 € y se rechazaba por
+    // "precio fuera de tarifa". No habia saltado nunca porque todavia nadie habia pagado con
+    // tarjeta, pero habria tumbado el primer cobro de una clase que no fuera de una hora justa.
+    const duracion = Number(booking.duration_minutes) || 60;
+    const valid = allowedPrices(teacher, booking.subject_id).map((p) => (p * duracion) / 60);
     if (valid.length > 0 && !valid.some((p) => Math.abs(p - price) < 0.01)) {
-      console.error('Precio fuera de tarifa', { bookingId, price, valid });
+      console.error('Precio fuera de tarifa', { bookingId, price, duracion, valid });
       return Response.json({ error: 'El precio de la clase no coincide con las tarifas del profesor' }, { status: 400 });
     }
 
