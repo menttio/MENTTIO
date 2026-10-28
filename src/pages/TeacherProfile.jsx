@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { textoPrecio } from '@/lib/asignaturas';
+import { mediaValoracion, infoFuente, textoSinNota } from '@/lib/resenas';
 import { 
   ArrowLeft,
   Star,
@@ -120,22 +121,21 @@ export default function TeacherProfile() {
                     una nota inventada. Ahora la media sale de las reseñas que de verdad
                     puntuaron, y si no hay ninguna no se enseña nota. */}
                 {(() => {
-                  const puntuadas = reviews.filter((r) => r.rating > 0);
-                  if (puntuadas.length === 0) {
-                    return (
-                      <span className="text-gray-500 text-sm">
-                        {reviews.length > 0
-                          ? `${reviews.length} ${reviews.length === 1 ? 'reseña' : 'reseñas'}`
-                          : 'Todavía sin reseñas'}
-                      </span>
-                    );
+                  // La media sale de src/lib/resenas.js, igual que en el resto de la app: solo
+                  // cuentan las verificadas con nota. Las recogidas a mano se siguen viendo,
+                  // pero no mueven la nota de nadie.
+                  const { media, puntuadas } = mediaValoracion(reviews);
+                  if (media === null) {
+                    return <span className="text-gray-500 text-sm">{textoSinNota(reviews)}</span>;
                   }
-                  const media = puntuadas.reduce((s, r) => s + r.rating, 0) / puntuadas.length;
                   return (
                     <div className="flex items-center gap-1">
                       <Star className="text-yellow-400 fill-yellow-400" size={18} />
                       <span className="font-semibold">{media.toFixed(1)}</span>
-                      <span className="text-gray-500 text-sm">({reviews.length} reseñas)</span>
+                      <span className="text-gray-500 text-sm">
+                        ({puntuadas} {puntuadas === 1 ? 'valoración' : 'valoraciones'} de{' '}
+                        {reviews.length} {reviews.length === 1 ? 'reseña' : 'reseñas'})
+                      </span>
                     </div>
                   );
                 })()}
@@ -306,6 +306,14 @@ export default function TeacherProfile() {
                               day: 'numeric'
                             })}
                           </p>
+                          {/* De dónde sale: una reseña de una clase dada en Menttio y una
+                              opinión recogida a mano no son lo mismo y no deben parecerlo. */}
+                          <Badge
+                            className={`mt-1.5 text-[10px] font-medium ${infoFuente(review).tono}`}
+                            title={infoFuente(review).detalle}
+                          >
+                            {infoFuente(review).etiqueta}
+                          </Badge>
                         </div>
                         {/* Sin puntuación no se pintan estrellas vacías: aparentaría un cero que
                             el alumno nunca puso. Si no puntuó, no se enseña nada. */}
