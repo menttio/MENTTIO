@@ -12,11 +12,11 @@
     },
     "student_id": {
       "type": "string",
-      "description": "ID del alumno (vac\u00edo en las recogidas por formulario)"
+      "description": "ID del alumno que la escribio (vacio en las recogidas por formulario)"
     },
     "student_name": {
       "type": "string",
-      "description": "Nombre a mostrar. En las an\u00f3nimas va el curso o la edad, nunca el nombre"
+      "description": "Nombre a mostrar. Nunca el nombre completo: solo el nombre de pila, o el curso o la edad en las anonimas. Esta entidad se lee en publico y muchos alumnos son menores."
     },
     "booking_id": {
       "type": "string",
@@ -26,33 +26,34 @@
       "type": "number",
       "minimum": 1,
       "maximum": 5,
-      "description": "Valoraci\u00f3n de 1 a 5 estrellas. Vac\u00edo si el alumno no puntu\u00f3: no se inventa"
+      "description": "Valoración de 1 a 5 estrellas. Vacío si el alumno no puntuó: no se inventa"
     },
     "comment": {
       "type": "string",
-      "description": "Comentario o rese\u00f1a"
+      "description": "Comentario o reseña"
     },
     "source": {
       "type": "string",
       "enum": [
         "plataforma",
+        "invitacion",
         "formulario"
       ],
       "default": "plataforma",
-      "description": "De d\u00f3nde sali\u00f3: dejada en la app, o recogida en un formulario aparte"
+      "description": "De donde sale y cuanto se puede comprobar. plataforma: alumno registrado que dio la clase en Menttio. invitacion: alumno registrado invitado por su profesor, clase fuera de la plataforma. formulario: recogida a mano, sin comprobar; solo la crea un administrador."
     },
     "collected_at": {
       "type": "string",
-      "description": "Fecha real en que el alumno la escribi\u00f3 (AAAA-MM-DD), que no tiene por qu\u00e9 ser la de alta"
+      "description": "Fecha real en que el alumno la escribió (AAAA-MM-DD), que no tiene por qué ser la de alta"
     },
     "consent_note": {
       "type": "string",
-      "description": "Qu\u00e9 autoriz\u00f3 exactamente el alumno al darla"
+      "description": "Qué autorizó exactamente el alumno al darla"
     },
     "description": {
       "type": "string",
       "maxLength": 1000,
-      "description": "Aclaraci\u00f3n en texto libre sobre esta rese\u00f1a"
+      "description": "Aclaración en texto libre sobre esta reseña"
     }
   },
   "required": [
@@ -61,31 +62,19 @@
   "rls": {
     "read": {},
     "create": {
-      "created_by_id": "{{user.id}}"
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "update": {
-      "$or": [
-        {
-          "created_by_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "created_by_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }
