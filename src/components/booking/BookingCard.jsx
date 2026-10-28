@@ -46,6 +46,11 @@ import { base44 } from '@/api/base44Client';
 import PaymentDialog from './PaymentDialog';
 import { plazasReserva } from '@/lib/asignaturas';
 
+// Tope por archivo. El almacenamiento aguanta mas, pero una foto del movil sin comprimir se
+// va a 8-10 MB y el alumno acaba esperando un minuto sin saber si va o no.
+const MAX_ARCHIVO_MB = 15;
+const MAX_ARCHIVO_BYTES = MAX_ARCHIVO_MB * 1024 * 1024;
+
 export default function BookingCard({ 
   booking, 
   userRole = 'student',
@@ -155,7 +160,7 @@ export default function BookingCard({
     const grande = files.find((f) => f.size > MAX_ARCHIVO_BYTES);
     if (grande) {
       setUploadError(
-        `"${grande.name}" pesa ${(grande.size / (1024 * 1024)).toFixed(1)} MB y el máximo es ${MAX_ARCHIVO_MB} MB. Comprimímelo o mándalo en varias partes.`,
+        `"${grande.name}" pesa ${(grande.size / (1024 * 1024)).toFixed(1)} MB y el máximo es ${MAX_ARCHIVO_MB} MB. Comprímelo o mándalo en varias partes.`,
       );
       input.value = '';
       return;
