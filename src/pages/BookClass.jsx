@@ -807,6 +807,16 @@ export default function BookClass() {
                       </div>
                     </button>
                   )}
+
+                  {/* Puede quedarse sin opciones si el unico profesor de la asignatura es del
+                      plan sin cuota y no tiene los cobros activos. Mejor decirlo que dejar la
+                      pantalla en blanco. */}
+                  {!tiposDisponibles.individual && !tiposDisponibles.group && (
+                    <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-800">
+                      Ahora mismo no se puede reservar {nombreAsignaturaElegida}. Habla con tu
+                      profesor: tiene que terminar de configurar la asignatura o los cobros.
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
