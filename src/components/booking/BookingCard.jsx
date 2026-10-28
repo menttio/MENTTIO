@@ -65,6 +65,7 @@ export default function BookingCard({
   const [teacher, setTeacher] = useState(null);
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [localFiles, setLocalFiles] = useState(booking?.files || []);
+  const [uploadError, setUploadError] = useState('');
 
   // Sincronizar localFiles cuando cambia el booking
   React.useEffect(() => {
@@ -144,33 +145,63 @@ export default function BookingCard({
 
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files || []);
+    // El input se limpia al final para que se pueda volver a elegir el mismo archivo tras
+    // un fallo: si no, el navegador no dispara onChange otra vez.
+    const input = e.target;
     if (files.length === 0) return;
+
+    setUploadError('');
+
+    const grande = files.find((f) => f.size > MAX_ARCHIVO_BYTES);
+    if (grande) {
+      setUploadError(
+        `"${grande.name}" pesa ${(grande.size / (1024 * 1024)).toFixed(1)} MB y el máximo es ${MAX_ARCHIVO_MB} MB. Comprimímelo o mándalo en varias partes.`,
+      );
+      input.value = '';
+      return;
+    }
 
     setUploading(true);
     try {
-      const toBase64 = (file) => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
       const user = await base44.auth.me();
-      const base64Results = await Promise.all(files.map(toBase64));
 
-      const newFiles = base64Results.map((dataUrl, idx) => ({
-        name: files[idx].name,
-        url: dataUrl,
-        uploaded_by: user?.email || userRole
-      }));
+      // Los archivos se suben al almacenamiento y en la reserva queda solo su direccion.
+      //
+      // Antes se guardaba el archivo entero dentro del propio registro de la clase, en
+      // base64. Una foto de 3 MB se convertia en un texto de 4,2 MB metido en la ficha, asi
+      // que al segundo archivo el registro ya no cabia y la escritura se rechazaba. El
+      // alumno veia sus tres archivos en la lista (se pintaban antes de guardar) y el
+      // profesor solo veia el primero. Ademas cada vez que se abria "Mis clases" el
+      // navegador se descargaba esos megas por cada clase.
+      const subidos = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        if (!file_url) throw new Error(`No se pudo subir "${file.name}"`);
+        subidos.push({
+          name: file.name,
+          url: file_url,
+          uploaded_by: user?.email || userRole,
+        });
+      }
 
-      const updatedFiles = [...localFiles, ...newFiles];
-      
-      // Actualizar localFiles inmediatamente para refrescar UI sin esperar la BD
-      setLocalFiles(updatedFiles);
-      
+      // Se relee la clase justo antes de escribir. Si no, dos personas subiendo a la misma
+      // clase (o el mismo alumno subiendo dos veces seguidas) se borran los archivos del
+      // otro, porque cada uno guarda su propia copia de la lista.
+      let base = localFiles;
+      try {
+        const actual = await base44.entities.Booking.get(booking.id);
+        if (Array.isArray(actual?.files)) base = actual.files;
+      } catch (_e) {
+        // En las grupales el alumno no puede leer la reserva: se sigue con la copia local.
+      }
+
+      const updatedFiles = [...base, ...subidos];
       await base44.entities.Booking.update(booking.id, { files: updatedFiles });
-      
+
+      // Solo se pinta despues de que la escritura haya ido bien. Antes se pintaba antes, asi
+      // que un fallo al guardar dejaba al alumno viendo archivos que no existian.
+      setLocalFiles(updatedFiles);
+
       // Notify n8n if student uploaded files
       if (userRole === 'student') {
         try {
@@ -186,24 +217,31 @@ export default function BookingCard({
               status: booking.status,
               subject_name: booking.subject_name,
               date: booking.date,
-              uploaded_files: newFiles.map(f => f.url)
+              uploaded_files: subidos.map(f => f.url)
             }
           });
         } catch (webhookError) {
           console.error('Error notificando subida de archivo a n8n:', webhookError);
         }
       }
-      
+
       onRefresh?.();
+      setShowUploadDialog(false);
     } catch (error) {
       console.error('Error uploading file:', error);
+      setUploadError(
+        error?.message?.includes('No se pudo subir')
+          ? error.message
+          : 'No se han podido guardar los archivos. Vuelve a intentarlo; si sigue fallando, prueba de uno en uno.',
+      );
     } finally {
       setUploading(false);
-      setShowUploadDialog(false);
+      input.value = '';
     }
   };
 
   const handleDeleteFile = async (fileIndex) => {
+    const previos = localFiles;
     try {
       const updatedFiles = localFiles.filter((_, idx) => idx !== fileIndex);
       setLocalFiles(updatedFiles);
@@ -211,6 +249,8 @@ export default function BookingCard({
       onRefresh?.();
     } catch (error) {
       console.error('Error deleting file:', error);
+      // Si no se pudo borrar, el archivo sigue ahi: la lista tiene que volver a ensenarlo.
+      setLocalFiles(previos);
     }
   };
 
@@ -423,10 +463,16 @@ export default function BookingCard({
                       {isGroup && userRole === 'student' ? 'Salir de la clase' : 'Cancelar clase'}
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={() => setShowUploadDialog(true)}>
-                    <FileUp size={14} className="mr-2" />
-                    Subir archivo
-                  </DropdownMenuItem>
+                  {/* En las clases de grupo la reserva no lleva el email del alumno, asi que
+                      las reglas de la entidad no le dejan guardar nada en ella: la subida
+                      fallaba siempre sin decir nada. Hasta que haya una funcion que lo haga
+                      por el, el boton no se le ensena. */}
+                  {!(isGroup && userRole === 'student') && (
+                    <DropdownMenuItem onClick={() => { setUploadError(''); setShowUploadDialog(true); }}>
+                      <FileUp size={14} className="mr-2" />
+                      Subir archivo
+                    </DropdownMenuItem>
+                  )}
                   {userRole === 'teacher' && isCompleted && (
                     <>
                       {booking.payment_status === 'pending_confirmation' && (
@@ -738,15 +784,26 @@ export default function BookingCard({
                 multiple
               />
               {uploading ? (
-                <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+                <>
+                  <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+                  <span className="text-xs text-gray-400 mt-2">Subiendo… no cierres esta ventana</span>
+                </>
               ) : (
                 <>
                   <FileUp className="text-gray-400 mb-2" size={32} />
                   <span className="text-sm text-gray-500">Haz clic para seleccionar archivos</span>
-                  <span className="text-xs text-gray-400 mt-1">Puedes seleccionar varios a la vez</span>
+                  <span className="text-xs text-gray-400 mt-1">
+                    Puedes seleccionar varios a la vez. Máximo {MAX_ARCHIVO_MB} MB por archivo.
+                  </span>
                 </>
               )}
             </label>
+            {uploadError && (
+              <p className="text-sm text-red-600 mt-3 flex items-start gap-1.5">
+                <AlertCircle size={15} className="mt-0.5 shrink-0" />
+                {uploadError}
+              </p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
