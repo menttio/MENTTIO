@@ -41,11 +41,16 @@ export default function TeacherCard({
   // Check if teacher has recording capability (premium plan)
   const hasRecording = teacher.subscription_plan === 'premium';
 
-  // Calculate price display
+  // Calculate price display. Una asignatura que solo se da en grupo no tiene precio individual:
+  // antes se colaba un null en el Math.min y salia "NaN €" en la ficha del profesor.
   const priceDisplay = selectedSubject && subjectInfo
-    ? `${subjectInfo.price_per_hour}€`
+    ? (textoPrecio(subjectInfo) || 'Consultar')
     : (() => {
-        const prices = teacher.subjects?.map(s => s.price_per_hour) || [];
+        const prices = preciosIndividuales(teacher.subjects);
+        if (prices.length === 0) {
+          const enGrupo = (teacher.subjects || []).find(daGrupal);
+          return enGrupo ? (textoPrecio(enGrupo) || 'Consultar') : 'Consultar';
+        }
         const minPrice = Math.min(...prices);
         const maxPrice = Math.max(...prices);
         return prices.length > 1 && minPrice !== maxPrice 
@@ -284,8 +289,11 @@ export default function TeacherCard({
                   <p className="text-xs text-gray-500 mt-1">{subject.level}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-[#41f2c0]">{subject.price_per_hour}€</p>
-                  <p className="text-xs text-gray-500">por hora</p>
+                  <p className="font-semibold text-[#41f2c0]">{textoPrecio(subject) || 'Consultar'}</p>
+                  <p className="text-xs text-gray-500">
+                    {daIndividual(subject) && daGrupal(subject) ? 'individual y en grupo'
+                      : daGrupal(subject) ? 'solo en grupo' : 'por hora'}
+                  </p>
                 </div>
               </div>
             ))}
