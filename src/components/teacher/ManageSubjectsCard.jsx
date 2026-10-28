@@ -179,7 +179,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                         <Badge variant="secondary" className="text-xs">{subject.level}</Badge>
                       </div>
                       <Badge className="bg-[#41f2c0] text-[#404040] text-xs mt-1">
-                        {subject.price_per_hour}€/hora
+                        {textoPrecio(subject) || 'Sin precio'}
                       </Badge>
                     </div>
                   </div>
