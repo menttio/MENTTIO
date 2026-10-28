@@ -31,7 +31,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import BookingCalendar from '../components/booking/BookingCalendar';
 import TeacherCard from '../components/student/TeacherCard';
-import GroupPricingInfo, { GROUP_PRICES, getGroupPrice } from '../components/booking/GroupPricingInfo';
+import GroupPricingInfo from '../components/booking/GroupPricingInfo';
+import {
+  daIndividual,
+  daGrupal,
+  grupoIndefinido,
+  maxAlumnosGrupo,
+  precioClase,
+  plazasReserva,
+  reservaCompleta,
+} from '@/lib/asignaturas';
 
 export default function BookClass() {
   const navigate = useNavigate();
@@ -686,8 +695,14 @@ export default function BookClass() {
                 <h2 className="text-xl font-semibold text-[#404040] mb-2">
                   ¿Qué tipo de clase quieres reservar?
                 </h2>
-                <p className="text-sm text-gray-500 mb-6">Elige entre clase individual o clase grupal (hasta 4 alumnos)</p>
+                <p className="text-sm text-gray-500 mb-6">
+                  {tiposDisponibles.individual && tiposDisponibles.group
+                    ? 'Elige entre clase individual o clase grupal'
+                    : 'Estas son las opciones que ofrecen tus profesores'}
+                </p>
                 <div className="grid gap-4">
+                  {/* Solo se ofrece el tipo de clase que algun profesor del alumno imparte. */}
+                  {tiposDisponibles.individual && (
                   <button
                     onClick={() => { setClassType('individual'); setStep(2); }}
                     className="p-5 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md border-gray-100"
@@ -702,8 +717,9 @@ export default function BookClass() {
                       </div>
                     </div>
                   </button>
+                  )}
 
-                  {anyTeacherHasGroupPrices && (
+                  {tiposDisponibles.group && (
                     <button
                       onClick={() => { setClassType('group'); setStep(2); }}
                       className="p-5 rounded-xl border-2 text-left transition-all hover:border-purple-400 hover:shadow-md border-gray-100"
@@ -715,12 +731,8 @@ export default function BookClass() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-semibold text-[#404040] text-lg">Clase Grupal</p>
-                            <Badge className="bg-purple-100 text-purple-700 text-xs">Hasta 4 alumnos</Badge>
                           </div>
                           <p className="text-sm text-gray-500 mt-0.5">Comparte la clase con otros alumnos a menor precio</p>
-                          <div className="mt-2">
-                            <GroupPricingInfo durationHours={duration / 60} />
-                          </div>
                         </div>
                       </div>
                     </button>
@@ -752,7 +764,7 @@ export default function BookClass() {
                 {classType === 'group' && (
                   <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center gap-2">
                     <Users size={16} className="text-purple-500 flex-shrink-0" />
-                    <span className="text-sm text-purple-700">Clase grupal — <GroupPricingInfo durationHours={duration / 60} /></span>
+                    <span className="text-sm text-purple-700">Clase grupal</span>
                   </div>
                 )}
                 <div className="grid gap-3">
@@ -910,7 +922,7 @@ export default function BookClass() {
                                 >
                                   <span>{slot}</span>
                                   {classType === 'group' && groupForSlot && (
-                                    <span className="text-[10px] opacity-80">{enrolled}/{groupForSlot.max_students || 4} 🟣</span>
+                                    <span className="text-[10px] opacity-80">{enrolled}{plazasReserva(groupForSlot) === null ? '' : `/${plazasReserva(groupForSlot)}`} 🟣</span>
                                   )}
                                 </Button>
                               );
@@ -949,11 +961,7 @@ export default function BookClass() {
                       <p className="text-xs text-purple-600 mt-2 font-medium">
                         Precio estimado: {(() => {
                           const count = (existingGroupBooking.enrolled_students?.length || 0) + 1;
-                          const subjectInfo = selectedTeacher?.subjects?.find(s => s.subject_id === selectedSubject);
-                          const gp = subjectInfo?.group_prices;
-                          const key = String(Math.min(count, 4));
-                          const pricePerHour = gp?.[key] ?? GROUP_PRICES[Math.min(count, 4)];
-                          return ((pricePerHour * duration) / 60).toFixed(0);
+                          return precioClase(asignaturaElegida, { tipo: 'group', duracionMinutos: duration, numAlumnos: count }).toFixed(0);
                         })()}€/alumno
                         <span className="text-gray-400 block text-[10px]">(precio final según alumnos que asistan)</span>
                       </p>
