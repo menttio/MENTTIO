@@ -92,6 +92,7 @@ import GrabarClasesLey from './pages/GrabarClasesLey';
 import CuantoCobrarClaseParticular from './pages/CuantoCobrarClaseParticular';
 import OrganizarClasesSinWhatsapp from './pages/OrganizarClasesSinWhatsapp';
 import InformeMensualFamilias from './pages/InformeMensualFamilias';
+import DejarResena from './pages/DejarResena';
 
 import __Layout from './Layout.jsx';
 
@@ -113,6 +114,7 @@ export const PAGES = {
     "CuantoCobrarClaseParticular": CuantoCobrarClaseParticular,
     "OrganizarClasesSinWhatsapp": OrganizarClasesSinWhatsapp,
     "InformeMensualFamilias": InformeMensualFamilias,
+    "DejarResena": DejarResena,
     "Landing": Landing,
     "LegalNotice": LegalNotice,
     "ManageAvailability": ManageAvailability,
