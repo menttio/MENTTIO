@@ -35,10 +35,13 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
             </h3>
             
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 md:gap-4 text-sm text-gray-600 mb-2">
-              <div className="flex items-center gap-1">
-                <Star className="text-yellow-400 fill-yellow-400" size={16} />
-                <span className="font-semibold">{teacher.rating?.toFixed(1) || '5.0'}</span>
-              </div>
+              {/* Sin valoraciones no se inventa un 5,0, que es lo que ponía antes. */}
+              {teacher.rating > 0 && (
+                <div className="flex items-center gap-1">
+                  <Star className="text-yellow-400 fill-yellow-400" size={16} />
+                  <span className="font-semibold">{teacher.rating.toFixed(1)}</span>
+                </div>
+              )}
               <div className="flex items-center gap-1">
                 <BookOpen size={16} />
                 <span>{teacher.total_classes || 0} clases</span>
