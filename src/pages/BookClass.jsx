@@ -682,6 +682,59 @@ export default function BookClass() {
 
       {/* Step Content */}
       <AnimatePresence mode="wait">
+        {/* Step 2: Select Subject */}
+        {step === 2 && (
+          <motion.div
+            key="step1"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-[#404040]">
+                    ¿Qué asignatura quieres estudiar?
+                  </h2>
+                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500">
+                    <ChevronLeft size={18} className="mr-1" />Volver
+                  </Button>
+                </div>
+                {classType === 'group' && (
+                  <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center gap-2">
+                    <Users size={16} className="text-purple-500 flex-shrink-0" />
+                    <span className="text-sm text-purple-700">Clase grupal</span>
+                  </div>
+                )}
+                <div className="grid gap-3">
+                  {availableSubjects.map((subject) => (
+                    <button
+                      key={subject.id}
+                      onClick={() => {
+                        setSelectedSubject(subject.id);
+                        setSelectedTeacher(null);
+                        setStep(3);
+                      }}
+                      className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md ${
+                        selectedSubject === subject.id 
+                          ? 'border-[#41f2c0] bg-[#41f2c0]/5' 
+                          : 'border-gray-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
+                          <BookOpen className="text-[#41f2c0]" size={20} />
+                        </div>
+                        <span className="font-medium text-[#404040]">{subject.name}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Step 1: Select class type */}
         {step === 1 && (
           <motion.div
@@ -737,59 +790,6 @@ export default function BookClass() {
                       </div>
                     </button>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Step 2: Select Subject */}
-        {step === 2 && (
-          <motion.div
-            key="step1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold text-[#404040]">
-                    ¿Qué asignatura quieres estudiar?
-                  </h2>
-                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500">
-                    <ChevronLeft size={18} className="mr-1" />Volver
-                  </Button>
-                </div>
-                {classType === 'group' && (
-                  <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center gap-2">
-                    <Users size={16} className="text-purple-500 flex-shrink-0" />
-                    <span className="text-sm text-purple-700">Clase grupal</span>
-                  </div>
-                )}
-                <div className="grid gap-3">
-                  {availableSubjects.map((subject) => (
-                    <button
-                      key={subject.id}
-                      onClick={() => {
-                        setSelectedSubject(subject.id);
-                        setSelectedTeacher(null);
-                        setStep(3);
-                      }}
-                      className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md ${
-                        selectedSubject === subject.id 
-                          ? 'border-[#41f2c0] bg-[#41f2c0]/5' 
-                          : 'border-gray-100'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-                          <BookOpen className="text-[#41f2c0]" size={20} />
-                        </div>
-                        <span className="font-medium text-[#404040]">{subject.name}</span>
-                      </div>
-                    </button>
-                  ))}
                 </div>
               </CardContent>
             </Card>
