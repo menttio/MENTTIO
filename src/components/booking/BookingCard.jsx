@@ -44,7 +44,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
 import PaymentDialog from './PaymentDialog';
-import { getGroupPrice } from './GroupPricingInfo';
+import { plazasReserva } from '@/lib/asignaturas';
 
 export default function BookingCard({ 
   booking, 
@@ -73,9 +73,10 @@ export default function BookingCard({
 
   const isGroup = booking.class_type === 'group';
   const enrolledCount = isGroup ? (booking.enrolled_students?.length || 1) : 1;
-  const pricePerStudent = isGroup
-    ? (getGroupPrice(enrolledCount, (booking.duration_minutes || 60) / 60) || booking.price)
-    : booking.price;
+  // El precio por alumno es el que guarda la reserva: lo calcula el servidor con las tarifas
+  // del profesor. Antes se recalculaba aqui con unas tarifas por defecto fijas, asi que la
+  // tarjeta ensenaba un importe distinto del que se cobraba.
+  const pricePerStudent = booking.price;
   const displayPrice = isGroup && userRole === 'teacher'
     ? pricePerStudent * enrolledCount
     : pricePerStudent;
@@ -365,7 +366,7 @@ export default function BookingCard({
                 <h3 className="font-semibold text-[#404040]">{booking.subject_name}</h3>
                 {isGroup && (
                   <Badge className="bg-purple-100 text-purple-700 text-xs">
-                    Grupal {(booking.enrolled_students?.length || 0)}/{booking.max_students || 4}
+                    Grupal {(booking.enrolled_students?.length || 0)}{plazasReserva(booking) === null ? '' : `/${plazasReserva(booking)}`}
                   </Badge>
                 )}
               </div>
