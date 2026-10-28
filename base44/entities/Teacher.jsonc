@@ -63,7 +63,7 @@
           },
           "group_unlimited": {
             "type": "boolean",
-            "description": "Clases grupales sin l\\u00edmite de alumnos: se usa group_price_per_person y se ignoran los tramos"
+            "description": "Clases grupales sin l\u00edmite de alumnos: se usa group_price_per_person y se ignoran los tramos"
           },
           "group_price_per_person": {
             "type": "number",
@@ -71,7 +71,7 @@
           },
           "max_group_students": {
             "type": "number",
-            "description": "M\u00e1ximo de alumnos por clase grupal (2-4)"
+            "description": "M\u00e1ximo de alumnos por clase grupal (2-4). Null si el grupo es indefinido"
           },
           "group_prices": {
             "type": "object",
