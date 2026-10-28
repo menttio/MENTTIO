@@ -247,7 +247,7 @@ export default function BookClass() {
       b.class_type === 'group' &&
       b.teacher_id === selectedTeacher.id &&
       (b.subject_id === selectedSubject || (selectedSubjectName && b.subject_name === selectedSubjectName)) &&
-      (b.enrolled_students?.length || 0) < (b.max_students || 4) &&
+      !reservaCompleta(b) &&
       !b.enrolled_students?.some(s => s.student_id === student?.id)
     );
   }, [selectedTeacher, selectedSubject, allScheduledBookings, student, subjects]);
@@ -269,8 +269,7 @@ export default function BookClass() {
       if (b.teacher_id !== selectedTeacher.id) return false;
       if (classType === 'group') {
         // In group mode, open (non-full) group bookings don't block — student can join them
-        const isFull = (b.enrolled_students?.length || 0) >= (b.max_students || 4);
-        return b.class_type !== 'group' || isFull;
+        return b.class_type !== 'group' || reservaCompleta(b);
       }
       return true; // individual mode: all bookings block
     });
@@ -335,7 +334,7 @@ export default function BookClass() {
                 b.teacher_id === selectedTeacher?.id &&
                 b.class_type === 'group' &&
                 b.date === dateStr &&
-                (b.enrolled_students?.length || 0) < (b.max_students || 4)
+                !reservaCompleta(b)
               )
               .map(b => b.start_time)
           : [];
@@ -392,24 +391,15 @@ export default function BookClass() {
   };
 
   const calculatePrice = () => {
-    if (!selectedTeacher || !selectedSubject) return 0;
-    const subjectInfo = selectedTeacher.subjects?.find(s => s.subject_id === selectedSubject);
-    if (classType === 'group') {
-      const currentCount = existingGroupBooking
-        ? (existingGroupBooking.enrolled_students?.length || 0) + 1
-        : 1;
-      if (currentCount <= 1) {
-        // Solo hay 1 alumno, precio individual de fallback
-        return subjectInfo ? (subjectInfo.price_per_hour * duration) / 60 : 0;
-      }
-      // Use teacher's group_prices if available, otherwise fall back to GROUP_PRICES
-      const groupPrices = subjectInfo?.group_prices;
-      const key = String(Math.min(currentCount, 4));
-      const pricePerHour = groupPrices?.[key] ?? GROUP_PRICES[Math.min(currentCount, 4)];
-      return (pricePerHour * duration) / 60;
-    }
-    if (!subjectInfo) return 0;
-    return (subjectInfo.price_per_hour * duration) / 60;
+    if (!asignaturaElegida) return 0;
+    const numAlumnos = classType === 'group'
+      ? (existingGroupBooking ? (existingGroupBooking.enrolled_students?.length || 0) + 1 : 1)
+      : 1;
+    return precioClase(asignaturaElegida, {
+      tipo: classType === 'group' ? 'group' : 'individual',
+      duracionMinutos: duration,
+      numAlumnos,
+    });
   };
 
   const handleConfirmBooking = async () => {
@@ -455,7 +445,10 @@ export default function BookClass() {
           status: 'scheduled',
           payment_status: 'pending',
           class_type: 'group',
-          max_students: 4,
+          // El tope sale de la asignatura del profesor. Antes iba un 4 fijo, asi que un profesor
+          // que habia puesto "hasta 2" acababa con cuatro alumnos en la clase.
+          max_students: topeGrupo,
+          group_unlimited: topeGrupo === null,
           enrolled_students: [{
             student_id: student.id,
             student_name: student.full_name,
