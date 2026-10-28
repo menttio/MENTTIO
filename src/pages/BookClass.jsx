@@ -102,21 +102,35 @@ export default function BookClass() {
     loadData();
   }, []);
 
-  // Que tipos de clase se pueden reservar: depende de lo que hayan marcado los profesores
-  // asignados en cada asignatura. Sin esto, el alumno podia elegir "individual" con un profesor
-  // que solo da grupales y acababa en una reserva sin precio.
+  // Que tipos de clase se pueden reservar DE LA ASIGNATURA ELEGIDA. Se calcula despues de
+  // elegirla a proposito: un mismo profesor puede dar Matematicas en grupo y Fisica solo
+  // individual, asi que preguntar el tipo antes de la asignatura ofrecia opciones que luego
+  // no existian y dejaba la pantalla de profesores vacia.
   const tiposDisponibles = useMemo(() => {
     const vacio = { individual: false, group: false };
-    if (!student?.assigned_teachers?.length || !teachers.length) return vacio;
-    const asignaturasDelAlumno = student.assigned_teachers.flatMap(at => {
-      const teacher = teachers.find(t => t.id === at.teacher_id);
-      return (teacher?.subjects || []).filter(s => s.subject_id === at.subject_id);
-    });
+    if (!selectedSubject || !student?.assigned_teachers?.length || !teachers.length) return vacio;
+    const variantes = student.assigned_teachers
+      .filter(at => at.subject_id === selectedSubject)
+      .flatMap(at => {
+        const teacher = teachers.find(t => t.id === at.teacher_id);
+        // Un profesor del plan sin cuota y sin cobros activos no puede recibir reservas, asi
+        // que tampoco debe aportar tipos de clase a este paso.
+        if (!teacher) return [];
+        if (teacher.subscription_plan === 'commission' && !teacher.stripe_connect_enabled) return [];
+        return (teacher.subjects || []).filter(s => s.subject_id === at.subject_id);
+      });
     return {
-      individual: asignaturasDelAlumno.some(daIndividual),
-      group: asignaturasDelAlumno.some(daGrupal),
+      individual: variantes.some(daIndividual),
+      group: variantes.some(daGrupal),
     };
-  }, [student, teachers]);
+  }, [selectedSubject, student, teachers]);
+
+  const nombreAsignaturaElegida = useMemo(() => {
+    if (!selectedSubject) return 'esta asignatura';
+    return subjects.find(s => s.id === selectedSubject)?.name
+      || availableSubjects.find(s => s.id === selectedSubject)?.name
+      || 'esta asignatura';
+  }, [selectedSubject, subjects, availableSubjects]);
 
   // La asignatura concreta elegida con el profesor elegido: de ahi salen el precio y el tope.
   const asignaturaElegida = useMemo(() => {
@@ -127,7 +141,7 @@ export default function BookClass() {
   const topeGrupo = useMemo(() => maxAlumnosGrupo(asignaturaElegida), [asignaturaElegida]);
 
   // Get unique subjects from assigned teachers (only those that still exist in teacher's subjects
-  // and que se den en el tipo de clase elegido)
+  // y que se puedan dar de alguna forma: individual, en grupo o las dos)
   const availableSubjects = useMemo(() => {
     if (!student?.assigned_teachers?.length) return [];
     
@@ -137,7 +151,7 @@ export default function BookClass() {
       const teacher = teachers.find(t => t.id === at.teacher_id);
       const asignatura = teacher?.subjects?.find(s => s.subject_id === at.subject_id);
       const teacherStillHasSubject = Boolean(asignatura)
-        && (classType === 'group' ? daGrupal(asignatura) : daIndividual(asignatura));
+        && (daIndividual(asignatura) || daGrupal(asignatura));
       
       if (teacherStillHasSubject && !subjectMap.has(at.subject_id)) {
         // Get subject name from subjects array for reliability
@@ -150,7 +164,7 @@ export default function BookClass() {
     });
     
     return Array.from(subjectMap.values());
-  }, [student, teachers, subjects, classType]);
+  }, [student, teachers, subjects]);
 
   // Get teachers for selected subject - ONLY from assigned teachers
   const teachersForSubject = useMemo(() => {
