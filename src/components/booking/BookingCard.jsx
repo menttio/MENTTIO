@@ -58,7 +58,10 @@ export default function BookingCard({
   onCancel,
   onUploadFile,
   onRefresh,
-  onReview
+  onReview,
+  // Ficha del alumno que esta mirando, cuando se sabe. Hace falta para elegir SU resena en
+  // una clase de grupo, donde hay una por alumno.
+  studentId = null
 }) {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showUploadDialog, setShowUploadDialog] = useState(false);
@@ -127,9 +130,11 @@ export default function BookingCard({
         setLoadingReview(true);
         base44.entities.Review.filter({ booking_id: booking.id })
           .then(reviews => {
-            if (reviews.length > 0) {
-              setReview(reviews[0]);
-            }
+            const lista = reviews || [];
+            // En una clase de grupo hay una resena por alumno. Cogiendo siempre la primera,
+            // a un alumno se le ensenaba la resena de un compañero como si fuera la suya.
+            const propia = studentId ? lista.find((r) => r.student_id === studentId) : lista[0];
+            if (propia) setReview(propia);
           })
           .catch(console.error)
           .finally(() => setLoadingReview(false));
