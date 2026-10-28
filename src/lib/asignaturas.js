@@ -113,6 +113,26 @@ export function preciosIndividuales(asignaturas) {
     .filter(p => Number.isFinite(p) && p > 0);
 }
 
+/**
+ * Plazas de una reserva de grupo. Devuelve null si no tiene tope.
+ *
+ * Las reservas creadas antes del grupo indefinido llevan siempre max_students con un número,
+ * así que el `|| 4` de antes seguía valiendo para ellas; lo que no se puede es aplicarlo a una
+ * reserva sin tope, porque la cerraría al cuarto alumno.
+ */
+export function plazasReserva(reserva) {
+  if (!reserva) return 0;
+  if (reserva.group_unlimited === true) return null;
+  const max = parseInt(reserva.max_students);
+  return Number.isFinite(max) && max >= 2 ? max : 4;
+}
+
+export function reservaCompleta(reserva) {
+  const plazas = plazasReserva(reserva);
+  if (plazas === null) return false;
+  return (reserva?.enrolled_students?.length || 0) >= plazas;
+}
+
 /** Una asignatura está bien configurada si ofrece al menos un tipo de clase con precio. */
 export function asignaturaCompleta(asignatura) {
   if (!asignatura) return false;
