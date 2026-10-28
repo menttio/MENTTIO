@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
  * Aquí está el interruptor que faltaba.
  *
  * Los dos planes de suscripción salen a diez mensualidades al año, así que el ahorro son
- * exactamente dos meses. Los 14 días de prueba solo aplican al pago mensual: en el anual se
+ * exactamente dos meses. Los 30 días de prueba solo aplican al pago mensual: en el anual se
  * cobra el año completo desde el principio.
  */
 const plans = [
@@ -18,7 +18,7 @@ const plans = [
     mensual: '12,99€/mes',
     anual: '130€/año',
     ahorroAnual: 'Ahorras 25,88€',
-    trial: '14 días gratis',
+    trial: '30 días gratis',
     description: 'Todo salvo la grabación',
     features: ['Reservas y calendario', 'Materiales y mensajes', 'Seguimiento e informes a familias'],
     color: 'border-[#41f2c0]',
@@ -30,7 +30,7 @@ const plans = [
     mensual: '29,99€/mes',
     anual: '300€/año',
     ahorroAnual: 'Ahorras 59,88€',
-    trial: '14 días gratis',
+    trial: '30 días gratis',
     description: 'La clase se graba y tu alumno la repasa',
     features: ['Todo lo del plan Esencial', 'Grabación de las clases', 'Soporte prioritario'],
     color: 'border-yellow-400',
@@ -87,7 +87,7 @@ export default function PlanSelector({ selected, onChange, periodo = 'mensual', 
           {esAnual && (
             <p className="text-xs text-gray-500 text-center">
               Pagando un año entero te salen dos meses gratis. En el pago anual se cobra el año
-              completo al contratar, sin los 14 días de prueba.
+              completo al contratar, sin los 30 días de prueba.
             </p>
           )}
         </div>

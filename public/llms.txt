@@ -24,8 +24,8 @@ una plataforma para encontrar profesor, este no es el sitio.
 
 - Alumnos: gratis siempre.
 - Sin cuota: 0 €/mes y un 10 % por cada clase cobrada a través de Menttio.
-- Esencial: 12,99 €/mes (130 €/año), sin comisión por clase. 14 días de prueba.
-- Clase grabada: 29,99 €/mes, añade la grabación de las clases. 14 días de prueba.
+- Esencial: 12,99 €/mes (130 €/año), sin comisión por clase. 30 días de prueba.
+- Clase grabada: 29,99 €/mes, añade la grabación de las clases. 30 días de prueba.
 
 ## Privacidad de las grabaciones
 

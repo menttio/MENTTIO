@@ -45,7 +45,7 @@ const teacherPlans = [
     priceAnual: '130€',
     periodAnual: '/año',
     noteAnual: 'Equivale a 10,83€ al mes · ahorras 25,88€',
-    description: '14 días gratis, sin compromiso',
+    description: '30 días gratis, sin compromiso',
     note: 'Sin comisión por clase',
     cardClass: 'bg-white border-2 border-gray-100 hover:border-[#41f2c0]',
     iconClass: 'bg-[#41f2c0]/15',
@@ -56,7 +56,7 @@ const teacherPlans = [
     checkBg: 'bg-[#41f2c0]/20',
     checkColor: 'text-[#41f2c0]',
     ctaClass: 'bg-[#404040] hover:bg-[#303030] text-white',
-    ctaLabel: 'Empezar 14 días gratis',
+    ctaLabel: 'Empezar 30 días gratis',
     features: [
       { text: 'Reservas y calendario', included: true },
       { text: 'Materiales y mensajes con tus alumnos', included: true },
@@ -95,7 +95,7 @@ const teacherPlans = [
     checkBg: 'bg-[#41f2c0]/25',
     checkColor: 'text-[#41f2c0]',
     ctaClass: 'bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] font-bold',
-    ctaLabel: 'Empezar 14 días gratis',
+    ctaLabel: 'Empezar 30 días gratis',
     features: [
       { text: 'Reservas y calendario', included: true },
       { text: 'Materiales y mensajes con tus alumnos', included: true },
@@ -189,7 +189,7 @@ export default function Pricing() {
           </div>
           {anual && (
             <p className="text-xs text-gray-500">
-              Se cobra el año completo al contratar, sin los 14 días de prueba.
+              Se cobra el año completo al contratar, sin los 30 días de prueba.
             </p>
           )}
         </div>

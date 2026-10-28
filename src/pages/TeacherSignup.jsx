@@ -828,7 +828,7 @@ export default function TeacherSignup() {
                   ) : formData.subscription_plan === 'basic' ? (
                       <>
                         <p className="text-sm text-gray-500 mb-1">Plan Esencial</p>
-                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">14 días gratis</div>
+                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">30 días gratis</div>
                         <p className="text-sm text-gray-500">Prueba gratuita sin compromiso</p>
                         <p className="text-gray-500 mt-3 text-base">
                           Después: <span className="font-bold text-[#404040]">12,99€/mes</span>
@@ -857,15 +857,15 @@ export default function TeacherSignup() {
                            <div className="text-sm text-gray-700 space-y-2 text-left">
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 14 días son completamente gratis, sin cargos.</span>
+                               <span><strong>Comienza tu prueba gratuita hoy</strong> - Los primeros 30 días son completamente gratis, sin cargos.</span>
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Después de 14 días:</strong> Se procederá al cobro mensual de 12,99€ automáticamente mediante el método de pago que registres.</span>
+                               <span><strong>Después de 30 días:</strong> Se procederá al cobro mensual de 12,99€ automáticamente mediante el método de pago que registres.</span>
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 14 días de forma totalmente gratuita, sin ningún cargo.</span>
+                               <span><strong>Cancela cuando quieras:</strong> Puedes darte de baja antes de los 30 días de forma totalmente gratuita, sin ningún cargo.</span>
                              </p>
                            </div>
                         </div>

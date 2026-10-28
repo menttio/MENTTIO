@@ -15,7 +15,7 @@ const faqs = [
   },
   {
     question: '¿Hay período de prueba gratuito?',
-    answer: 'Sí. Al contratar el plan Esencial tienes 14 días de prueba completamente gratuitos, sin compromiso. Puedes cancelar antes de que terminen sin ningún cargo. Es la forma más rápida de ver si Menttio encaja con tu forma de trabajar.'
+    answer: 'Sí. Al contratar el plan Esencial tienes 30 días de prueba completamente gratuitos, sin compromiso. Puedes cancelar antes de que terminen sin ningún cargo. Es la forma más rápida de ver si Menttio encaja con tu forma de trabajar.'
   },
   {
     question: '¿Cómo funcionan los pagos?',
@@ -117,7 +117,7 @@ export default function FAQ() {
                el texto es largo y no rompía de línea. Ahora ocupa el ancho y parte si hace falta. */
             className="bg-[#404040] hover:bg-[#303030] text-white font-bold w-full sm:w-auto whitespace-normal px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-xl shadow-lg h-auto"
           >
-            Empieza gratis — 14 días sin compromiso
+            Empieza gratis — 30 días sin compromiso
           </Button>
         </motion.div>
       </div>

@@ -13,8 +13,8 @@ import { createPageUrl } from '../../utils';
 export default function FinalCTA() {
   const tranquilizadores = [
     // "Sin tarjeta" es cierto y es el argumento que hace que un profesor que no te conoce de
-    // nada se registre. La tarjeta se pide al terminar los 14 días, no antes.
-    '14 días gratis, sin tarjeta',
+    // nada se registre. La tarjeta se pide al terminar los 30 días, no antes.
+    '30 días gratis, sin tarjeta',
     'Cancelas cuando quieras',
     'Tus alumnos no pagan nada',
   ];

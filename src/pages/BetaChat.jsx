@@ -152,7 +152,7 @@ export default function BetaChat() {
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-1.5 bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] text-sm font-semibold w-full py-2.5 rounded-full transition-colors"
         >
-          Empieza tu prueba gratuita de 14 días →
+          Empieza tu prueba gratuita de 30 días →
         </a>
       </div>
 
