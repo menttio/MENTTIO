@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, User, Clock, BookOpen, Mail, Phone, GraduationCap, Award, Video } from 'lucide-react';
+import { Star, User, BookOpen, Mail, Phone, GraduationCap, Award, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

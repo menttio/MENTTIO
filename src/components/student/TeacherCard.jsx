@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { textoPrecio, preciosIndividuales, daIndividual, daGrupal } from '@/lib/asignaturas';
-import { Star, Clock, DollarSign, User, Plus, Trash2, MessageCircle, Video } from 'lucide-react';
+import { Star, DollarSign, User, Plus, Trash2, MessageCircle, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
