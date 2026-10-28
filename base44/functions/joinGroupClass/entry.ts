@@ -1,6 +1,43 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
-const DEFAULT_GROUP_PRICES = { 2: 15, 3: 12, 4: 10 };
+const DEFAULT_GROUP_PRICES: Record<number, number> = { 2: 18, 3: 16, 4: 15 };
+const MAX_TRAMOS_GRUPO = 4;
+
+// Mismas reglas que src/lib/asignaturas.js. Una asignatura creada antes de las casillas no
+// trae offers_individual ni offers_group: entonces la individual era obligatoria y la grupal
+// solo existia si habia un maximo de alumnos configurado.
+function daIndividual(asignatura: any): boolean {
+  if (!asignatura) return false;
+  if (asignatura.offers_individual == null) return true;
+  return asignatura.offers_individual === true;
+}
+
+function grupoIndefinido(asignatura: any): boolean {
+  return asignatura?.group_unlimited === true;
+}
+
+function maxAlumnosGrupo(asignatura: any): number | null {
+  if (grupoIndefinido(asignatura)) return null;
+  const max = parseInt(asignatura?.max_group_students);
+  return Number.isFinite(max) && max >= 2 ? max : MAX_TRAMOS_GRUPO;
+}
+
+function precioGrupalPorHora(asignatura: any, numAlumnos: number): number {
+  if (!asignatura) return 0;
+  if (grupoIndefinido(asignatura)) {
+    const porPersona = Number(asignatura.group_price_per_person);
+    return Number.isFinite(porPersona) && porPersona > 0 ? porPersona : 0;
+  }
+  if (numAlumnos <= 1 && daIndividual(asignatura)) {
+    return Number(asignatura.price_per_hour) || 0;
+  }
+  const tramos = asignatura.group_prices || {};
+  const tope = maxAlumnosGrupo(asignatura) ?? MAX_TRAMOS_GRUPO;
+  const clave = Math.min(Math.max(numAlumnos, 2), tope, MAX_TRAMOS_GRUPO);
+  const valor = tramos[String(clave)] ?? tramos[clave];
+  if (valor != null && valor !== '' && Number(valor) > 0) return Number(valor);
+  return Number(DEFAULT_GROUP_PRICES[clave]) || Number(asignatura.price_per_hour) || 0;
+}
 
 // Apuntarse a una clase de grupo ya creada. Antes lo hacía el navegador escribiendo directamente
 // en la reserva de otra persona (y enviando el precio). Ahora el servidor comprueba plazas,
@@ -39,7 +76,10 @@ Deno.serve(async (req) => {
     if (enrolled.some((s) => (s.student_email || '').toLowerCase() === email)) {
       return Response.json({ error: 'Ya estás apuntado a esta clase' }, { status: 400 });
     }
-    const maxStudents = booking.max_students || 4;
+    // Una clase de grupo indefinido no tiene tope. Antes el `|| 4` la cerraba al cuarto alumno,
+    // asi que un profesor con grupo sin limite se habria quedado sin poder meter al quinto.
+    const sinTope = booking.group_unlimited === true;
+    const maxStudents = sinTope ? Infinity : (Number(booking.max_students) || 4);
     if (enrolled.length >= maxStudents) {
       return Response.json({ error: 'La clase ya está completa' }, { status: 409 });
     }
@@ -60,10 +100,10 @@ Deno.serve(async (req) => {
     ];
 
     // Precio por persona según el número de alumnos, con las tarifas del profesor.
-    const count = Math.min(updatedEnrolled.length, 4);
     const subjectInfo = (teacher.subjects || []).find((s) => String(s.subject_id) === String(booking.subject_id));
-    const groupPrices = subjectInfo?.group_prices || {};
-    const pricePerHour = Number(groupPrices[String(count)] ?? DEFAULT_GROUP_PRICES[count] ?? subjectInfo?.price_per_hour ?? booking.price);
+    const pricePerHour = precioGrupalPorHora(subjectInfo, updatedEnrolled.length)
+      || Number(subjectInfo?.price_per_hour)
+      || Number(booking.price);
     const duration = Number(booking.duration_minutes) || 60;
     const newPrice = Number(((pricePerHour * duration) / 60).toFixed(2));
 
