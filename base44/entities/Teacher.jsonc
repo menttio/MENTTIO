@@ -53,6 +53,22 @@
           "price_per_hour": {
             "type": "number"
           },
+          "offers_individual": {
+            "type": "boolean",
+            "description": "Si imparte esta asignatura en clases individuales. Ausente equivale a true (asignaturas creadas antes de existir la casilla)"
+          },
+          "offers_group": {
+            "type": "boolean",
+            "description": "Si imparte esta asignatura en clases grupales. Ausente se deduce de max_group_students"
+          },
+          "group_unlimited": {
+            "type": "boolean",
+            "description": "Clases grupales sin l\\u00edmite de alumnos: se usa group_price_per_person y se ignoran los tramos"
+          },
+          "group_price_per_person": {
+            "type": "number",
+            "description": "Precio por hora y por persona cuando el grupo es indefinido"
+          },
           "max_group_students": {
             "type": "number",
             "description": "M\u00e1ximo de alumnos por clase grupal (2-4)"
