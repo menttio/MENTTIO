@@ -489,56 +489,126 @@ export default function ManageSubjects() {
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="precio-por-hora-individual">Precio por hora individual (€)</Label>
-              <Input id="precio-por-hora-individual"
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Ej: 25"
-                className="mt-2"
-                min="0"
-                step="0.5"
-              />
-            </div>
-
-            {/* Group config */}
+            {/* Tipo de clase: individual, grupal o las dos. Cada casilla desbloquea sus precios. */}
             <div className="border-t pt-4">
-              <Label className="text-sm font-semibold text-[#404040]">Configuración de clases grupales (opcional)</Label>
-              <p className="text-xs text-gray-500 mb-3 mt-1">Si no configuras esto, no se ofrecerán clases grupales para esta asignatura.</p>
-              <div className="mb-3">
-                <Label className="text-xs">Máximo de alumnos por grupo</Label>
-                <Select value={maxGroupStudents || 'none'} onValueChange={(v) => setMaxGroupStudents(v === 'none' ? '' : v)}>
-                  <SelectTrigger aria-label="Máximo de alumnos por grupo" className="mt-1">
-                    <SelectValue placeholder="Sin clases grupales" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin clases grupales</SelectItem>
-                    <SelectItem value="2">2 alumnos</SelectItem>
-                    <SelectItem value="3">3 alumnos</SelectItem>
-                    <SelectItem value="4">4 alumnos</SelectItem>
-                  </SelectContent>
-                </Select>
+              <Label className="text-sm font-semibold text-[#404040]">¿Cómo das esta asignatura?</Label>
+              <p className="text-xs text-gray-500 mt-1 mb-3">Marca al menos una opción. Puedes marcar las dos.</p>
+
+              {/* Individual */}
+              <div className="rounded-lg border border-gray-200 p-3 mb-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={daIndiv}
+                    onCheckedChange={(v) => setDaIndiv(v === true)}
+                    aria-label="Clases individuales"
+                  />
+                  <User size={14} className="text-[#41f2c0]" />
+                  <span className="text-sm font-medium text-[#404040]">Clases individuales</span>
+                </label>
+                {daIndiv && (
+                  <div className="mt-3">
+                    <Label htmlFor="precio-por-hora-individual" className="text-xs">Precio por hora (€)</Label>
+                    <Input id="precio-por-hora-individual"
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="Ej: 25"
+                      className="mt-1"
+                      min="0"
+                      step="0.5"
+                    />
+                  </div>
+                )}
               </div>
-              {maxGroupStudents && (
-                <div className="space-y-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                  <p className="text-xs font-medium text-purple-700">Precio por persona según nº de alumnos en la clase:</p>
-                  {Array.from({ length: parseInt(maxGroupStudents) - 1 }, (_, i) => i + 2).map(n => (
-                    <div key={n} className="flex items-center gap-3">
-                      <span className="text-xs text-gray-600 w-24 shrink-0">{n} alumnos:</span>
-                      <Input
-                        type="number"
-                        value={groupPrices[String(n)] ?? ''}
-                        onChange={(e) => setGroupPrices(prev => ({ ...prev, [String(n)]: e.target.value }))}
-                        placeholder="€/hora por persona"
-                        className="h-8 text-sm"
-                        min="0"
-                        step="0.5"
-                      />
-                      <span className="text-xs text-gray-400 shrink-0">€/h por persona</span>
+
+              {/* Grupal */}
+              <div className="rounded-lg border border-gray-200 p-3">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox
+                    checked={daGrupo}
+                    onCheckedChange={(v) => setDaGrupo(v === true)}
+                    aria-label="Clases grupales"
+                  />
+                  <Users size={14} className="text-purple-500" />
+                  <span className="text-sm font-medium text-[#404040]">Clases grupales</span>
+                </label>
+
+                {daGrupo && (
+                  <div className="mt-3 space-y-3">
+                    <div>
+                      <Label className="text-xs">Número de alumnos</Label>
+                      <Select
+                        value={grupoIndef ? 'indefinido' : (maxGroupStudents || '')}
+                        onValueChange={(v) => {
+                          if (v === 'indefinido') {
+                            setGrupoIndef(true);
+                            setMaxGroupStudents('');
+                          } else {
+                            setGrupoIndef(false);
+                            setMaxGroupStudents(v);
+                          }
+                        }}
+                      >
+                        <SelectTrigger aria-label="Número de alumnos por grupo" className="mt-1">
+                          <SelectValue placeholder="Elige el máximo de alumnos" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="2">Hasta 2 alumnos</SelectItem>
+                          <SelectItem value="3">Hasta 3 alumnos</SelectItem>
+                          <SelectItem value="4">Hasta 4 alumnos</SelectItem>
+                          <SelectItem value="indefinido">Indefinido (sin límite)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ))}
-                </div>
+
+                    {/* Indefinido: un unico precio por persona, porque no hay tramos que rellenar. */}
+                    {grupoIndef ? (
+                      <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                        <Label htmlFor="precio-por-persona" className="text-xs text-purple-700">
+                          Precio por hora y por persona (€)
+                        </Label>
+                        <Input id="precio-por-persona"
+                          type="number"
+                          value={precioPorPersona}
+                          onChange={(e) => setPrecioPorPersona(e.target.value)}
+                          placeholder="Ej: 12"
+                          className="mt-1 h-9"
+                          min="0"
+                          step="0.5"
+                        />
+                        <p className="text-xs text-purple-600 mt-2">
+                          Cada alumno paga esto por hora, entren los que entren en la clase.
+                        </p>
+                      </div>
+                    ) : maxGroupStudents ? (
+                      <div className="space-y-2 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                        <p className="text-xs font-medium text-purple-700">Precio por persona según nº de alumnos en la clase:</p>
+                        {Array.from({ length: parseInt(maxGroupStudents) - 1 }, (_, i) => i + 2).map(n => (
+                          <div key={n} className="flex items-center gap-3">
+                            <span className="text-xs text-gray-600 w-24 shrink-0">{n} alumnos:</span>
+                            <Input
+                              type="number"
+                              value={groupPrices[String(n)] ?? ''}
+                              onChange={(e) => setGroupPrices(prev => ({ ...prev, [String(n)]: e.target.value }))}
+                              placeholder="€/hora por persona"
+                              className="h-8 text-sm"
+                              min="0"
+                              step="0.5"
+                              aria-label={`Precio por persona con ${n} alumnos`}
+                            />
+                            <span className="text-xs text-gray-400 shrink-0">€/h por persona</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+
+              {!daIndiv && !daGrupo && (
+                <p className="text-xs text-red-500 mt-3">
+                  Marca clases individuales, grupales o las dos: si no, nadie podrá reservarte esta asignatura.
+                </p>
               )}
             </div>
           </div>
@@ -549,7 +619,7 @@ export default function ManageSubjects() {
             </Button>
             <Button
               onClick={handleSave}
-              disabled={!selectedSubjectId || !selectedLevel || !price || (selectedSubjectId === 'custom' && !customSubjectName.trim()) || saving}
+              disabled={!puedeGuardar || saving}
               className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040]"
             >
               {saving ? <Loader2 className="animate-spin" /> : 'Guardar'}
