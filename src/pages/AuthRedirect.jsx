@@ -58,6 +58,29 @@ export default function AuthRedirect() {
           }
         }
 
+        // Enlace de reseñas de un profesor: mismo caso que la invitación. Quien lo abre es
+        // un alumno suyo de siempre, así que se le devuelve al formulario de reseña en vez de
+        // dejarle en UserNotRegistered, que para alguien que acaba de llegar no tiene salida.
+        let resena = null;
+        try { resena = localStorage.getItem('menttio_resena_profesor'); } catch (_e) { /* modo privado */ }
+
+        if (resena) {
+          // Si el que entra es el propio profesor comprobando su enlace, se borra: si no, la
+          // próxima vez que entrase le mandaría a registrarse como alumno.
+          const profesores = await base44.entities.Teacher.filter({ user_email: user.email });
+          if (profesores.length > 0) {
+            try { localStorage.removeItem('menttio_resena_profesor'); } catch (_e) { /* modo privado */ }
+          } else {
+            const alumnos = await base44.entities.Student.filter({ user_email: user.email });
+            sessionStorage.removeItem('selected_role');
+            sessionStorage.removeItem('role_action');
+            window.location.href = alumnos.length > 0
+              ? `${createPageUrl('DejarResena')}?p=${encodeURIComponent(resena)}`
+              : createPageUrl('StudentSignup');
+            return;
+          }
+        }
+
         // Check if there's a selected role from SelectRole page
         const selectedRole = sessionStorage.getItem('selected_role');
         const roleAction = sessionStorage.getItem('role_action');
