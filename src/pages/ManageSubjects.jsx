@@ -18,11 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, ChevronDown, ChevronUp, Users, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import SubjectsTour from '../components/teacher/SubjectsTour';
 import { idAsignaturaPropia } from './TeacherSignup';
+import { daIndividual, daGrupal, grupoIndefinido } from '@/lib/asignaturas';
 
 export default function ManageSubjects() {
   const [teacher, setTeacher] = useState(null);
@@ -37,6 +39,10 @@ export default function ManageSubjects() {
   const [saving, setSaving] = useState(false);
   const [maxGroupStudents, setMaxGroupStudents] = useState('');
   const [groupPrices, setGroupPrices] = useState({ '2': '', '3': '', '4': '' });
+  const [daIndiv, setDaIndiv] = useState(true);
+  const [daGrupo, setDaGrupo] = useState(false);
+  const [grupoIndef, setGrupoIndef] = useState(false);
+  const [precioPorPersona, setPrecioPorPersona] = useState('');
   const [showTour, setShowTour] = useState(false);
   const [levelFilter, setLevelFilter] = useState('all');
   const [expandedGroupPrices, setExpandedGroupPrices] = useState({});
@@ -81,6 +87,10 @@ export default function ManageSubjects() {
     setCustomSubjectName('');
     setMaxGroupStudents('');
     setGroupPrices({ '2': '', '3': '', '4': '' });
+    setDaIndiv(true);
+    setDaGrupo(false);
+    setGrupoIndef(false);
+    setPrecioPorPersona('');
     setShowDialog(true);
   };
 
@@ -100,15 +110,33 @@ export default function ManageSubjects() {
       '3': (gp['3'] ?? gp[3] ?? '').toString(),
       '4': (gp['4'] ?? gp[4] ?? '').toString(),
     });
+    // Las asignaturas de antes de las casillas no traen los campos: daIndividual y daGrupal
+    // los deducen para que al editarlas no se queden sin ningun tipo de clase.
+    setDaIndiv(daIndividual(subject));
+    setDaGrupo(daGrupal(subject));
+    setGrupoIndef(grupoIndefinido(subject));
+    setPrecioPorPersona((subject.group_price_per_person ?? '').toString());
     setShowDialog(true);
   };
+
+  // Una asignatura tiene que ofrecer al menos un tipo de clase, y el tipo marcado tiene que
+  // llevar precio: si no, el alumno llegaria a la pantalla de reservar y no habria nada que cobrar.
+  const grupoConPrecio = grupoIndef
+    ? parseFloat(precioPorPersona) > 0
+    : Object.values(groupPrices).some(v => parseFloat(v) > 0);
+  const puedeGuardar = Boolean(selectedSubjectId) && Boolean(selectedLevel)
+    && (selectedSubjectId !== 'custom' || customSubjectName.trim().length > 0)
+    && (daIndiv || daGrupo)
+    && (!daIndiv || parseFloat(price) > 0)
+    && (!daGrupo || grupoConPrecio)
+    && (!daGrupo || grupoIndef || Boolean(maxGroupStudents));
 
   const handleSave = async () => {
     if (selectedSubjectId === 'custom' && !customSubjectName.trim()) {
       alert('Por favor, escribe el nombre de la asignatura');
       return;
     }
-    if (!selectedSubjectId || !selectedLevel || !price) return;
+    if (!puedeGuardar) return;
 
     setSaving(true);
     try {
@@ -127,7 +155,7 @@ export default function ManageSubjects() {
 
       // Build group prices object
       const buildGroupPrices = () => {
-        if (!maxGroupStudents) return null;
+        if (!daGrupo || grupoIndef || !maxGroupStudents) return null;
         const max = parseInt(maxGroupStudents);
         if (isNaN(max) || max < 2) return null;
         const gp = {};
@@ -149,8 +177,12 @@ export default function ManageSubjects() {
         subject_id: selectedSubjectId !== 'custom' ? selectedSubjectId : idAsignaturaPropia(subjectName),
         subject_name: subjectName,
         level: selectedLevel,
-        price_per_hour: parseFloat(price),
-        max_group_students: maxGroupStudents ? parseInt(maxGroupStudents) : null,
+        offers_individual: daIndiv,
+        price_per_hour: daIndiv ? parseFloat(price) : null,
+        offers_group: daGrupo,
+        group_unlimited: daGrupo ? grupoIndef : false,
+        group_price_per_person: daGrupo && grupoIndef ? parseFloat(precioPorPersona) : null,
+        max_group_students: daGrupo && !grupoIndef && maxGroupStudents ? parseInt(maxGroupStudents) : null,
         group_prices: builtGroupPrices,
       };
 
