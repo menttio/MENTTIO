@@ -819,8 +819,8 @@ export default function BookClass() {
                 </div>
                 <p className="text-sm text-gray-500 mb-6">
                   {tiposDisponibles.individual && tiposDisponibles.group
-                    ? `Esto es lo que se puede reservar de ${nombreAsignaturaElegida}`
-                    : `Única opción disponible en ${nombreAsignaturaElegida}`}
+                    ? `Esto es lo que ofrece ${selectedTeacher?.full_name} en ${nombreAsignaturaElegida}`
+                    : `Única opción de ${selectedTeacher?.full_name} en ${nombreAsignaturaElegida}`}
                 </p>
                 <div className="grid gap-4">
                   {/* Una asignatura puede darse solo individual, solo en grupo o de las dos
@@ -862,13 +862,13 @@ export default function BookClass() {
                     </button>
                   )}
 
-                  {/* Puede quedarse sin opciones si el unico profesor de la asignatura es del
-                      plan sin cuota y no tiene los cobros activos. Mejor decirlo que dejar la
-                      pantalla en blanco. */}
+                  {/* Red de seguridad: si la asignatura del profesor se quedara sin ningun tipo
+                      de clase marcado, mejor decirlo que dejar la pantalla en blanco. */}
                   {!tiposDisponibles.individual && !tiposDisponibles.group && (
                     <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-800">
-                      Ahora mismo no se puede reservar {nombreAsignaturaElegida}. Habla con tu
-                      profesor: tiene que terminar de configurar la asignatura o los cobros.
+                      Ahora mismo no se puede reservar {nombreAsignaturaElegida} con
+                      {' '}{selectedTeacher?.full_name}. Avísale: tiene que terminar de configurar
+                      esa asignatura.
                     </div>
                   )}
                 </div>
