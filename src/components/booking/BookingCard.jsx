@@ -46,10 +46,9 @@ import { base44 } from '@/api/base44Client';
 import PaymentDialog from './PaymentDialog';
 import { plazasReserva } from '@/lib/asignaturas';
 
-// Tope por archivo. El almacenamiento aguanta mas, pero una foto del movil sin comprimir se
-// va a 8-10 MB y el alumno acaba esperando un minuto sin saber si va o no.
-const MAX_ARCHIVO_MB = 15;
-const MAX_ARCHIVO_BYTES = MAX_ARCHIVO_MB * 1024 * 1024;
+// No hay tope propio por archivo: un PDF de apuntes escaneados se va facilmente a decenas de
+// megas y poner un numero aqui era inventarse un limite. Lo que haya lo pone el
+// almacenamiento, y si rechaza algo se le dice al alumno con el nombre del archivo.
 
 export default function BookingCard({ 
   booking, 
@@ -74,6 +73,7 @@ export default function BookingCard({
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
   const [localFiles, setLocalFiles] = useState(booking?.files || []);
   const [uploadError, setUploadError] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   // Sincronizar localFiles cuando cambia el booking
   React.useEffect(() => {
@@ -161,16 +161,6 @@ export default function BookingCard({
     if (files.length === 0) return;
 
     setUploadError('');
-
-    const grande = files.find((f) => f.size > MAX_ARCHIVO_BYTES);
-    if (grande) {
-      setUploadError(
-        `"${grande.name}" pesa ${(grande.size / (1024 * 1024)).toFixed(1)} MB y el máximo es ${MAX_ARCHIVO_MB} MB. Comprímelo o mándalo en varias partes.`,
-      );
-      input.value = '';
-      return;
-    }
-
     setUploading(true);
     try {
       const user = await base44.auth.me();
@@ -184,14 +174,24 @@ export default function BookingCard({
       // profesor solo veia el primero. Ademas cada vez que se abria "Mis clases" el
       // navegador se descargaba esos megas por cada clase.
       const subidos = [];
-      for (const file of files) {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
-        if (!file_url) throw new Error(`No se pudo subir "${file.name}"`);
-        subidos.push({
-          name: file.name,
-          url: file_url,
-          uploaded_by: user?.email || userRole,
-        });
+      for (const [i, file] of files.entries()) {
+        // Se dice en que archivo va. Un PDF grande tarda, y sin esto la ventana parece
+        // colgada y el alumno la cierra a medias.
+        setUploadProgress({ hecho: i, total: files.length, nombre: file.name });
+        try {
+          const { file_url } = await base44.integrations.Core.UploadFile({ file });
+          if (!file_url) throw new Error('sin direccion');
+          subidos.push({
+            name: file.name,
+            url: file_url,
+            uploaded_by: user?.email || userRole,
+          });
+        } catch (_e) {
+          const mb = (file.size / (1024 * 1024)).toFixed(1);
+          throw new Error(
+            `No se pudo subir "${file.name}" (${mb} MB). Si es muy grande, prueba a subirlo solo o a comprimirlo.`,
+          );
+        }
       }
 
       // Se relee la clase justo antes de escribir. Si no, dos personas subiendo a la misma
@@ -246,6 +246,7 @@ export default function BookingCard({
       );
     } finally {
       setUploading(false);
+      setUploadProgress(null);
       input.value = '';
     }
   };
@@ -796,14 +797,19 @@ export default function BookingCard({
               {uploading ? (
                 <>
                   <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
-                  <span className="text-xs text-gray-400 mt-2">Subiendo… no cierres esta ventana</span>
+                  <span className="text-sm text-gray-600 mt-2 px-4 text-center truncate max-w-full">
+                    {uploadProgress
+                      ? `Subiendo ${uploadProgress.hecho + 1} de ${uploadProgress.total}: ${uploadProgress.nombre}`
+                      : 'Guardando…'}
+                  </span>
+                  <span className="text-xs text-gray-400 mt-1">No cierres esta ventana</span>
                 </>
               ) : (
                 <>
                   <FileUp className="text-gray-400 mb-2" size={32} />
                   <span className="text-sm text-gray-500">Haz clic para seleccionar archivos</span>
                   <span className="text-xs text-gray-400 mt-1">
-                    Puedes seleccionar varios a la vez. Máximo {MAX_ARCHIVO_MB} MB por archivo.
+                    PDF, imágenes, documentos… Puedes seleccionar varios a la vez.
                   </span>
                 </>
               )}
