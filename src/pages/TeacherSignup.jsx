@@ -76,7 +76,12 @@ export default function TeacherSignup() {
   }, []);
 
   const addSubject = () => {
-    setTeacherSubjects([...teacherSubjects, { subject_id: '', subject_name: '', level: '', price_per_hour: 0 }]);
+    setTeacherSubjects([...teacherSubjects, {
+      subject_id: '', subject_name: '', level: '',
+      offers_individual: true, price_per_hour: 0,
+      offers_group: false, group_unlimited: false, group_price_per_person: null,
+      max_group_students: null, group_prices: null,
+    }]);
   };
 
   const removeSubject = (index) => {
@@ -95,12 +100,34 @@ export default function TeacherSignup() {
         subject_id: value,
         subject_name: value === 'otra' ? '' : (subject?.name || ''),
       };
-    } else if (field === 'price_per_hour') {
+    } else if (field === 'price_per_hour' || field === 'group_price_per_person') {
       const price = parseFloat(value) || 0;
       updated[index] = { ...updated[index], [field]: Math.max(0, Math.min(999, price)) };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
+    setTeacherSubjects(updated);
+  };
+
+  // El desplegable de alumnos del grupo guarda dos cosas a la vez: el tope y si es indefinido.
+  // Con "indefinido" se usa un unico precio por persona y los tramos dejan de tener sentido.
+  const updateGrupo = (index, valor) => {
+    const updated = [...teacherSubjects];
+    if (valor === 'indefinido') {
+      updated[index] = { ...updated[index], group_unlimited: true, max_group_students: null, group_prices: null };
+    } else {
+      updated[index] = { ...updated[index], group_unlimited: false, max_group_students: parseInt(valor), group_price_per_person: null };
+    }
+    setTeacherSubjects(updated);
+  };
+
+  const updateTramo = (index, numAlumnos, valor) => {
+    const updated = [...teacherSubjects];
+    const tramos = { ...(updated[index].group_prices || {}) };
+    const precio = parseFloat(valor);
+    if (Number.isFinite(precio) && precio > 0) tramos[String(numAlumnos)] = Math.max(0, Math.min(999, precio));
+    else delete tramos[String(numAlumnos)];
+    updated[index] = { ...updated[index], group_prices: Object.keys(tramos).length ? tramos : null };
     setTeacherSubjects(updated);
   };
 
@@ -161,8 +188,10 @@ export default function TeacherSignup() {
 
   const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education && formData.experience_years >= 0;
   // Con "otra" hay que haber escrito el nombre; con una de la lista basta con haberla elegido.
+  // El precio lo valida asignaturaCompleta segun el tipo de clase marcado: un profesor que solo
+  // da grupales no tiene precio individual que rellenar.
   const canContinueStep2 = teacherSubjects.length > 0 && teacherSubjects.every(
-    s => s.subject_id && s.level && s.price_per_hour > 0 &&
+    s => s.subject_id && s.level && asignaturaCompleta(s) &&
       (s.subject_id !== 'otra' || (s.subject_name || '').trim().length > 1)
   );
   const canFinalize = acceptedTerms;
