@@ -663,8 +663,8 @@ export default function BookClass() {
       <div className="flex items-center gap-2 md:gap-4 mb-8 overflow-x-auto pb-2">
         {[
           { num: 1, label: 'Asignatura' },
-          { num: 2, label: 'Tipo' },
-          { num: 3, label: 'Profesor' },
+          { num: 2, label: 'Profesor' },
+          { num: 3, label: 'Tipo' },
           { num: 4, label: 'Fecha y Hora' },
           { num: 5, label: 'Confirmar' }
         ].map((s, idx) => (
@@ -720,8 +720,8 @@ export default function BookClass() {
                       onClick={() => {
                         setSelectedSubject(subject.id);
                         setSelectedTeacher(null);
-                        // El tipo depende de la asignatura, asi que al cambiarla hay que
-                        // olvidar el que estuviera elegido antes.
+                        // El tipo depende del profesor y de la asignatura, asi que al cambiar
+                        // de asignatura hay que olvidar el que estuviera elegido antes.
                         setClassType(null);
                         setStep(2);
                       }}
@@ -745,8 +745,8 @@ export default function BookClass() {
           </motion.div>
         )}
 
-        {/* Step 3: Select Teacher */}
-        {step === 3 && (
+        {/* Step 2: Select Teacher */}
+        {step === 2 && (
           <motion.div
             key="step2"
             initial={{ opacity: 0, x: 20 }}
@@ -759,7 +759,7 @@ export default function BookClass() {
                   <h2 className="text-xl font-semibold text-[#404040]">
                     Elige tu profesor
                   </h2>
-                  <Button variant="ghost" onClick={() => setStep(2)} className="text-gray-500">
+                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500">
                     <ChevronLeft size={18} className="mr-1" />Volver
                   </Button>
                 </div>
@@ -769,7 +769,7 @@ export default function BookClass() {
                     {teachersForSubject.map((teacher) => (
                       <button
                         key={teacher.id}
-                        onClick={() => { setSelectedTeacher(teacher); setStep(4); }}
+                        onClick={() => { setSelectedTeacher(teacher); setClassType(null); setStep(3); }}
                         className="w-full text-left"
                       >
                         <TeacherCard teacher={teacher} selectedSubject={selectedSubject} showActions={false} />
@@ -798,8 +798,8 @@ export default function BookClass() {
           </motion.div>
         )}
 
-        {/* Step 2: Select class type */}
-        {step === 2 && (
+        {/* Step 3: Select class type */}
+        {step === 3 && (
           <motion.div
             key="step0"
             initial={{ opacity: 0, x: 20 }}
@@ -812,7 +812,7 @@ export default function BookClass() {
                   <h2 className="text-xl font-semibold text-[#404040]">
                     ¿Qué tipo de clase quieres reservar?
                   </h2>
-                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-500 flex-shrink-0">
+                  <Button variant="ghost" onClick={() => setStep(2)} className="text-gray-500 flex-shrink-0">
                     <ChevronLeft size={18} className="mr-1" />Volver
                   </Button>
                 </div>
@@ -827,7 +827,7 @@ export default function BookClass() {
                       se pregunta despues de elegir la asignatura y no antes. */}
                   {tiposDisponibles.individual && (
                   <button
-                    onClick={() => { setClassType('individual'); setStep(3); }}
+                    onClick={() => { setClassType('individual'); setStep(4); }}
                     className="p-5 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md border-gray-100"
                   >
                     <div className="flex items-center gap-4">
@@ -844,7 +844,7 @@ export default function BookClass() {
 
                   {tiposDisponibles.group && (
                     <button
-                      onClick={() => { setClassType('group'); setStep(3); }}
+                      onClick={() => { setClassType('group'); setStep(4); }}
                       className="p-5 rounded-xl border-2 text-left transition-all hover:border-purple-400 hover:shadow-md border-gray-100"
                     >
                       <div className="flex items-center gap-4">
