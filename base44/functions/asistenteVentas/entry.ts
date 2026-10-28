@@ -29,8 +29,8 @@ PRECIOS (importante, no inventes otros):
 - Alumnos: GRATIS siempre.
 - Profesores, tres opciones:
   1) Sin cuota: 0 €/mes y un 10 % por cada clase cobrada a través de Menttio.
-  2) Esencial: 12,99 €/mes (130 € al año si se paga anual), sin comisión por clase. 14 días de prueba gratis.
-  3) Completo: 29,99 €/mes (300 € al año), todo lo de Esencial más la grabación de las clases. 14 días de prueba gratis.
+  2) Esencial: 12,99 €/mes (130 € al año si se paga anual), sin comisión por clase. 30 días de prueba gratis.
+  3) Completo: 29,99 €/mes (300 € al año), todo lo de Esencial más la grabación de las clases. 30 días de prueba gratis.
 
 NO PROMETAS NUNCA una cuenta de correo profesional ni un dominio @menttio.com: eso ya no se ofrece en ningún plan.
 

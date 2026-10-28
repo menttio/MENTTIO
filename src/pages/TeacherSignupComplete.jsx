@@ -65,11 +65,11 @@ export default function TeacherSignupComplete() {
           throw parseError;
         }
         
-        // Calcular fechas de prueba (14 días)
+        // Calcular fechas de prueba (30 días)
         console.log('📅 Calculando fechas de prueba...');
         const trialStartDate = new Date();
         const trialEndDate = new Date();
-        trialEndDate.setDate(trialEndDate.getDate() + 14);
+        trialEndDate.setDate(trialEndDate.getDate() + 30);
         console.log('✅ Trial start:', trialStartDate.toISOString().split('T')[0]);
         console.log('✅ Trial end:', trialEndDate.toISOString().split('T')[0]);
         
@@ -148,7 +148,7 @@ export default function TeacherSignupComplete() {
               <p><strong>Formación:</strong> ${data.education}</p>
               <p><strong>Años de experiencia:</strong> ${data.experience_years || 'No especificado'}</p>
               <p><strong>Plan:</strong> ${subscriptionPlan === 'premium' ? 'Completo (29,99€, con grabaciones)' : 'Esencial (12,99€, sin grabaciones)'}</p>
-              <p><strong>Período de prueba:</strong> 14 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
+              <p><strong>Período de prueba:</strong> 30 días gratis (hasta ${trialEndDate.toLocaleDateString('es-ES')})</p>
             `
           });
           console.log('✅ Email enviado correctamente');

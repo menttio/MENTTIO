@@ -70,7 +70,7 @@ export default function TeacherSignupPayment() {
         // Crear profesor
         const now = new Date();
         const trialEndDate = new Date();
-        trialEndDate.setDate(trialEndDate.getDate() + 14);
+        trialEndDate.setDate(trialEndDate.getDate() + 30);
 
         const isCommission = subscription_plan === 'commission';
         const teacherData = {

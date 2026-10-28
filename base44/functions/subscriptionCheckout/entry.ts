@@ -8,7 +8,7 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
   apiVersion: '2024-12-18.acacia',
 });
 
-const DIAS_PRUEBA = 14;
+const DIAS_PRUEBA = 30;
 
 const POR_DEFECTO = {
   stripe_price_esencial_mensual: 'price_1UImwTHZYiECTxiywGeSWisR',
@@ -94,7 +94,7 @@ export default async function(req) {
       mode: 'subscription',
       // Durante la prueba no se pide tarjeta, a proposito: el publico es profesores en frio,
       // que no conocen Menttio de nada, y pedirles la tarjeta el primer dia hunde el registro.
-      // El cobro se pide al terminar los 14 dias, cuando ya han visto si les sirve: Layout
+      // El cobro se pide al terminar los 30 dias, cuando ya han visto si les sirve: Layout
       // detecta la prueba vencida y les manda a RenewSubscription sin salida posible.
       ...(darPrueba ? { payment_method_collection: 'if_required' } : {}),
       line_items: [{ price, quantity: 1 }],
