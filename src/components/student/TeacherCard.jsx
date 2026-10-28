@@ -137,7 +137,7 @@ export default function TeacherCard({
           
           {/* Rating.
               Antes ponía 5,0 a todo profesor sin valoraciones (`|| '5.0'`): a un alumno se le
-              ensenaba una nota perfecta inventada, que es lo que hace que nadie se crea las
+              enseñaba una nota perfecta inventada, que es lo que hace que nadie se crea las
               notas de estas webs. Si no hay valoraciones, se dice. */}
           <div className="flex items-center gap-2 mt-1">
             {teacher.rating > 0 ? (
