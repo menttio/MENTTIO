@@ -37,31 +37,50 @@ export default function ClassRecordings() {
   const [filterTeacher, setFilterTeacher] = useState('all');
   const [dateFrom, setDateFrom] = useState(null);
   const [dateTo, setDateTo] = useState(null);
+  const [role, setRole] = useState('student');
+  const [plan, setPlan] = useState(null);
 
   const loadData = async () => {
     try {
       const user = await base44.auth.me();
-      const allBookings = await base44.entities.Booking.filter({ 
-        student_email: user.email 
-      });
-      
+
+      // Esta pantalla la ven los dos lados. Antes solo consultaba por student_email, asi que
+      // el profesor no veia ni una clase: ninguna es suya como alumno. Y es el que graba.
+      const teachers = await base44.entities.Teacher
+        .filter({ user_email: user.email })
+        .catch(() => []);
+      const esProfesor = teachers.length > 0;
+      if (esProfesor) {
+        setRole('teacher');
+        setPlan(teachers[0].subscription_plan || null);
+      }
+
+      const allBookings = esProfesor
+        ? await base44.entities.Booking.filter({ teacher_id: teachers[0].id })
+        : await base44.entities.Booking.filter({ student_email: user.email });
+
       const completed = allBookings
         .filter(b => b.status === 'completed' || (b.status === 'scheduled' && !isAfter(parseISO(b.date), startOfDay(new Date()))))
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       
       // El enlace de la grabación se pide al servidor, no se lee de la reserva, porque en la
-      // reserva no se puede comprobar si el alumno sigue autorizando la grabación. Una sola
-      // llamada para todas las clases: antes se hacía una por clase.
+      // reserva no se puede comprobar si el alumno sigue autorizando la grabación.
+      // De cien en cien: es el maximo que acepta la funcion en una llamada, y las clases que
+      // pasaban de ahi se quedaban sin enlace sin avisar.
       let bookingsWithRecordings = completed;
       if (completed.length > 0) {
         try {
-          const { data } = await base44.functions.invoke('recordingUrl', {
-            booking_ids: completed.map(b => b.id)
-          });
-          const grabaciones = data?.recordings || {};
+          const grabaciones = {};
+          for (let i = 0; i < completed.length; i += 100) {
+            const { data } = await base44.functions.invoke('recordingUrl', {
+              booking_ids: completed.slice(i, i + 100).map(b => b.id)
+            });
+            Object.assign(grabaciones, data?.recordings || {});
+          }
           bookingsWithRecordings = completed.map(booking => ({
             ...booking,
-            recording_url: grabaciones[booking.id]?.recording_url || null
+            recording_url: grabaciones[booking.id]?.recording_url || null,
+            recording_motivo: grabaciones[booking.id]?.motivo || null
           }));
         } catch (error) {
           console.error('Error obteniendo los enlaces de grabación:', error);
