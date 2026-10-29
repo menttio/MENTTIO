@@ -92,7 +92,19 @@ export default function Layout({ children, currentPageName }) {
     const loadUser = async () => {
       try {
         console.log('🔍 Intentando cargar usuario...');
-        const currentUser = await base44.auth.me();
+        // Se reintenta una vez. auth.me() tambien falla por un corte de red o porque el
+        // servidor limita las peticiones cuando la pagina pide muchas cosas a la vez, y
+        // cualquiera de esas dos cosas caia en el catch de abajo, que echa al visitante al
+        // home como si hubiera perdido la sesion. Perder la sesion de verdad falla las dos
+        // veces; un tropiezo pasajero, no.
+        let currentUser = null;
+        try {
+          currentUser = await base44.auth.me();
+        } catch (primerIntento) {
+          console.warn('auth.me() ha fallado, reintentando una vez:', primerIntento);
+          await new Promise((r) => setTimeout(r, 800));
+          currentUser = await base44.auth.me();
+        }
         console.log('👤 Usuario cargado:', currentUser);
         setUser(currentUser);
 
