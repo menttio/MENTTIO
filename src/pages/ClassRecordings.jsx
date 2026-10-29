@@ -99,16 +99,30 @@ export default function ClassRecordings() {
     loadData();
   }, []);
 
+  const esProfesor = role === 'teacher';
+
+  // El alumno ve con quien dio la clase y el profesor ve a quien se la dio. En las clases de
+  // grupo la reserva no guarda student_name: los alumnos van en la lista de apuntados.
+  const nombrePersona = (b) => {
+    if (!esProfesor) return b.teacher_name;
+    if (b.class_type === 'group') {
+      const nombres = (b.enrolled_students || []).map(s => s?.student_name).filter(Boolean);
+      return nombres.length > 0 ? nombres.join(', ') : 'Sin alumnos';
+    }
+    return b.student_name || 'Sin alumno';
+  };
+
   const uniqueSubjects = [...new Set(bookings.map(b => b.subject_name))];
-  const uniqueTeachers = [...new Set(bookings.map(b => b.teacher_name))];
+  const uniquePersonas = [...new Set(bookings.map(nombrePersona))].filter(Boolean);
 
   const filteredBookings = bookings.filter(booking => {
+    const persona = nombrePersona(booking);
     const matchesSearch = searchQuery === '' || 
       booking.subject_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.teacher_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      persona?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesSubject = filterSubject === 'all' || booking.subject_name === filterSubject;
-    const matchesTeacher = filterTeacher === 'all' || booking.teacher_name === filterTeacher;
+    const matchesTeacher = filterTeacher === 'all' || persona === filterTeacher;
     
     let matchesDate = true;
     if (dateFrom || dateTo) {
@@ -138,11 +152,22 @@ export default function ClassRecordings() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">Biblioteca de Clases</h1>
+        <h1 className="text-lg sm:text-3xl font-bold text-[#404040]">
+          {esProfesor ? 'Grabaciones de tus clases' : 'Biblioteca de Clases'}
+        </h1>
         <p className="text-gray-500 mt-2 text-sm">
-          Accede a las grabaciones de tus clases completadas
+          {esProfesor
+            ? 'Solo se muestra la grabación si todos los alumnos de la clase autorizan grabarla. Si uno retira el permiso, deja de verse al momento.'
+            : 'Accede a las grabaciones de tus clases completadas'}
         </p>
       </div>
+
+      {/* El plan basico no graba, asi que esta pantalla estaria siempre vacia sin explicar por que. */}
+      {esProfesor && plan && plan !== 'premium' && (
+        <div className="mb-6 bg-orange-50 border border-orange-200 rounded-xl p-4 text-sm text-orange-800">
+          Tu plan actual no incluye la grabación de clases, así que aquí no aparecerá ninguna.
+        </div>
+      )}
 
       {/* Filters */}
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
@@ -150,7 +175,7 @@ export default function ClassRecordings() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <Input
-              placeholder="Buscar por asignatura o profesor..."
+              placeholder={esProfesor ? 'Buscar por asignatura o alumno...' : 'Buscar por asignatura o profesor...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -174,13 +199,13 @@ export default function ClassRecordings() {
 
             <Select value={filterTeacher} onValueChange={setFilterTeacher}>
               <SelectTrigger>
-                <SelectValue placeholder="Profesor" />
+                <SelectValue placeholder={esProfesor ? 'Alumno' : 'Profesor'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Todos los profesores</SelectItem>
-                {uniqueTeachers.map((teacher) => (
-                  <SelectItem key={teacher} value={teacher}>
-                    {teacher}
+                <SelectItem value="all">{esProfesor ? 'Todos los alumnos' : 'Todos los profesores'}</SelectItem>
+                {uniquePersonas.map((persona) => (
+                  <SelectItem key={persona} value={persona}>
+                    {persona}
                   </SelectItem>
                 ))}
               </SelectContent>
