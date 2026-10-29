@@ -16,6 +16,7 @@ import {
   MessageCircle,
   BarChart3,
   Library,
+  Video,
   Settings,
   ArrowLeft,
   AlertCircle,
@@ -67,7 +68,10 @@ export default function Layout({ children, currentPageName }) {
     const teacherPages = ['TeacherDashboard', 'TeacherCalendar', 'ManageAvailability', 'ManageSubjects', 'MyStudents', 'TeacherWorkload', 'RenewSubscription', 'Help', 'TeacherClassHistory'];
     
     // Student-only pages
-    const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'ClassRecordings', 'TeacherProfile', 'StudentProgress'];
+    // ClassRecordings no esta en esta lista a proposito: la biblioteca de grabaciones la usan
+    // los dos lados. El profesor es quien graba la clase y no tenia ninguna manera de verla:
+    // al entrar en la pagina, esta lista lo devolvia a su panel.
+    const studentPages = ['StudentDashboard', 'BookClass', 'MyClasses', 'SearchTeachers', 'TeacherProfile', 'StudentProgress'];
 
     const loadUnreadMessages = async (userEmail, role, profileId) => {
       try {
@@ -366,6 +370,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Asignaturas', icon: Library, page: 'ManageSubjects' },
     { name: 'Alumnos', icon: Users, page: 'MyStudents' },
     { name: 'Estadísticas', icon: BarChart3, page: 'TeacherWorkload' },
+    { name: 'Grabaciones', icon: Video, page: 'ClassRecordings' },
     { name: 'Mensajes', icon: MessageCircle, page: 'Messages' },
     { name: 'Mi Perfil', icon: User, page: 'Profile' },
     ...(user?.role === 'admin' ? [{ name: 'Comisiones', icon: Settings, page: 'AdminCommissions' }] : []),
