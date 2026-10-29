@@ -371,7 +371,7 @@ export default function ClassRecordings() {
                           </span>
                           <span className="flex items-center gap-1">
                             <User size={14} />
-                            {booking.teacher_name}
+                            {nombrePersona(booking)}
                           </span>
                           <Badge variant="secondary" className="bg-green-100 text-green-700">
                             {booking.duration_minutes} min
@@ -391,8 +391,19 @@ export default function ClassRecordings() {
                         <ExternalLink size={12} className="ml-2" />
                       </Button>
                     ) : (
-                      <Badge variant="secondary" className="text-gray-500 flex-shrink-0 py-2 px-4 w-full md:w-auto text-center">
-                        Sin grabación
+                      // Distinguir "no hay grabacion" de "hay grabacion pero no se puede
+                      // ensenar": lo segundo tiene arreglo (pedir el permiso al alumno) y
+                      // antes las dos cosas se veian igual.
+                      <Badge
+                        variant="secondary"
+                        className="text-gray-500 flex-shrink-0 py-2 px-4 w-full md:w-auto text-center"
+                        title={booking.recording_motivo === 'sin_consentimiento'
+                          ? 'La clase está grabada, pero algún alumno no autoriza la grabación.'
+                          : undefined}
+                      >
+                        {booking.recording_motivo === 'sin_consentimiento'
+                          ? 'Sin permiso del alumno'
+                          : 'Sin grabación'}
                       </Badge>
                     )}
                   </div>
