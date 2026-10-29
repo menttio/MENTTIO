@@ -6,7 +6,6 @@ import {
   User, 
   BookOpen,
   Search,
-  Filter,
   ExternalLink,
   Loader2,
   X
