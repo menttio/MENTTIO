@@ -38,10 +38,12 @@ export default function ClassRecordings() {
   const [dateTo, setDateTo] = useState(null);
   const [role, setRole] = useState('student');
   const [plan, setPlan] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
 
   const loadData = async () => {
     try {
       const user = await base44.auth.me();
+      setUserEmail(user.email || '');
 
       // Esta pantalla la ven los dos lados. Antes solo consultaba por student_email, asi que
       // el profesor no veia ni una clase: ninguna es suya como alumno. Y es el que graba.
@@ -106,6 +108,23 @@ export default function ClassRecordings() {
   }, []);
 
   const esProfesor = role === 'teacher';
+
+  // Drive abre el archivo con la cuenta de Google que este activa en el navegador, no con la
+  // que se uso para entrar en Menttio. Quien tenga dos cuentas abiertas (la personal y la
+  // del trabajo, por ejemplo) ve "Necesitas acceso" aunque tenga permiso de sobra, y no hay
+  // manera de adivinar que el problema es la cuenta. Pasandole la pista, Google ofrece
+  // cambiar de cuenta en lugar de dar un portazo.
+  const enlaceConCuenta = (url) => {
+    if (!url || !userEmail) return url;
+    try {
+      const enlace = new URL(url);
+      if (enlace.hostname !== 'drive.google.com') return url;
+      if (!enlace.searchParams.has('authuser')) enlace.searchParams.set('authuser', userEmail);
+      return enlace.toString();
+    } catch {
+      return url;
+    }
+  };
 
   // El alumno ve con quien dio la clase y el profesor ve a quien se la dio. En las clases de
   // grupo la reserva no guarda student_name: los alumnos van en la lista de apuntados.
@@ -389,7 +408,7 @@ export default function ClassRecordings() {
                     {booking.recording_url ? (
                       <Button
                         size="sm"
-                        onClick={() => window.open(booking.recording_url, '_blank')}
+                        onClick={() => window.open(enlaceConCuenta(booking.recording_url), '_blank')}
                         className="bg-[#41f2c0] hover:bg-[#35d4a7] text-[#404040] flex-shrink-0 w-full md:w-auto"
                       >
                         <Play size={16} className="mr-2" />
