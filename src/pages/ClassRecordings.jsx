@@ -62,21 +62,28 @@ export default function ClassRecordings() {
         .filter(b => b.status === 'completed' || (b.status === 'scheduled' && !isAfter(parseISO(b.date), startOfDay(new Date()))))
         .sort((a, b) => new Date(b.date) - new Date(a.date));
       
-      // El enlace de la grabación se pide al servidor, no se lee de la reserva, porque en la
-      // reserva no se puede comprobar si el alumno sigue autorizando la grabación.
-      // De cien en cien: es el maximo que acepta la funcion en una llamada, y las clases que
-      // pasaban de ahi se quedaban sin enlace sin avisar.
-      let bookingsWithRecordings = completed;
-      if (completed.length > 0) {
+      // La reserva ya trae el enlace, pero NO se usa tal cual: el alumno puede retirar el
+      // permiso de grabacion en cualquier momento y eso hay que comprobarlo en cada lectura,
+      // cosa que solo puede hacer el servidor. Asi que se le pregunta por el enlace, pero
+      // solo por las clases que tienen grabacion guardada.
+      //
+      // Antes se le mandaban todas las clases pasadas. La funcion recorre una por una, con
+      // sus consultas, asi que con cien clases a la espalda tardaba demasiado, la llamada se
+      // caia entera y no se veia ni una grabacion. Un profesor con historial era justo el
+      // que peor lo tenia.
+      const conGrabacion = completed.filter(b => b.recording_url);
+      // Por defecto, sin enlace: si no se puede comprobar el permiso, no se ensena nada.
+      let bookingsWithRecordings = completed.map(b => ({ ...b, recording_url: null, recording_motivo: null }));
+      if (conGrabacion.length > 0) {
         try {
           const grabaciones = {};
-          for (let i = 0; i < completed.length; i += 100) {
+          for (let i = 0; i < conGrabacion.length; i += 50) {
             const { data } = await base44.functions.invoke('recordingUrl', {
-              booking_ids: completed.slice(i, i + 100).map(b => b.id)
+              booking_ids: conGrabacion.slice(i, i + 50).map(b => b.id)
             });
             Object.assign(grabaciones, data?.recordings || {});
           }
-          bookingsWithRecordings = completed.map(booking => ({
+          bookingsWithRecordings = bookingsWithRecordings.map(booking => ({
             ...booking,
             recording_url: grabaciones[booking.id]?.recording_url || null,
             recording_motivo: grabaciones[booking.id]?.motivo || null
