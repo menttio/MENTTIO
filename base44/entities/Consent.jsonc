@@ -76,7 +76,18 @@
       ]
     },
     "create": {
-      "data.user_email": "{{user.email}}"
+      "$and": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "data.type": {
+            "$nin": [
+              "grabacion"
+            ]
+          }
+        }
+      ]
     },
     "update": {
       "user_condition": {
