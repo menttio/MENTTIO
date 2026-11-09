@@ -37,7 +37,10 @@ const ROUTES: Route[] = [
   // El 28/09/2026 le llego el turno a un alumno real y solo fallo porque ya no quedaban
   // licencias libres. La ruta ya no hacia falta: las cuentas corporativas se retiraron cuando
   // la grabacion dejo de necesitar una licencia por profesor.
-  { method: "POST", path: "/eliminar-profesor", secret: true, handler: (e, b) => r.eliminarProfesor(e, b) },
+  // RETIRADA /eliminar-profesor (09/11/2026). Borraba cualquier usuario de Google Workspace que
+  // le pidieran, incluido menttio@menttio.com. Produccion ya no la llamaba; solo el Worker de
+  // nivel-b (deleteAccount / cleanupUnpaidPremium), y por ahi un usuario registrado en Supabase
+  // podia pedir el borrado de una cuenta ajena. Ver docs/ESTADO-MAESTRO.md, seccion 7 ter.
   // Ya no se llama desde el navegador: el informe lo envía Base44 (familyReport), autenticado.
   { method: "POST", path: "/informe-progreso", secret: true, handler: (e, b) => r.informeProgreso(e, b) },
 ];
