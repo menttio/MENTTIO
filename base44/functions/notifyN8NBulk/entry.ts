@@ -1,5 +1,63 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
+// SEGURIDAD (09/11/2026): antes el aviso se montaba con lo que mandara el navegador. Cualquiera
+// con sesion podia poner su correo como alumno de una clase ajena y el worker le enviaba el
+// Meet y le compartia la grabacion (o cancelar la videollamada de otra clase). Ahora los datos
+// salen de la reserva guardada y quien llama tiene que participar en ella.
+// Si la reserva ya no existe (se borra antes de avisar de la cancelacion), solo se acepta una
+// cancelacion de alguien que figure en los propios datos enviados.
+async function datosVerificados(base44, user, bookingData) {
+  const yo = String(user.email || '').toLowerCase();
+  const esAdmin = user.role === 'admin';
+  const reserva = await base44.asServiceRole.entities.Booking.get(String(bookingData.booking_id)).catch(() => null);
+  if (reserva) {
+    const enrolled = Array.isArray(reserva.enrolled_students) ? reserva.enrolled_students : [];
+    const quienes = new Set([reserva.teacher_email, reserva.student_email, ...enrolled.map((s) => s?.student_email)]
+      .filter(Boolean).map((e) => String(e).toLowerCase()));
+    if (!esAdmin && !quienes.has(yo)) return null;
+    // Clase de grupo: quien se acaba de apuntar recibe el aviso con SUS datos (como antes),
+    // pero solo si de verdad figura entre los apuntados.
+    const plaza = reserva.class_type === 'group'
+      ? enrolled.find((s) => String(s?.student_email || '').toLowerCase() === yo && yo !== String(reserva.student_email || '').toLowerCase())
+      : null;
+    if (plaza) {
+      return {
+        ...bookingData,
+        booking_id: reserva.id,
+        student_id: plaza.student_id,
+        student_name: plaza.student_name,
+        student_email: plaza.student_email,
+        student_phone: '',
+        teacher_name: reserva.teacher_name,
+        teacher_email: reserva.teacher_email,
+        teacher_phone: reserva.teacher_phone,
+        subject_name: reserva.subject_name,
+        price: reserva.price,
+        date: reserva.date,
+        start_time: reserva.start_time,
+      };
+    }
+    return {
+      ...bookingData,
+      booking_id: reserva.id,
+      student_id: reserva.student_id,
+      student_name: reserva.student_name,
+      student_email: reserva.student_email,
+      student_phone: reserva.student_phone,
+      teacher_name: reserva.teacher_name,
+      teacher_email: reserva.teacher_email,
+      teacher_phone: reserva.teacher_phone,
+      subject_name: reserva.subject_name,
+      price: reserva.price,
+      date: reserva.date,
+      start_time: reserva.start_time,
+    };
+  }
+  if (bookingData.status !== 'cancelled') return null;
+  const declarados = [bookingData.teacher_email, bookingData.student_email].filter(Boolean).map((e) => String(e).toLowerCase());
+  return (esAdmin || declarados.includes(yo)) ? bookingData : null;
+}
+
 // Shared logic to build n8n payload and send to webhook
 async function sendToN8N(bookingData) {
   const studentNameParts = (bookingData.student_name || '').split(' ');
@@ -79,7 +137,13 @@ Deno.serve(async (req) => {
     const body = await req.json();
 
     // Support both single booking (bookingData) and bulk (bookings array)
-    const bookingsList = body.bookings || (body.bookingData ? [body.bookingData] : []);
+    const recibidas = body.bookings || (body.bookingData ? [body.bookingData] : []);
+    const bookingsList = [];
+    for (const b of recibidas.slice(0, 200)) {
+      if (!b?.booking_id) continue;
+      const ok = await datosVerificados(base44, user, b);
+      if (ok) bookingsList.push(ok);
+    }
 
     if (!bookingsList.length) {
       return Response.json({ error: 'No bookings provided' }, { status: 400 });
