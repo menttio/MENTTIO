@@ -8,6 +8,8 @@ export interface Env {
   GOOGLE_SA_PRIVATE_KEY: string;
   GOOGLE_WORKSPACE_DOMAIN: string;
   GOOGLE_IMPERSONATE: string;
+  // Dueno de las salas de Meet; por defecto GOOGLE_IMPERSONATE
+  MEET_OWNER?: string;
 
   // Drive
   DRIVE_ROOT_PROFESORES: string;

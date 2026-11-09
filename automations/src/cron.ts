@@ -1,7 +1,7 @@
 import type { Env } from "./env";
 import * as db from "./lib/supabase";
-import * as sheets from "./lib/sheets";
 import { asegurarAccesoGrabacion } from "./grabaciones";
+import { hacerCoanfitrion, crearEspacio, coanfitrionEnEspacio, activarGrabacionAutomatica } from "./coanfitrion";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
 import { sendEmail } from "./lib/gmail";
 import { normalizeText } from "./lib/util";
@@ -10,7 +10,11 @@ import * as tpl from "./templates";
 // Porta el workflow n8n "Creacion videollamada + pizarra". Cron del Worker:
 //  A) clases que empiezan pronto y sin Meet -> crea evento Calendar+Meet, guarda link, emails.
 //  B) clases ya terminadas sin grabación -> busca el archivo en Drive y escribe el link.
-const CALENDAR = "academia@menttio.com"; // calendario donde se crean las videollamadas
+// Calendario donde se crean las videollamadas. Es "primary" a proposito: el calendario es el
+// de la cuenta que se suplanta (menttio@menttio.com). Antes ponia "academia@menttio.com", que
+// es un alias suyo, y un alias no vale ni para suplantar ni como identificador de calendario:
+// daba primero "invalid_grant" y luego 404. Es el mismo calendario de siempre, nombrado bien.
+const CALENDAR = "primary";
 const REC_FOLDER = "1HQc4hFsrXXuoPnCu_meG54nIzOHMK2eO"; // carpeta Drive "Meet Recordings" (de menttio@)
 
 interface Booking {
@@ -89,8 +93,41 @@ function teacherName(b: Booking): string {
   return `${b.teacher_first_name ?? ""} ${b.teacher_last_name ?? ""}`.trim();
 }
 
+/**
+ * Pregunta a Menttio si el profesor tiene derecho a grabar. Antes esto se deducia de que su
+ * correo acabara en @menttio.com, que obligaba a pagarle una licencia de Workspace.
+ * Ante la duda responde que no: es preferible quedarse sin grabar que regalar el plan de pago.
+ */
+async function puedeGrabarElProfesor(env: Env, email: string | null): Promise<boolean> {
+  if (!email || !env.BASE44_FUNCTIONS_URL) return false;
+  try {
+    const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/teacherPlan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET ?? "" },
+      body: JSON.stringify({ email }),
+    });
+    if (!res.ok) return false;
+    const d = (await res.json()) as any;
+    return Boolean(d?.puede_grabar);
+  } catch (e) {
+    console.error("teacherPlan:", (e as Error).message);
+    return false;
+  }
+}
+
 async function crearVideollamada(env: Env, b: Booking): Promise<void> {
-  const token = await getAccessToken(env, SCOPES.calendar, CALENDAR);
+  // Se suplanta la cuenta principal, NO el calendario.
+  //
+  // Antes aqui se suplantaba CALENDAR (academia@menttio.com), que es un alias de
+  // menttio@menttio.com. Google no admite alias en el campo "sub" de la suplantacion: hay que
+  // dar la direccion principal. Cuando academia@ dejo de ser una cuenta con licencia propia y
+  // quedo solo como alias, esta llamada empezo a devolver "invalid_grant: Invalid email or
+  // User ID" y dejaron de crearse las videollamadas, mientras Drive y Gmail seguian bien
+  // porque esos si usan la cuenta principal.
+  //
+  // El evento se sigue creando en el mismo calendario de siempre: el de menttio@menttio.com,
+  // que es del que academia@ era alias.
+  const token = await getAccessToken(env, SCOPES.calendar);
   const startISO = b.start_datetime!;
   const endISO = new Date(new Date(startISO).getTime() + 60 * 60000).toISOString();
 
@@ -104,22 +141,53 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
     b.booking_id,
   ].join("_");
 
-  const res = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR)}/events?conferenceDataVersion=1`,
-    {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        summary: titulo,
-        start: { dateTime: startISO },
-        end: { dateTime: endISO },
-        conferenceData: { createRequest: { requestId: `mnt-${b.booking_id}`, conferenceSolutionKey: { type: "hangoutsMeet" } } },
-      }),
-    },
-  );
-  const ev = (await res.json()) as any;
+  // La sala se crea con nuestra propia app, no con Calendar. Parece un rodeo y es la clave:
+  // solo se pueden anadir coanfitriones a las salas que crea la propia aplicacion. Cuando la
+  // creaba Calendar, la API respondia 403 incluso con un correo de la organizacion.
+  // Si esto fallara, se vuelve al metodo de siempre y la clase sigue adelante sin grabacion.
+  let sala = await crearEspacio(env);
+
+  const conferenceData = sala
+    ? {
+        conferenceId: sala.code,
+        conferenceSolution: { key: { type: "hangoutsMeet" }, name: "Google Meet" },
+        entryPoints: [{ entryPointType: "video", uri: sala.uri, label: sala.uri.replace("https://", "") }],
+      }
+    : { createRequest: { requestId: `mnt-${b.booking_id}`, conferenceSolutionKey: { type: "hangoutsMeet" } } };
+
+  const crearEvento = async (conf: unknown) =>
+    fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR)}/events?conferenceDataVersion=1`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          summary: titulo,
+          start: { dateTime: startISO },
+          end: { dateTime: endISO },
+          conferenceData: conf,
+        }),
+      },
+    );
+
+  let res = await crearEvento(conferenceData);
+  let ev = (await res.json()) as any;
+
+  // Colgar del evento una sala creada por nosotros es lo que permite el coanfitrion, pero es
+  // tambien la unica llamada del flujo que Google puede rechazar. Si lo hace, se vuelve al
+  // metodo de siempre: la clase tendra videollamada aunque se pierda la grabacion. Antes esto
+  // lanzaba y la clase se quedaba sin enlace, que es mucho peor.
+  if (!res.ok && sala) {
+    console.error(
+      `Calendar rechazo la sala propia (${res.status}): ${JSON.stringify(ev.error?.message ?? ev).slice(0, 160)}. Reintentando con createRequest.`,
+    );
+    sala = null;
+    res = await crearEvento({ createRequest: { requestId: `mnt-${b.booking_id}`, conferenceSolutionKey: { type: "hangoutsMeet" } } });
+    ev = (await res.json()) as any;
+  }
+
   if (!res.ok) throw new Error(`Calendar (${res.status}): ${JSON.stringify(ev.error?.message ?? ev).slice(0, 160)}`);
-  const meet: string = ev.conferenceData?.entryPoints?.[0]?.uri ?? ev.hangoutLink ?? "";
+  const meet: string = sala?.uri ?? ev.conferenceData?.entryPoints?.[0]?.uri ?? ev.hangoutLink ?? "";
   if (!meet) throw new Error("evento creado pero sin enlace Meet");
 
   // Guardar el link: en Supabase (control de duplicados) y en la entidad Booking de Base44.
@@ -138,47 +206,148 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
     } catch (e) { console.error(`setMeetLinkAuto ${b.booking_id}:`, e); }
   }
 
-  // Emails: al alumno (simple) y al profesor (premium con recordatorio de grabar si es @menttio.com).
-  const esPremium = (b.teacher_email ?? "").toLowerCase().endsWith("@menttio.com");
+  // El profesor pasa a ser coanfitrion de la sala. Sin esto, si entra con un correo que no
+  // es de la organizacion, Meet no le deja grabar (de ahi venian las cuentas @menttio.com,
+  // a licencia por profesor). No corta la clase si falla: solo se pierde la grabacion.
+  const tienePlanConGrabacion =
+    (b.teacher_email ?? "").toLowerCase().endsWith("@menttio.com") ||
+    (await puedeGrabarElProfesor(env, b.teacher_email));
+
+  let puedeGrabar = false;
+  let grabaSola = false;
+  if (tienePlanConGrabacion && b.teacher_email) {
+    const r = sala
+      ? await coanfitrionEnEspacio(env, sala.name, b.teacher_email)
+      : await hacerCoanfitrion(env, meet, b.teacher_email);
+    puedeGrabar = r.ok;
+    console.log(`coanfitrion ${b.booking_id}: ${r.ok ? "ok" : "FALLO"} - ${r.detalle}`);
+
+    // Si ademas se puede dejar grabando sola, mejor: el profesor no tiene que acordarse.
+    if (sala && puedeGrabar) {
+      const auto = await activarGrabacionAutomatica(env, sala.name);
+      grabaSola = auto.ok;
+      console.log(`autograbacion ${b.booking_id}: ${auto.ok ? "ON" : "no disponible"}`);
+    }
+  }
+
+  // Emails: al alumno (simple) y al profesor (con recordatorio de grabar si puede hacerlo).
+  const esPremium = puedeGrabar;
   if (b.student_email) {
     const e = tpl.videollamadaAviso({ link: meet, avisoGrabar: false });
     await sendEmail(env, { to: b.student_email, subject: e.subject, html: e.html });
   }
   if (b.teacher_email) {
-    const e = tpl.videollamadaAviso({ link: meet, avisoGrabar: esPremium });
+    const e = tpl.videollamadaAviso({ link: meet, avisoGrabar: esPremium, grabaSola });
     await sendEmail(env, { to: b.teacher_email, subject: e.subject, html: e.html });
   }
 }
 
-async function recuperarGrabacion(env: Env, b: Booking): Promise<boolean> {
-  const token = await getAccessToken(env, SCOPES.drive); // impersona menttio@menttio.com
-  // La grabación de Meet se llama "...._{bk_id} - <fecha> - Recording": buscar por el bk_id.
-  const q = `'${REC_FOLDER}' in parents and trashed=false and name contains '${b.booking_id}'`;
+// Los identificadores que pueden aparecer en el nombre de la grabacion. Se usan tal cual
+// dentro de la consulta de Drive, asi que se limpia todo lo que no sea alfanumerico o guion:
+// ni el id de reserva ni el codigo de sala llevan nada mas, y asi no se puede colar una
+// comilla que rompa (o amplie) la consulta.
+function terminosDeBusqueda(b: Booking): string[] {
+  const limpio = (v: string) => v.replace(/[^A-Za-z0-9_-]/g, "");
+  const terminos = [limpio(b.booking_id ?? "")];
+  // Meet nombra la grabacion con el codigo de la sala ("abc-defg-hij (2026-09-24 15:16 ...)")
+  // desde que la sala la crea nuestra propia aplicacion. Antes heredaba el titulo del evento
+  // de calendario, que termina en el id de reserva. Hay grabaciones de las dos epocas.
+  const codigo = (b.meet_link ?? "").match(/meet\.google\.com\/([a-z]{3}-[a-z]{4}-[a-z]{3})/i)?.[1];
+  if (codigo) terminos.push(limpio(codigo));
+  return terminos.filter((t) => t.length >= 8);
+}
+
+async function buscarEnDrive(env: Env, token: string, q: string) {
   const res = await fetch(
     `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name,webViewLink)&pageSize=5&supportsAllDrives=true&includeItemsFromAllDrives=true`,
     { headers: { Authorization: `Bearer ${token}` } },
   );
   const data = (await res.json()) as any;
   if (!res.ok) throw new Error(`Drive (${res.status}): ${JSON.stringify(data.error?.message ?? data).slice(0, 160)}`);
-  const file = (data.files ?? [])[0];
+  return (data.files ?? []) as Array<{ id: string; name: string }>;
+}
+
+async function recuperarGrabacion(env: Env, b: Booking): Promise<boolean> {
+  const token = await getAccessToken(env, SCOPES.drive); // impersona menttio@menttio.com
+
+  const terminos = terminosDeBusqueda(b);
+  if (terminos.length === 0) return false;
+  const porNombre = terminos.map((t) => `name contains '${t}'`).join(" or ");
+
+  let encontrados = await buscarEnDrive(env, token, `'${REC_FOLDER}' in parents and trashed=false and (${porNombre})`);
+  // Segunda pasada sin la carpeta: si Meet la deja en otro sitio (una unidad compartida, o
+  // la carpeta del organizador), la grabacion existe y solo estamos mirando donde no esta.
+  if (encontrados.length === 0) {
+    encontrados = await buscarEnDrive(env, token, `trashed=false and mimeType contains 'video/' and (${porNombre})`);
+  }
+
+  const file = encontrados[0];
   if (!file) return false; // todavía no está la grabación; se reintenta en el próximo tick
+  console.log(`grabacion ${b.booking_id}: "${file.name}"`);
 
   const fileId: string = file.id;
 
-  // La grabación nace heredando los permisos de la carpeta. Se le da acceso nominal a quien
-  // estuvo en la clase (alumno y profesor); la carpeta ya no es pública.
-  try {
-    const destinatarios = [b.student_email, b.teacher_email].filter(Boolean) as string[];
-    if (destinatarios.length > 0) await asegurarAccesoGrabacion(env, fileId, destinatarios);
-  } catch (e) {
-    console.error(`permisos grabacion ${b.booking_id}:`, e);
+  // Se guarda primero en Menttio, porque es quien sabe si el alumno autoriza la grabacion.
+  // El orden importa: si no la autoriza, tampoco se le comparte el archivo en Drive.
+  // Antes esto se escribia en una hoja de calculo que tenia que estar compartida publicamente
+  // para poderla leer con una clave de API; al cerrarla, las grabaciones dejaron de aparecer.
+  const guardado = await guardarGrabacionEnMenttio(env, b.booking_id, fileId);
+
+  if (guardado.consent) {
+    // La grabacion nace heredando los permisos de la carpeta. Se le da acceso nominal a quien
+    // estuvo en la clase (alumno y profesor); la carpeta ya no es publica.
+    try {
+      const destinatarios = [b.student_email, b.teacher_email].filter(Boolean) as string[];
+      if (destinatarios.length > 0) await asegurarAccesoGrabacion(env, fileId, destinatarios);
+    } catch (e) {
+      console.error(`permisos grabacion ${b.booking_id}:`, e);
+    }
+  } else {
+    console.log(`grabacion ${b.booking_id}: no se publica (${guardado.motivo})`);
   }
 
-  // Guardar en Supabase (control) y en la hoja GRABACIONES col F (lo que lee getRecordingLink).
-  await db.update(env, "bookings_ledger", { booking_id: `eq.${b.booking_id}` }, { recording_url: fileId });
-  try {
-    const row = await sheets.findRowNumber(env, sheets.SHEET_GRABACIONES, sheets.SHEET_GRABACIONES.keyCol, b.booking_id);
-    if (row > 0) await sheets.updateCell(env, sheets.SHEET_GRABACIONES, row, 5, fileId); // col F = Id archivo Drive
-  } catch (e) { console.error(`hoja grabacion ${b.booking_id}:`, e); }
+  // Supabase solo lleva el control de duplicados: sin este valor, la clase se volveria a
+  // rastrear cada 15 minutos durante tres dias. Se marca cuando la respuesta es definitiva
+  // (hay permiso o no lo hay); si el fallo fue de red, se deja en blanco para reintentarlo.
+  const definitivo = guardado.consent || guardado.motivo === "sin_consentimiento" || guardado.motivo === "clase_sin_alumnos";
+  if (!definitivo) {
+    console.error(`grabacion ${b.booking_id}: sin guardar (${guardado.motivo}), se reintenta`);
+    return false;
+  }
+  await db.update(env, "bookings_ledger", { booking_id: `eq.${b.booking_id}` }, {
+    recording_url: guardado.consent ? fileId : `sin_consentimiento:${fileId}`,
+  });
   return true;
+}
+
+// Llama a saveRecording, que comprueba el consentimiento y escribe el enlace en la reserva.
+// Si Menttio no contesta se devuelve consent:false a proposito: es mejor no compartir el
+// archivo y reintentarlo en el siguiente tick que compartirlo sin saber si hay permiso.
+async function guardarGrabacionEnMenttio(
+  env: Env,
+  bookingId: string,
+  fileId: string,
+): Promise<{ consent: boolean; motivo: string }> {
+  if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) {
+    return { consent: false, motivo: "sin_configuracion" };
+  }
+  try {
+    const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/saveRecording`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-automation-key": env.AUTOMATION_SECRET,
+      },
+      body: JSON.stringify({ booking_id: bookingId, drive_file_id: fileId }),
+    });
+    const data = (await res.json().catch(() => ({}))) as any;
+    if (!res.ok) {
+      console.error(`saveRecording ${bookingId}: ${res.status} ${JSON.stringify(data).slice(0, 160)}`);
+      return { consent: false, motivo: `error_${res.status}` };
+    }
+    return { consent: data.consent === true, motivo: data.motivo ?? "ok" };
+  } catch (e) {
+    console.error(`saveRecording ${bookingId}:`, e);
+    return { consent: false, motivo: "sin_respuesta" };
+  }
 }

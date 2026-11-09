@@ -1,5 +1,6 @@
 import type { Env } from "./env";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
+import * as db from "./lib/supabase";
 
 // Las grabaciones de Meet viven en una carpeta de menttio@ que estaba compartida como
 // "cualquiera con el enlace". Eso deja las clases de menores al alcance de cualquiera que
@@ -81,7 +82,6 @@ export async function asegurarAccesoGrabacion(
   }
 
   // Solo se retira el acceso público si alguien nominal puede seguir viéndola.
-  // Si el permiso es heredado de la carpeta, Drive responde 403: se retira en la carpeta.
   const publico = permisos.filter((p) => p.type === "anyone" || p.type === "domain");
   const quedaAlguien = yaTienen.size > 0 || out.añadidos.length > 0;
   if (publico.length > 0 && quedaAlguien) {
@@ -162,3 +162,4 @@ export async function cerrarCarpeta(env: Env, dryRun = false): Promise<Record<st
   }
   return { dryRun, publicosEncontrados: publicos.map((p) => p.type), retirados: !dryRun && errores.length === 0, errores };
 }
+

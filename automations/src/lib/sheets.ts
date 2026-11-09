@@ -90,3 +90,16 @@ export async function deleteRow(env: Env, sheet: SheetRef, rowNumber: number): P
   });
   if (!res.ok) throw new Error(`Sheets deleteRow ${sheet.tab} (${res.status}): ${await res.text()}`);
 }
+
+// Lee un rango completo de la hoja. Se usa para la importación de una sola vez de las
+// grabaciones antiguas: la hoja ya no es pública, pero la cuenta de servicio sigue viéndola.
+export async function readRange(env: Env, sheet: SheetRef, a1: string): Promise<string[][]> {
+  const token = await getAccessToken(env, SCOPES.drive);
+  const range = `${encodeURIComponent(sheet.tab)}!${a1}`;
+  const res = await fetch(`${API}/${sheet.spreadsheetId}/values/${range}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error(`Sheets read ${sheet.tab} (${res.status}): ${await res.text()}`);
+  const data = (await res.json()) as { values?: string[][] };
+  return data.values || [];
+}

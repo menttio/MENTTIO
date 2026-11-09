@@ -10,6 +10,10 @@ export const SCOPES = {
   ],
   drive: ["https://www.googleapis.com/auth/drive"],
   calendar: ["https://www.googleapis.com/auth/calendar"],
+  meet: [
+    "https://www.googleapis.com/auth/meetings.space.created",
+    "https://www.googleapis.com/auth/meetings.space.settings",
+  ],
 };
 
 // Cache de tokens por conjunto de scopes durante la vida del isolate.

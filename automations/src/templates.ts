@@ -79,8 +79,16 @@ const VC_IMG2 = "https://drive.google.com/uc?id=1h3CtFp0JHpyXJPcNXXd2C2LnNXEWH8W
 
 // Email "tu clase está a punto de comenzar" con el enlace de la videollamada
 // (Workflow "Creacion videollamada", nodos Code/Code1/Code7). avisoGrabar=true => versión premium.
-export function videollamadaAviso(d: { link: string; avisoGrabar: boolean }): Email {
-  const bloqueGrabar = d.avisoGrabar
+export function videollamadaAviso(d: { link: string; avisoGrabar: boolean; grabaSola?: boolean }): Email {
+  // Cuando la sala lleva la grabación automática encendida no hay que recordarle nada al
+  // profesor: pedirle que grabe algo que ya se graba solo confunde y resta confianza.
+  const bloqueGrabar = d.grabaSola
+    ? `
+    <div style="background:#e8f7f1; border-left:6px solid #2ab88f; padding:15px; margin:25px auto; border-radius:6px; max-width:360px;">
+      <p style="margin:0; color:#15654d; font-weight:bold; text-align:center;">Esta clase se graba sola.</p>
+      <p style="margin:6px 0 0; color:#15654d; text-align:center; font-size:14px;">No tienes que hacer nada. Tu alumno la tendrá al terminar.</p>
+    </div>`
+    : d.avisoGrabar
     ? `
     <div style="background:#fff3cd; border-left:6px solid #ffb300; padding:15px; margin:25px auto; border-radius:6px; max-width:300px;">
       <p style="margin:0; color:#8a6d3b; font-weight:bold; text-align:center;">⚠️ Recuerda grabar la clase.</p>
