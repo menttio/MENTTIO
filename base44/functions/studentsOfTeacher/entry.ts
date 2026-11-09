@@ -36,11 +36,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Solo los profesores pueden consultar sus alumnos' }, { status: 403 });
     }
 
-    // Búsqueda puntual por email exacto (para dar de alta a un alumno nuevo en una clase).
-    if (body.email) {
-      const found = await db.entities.Student.filter({ user_email: String(body.email).trim().toLowerCase() });
-      return Response.json({ students: found.map(paraProfesor) });
-    }
+    // SEGURIDAD (09/11/2026): aqui habia una busqueda por correo de CUALQUIER alumno, sin
+    // relacion con el profesor, que devolvia telefono, tutor y consentimiento. Ninguna pagina
+    // la usaba (todas llaman sin parametros) y cualquiera puede crearse una ficha de profesor,
+    // asi que se ha quitado. `body.email` se ignora.
+    void body;
 
     const [bookings, conversations, allStudents] = await Promise.all([
       db.entities.Booking.filter({ teacher_id: teacher.id }, '-date', 1000),
