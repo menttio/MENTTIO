@@ -12,6 +12,19 @@ Deno.serve(async (req) => {
     }
 
     const userEmail = event.entity_id; // The deleted user's email or ID
+
+    // SEGURIDAD (09/11/2026): esta funcion no comprobaba quien la llamaba, asi que cualquiera
+    // podia borrar la ficha de profesor o alumno de otra persona sabiendo su correo. Su unico
+    // uso legitimo es limpiar los perfiles de un usuario que YA se ha borrado. Por eso solo
+    // actua si no queda ningun usuario con ese correo o id.
+    if (!userEmail) {
+      return Response.json({ error: 'entity_id requerido' }, { status: 400 });
+    }
+    const sigueExistiendo = await base44.asServiceRole.entities.User.filter({ email: String(userEmail).toLowerCase() }).catch(() => null);
+    const sigueExistiendoPorId = await base44.asServiceRole.entities.User.get(String(userEmail)).catch(() => null);
+    if (sigueExistiendo === null || (sigueExistiendo && sigueExistiendo.length > 0) || sigueExistiendoPorId) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
     
     // Try to find and delete Teacher profile
     const teachers = await base44.asServiceRole.entities.Teacher.filter({ 
