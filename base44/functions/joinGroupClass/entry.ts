@@ -1,5 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
+// SEGURIDAD (09/11/2026): una clase de grupo la crea un alumno y se apuntan otros. Antes se
+// devolvia la reserva entera, con el nombre, correo, telefono y notas de progreso del alumno
+// que la creo, y el enlace directo a la grabacion (saltandose la comprobacion de
+// consentimiento de recordingUrl). Ahora solo van los datos de la clase. La grabacion se marca
+// como disponible y su enlace se pide a recordingUrl, que comprueba participacion y permiso.
+function claseParaAlumno(b: any, email: string): any {
+  const propia = String(b.student_email || '').toLowerCase() === email;
+  const limpio: any = { ...b, recording_url: b.recording_url ? 'protegida' : null };
+  if (!propia) {
+    delete limpio.student_name;
+    delete limpio.student_email;
+    delete limpio.student_phone;
+    delete limpio.progress_note;
+    delete limpio.rating;
+    delete limpio.notes;
+    delete limpio.google_event_id_student;
+  }
+  return limpio;
+}
+
 const DEFAULT_GROUP_PRICES: Record<number, number> = { 2: 18, 3: 16, 4: 15 };
 const MAX_TRAMOS_GRUPO = 4;
 
@@ -89,6 +109,21 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Profesor no encontrado' }, { status: 404 });
     }
 
+    // SEGURIDAD (09/11/2026): antes cualquier usuario con ficha de alumno podia apuntarse a la
+    // clase de grupo de cualquier profesor (y recibir el Meet de una clase de menores). Ahora
+    // solo los alumnos de ese profesor: los que tiene asignados (enlace de invitacion o alta
+    // del profesor) o con los que ya ha dado clase. Es la misma regla que aplica BookClass.
+    const asignado = (Array.isArray(student.assigned_teachers) ? student.assigned_teachers : [])
+      .some((a) => String(a?.teacher_id) === String(teacher.id));
+    let yaHaDadoClase = false;
+    if (!asignado) {
+      const previas = await db.entities.Booking.filter({ teacher_id: String(teacher.id), student_id: String(student.id) }, '-date', 1).catch(() => []);
+      yaHaDadoClase = previas.length > 0;
+    }
+    if (!asignado && !yaHaDadoClase) {
+      return Response.json({ error: 'Solo los alumnos de este profesor pueden apuntarse a su clase' }, { status: 403 });
+    }
+
     const updatedEnrolled = [
       ...enrolled,
       {
@@ -118,7 +153,7 @@ Deno.serve(async (req) => {
 
     return Response.json({
       booking: {
-        ...updated,
+        ...claseParaAlumno(updated, email),
         enrolled_students: updatedEnrolled.map((s) =>
           (s.student_email || '').toLowerCase() === email ? s : { student_id: s.student_id, payment_status: s.payment_status }
         )
