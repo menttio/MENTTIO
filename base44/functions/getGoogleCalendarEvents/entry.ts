@@ -14,6 +14,19 @@ Deno.serve(async (req) => {
     // Get user's Google Calendar tokens
     const entity = userType === 'teacher' ? 'Teacher' : 'Student';
     const targetEmail = userEmail || user.email; // Use provided email or fallback to current user
+
+    // SEGURIDAD (09/11/2026): antes cualquiera con sesion leia el calendario COMPLETO de
+    // cualquier profesor o alumno (titulos incluidos). Ahora:
+    //  - el propio calendario (o un admin): completo, como antes;
+    //  - el de otro: solo si es de un PROFESOR (el alumno necesita ver cuando esta ocupado para
+    //    reservar) y solo los huecos ocupados, sin titulos ni ids;
+    //  - el calendario de un alumno, nunca a terceros.
+    const esPropio = String(targetEmail || '').toLowerCase() === String(user.email || '').toLowerCase();
+    const esAdmin = user.role === 'admin';
+    if (!esPropio && !esAdmin && entity !== 'Teacher') {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    const soloOcupado = !esPropio && !esAdmin;
     const users = await base44.asServiceRole.entities[entity].filter({ user_email: targetEmail });
     
     if (users.length === 0 || !users[0].google_calendar_tokens) {
@@ -83,13 +96,13 @@ Deno.serve(async (req) => {
     const data = await response.json();
 
     // Transform events to our format
-    const events = (data.items || []).map(event => {
+    const events = (data.items || []).map((event, idx) => {
       const start = event.start.dateTime || event.start.date;
       const end = event.end.dateTime || event.end.date;
       
       return {
-        id: event.id,
-        summary: event.summary,
+        id: soloOcupado ? `ocupado-${idx}` : event.id,
+        summary: soloOcupado ? 'Ocupado' : event.summary,
         start: start,
         end: end,
         date: start.split('T')[0],
