@@ -79,10 +79,17 @@ const VC_IMG2 = "https://drive.google.com/uc?id=1h3CtFp0JHpyXJPcNXXd2C2LnNXEWH8W
 
 // Email "tu clase está a punto de comenzar" con el enlace de la videollamada
 // (Workflow "Creacion videollamada", nodos Code/Code1/Code7). avisoGrabar=true => versión premium.
-export function videollamadaAviso(d: { link: string; avisoGrabar: boolean; grabaSola?: boolean }): Email {
+export function videollamadaAviso(d: { link: string; avisoGrabar: boolean; grabaSola?: boolean; noGrabar?: boolean }): Email {
   // Cuando la sala lleva la grabación automática encendida no hay que recordarle nada al
   // profesor: pedirle que grabe algo que ya se graba solo confunde y resta confianza.
-  const bloqueGrabar = d.grabaSola
+  // noGrabar (lote C): el profesor tiene plan con grabacion, pero algun alumno no la autoriza.
+  const bloqueGrabar = d.noGrabar
+    ? `
+    <div style="background:#fdecea; border-left:6px solid #d93025; padding:15px; margin:25px auto; border-radius:6px; max-width:360px;">
+      <p style="margin:0; color:#8c1d18; font-weight:bold; text-align:center;">Esta clase NO se puede grabar.</p>
+      <p style="margin:6px 0 0; color:#8c1d18; text-align:center; font-size:14px;">Algún alumno no ha autorizado la grabación. Por favor, no la grabes.</p>
+    </div>`
+    : d.grabaSola
     ? `
     <div style="background:#e8f7f1; border-left:6px solid #2ab88f; padding:15px; margin:25px auto; border-radius:6px; max-width:360px;">
       <p style="margin:0; color:#15654d; font-weight:bold; text-align:center;">Esta clase se graba sola.</p>

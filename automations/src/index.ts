@@ -1,7 +1,7 @@
 import type { Env } from "./env";
 import * as r from "./routes";
 import { runVideollamadas } from "./cron";
-import { listarGrabaciones, aplicarAccesos, cerrarCarpeta, listPermissions } from "./grabaciones";
+import { listarGrabaciones, aplicarAccesos, cerrarCarpeta, listPermissions, auditarGrabaciones } from "./grabaciones";
 import { importarGrabaciones } from "./importar-grabaciones";
 import * as db from "./lib/supabase";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
@@ -228,6 +228,34 @@ export default {
       }));
     }
 
+    // Auditoria de SOLO LECTURA de los accesos a las grabaciones (lote C, 09/11/2026).
+    // Clave propia (ADMIN_KEY), solo en cabecera y comparada en tiempo constante.
+    if (req.method === "GET" && url.pathname === "/admin/auditoria-grabaciones") {
+      const provided = req.headers.get("x-admin-key") ?? "";
+      if (!env.ADMIN_KEY || !(await mismaClave(provided, env.ADMIN_KEY))) return json({ error: "Unauthorized" }, 401);
+      const carpeta = url.searchParams.get("carpeta") === "cuarentena" ? "cuarentena" : "meet";
+      return json(await auditarGrabaciones(env, carpeta, url.searchParams.get("pageToken") ?? undefined));
+    }
+
+    // Solo lectura: que responde Menttio sobre el consentimiento de una clase y que haria la
+    // conservacion (sin ejecutar nada). Para comprobar el lote C sin tocar Drive.
+    if (req.method === "GET" && url.pathname === "/admin/consentimiento") {
+      const provided = req.headers.get("x-admin-key") ?? "";
+      if (!env.ADMIN_KEY || !(await mismaClave(provided, env.ADMIN_KEY))) return json({ error: "Unauthorized" }, 401);
+      const llamar = async (fn: string, cuerpo: unknown) => {
+        const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/${fn}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET },
+          body: JSON.stringify(cuerpo),
+        });
+        return { status: res.status, body: await res.json().catch(() => null) };
+      };
+      const id = url.searchParams.get("booking_id");
+      return json(id
+        ? await llamar("consentimientoClase", { booking_id: id })
+        : await llamar("recordingActions", { modo: "pendientes", limite: 10 }));
+    }
+
     // Mantenimiento de permisos de las grabaciones (acceso nominal en lugar de enlace público).
     // Protegido por la misma clave compartida que usa setMeetLinkAuto.
     if (req.method === "POST" && url.pathname.startsWith("/mantenimiento/grabaciones")) {
@@ -294,3 +322,16 @@ export default {
     }
   },
 };
+
+// Comparacion en tiempo constante (sobre los hashes, para no filtrar la longitud).
+async function mismaClave(a: string, b: string): Promise<boolean> {
+  const enc = new TextEncoder();
+  const [ha, hb] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(a)),
+    crypto.subtle.digest("SHA-256", enc.encode(b)),
+  ]);
+  const x = new Uint8Array(ha), y = new Uint8Array(hb);
+  let d = 0;
+  for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i];
+  return d === 0 && a.length > 0;
+}

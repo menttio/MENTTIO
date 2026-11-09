@@ -20,31 +20,25 @@ export default function RecordingConsentCard({ student, onChange }) {
     setGuardando(true);
     setMensaje('');
     try {
-      const ahora = new Date().toISOString();
-      await base44.entities.Student.update(student.id, {
-        recording_consent: nuevoValor,
-        recording_consent_date: ahora,
-      });
-      await base44.entities.Consent.create({
-        user_email: student.user_email,
-        student_id: student.id,
-        type: 'grabacion',
+      // Desde el 09/11/2026 lo registra el servidor (setRecordingConsent): el navegador ya no
+      // puede escribir el permiso ni el historial. Ver docs/PLAN-SEGURIDAD-Y-MIGRACION.md, lote C.
+      const { data } = await base44.functions.invoke('setRecordingConsent', {
         granted: nuevoValor,
-        granted_by: esMenor ? 'tutor' : 'alumno',
-        guardian_name: esMenor ? student.guardian_name : undefined,
-        guardian_email: esMenor ? student.guardian_email : undefined,
         text_version: CONSENT_VERSION,
         text_shown: textoDe('grabacion', esMenor),
-        event_date: ahora,
       });
-      onChange?.({ ...student, recording_consent: nuevoValor, recording_consent_date: ahora });
-      // El permiso se comprueba cada vez que se pide una grabación, así que retirarlo oculta
-      // también las anteriores, y volver a darlo las devuelve. No hay que borrar nada.
-      setMensaje(
-        nuevoValor
-          ? 'Permiso concedido. Tus grabaciones vuelven a estar disponibles.'
-          : 'Permiso retirado. Tus próximas clases no se grabarán y dejan de mostrarse las anteriores.'
-      );
+      if (data?.pendiente_tutor) {
+        onChange?.({ ...student, recording_consent_pending_at: new Date().toISOString() });
+        setMensaje('Hemos enviado un correo a tu padre, madre o tutor. Las clases se grabarán cuando lo confirme.');
+      } else {
+        const ahora = data?.recording_consent_date || new Date().toISOString();
+        onChange?.({ ...student, recording_consent: nuevoValor, recording_consent_date: ahora, recording_consent_pending_at: null });
+        setMensaje(
+          nuevoValor
+            ? 'Permiso concedido. Se grabarán tus próximas clases.'
+            : 'Permiso retirado. Tus próximas clases no se grabarán, y las grabaciones anteriores dejan de estar disponibles y se borran en 30 días.'
+        );
+      }
     } catch (e) {
       console.error(e);
       setMensaje('No se ha podido guardar. Inténtalo de nuevo.');
@@ -64,8 +58,10 @@ export default function RecordingConsentCard({ student, onChange }) {
           <h3 className="font-bold text-[#404040]">Grabación de las clases</h3>
           <p className="mt-1 text-sm text-gray-500">
             {autoriza
-              ? 'Ahora mismo autorizas que tus clases se graben. La grabación solo la veis tú y tu profesor.'
-              : 'Ahora mismo no autorizas la grabación de tus clases.'}
+              ? 'Ahora mismo autorizas que tus clases se graben. La grabación solo la veis tú y tu profesor, y se borra a los 12 meses.'
+              : student.recording_consent_pending_at
+                ? 'Pendiente de que tu padre, madre o tutor confirme el permiso desde el correo que le hemos enviado.'
+                : 'Ahora mismo no autorizas la grabación de tus clases.'}
           </p>
           {esMenor && (
             <p className="mt-2 text-xs text-gray-500">

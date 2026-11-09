@@ -1,6 +1,6 @@
 import type { Env } from "./env";
 import * as db from "./lib/supabase";
-import { asegurarAccesoGrabacion } from "./grabaciones";
+import { asegurarAccesoGrabacion, ponerEnCuarentena, mandarAPapelera } from "./grabaciones";
 import { hacerCoanfitrion, crearEspacio, coanfitrionEnEspacio, activarGrabacionAutomatica } from "./coanfitrion";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
 import { sendEmail } from "./lib/gmail";
@@ -68,6 +68,14 @@ export async function runVideollamadas(env: Env): Promise<Record<string, unknown
       if (ok) result.grabaciones++;
     } catch (e) { result.errores.push(`grabacion ${b.booking_id}: ${(e as Error).message}`); }
   }
+
+  // ---------- PARTE D: grabaciones sin consentimiento o caducadas (lote C, 09/11/2026) ----------
+  // Base44 decide (sabe quien consiente) y aqui se ejecuta en Drive. Pocas por ciclo: un Worker
+  // no puede pasar de 50 peticiones salientes por invocacion.
+  try {
+    const d = await gestionarConservacion(env);
+    if (d) (result as any).conservacion = d;
+  } catch (e) { result.errores.push(`conservacion: ${(e as Error).message}`); }
 
   // ---------- PARTE C: conservación de datos (una vez al día, sobre las 03:00) ----------
   const hora = now.getUTCHours();
@@ -213,9 +221,15 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
     (b.teacher_email ?? "").toLowerCase().endsWith("@menttio.com") ||
     (await puedeGrabarElProfesor(env, b.teacher_email));
 
+  // Lote C (09/11/2026): solo se graba si TODOS los alumnos de la clase lo autorizan. Antes se
+  // grababa segun el plan del profesor, sin mirar el consentimiento. Sin consentimiento tampoco
+  // se hace coanfitrion al profesor: es lo que le permite grabar con una cuenta de fuera.
+  const consentida = tienePlanConGrabacion ? await claseConsentida(env, b.booking_id) : false;
+  if (tienePlanConGrabacion && !consentida) console.log(`grabacion ${b.booking_id}: NO (sin consentimiento de todos los alumnos)`);
+
   let puedeGrabar = false;
   let grabaSola = false;
-  if (tienePlanConGrabacion && b.teacher_email) {
+  if (tienePlanConGrabacion && consentida && b.teacher_email) {
     const r = sala
       ? await coanfitrionEnEspacio(env, sala.name, b.teacher_email)
       : await hacerCoanfitrion(env, meet, b.teacher_email);
@@ -237,7 +251,7 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
     await sendEmail(env, { to: b.student_email, subject: e.subject, html: e.html });
   }
   if (b.teacher_email) {
-    const e = tpl.videollamadaAviso({ link: meet, avisoGrabar: esPremium, grabaSola });
+    const e = tpl.videollamadaAviso({ link: meet, avisoGrabar: esPremium, grabaSola, noGrabar: tienePlanConGrabacion && !consentida });
     await sendEmail(env, { to: b.teacher_email, subject: e.subject, html: e.html });
   }
 }
@@ -297,7 +311,10 @@ async function recuperarGrabacion(env: Env, b: Booking): Promise<boolean> {
     // La grabacion nace heredando los permisos de la carpeta. Se le da acceso nominal a quien
     // estuvo en la clase (alumno y profesor); la carpeta ya no es publica.
     try {
-      const destinatarios = [b.student_email, b.teacher_email].filter(Boolean) as string[];
+      // Base44 devuelve los alumnos de la clase (tambien los de grupo) y el profesor.
+      const destinatarios = (guardado.destinatarios.length > 0
+        ? guardado.destinatarios
+        : [b.student_email, b.teacher_email].filter(Boolean)) as string[];
       if (destinatarios.length > 0) await asegurarAccesoGrabacion(env, fileId, destinatarios);
     } catch (e) {
       console.error(`permisos grabacion ${b.booking_id}:`, e);
@@ -327,9 +344,9 @@ async function guardarGrabacionEnMenttio(
   env: Env,
   bookingId: string,
   fileId: string,
-): Promise<{ consent: boolean; motivo: string }> {
+): Promise<{ consent: boolean; motivo: string; destinatarios: string[] }> {
   if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) {
-    return { consent: false, motivo: "sin_configuracion" };
+    return { consent: false, motivo: "sin_configuracion", destinatarios: [] };
   }
   try {
     const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/saveRecording`, {
@@ -343,11 +360,62 @@ async function guardarGrabacionEnMenttio(
     const data = (await res.json().catch(() => ({}))) as any;
     if (!res.ok) {
       console.error(`saveRecording ${bookingId}: ${res.status} ${JSON.stringify(data).slice(0, 160)}`);
-      return { consent: false, motivo: `error_${res.status}` };
+      return { consent: false, motivo: `error_${res.status}`, destinatarios: [] };
     }
-    return { consent: data.consent === true, motivo: data.motivo ?? "ok" };
+    const destinatarios = Array.isArray(data.destinatarios) ? data.destinatarios.filter((x: unknown) => typeof x === "string") : [];
+    return { consent: data.consent === true, motivo: data.motivo ?? "ok", destinatarios };
   } catch (e) {
     console.error(`saveRecording ${bookingId}:`, e);
-    return { consent: false, motivo: "sin_respuesta" };
+    return { consent: false, motivo: "sin_respuesta", destinatarios: [] };
   }
+}
+
+// Pregunta a Menttio si todos los alumnos de la clase autorizan la grabacion. Ante cualquier
+// fallo responde que no: es preferible perder una grabacion que grabar a alguien sin permiso.
+async function claseConsentida(env: Env, bookingId: string): Promise<boolean> {
+  if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) return false;
+  try {
+    const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/consentimientoClase`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET },
+      body: JSON.stringify({ booking_id: bookingId }),
+    });
+    if (!res.ok) return false;
+    const d = (await res.json()) as any;
+    return d?.consentimiento === true;
+  } catch (e) {
+    console.error("consentimientoClase:", (e as Error).message);
+    return false;
+  }
+}
+
+// Ejecuta en Drive lo que decide recordingActions (Base44): cuarentena y papelera.
+async function gestionarConservacion(env: Env): Promise<Record<string, unknown> | null> {
+  if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) return null;
+  const llamar = async (cuerpo: unknown) => {
+    const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/recordingActions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET },
+      body: JSON.stringify(cuerpo),
+    });
+    if (!res.ok) throw new Error(`recordingActions ${res.status}`);
+    return (await res.json()) as any;
+  };
+  const { acciones = [], resumen } = await llamar({ modo: "pendientes", limite: 4 });
+  if (!acciones.length) return null;
+  const resultados: { booking_id: string; estado: string }[] = [];
+  const errores: string[] = [];
+  for (const a of acciones) {
+    try {
+      if (a.accion === "cuarentena") await ponerEnCuarentena(env, a.file_id);
+      else if (a.accion === "papelera") await mandarAPapelera(env, a.file_id);
+      else continue;
+      resultados.push({ booking_id: a.booking_id, estado: a.accion });
+      console.log(`conservacion ${a.booking_id}: ${a.accion} (${a.motivo})`);
+    } catch (e) {
+      errores.push(`${a.booking_id}: ${(e as Error).message}`);
+    }
+  }
+  if (resultados.length) await llamar({ modo: "hecho", resultados });
+  return { hechas: resultados.length, errores, resumen };
 }

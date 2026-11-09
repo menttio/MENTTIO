@@ -25,4 +25,6 @@ export interface Env {
   BASE44_FUNCTIONS_URL: string;
   // Clave compartida con la función setMeetLinkSecure de Base44
   AUTOMATION_SECRET: string;
+  // Rutas /admin/* de solo lectura (lote C)
+  ADMIN_KEY?: string;
 }

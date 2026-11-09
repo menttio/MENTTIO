@@ -163,3 +163,93 @@ export async function cerrarCarpeta(env: Env, dryRun = false): Promise<Record<st
   return { dryRun, publicosEncontrados: publicos.map((p) => p.type), retirados: !dryRun && errores.length === 0, errores };
 }
 
+
+// ---------------------------------------------------------------------------------------------
+// Lote C (09/11/2026): cuarentena, papelera y auditoria.
+// ---------------------------------------------------------------------------------------------
+
+const CARPETA_CUARENTENA = "Menttio - Grabaciones en cuarentena (NO COMPARTIR)";
+let cuarentenaId: string | null = null;
+
+async function carpetaCuarentena(env: Env): Promise<string> {
+  if (cuarentenaId) return cuarentenaId;
+  const q = `name = '${CARPETA_CUARENTENA}' and mimeType = 'application/vnd.google-apps.folder' and 'me' in owners and trashed = false`;
+  const found = await driveFetch(env, `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)&pageSize=1`);
+  if (found.files?.[0]?.id) return (cuarentenaId = found.files[0].id as string);
+  const creada = await driveFetch(env, "https://www.googleapis.com/drive/v3/files?fields=id", {
+    method: "POST",
+    body: JSON.stringify({ name: CARPETA_CUARENTENA, mimeType: "application/vnd.google-apps.folder" }),
+  });
+  return (cuarentenaId = creada.id as string);
+}
+
+/**
+ * Saca la grabacion de la carpeta compartida a una carpeta cerrada de menttio@ y le quita todos
+ * los accesos salvo el del propietario. Reversible: basta con volver a moverla y compartirla.
+ * Si el archivo ya no existe, se da por hecho (no hay nada que proteger).
+ */
+export async function ponerEnCuarentena(env: Env, fileId: string): Promise<void> {
+  let file: any;
+  try {
+    file = await driveFetch(env, `https://www.googleapis.com/drive/v3/files/${fileId}?fields=id,parents&supportsAllDrives=true`);
+  } catch (e) {
+    if (String((e as Error).message).includes("Drive 404")) return;
+    throw e;
+  }
+  const destino = await carpetaCuarentena(env);
+  const padres = ((file.parents ?? []) as string[]).filter((p) => p !== destino);
+  if (!(file.parents ?? []).includes(destino) || padres.length > 0) {
+    await driveFetch(
+      env,
+      `https://www.googleapis.com/drive/v3/files/${fileId}?addParents=${destino}` +
+        (padres.length ? `&removeParents=${padres.join(",")}` : "") + `&supportsAllDrives=true&fields=id`,
+      { method: "PATCH", body: "{}" },
+    );
+  }
+  const permisos = await listPermissions(env, fileId);
+  for (const p of permisos) {
+    if (p.role === "owner") continue;
+    await removePermission(env, fileId, p.id);
+  }
+}
+
+/** Manda la grabacion a la papelera de Drive (Google la borra del todo a los 30 dias). */
+export async function mandarAPapelera(env: Env, fileId: string): Promise<void> {
+  try {
+    await driveFetch(env, `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true&fields=id`, {
+      method: "PATCH",
+      body: JSON.stringify({ trashed: true }),
+    });
+  } catch (e) {
+    if (String((e as Error).message).includes("Drive 404")) return;
+    throw e;
+  }
+}
+
+/**
+ * Auditoria de SOLO LECTURA: quien tiene acceso a cada grabacion de la carpeta de Meet (y de la
+ * de cuarentena), mas los permisos de las propias carpetas. Una llamada por pagina de 100.
+ */
+export async function auditarGrabaciones(
+  env: Env,
+  carpeta: "meet" | "cuarentena",
+  pageToken?: string,
+): Promise<Record<string, unknown>> {
+  const id = carpeta === "cuarentena" ? await carpetaCuarentena(env) : REC_FOLDER;
+  const url =
+    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(`'${id}' in parents and trashed=false`)}` +
+    `&fields=nextPageToken,files(id,name,createdTime,permissions(id,type,role,emailAddress))&pageSize=100` +
+    `&supportsAllDrives=true&includeItemsFromAllDrives=true` +
+    (pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : "");
+  const data = await driveFetch(env, url);
+  const archivos = (data.files ?? []).map((f: any) => ({
+    id: f.id,
+    name: f.name,
+    created: f.createdTime,
+    accesos: (f.permissions ?? [])
+      .filter((p: any) => p.role !== "owner")
+      .map((p: any) => `${p.type}:${p.role}:${p.emailAddress ?? "-"}`),
+  }));
+  const permisosCarpeta = pageToken ? undefined : await listPermissions(env, id);
+  return { carpeta, carpetaId: id, permisosCarpeta, archivos, nextPageToken: data.nextPageToken ?? null };
+}

@@ -65,7 +65,7 @@ export default function ConsentGate() {
         guardian_relationship: esMenor ? datos.guardian_relationship : undefined,
         data_consent_date: ahora,
         consent_version: CONSENT_VERSION,
-        recording_consent: Boolean(datos.recording_consent),
+        recording_consent: false, // lo pone setRecordingConsent (servidor)
         recording_consent_date: ahora,
       });
 
@@ -84,12 +84,15 @@ export default function ConsentGate() {
         granted: true,
         text_shown: textoDe('privacidad', esMenor),
       });
-      await base44.entities.Consent.create({
-        ...comun,
-        type: 'grabacion',
-        granted: Boolean(datos.recording_consent),
-        text_shown: textoDe('grabacion', esMenor),
-      });
+      // El permiso de grabacion lo registra el servidor (lote C, 09/11/2026). Si es un menor
+      // de 14 anos, queda pendiente hasta que el tutor lo confirme desde su correo.
+      if (datos.recording_consent) {
+        await base44.functions.invoke('setRecordingConsent', {
+          granted: true,
+          text_version: CONSENT_VERSION,
+          text_shown: textoDe('grabacion', esMenor),
+        });
+      }
 
       setStudent(null);
     } catch (e) {

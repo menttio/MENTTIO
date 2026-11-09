@@ -18,6 +18,46 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 // Lo que sí depende del consentimiento es el acceso al archivo en Drive, que es la puerta de
 // verdad: sin permiso no se comparte, así que el enlace no abre nada. Por eso se devuelve
 // `consent`: la automatización lo usa para decidir si comparte el archivo.
+//
+// Lote C (09/11/2026): dar el permiso ya NO desbloquea grabaciones anteriores (decision 2a), y
+// las grabaciones sin consentimiento pasan a cuarentena y se borran a los 30 dias (recordingActions).
+// --- Consentimiento de grabacion (lote C, 09/11/2026). Copia identica en saveRecording,
+// recordingUrl, consentimientoClase y recordingActions: Base44 no comparte codigo entre funciones.
+// Fuente de verdad: el ultimo evento de la entidad Consent (tipo grabacion) de cada alumno, que
+// solo escribe el servidor. Student.recording_consent es solo una copia para pintar pantallas.
+// Una clase cuenta como consentida si TODOS sus alumnos tienen el permiso vigente y lo dieron
+// el dia de la clase o antes: dar el permiso no cubre clases grabadas antes (decision 2a).
+type Consentimiento = { ok: boolean; desde: string | null };
+async function consentimientoDe(db: any, correo: string, cache: Map<string, Consentimiento>): Promise<Consentimiento> {
+  if (cache.has(correo)) return cache.get(correo)!;
+  const ev = await db.entities.Consent.filter({ user_email: correo, type: 'grabacion' }, '-event_date', 1).catch(() => []);
+  const u = ev[0];
+  const r = u && u.granted === true
+    ? { ok: true, desde: String(u.event_date || u.created_date || '').slice(0, 10) }
+    : { ok: false, desde: null };
+  cache.set(correo, r);
+  return r;
+}
+function alumnosDe(b: any): string[] {
+  const enrolled = Array.isArray(b.enrolled_students) ? b.enrolled_students : [];
+  return [...new Set(
+    [b.student_email, ...enrolled.map((s: any) => s?.student_email)]
+      .filter(Boolean).map((e: unknown) => String(e).trim().toLowerCase()),
+  )];
+}
+async function claseConsentida(db: any, b: any, cache: Map<string, Consentimiento>): Promise<{ ok: boolean; motivo: string }> {
+  const correos = alumnosDe(b);
+  if (!correos.length) return { ok: false, motivo: 'clase_sin_alumnos' };
+  const dia = String(b.date || '').slice(0, 10);
+  for (const c of correos) {
+    const r = await consentimientoDe(db, c, cache);
+    if (!r.ok) return { ok: false, motivo: 'sin_consentimiento' };
+    if (dia && r.desde && r.desde > dia) return { ok: false, motivo: 'grabada_antes_del_consentimiento' };
+  }
+  return { ok: true, motivo: 'ok' };
+}
+// --- fin consentimiento
+
 Deno.serve(async (req) => {
   try {
     if (req.method !== 'POST') {
@@ -63,20 +103,13 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Reserva no encontrada' }, { status: 404 });
     }
 
-    // Consentimiento de todos los alumnos de la clase (individual o grupal).
-    const enrolled = Array.isArray(booking.enrolled_students) ? booking.enrolled_students : [];
-    const correos = [...new Set(
-      [booking.student_email, ...enrolled.map((s) => s?.student_email)]
-        .filter(Boolean)
-        .map((e) => String(e).toLowerCase()),
-    )];
-
-    const sinPermiso = [];
-    for (const correo of correos) {
-      const alumnos = await db.entities.Student.filter({ user_email: correo }).catch(() => []);
-      if (!alumnos[0] || alumnos[0].recording_consent !== true) sinPermiso.push(correo);
-    }
-    const consent = correos.length > 0 && sinPermiso.length === 0;
+    // Consentimiento de todos los alumnos, vigente y dado el dia de la clase o antes (lote C).
+    const c = await claseConsentida(db, booking, new Map());
+    const consent = c.ok;
+    // A quien comparte el worker el archivo: alumnos de la clase (tambien los de grupo) y profesor.
+    const destinatarios = consent
+      ? [...alumnosDe(booking), String(booking.teacher_email || '').toLowerCase()].filter(Boolean)
+      : [];
 
     const recordingUrl = `https://drive.google.com/file/d/${fileId}/view`;
     const yaEstaba = booking.recording_url === recordingUrl;
@@ -89,7 +122,8 @@ Deno.serve(async (req) => {
       stored: true,
       ya_estaba: yaEstaba,
       consent,
-      motivo: consent ? 'ok' : (correos.length === 0 ? 'clase_sin_alumnos' : 'sin_consentimiento'),
+      motivo: c.motivo === 'grabada_antes_del_consentimiento' ? 'sin_consentimiento' : c.motivo,
+      destinatarios,
       booking_id: bookingId,
     });
   } catch (error) {
