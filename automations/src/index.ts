@@ -1,7 +1,7 @@
 import type { Env } from "./env";
 import * as r from "./routes";
 import { runVideollamadas } from "./cron";
-import { listarGrabaciones, aplicarAccesos, cerrarCarpeta, listPermissions, auditarGrabaciones } from "./grabaciones";
+import { listarGrabaciones, aplicarAccesos, cerrarCarpeta, listPermissions, auditarGrabaciones, ponerEnCuarentena } from "./grabaciones";
 import { importarGrabaciones } from "./importar-grabaciones";
 import * as db from "./lib/supabase";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
@@ -235,6 +235,23 @@ export default {
       if (!env.ADMIN_KEY || !(await mismaClave(provided, env.ADMIN_KEY))) return json({ error: "Unauthorized" }, 401);
       const carpeta = url.searchParams.get("carpeta") === "cuarentena" ? "cuarentena" : "meet";
       return json(await auditarGrabaciones(env, carpeta, url.searchParams.get("pageToken") ?? undefined));
+    }
+
+    // Cuarentena de archivos concretos (lote C): grabaciones huerfanas, sin reserva en Menttio y
+    // por tanto sin consentimiento. Como mucho 8 por llamada (limite de peticiones del Worker).
+    // Solo mueve a la carpeta cerrada y quita accesos: es reversible durante 30 dias.
+    if (req.method === "POST" && url.pathname === "/admin/cuarentena") {
+      const provided = req.headers.get("x-admin-key") ?? "";
+      if (!env.ADMIN_KEY || !(await mismaClave(provided, env.ADMIN_KEY))) return json({ error: "Unauthorized" }, 401);
+      const body = (await req.json().catch(() => ({}))) as any;
+      const ids = (Array.isArray(body.fileIds) ? body.fileIds : [])
+        .map((x: unknown) => String(x)).filter((x: string) => /^[A-Za-z0-9_-]{10,}$/.test(x)).slice(0, 8);
+      const hechos: string[] = [], errores: string[] = [];
+      for (const id of ids) {
+        try { await ponerEnCuarentena(env, id); hechos.push(id); }
+        catch (e) { errores.push(`${id}: ${(e as Error).message}`); }
+      }
+      return json({ hechos, errores });
     }
 
     // Solo lectura: que responde Menttio sobre el consentimiento de una clase y que haria la

@@ -1,6 +1,6 @@
 import type { Env } from "./env";
 import * as db from "./lib/supabase";
-import { asegurarAccesoGrabacion, ponerEnCuarentena, mandarAPapelera } from "./grabaciones";
+import { asegurarAccesoGrabacion, ponerEnCuarentena, mandarAPapelera, limpiarCuarentena } from "./grabaciones";
 import { hacerCoanfitrion, crearEspacio, coanfitrionEnEspacio, activarGrabacionAutomatica } from "./coanfitrion";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
 import { sendEmail } from "./lib/gmail";
@@ -80,6 +80,15 @@ export async function runVideollamadas(env: Env): Promise<Record<string, unknown
   // ---------- PARTE C: conservación de datos (una vez al día, sobre las 03:00) ----------
   const hora = now.getUTCHours();
   const minuto = now.getUTCMinutes();
+  if (hora === 3 && minuto < 15) {
+    // Lote C: grabaciones con mas de 30 dias en cuarentena (incluidas las huerfanas) -> papelera.
+    try {
+      const l = await limpiarCuarentena(env);
+      if (l.papelera.length || l.errores.length) console.log("cuarentena:", JSON.stringify(l).slice(0, 300));
+    } catch (e) {
+      result.errores.push(`limpiar cuarentena: ${(e as Error).message}`);
+    }
+  }
   if (hora === 3 && minuto < 15 && env.BASE44_FUNCTIONS_URL && env.AUTOMATION_SECRET) {
     try {
       const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/dataRetention`, {

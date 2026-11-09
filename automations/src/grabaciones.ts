@@ -191,21 +191,22 @@ async function carpetaCuarentena(env: Env): Promise<string> {
 export async function ponerEnCuarentena(env: Env, fileId: string): Promise<void> {
   let file: any;
   try {
-    file = await driveFetch(env, `https://www.googleapis.com/drive/v3/files/${fileId}?fields=id,parents&supportsAllDrives=true`);
+    file = await driveFetch(env, `https://www.googleapis.com/drive/v3/files/${fileId}?fields=id,parents,appProperties&supportsAllDrives=true`);
   } catch (e) {
     if (String((e as Error).message).includes("Drive 404")) return;
     throw e;
   }
   const destino = await carpetaCuarentena(env);
   const padres = ((file.parents ?? []) as string[]).filter((p) => p !== destino);
-  if (!(file.parents ?? []).includes(destino) || padres.length > 0) {
-    await driveFetch(
-      env,
-      `https://www.googleapis.com/drive/v3/files/${fileId}?addParents=${destino}` +
-        (padres.length ? `&removeParents=${padres.join(",")}` : "") + `&supportsAllDrives=true&fields=id`,
-      { method: "PATCH", body: "{}" },
-    );
-  }
+  // La fecha de entrada se anota en el propio archivo: asi la limpieza diaria puede borrar a los
+  // 30 dias tambien los archivos que no estan vinculados a ninguna reserva (huerfanos).
+  const desde = file.appProperties?.menttio_cuarentena_desde ?? new Date().toISOString();
+  await driveFetch(
+    env,
+    `https://www.googleapis.com/drive/v3/files/${fileId}?addParents=${destino}` +
+      (padres.length ? `&removeParents=${padres.join(",")}` : "") + `&supportsAllDrives=true&fields=id`,
+    { method: "PATCH", body: JSON.stringify({ appProperties: { menttio_cuarentena_desde: desde } }) },
+  );
   const permisos = await listPermissions(env, fileId);
   for (const p of permisos) {
     if (p.role === "owner") continue;
@@ -252,4 +253,31 @@ export async function auditarGrabaciones(
   }));
   const permisosCarpeta = pageToken ? undefined : await listPermissions(env, id);
   return { carpeta, carpetaId: id, permisosCarpeta, archivos, nextPageToken: data.nextPageToken ?? null };
+}
+
+/**
+ * Limpieza diaria: manda a la papelera lo que lleva mas de 30 dias en la carpeta de cuarentena
+ * (segun la fecha anotada en el archivo). Cubre los huerfanos, que no tienen reserva en Menttio.
+ */
+export async function limpiarCuarentena(env: Env, limite = 15): Promise<{ papelera: string[]; errores: string[] }> {
+  const out = { papelera: [] as string[], errores: [] as string[] };
+  const id = await carpetaCuarentena(env);
+  const data = await driveFetch(
+    env,
+    `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(`'${id}' in parents and trashed=false`)}` +
+      `&fields=files(id,appProperties)&pageSize=200`,
+  );
+  const limiteFecha = Date.now() - 30 * 86400000;
+  for (const f of data.files ?? []) {
+    if (out.papelera.length >= limite) break;
+    const desde = Date.parse(f.appProperties?.menttio_cuarentena_desde ?? "");
+    if (isNaN(desde) || desde > limiteFecha) continue;
+    try {
+      await mandarAPapelera(env, f.id);
+      out.papelera.push(f.id);
+    } catch (e) {
+      out.errores.push(`${f.id}: ${(e as Error).message}`);
+    }
+  }
+  return out;
 }
