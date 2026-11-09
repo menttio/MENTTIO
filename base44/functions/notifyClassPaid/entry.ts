@@ -10,7 +10,13 @@ Deno.serve(async (req) => {
     console.log('🔔 notifyClassPaid triggered:', event);
     
     // Only proceed if payment_status changed to "paid"
-    if (event.type === 'update' && data.payment_status === 'paid' && old_data?.payment_status !== 'paid') {
+    // SEGURIDAD (09/11/2026): no se fia del payload. Cualquiera podia llamar a esta funcion
+    // con un id inventado y el worker marcaba esa clase como pagada en su registro. Ahora se
+    // relee la reserva y solo se avisa si de verdad esta pagada.
+    const reservaReal = (event?.type === 'update' && data?.id)
+      ? await base44.asServiceRole.entities.Booking.get(String(data.id)).catch(() => null)
+      : null;
+    if (event?.type === 'update' && reservaReal && reservaReal.payment_status === 'paid' && old_data?.payment_status !== 'paid') {
       console.log('💰 Clase marcada como pagada:', data.id);
       
       const webhookUrl = Deno.env.get('N8N_CLASS_PAID_WEBHOOK_URL');
