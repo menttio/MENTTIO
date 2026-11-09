@@ -1,5 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
+// SEGURIDAD (09/11/2026): correos que participan en una reserva (profesor, alumno y alumnos de grupo).
+function participantes(booking) {
+  const enrolled = Array.isArray(booking?.enrolled_students) ? booking.enrolled_students : [];
+  return new Set(
+    [booking?.teacher_email, booking?.student_email, ...enrolled.map((s) => s?.student_email)]
+      .filter(Boolean)
+      .map((e) => String(e).toLowerCase()),
+  );
+}
+
 async function refreshAccessToken(tokens) {
   if (!tokens.refresh_token) return tokens.access_token;
 
@@ -35,10 +45,38 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
+    // SEGURIDAD (09/11/2026): antes no pedia sesion, y con un correo y un id de evento se
+    // borraban eventos del calendario de cualquiera.
+    const user = await base44.auth.me().catch(() => null);
+    if (!user || !user.email) {
+      return Response.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { bookingId, userType, userEmail, eventId: directEventId } = await req.json();
 
     if (!userType || !userEmail) {
       return Response.json({ success: false, message: 'Missing userType or userEmail' }, { status: 400 });
+    }
+
+    // Borrar en el calendario de OTRA persona solo se permite si ambos participan en la misma
+    // reserva y el evento es el de esa reserva (p. ej. el profesor cancela y se borra tambien
+    // el evento del alumno). En el propio calendario, como antes.
+    const yo = String(user.email).toLowerCase();
+    const objetivo = String(userEmail).toLowerCase();
+    if (objetivo !== yo && user.role !== 'admin') {
+      const campo = `google_event_id_${userType === 'teacher' ? 'teacher' : 'student'}`;
+      let reserva = null;
+      if (bookingId) {
+        reserva = await base44.asServiceRole.entities.Booking.get(String(bookingId)).catch(() => null);
+      } else if (directEventId) {
+        const r = await base44.asServiceRole.entities.Booking.filter({ [campo]: String(directEventId) }).catch(() => []);
+        reserva = r[0] || null;
+      }
+      const quienes = participantes(reserva);
+      const eventoCuadra = !directEventId || (reserva && reserva[campo] === directEventId);
+      if (!reserva || !quienes.has(yo) || !quienes.has(objetivo) || !eventoCuadra) {
+        return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     console.log(`[deleteGoogleCalendarEvent] START userType=${userType} userEmail=${userEmail} eventId=${directEventId || 'from booking'}`);
