@@ -1,110 +1,116 @@
-// Google OAuth Callback - exchanges code for tokens and passes them to frontend
-// The frontend (already authenticated) saves the tokens to its own Teacher/Student record
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+
+// Google OAuth Callback.
+// SEGURIDAD (09/11/2026): antes devolvia los tokens de Google (incluido el refresh_token) en la
+// URL de vuelta para que los guardara el navegador, confiaba en un `state` sin firmar y
+// registraba la respuesta de Google en los logs. Ahora:
+//  - solo acepta un state firmado por getGoogleOAuthUrl y no caducado (15 min);
+//  - guarda los tokens en el servidor, en la ficha del usuario que inicio la conexion;
+//  - vuelve a una ruta interna de menttio.com con ?calendar_connected=true, sin tokens;
+//  - no escribe tokens en los logs.
 
 const REDIRECT_URI = 'https://menttio.com/api/functions/googleOAuthCallback';
+const APP = 'https://menttio.com';
+const enc = new TextEncoder();
+
+function desdeB64url(s: string): string {
+  const b = s.replace(/-/g, '+').replace(/_/g, '/');
+  return atob(b + '='.repeat((4 - (b.length % 4)) % 4));
+}
+
+function rutaInterna(r: unknown): string {
+  const s = typeof r === 'string' ? r.trim() : '';
+  if (!s.startsWith('/') || s.startsWith('//') || /[@\\\s]/.test(s) || s.length > 200) return '/';
+  return s.split('?')[0].split('#')[0] || '/';
+}
+
+async function stateValido(state: string | null): Promise<{ e: string; t: string; r: string } | null> {
+  if (!state || !state.includes('.')) return null;
+  const [payload, firma] = state.split('.');
+  try {
+    const clave = await crypto.subtle.importKey(
+      'raw', enc.encode('oauth-state:' + (Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET') || '')),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'],
+    );
+    const firmaBytes = Uint8Array.from(desdeB64url(firma), (c) => c.charCodeAt(0));
+    const ok = await crypto.subtle.verify('HMAC', clave, firmaBytes, enc.encode(payload));
+    if (!ok) return null;
+    const d = JSON.parse(desdeB64url(payload));
+    if (!d?.e || !d?.t || typeof d.x !== 'number' || Date.now() > d.x) return null;
+    return { e: String(d.e).toLowerCase(), t: d.t === 'teacher' ? 'teacher' : 'student', r: rutaInterna(d.r) };
+  } catch {
+    return null;
+  }
+}
+
+function volver(ruta: string, params: Record<string, string>) {
+  const qs = new URLSearchParams(params).toString();
+  return Response.redirect(`${APP}${rutaInterna(ruta)}?${qs}`, 302);
+}
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
   const errorParam = url.searchParams.get('error');
 
-  console.log('GOOGLE_OAUTH_CALLBACK: ===== START =====');
-  console.log('GOOGLE_OAUTH_CALLBACK: code received:', code ? 'YES (length=' + code.length + ')' : 'MISSING');
-  console.log('GOOGLE_OAUTH_CALLBACK: state received:', state ? 'YES' : 'MISSING');
-  console.log('GOOGLE_OAUTH_CALLBACK: error param:', errorParam || 'none');
-
-  // Parse state
-  let stateData = {};
-  try {
-    stateData = state ? JSON.parse(decodeURIComponent(state)) : {};
-    console.log('GOOGLE_OAUTH_CALLBACK: state decoded OK:', JSON.stringify(stateData));
-  } catch (e) {
-    console.error('GOOGLE_OAUTH_CALLBACK: state parse error:', e.message);
-    return redirectError('/', 'invalid_state', 'No se pudo decodificar el parámetro state');
+  const datos = await stateValido(url.searchParams.get('state'));
+  if (!datos) {
+    console.warn('GOOGLE_OAUTH_CALLBACK: state invalido o caducado');
+    return volver('/', { calendar_error: 'invalid_state' });
   }
-
-  const { userEmail, userType, returnUrl = '/' } = stateData;
-
-  if (!userEmail || !userType) {
-    console.error('GOOGLE_OAUTH_CALLBACK: missing userEmail or userType in state');
-    return redirectError(returnUrl, 'invalid_state', 'Faltan datos de usuario en el state');
-  }
-
   if (errorParam) {
-    console.error('GOOGLE_OAUTH_CALLBACK: Google returned error:', errorParam);
-    return redirectError(returnUrl, 'google_denied', errorParam);
+    return volver(datos.r, { calendar_error: 'google_denied' });
   }
-
   if (!code) {
-    console.error('GOOGLE_OAUTH_CALLBACK: no authorization code');
-    return redirectError(returnUrl, 'no_code', 'Google no devolvió código de autorización');
+    return volver(datos.r, { calendar_error: 'no_code' });
   }
 
-  // Exchange code for tokens
-  console.log('GOOGLE_OAUTH_CALLBACK: exchanging code for tokens...');
-  console.log('GOOGLE_OAUTH_CALLBACK: redirect_uri used:', REDIRECT_URI);
-  console.log('GOOGLE_OAUTH_CALLBACK: client_id present:', !!Deno.env.get('GOOGLE_OAUTH_CLIENT_ID'));
-  console.log('GOOGLE_OAUTH_CALLBACK: client_secret present:', !!Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET'));
-
-  let tokens;
+  let tokens: any;
   try {
-    const tokenBody = new URLSearchParams({
-      code,
-      client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID') || '',
-      client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET') || '',
-      redirect_uri: REDIRECT_URI,
-      grant_type: 'authorization_code',
-    });
-
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: tokenBody,
+      body: new URLSearchParams({
+        code,
+        client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID') || '',
+        client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET') || '',
+        redirect_uri: REDIRECT_URI,
+        grant_type: 'authorization_code',
+      }),
     });
-
-    const responseText = await tokenResponse.text();
-    console.log('GOOGLE_OAUTH_CALLBACK: token exchange status:', tokenResponse.status);
-    console.log('GOOGLE_OAUTH_CALLBACK: token exchange response:', responseText.substring(0, 500));
-
     if (!tokenResponse.ok) {
-      let detail = 'HTTP ' + tokenResponse.status;
-      try {
-        const parsed = JSON.parse(responseText);
-        detail = parsed.error_description || parsed.error || detail;
-      } catch {}
-      console.error('GOOGLE_OAUTH_CALLBACK: token exchange FAILED:', detail);
-      return redirectError(returnUrl, 'token_exchange_failed', detail);
+      console.error('GOOGLE_OAUTH_CALLBACK: intercambio fallido, HTTP', tokenResponse.status);
+      return volver(datos.r, { calendar_error: 'token_exchange_failed' });
     }
-
-    tokens = JSON.parse(responseText);
-    console.log('GOOGLE_OAUTH_CALLBACK: token exchange SUCCESS. has_access_token:', !!tokens.access_token, '| has_refresh_token:', !!tokens.refresh_token);
-  } catch (err) {
-    console.error('GOOGLE_OAUTH_CALLBACK: token exchange exception:', err.message);
-    return redirectError(returnUrl, 'token_exchange_failed', err.message);
+    tokens = await tokenResponse.json();
+  } catch {
+    console.error('GOOGLE_OAUTH_CALLBACK: excepcion en el intercambio');
+    return volver(datos.r, { calendar_error: 'token_exchange_failed' });
   }
 
-  // Pass tokens to frontend so it can save them using its own authenticated session
-  // This avoids service role issues — the frontend user has write permission to their own Teacher/Student
-  const tokensWithExpiry = {
-    ...tokens,
-    expiry_date: Date.now() + (tokens.expires_in * 1000)
-  };
+  try {
+    const base44 = createClientFromRequest(req);
+    const entidad = datos.t === 'teacher' ? 'Teacher' : 'Student';
+    const fichas = await base44.asServiceRole.entities[entidad].filter({ user_email: datos.e });
+    if (!fichas.length) {
+      return volver(datos.r, { calendar_error: 'user_not_found' });
+    }
+    const anteriores = fichas[0].google_calendar_tokens || {};
+    await base44.asServiceRole.entities[entidad].update(fichas[0].id, {
+      google_calendar_connected: true,
+      google_calendar_tokens: {
+        access_token: tokens.access_token,
+        // Google solo manda refresh_token cuando se da el consentimiento; si no viene, se conserva.
+        refresh_token: tokens.refresh_token || anteriores.refresh_token,
+        scope: tokens.scope,
+        token_type: tokens.token_type,
+        expiry_date: Date.now() + (Number(tokens.expires_in) || 3600) * 1000,
+      },
+    });
+  } catch {
+    console.error('GOOGLE_OAUTH_CALLBACK: no se pudo guardar la conexion');
+    return volver(datos.r, { calendar_error: 'update_failed' });
+  }
 
-  const tokensEncoded = encodeURIComponent(JSON.stringify(tokensWithExpiry));
-  const userTypeEncoded = encodeURIComponent(userType);
-
-  const appBase = 'https://menttio.com';
-  const dest = `${appBase}${returnUrl}?calendar_pending=true&cal_tokens=${tokensEncoded}&cal_user_type=${userTypeEncoded}`;
-
-  console.log('GOOGLE_OAUTH_CALLBACK: ===== SUCCESS, redirecting to frontend for token save =====');
-  return Response.redirect(dest, 302);
+  return volver(datos.r, { calendar_connected: 'true' });
 });
-
-function redirectError(returnUrl, errorCode, detail = '') {
-  const appBase = 'https://menttio.com';
-  const detailEncoded = encodeURIComponent(detail.substring(0, 200));
-  const dest = `${appBase}${returnUrl}?calendar_error=${errorCode}&detail=${detailEncoded}`;
-  console.log('GOOGLE_OAUTH_CALLBACK: redirecting with error:', errorCode, '| detail:', detail);
-  return Response.redirect(dest, 302);
-}
