@@ -45,37 +45,13 @@ export default function GoogleCalendarSync({ userEmail, userType, returnUrl, onC
       window.history.replaceState({}, '', window.location.pathname);
     }
 
-    if (calendarPending === 'true' && calTokens) {
-      // Save tokens using the authenticated user session (bypasses RLS correctly)
-      const saveTokens = async () => {
-        try {
-          const tokens = JSON.parse(decodeURIComponent(calTokens));
-          const entityType = calUserType ? decodeURIComponent(calUserType) : userType;
-          const entity = entityType === 'teacher' ? 'Teacher' : 'Student';
-
-          const users = await base44.entities[entity].filter({ user_email: userEmail });
-          if (users.length === 0) {
-            showToast('error', 'No se encontró tu perfil. Inténtalo de nuevo.');
-            setLoading(false);
-            return;
-          }
-
-          await base44.entities[entity].update(users[0].id, {
-            google_calendar_connected: true,
-            google_calendar_tokens: tokens,
-          });
-
-          setConnected(true);
-          showToast('success', '¡Google Calendar conectado correctamente!');
-          if (onConnected) onConnected();
-        } catch (err) {
-          console.error('Error saving Google Calendar tokens:', err);
-          showToast('error', 'Error al guardar la conexión: ' + err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      saveTokens();
+    // SEGURIDAD (09/11/2026): antes esta pantalla guardaba en tu ficha los tokens de Google que
+    // llegaran en la URL (?cal_tokens=...). Cualquiera podia mandarte un enlace con SUS tokens y
+    // tus clases (con el Meet y el nombre del alumno) se copiaban en SU calendario. Ahora los
+    // guarda el servidor (googleOAuthCallback) y aqui solo se comprueba el resultado.
+    void calTokens; void calUserType;
+    if (calendarPending === 'true') {
+      checkConnection().then(() => setLoading(false));
       return;
     }
 
