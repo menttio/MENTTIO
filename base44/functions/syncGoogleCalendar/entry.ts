@@ -1,5 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 
+// SEGURIDAD (09/11/2026): correos que participan en una reserva (profesor, alumno y alumnos de grupo).
+function participantes(booking) {
+  const enrolled = Array.isArray(booking?.enrolled_students) ? booking.enrolled_students : [];
+  return new Set(
+    [booking?.teacher_email, booking?.student_email, ...enrolled.map((s) => s?.student_email)]
+      .filter(Boolean)
+      .map((e) => String(e).toLowerCase()),
+  );
+}
+
 async function refreshAccessToken(tokens) {
   if (!tokens.refresh_token) return tokens.access_token;
   
@@ -55,6 +65,15 @@ Deno.serve(async (req) => {
     if (!bookingFromDB) {
       console.error('[syncGoogleCalendar] Booking not found:', bookingId);
       return Response.json({ error: 'Booking not found' }, { status: 404 });
+    }
+
+    // SEGURIDAD (09/11/2026): antes se podia copiar una clase ajena (alumno y Meet incluidos)
+    // al calendario propio, o escribir en el de otra persona. Ahora quien llama y el
+    // destinatario tienen que participar en esa reserva.
+    const quienes = participantes(bookingFromDB);
+    if (user.role !== 'admin' &&
+        (!quienes.has(String(user.email || '').toLowerCase()) || !quienes.has(String(userEmail).toLowerCase()))) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     // Allow caller to override date/time (avoids race condition when booking was just updated)
