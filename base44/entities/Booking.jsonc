@@ -187,6 +187,25 @@
     "google_event_id_student": {
       "type": "string",
       "description": "ID del evento en Google Calendar del alumno"
+    },
+    "recording_status": {
+      "type": "string",
+      "enum": [
+        "disponible",
+        "cuarentena",
+        "papelera"
+      ],
+      "description": "Estado de la grabacion en Drive (lote C). Lo escribe recordingActions; vacio = disponible"
+    },
+    "recording_quarantined_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cuando la grabacion paso a cuarentena (se borra a los 30 dias)"
+    },
+    "recording_trashed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cuando la grabacion se mando a la papelera de Drive"
     }
   },
   "required": [
