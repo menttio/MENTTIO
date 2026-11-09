@@ -37,7 +37,7 @@ export default function StudentSignupComplete() {
           guardian_relationship: esMenor ? data.guardian_relationship : undefined,
           data_consent_date: ahora,
           consent_version: CONSENT_VERSION,
-          recording_consent: Boolean(data.recording_consent),
+          recording_consent: false, // lo pone setRecordingConsent (servidor)
           recording_consent_date: ahora,
           assigned_teachers: []
         });
@@ -59,12 +59,15 @@ export default function StudentSignupComplete() {
             granted: true,
             text_shown: textoDe('privacidad', esMenor)
           });
-          await base44.entities.Consent.create({
-            ...comun,
-            type: 'grabacion',
-            granted: Boolean(data.recording_consent),
-            text_shown: textoDe('grabacion', esMenor)
-          });
+          // El permiso de grabacion lo registra el servidor (lote C, 09/11/2026). Si es un menor
+          // de 14 anos, queda pendiente hasta que el tutor lo confirme desde su correo.
+          if (data.recording_consent) {
+            await base44.functions.invoke('setRecordingConsent', {
+              granted: true,
+              text_version: CONSENT_VERSION,
+              text_shown: textoDe('grabacion', esMenor),
+            });
+          }
         } catch (consentError) {
           console.error('Error guardando el consentimiento:', consentError);
         }
