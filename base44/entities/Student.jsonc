@@ -101,6 +101,11 @@
       "type": "string",
       "maxLength": 1000,
       "description": "Aclaraci\u00f3n en texto libre sobre este alumno"
+    },
+    "recording_consent_pending_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Permiso de grabacion pedido y pendiente de que el tutor lo confirme por correo (menores de 14, lote C)"
     }
   },
   "required": [
