@@ -104,7 +104,7 @@ export default function SubscriptionTab({ profile }) {
           <AlertCircle className="shrink-0 text-amber-600" size={20} />
           <p>
             No se ha podido cobrar tu última cuota. Sigues teniendo acceso mientras Stripe reintenta el cobro,
-            pero si no se consigue la suscripción se cancelará. Revisa tu tarjeta en «Gestionar pago».
+            pero si no se consigue la suscripción se cancelará. Revisa tu método de pago en el portal de Stripe.
           </p>
         </div>
       )}
