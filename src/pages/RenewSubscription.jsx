@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor, crearProfesor, elegirPlanComision } from '@/lib/profesor';
 import { AlertCircle, Check, Loader2, Video, X } from 'lucide-react';
 import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
@@ -41,14 +41,14 @@ export default function RenewSubscription() {
     try {
       if (selectedPlan === 'commission') {
         // Commission plan: no Stripe, just update the teacher record
-        await actualizarProfesor(teacher.id, {
-          subscription_plan: 'commission',
-          subscription_active: true,
-          subscription_expires: null,
-          stripe_subscription_id: null,
-          trial_active: false,
-          commission_percentage: 10,
-        });
+        // Lote E3: lo hace el servidor (teacherAccount), que no deja tocar el plan desde aqui.
+        try {
+          await elegirPlanComision();
+        } catch (e) {
+          alert(e.message);
+          setRenewing(false);
+          return;
+        }
         window.location.href = '/TeacherDashboard';
         return;
       }
