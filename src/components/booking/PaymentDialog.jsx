@@ -65,10 +65,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
   const handleBizumConfirm = async () => {
     setProcessing(true);
     try {
-      await base44.entities.Booking.update(booking.id, {
-        payment_status: 'pending_confirmation',
-        payment_method: 'bizum',
-      });
+      await accionReserva('pago_enviado', { booking_id: booking.id });
 
       await base44.entities.Notification.create({
         user_id: booking.teacher_id,
