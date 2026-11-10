@@ -60,7 +60,12 @@ export default async function(req) {
     if (booking.status === 'cancelled') {
       return Response.json({ error: 'La clase esta cancelada' }, { status: 400 });
     }
-    if (booking.payment_status === 'paid') {
+    // P16 (lote E, 10/11/2026): en grupo cada alumno paga lo suyo. Antes, en cuanto pagaba el
+    // primero, la reserva quedaba 'paid' y los demas ya no podian pagar.
+    const yaPagada = booking.class_type === 'group'
+      ? enrolled.some((s) => (s.student_email || '').toLowerCase() === email && s.payment_status === 'paid')
+      : booking.payment_status === 'paid';
+    if (yaPagada) {
       return Response.json({ error: 'Esta clase ya esta pagada' }, { status: 400 });
     }
 
