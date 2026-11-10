@@ -402,9 +402,9 @@ export default function TeacherSignup() {
             <div className="w-20 h-20 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-4">
               <Users className="text-[#41f2c0]" size={40} />
             </div>
-            <CardTitle className="text-3xl font-bold text-[#404040]">
+            <h1 className="text-3xl font-bold text-[#404040]">
               Únete como Profesor
-            </CardTitle>
+            </h1>
             <p className="text-gray-500 mt-2">
               {step === 1 && 'Completa tu perfil profesional'}
               {step === 2 && 'Configura tus asignaturas y precios'}
