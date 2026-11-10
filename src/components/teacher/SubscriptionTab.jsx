@@ -98,6 +98,16 @@ export default function SubscriptionTab({ profile }) {
 
   return (
     <div className="space-y-6">
+      {data?.pago_atrasado && (
+        // Lote E (P15): con el pago atrasado se mantiene el acceso mientras Stripe reintenta.
+        <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <AlertCircle className="shrink-0 text-amber-600" size={20} />
+          <p>
+            No se ha podido cobrar tu última cuota. Sigues teniendo acceso mientras Stripe reintenta el cobro,
+            pero si no se consigue la suscripción se cancelará. Revisa tu tarjeta en «Gestionar pago».
+          </p>
+        </div>
+      )}
       {/* Subscription Status */}
       <Card>
         <CardHeader>
