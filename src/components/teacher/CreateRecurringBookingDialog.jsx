@@ -314,46 +314,20 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       }
 
       // Create all non-conflicting bookings in parallel (batch)
-      const createdBookings = await Promise.all(
-        bookingsToCreate.map(b =>
-          base44.entities.Booking.create({
-            teacher_id: teacher.id,
-            teacher_name: teacher.full_name,
-            teacher_email: teacher.user_email,
-            teacher_phone: teacher.phone || '',
-            subject_id: selectedSubject.subject_id,
-            subject_name: selectedSubject.subject_name,
-            date: b.dateStr,
-            start_time: b.time,
-            end_time: calculateEndTime(b.time, duration),
-            duration_minutes: duration,
-            price,
-            status: 'scheduled',
-            payment_status: 'pending',
-            files: [],
-            ...camposComision,
-            ...(esGrupo
-              ? {
-                  class_type: 'group',
-                  max_students: topeGrupo,
-                  group_unlimited: topeGrupo === null,
-                  enrolled_students: alumnos.map(a => ({
-                    student_id: a.id,
-                    student_name: a.full_name,
-                    student_email: a.user_email,
-                    payment_status: 'pending',
-                  })),
-                }
-              : {
-                  class_type: 'individual',
-                  student_id: alumnos[0].id,
-                  student_name: alumnos[0].full_name,
-                  student_email: alumnos[0].user_email,
-                  student_phone: alumnos[0].phone || '',
-                }),
-          })
-        )
-      );
+      // Lote E2: la serie la crea el servidor de una vez (comprueba que los alumnos son del
+      // profesor y calcula la comision).
+      void camposComision;
+      const { bookings: createdBookings = [] } = await accionReserva('crear', {
+        teacher_id: teacher.id,
+        subject_id: selectedSubject.subject_id,
+        fechas: bookingsToCreate.map(b => ({ date: b.dateStr, start_time: b.time })),
+        duration_minutes: duration,
+        price,
+        class_type: esGrupo ? 'group' : 'individual',
+        max_students: topeGrupo,
+        group_unlimited: esGrupo && topeGrupo === null,
+        student_ids: alumnos.map(a => a.id),
+      });
 
       // Notify n8n for all created bookings in a single bulk call
       try {
