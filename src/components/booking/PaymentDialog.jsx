@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import { CreditCard, Smartphone, Loader2, CheckCircle, Copy, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -68,17 +68,6 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
     try {
       await accionReserva('pago_enviado', { booking_id: booking.id });
 
-      await avisoEnServidor({
-        user_id: booking.teacher_id,
-        user_email: booking.teacher_email,
-        type: 'payment_pending_confirmation',
-        title: 'Confirma el pago de una clase',
-        message: cobraMenttio
-          ? `${booking.student_name} dice haber enviado ${eur(booking.price)} por Bizum a Menttio por la clase de ${booking.subject_name}. Menttio lo confirmará y te abonará tu parte a final de mes.`
-          : `${booking.student_name} dice haber enviado ${eur(booking.price)} por Bizum por la clase de ${booking.subject_name}. Confirma si lo has recibido.`,
-        related_id: booking.id,
-        link_page: 'TeacherCalendar',
-      });
 
       onSuccess?.();
       onOpenChange(false);

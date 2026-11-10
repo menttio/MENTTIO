@@ -43,7 +43,7 @@ import {
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import PaymentDialog from './PaymentDialog';
 import { plazasReserva } from '@/lib/asignaturas';
 
@@ -293,25 +293,7 @@ export default function BookingCard({
       await accionReserva('cancelar', { booking_id: booking.id });
 
       // Create notifications for both student and teacher
-      await avisoEnServidor({
-        user_id: booking.student_id,
-        user_email: booking.student_email,
-        type: 'booking_cancelled',
-        title: 'Clase cancelada',
-        message: `Tu clase de ${booking.subject_name} con ${booking.teacher_name} del ${format(bookingDate, "d 'de' MMMM", { locale: es })} ha sido cancelada`,
-        related_id: booking.id,
-        link_page: 'MyClasses'
-      });
 
-      await avisoEnServidor({
-        user_id: booking.teacher_id,
-        user_email: booking.teacher_email,
-        type: 'booking_cancelled',
-        title: 'Clase cancelada',
-        message: `La clase de ${booking.subject_name} con ${booking.student_name} del ${format(bookingDate, "d 'de' MMMM", { locale: es })} ha sido cancelada`,
-        related_id: booking.id,
-        link_page: 'TeacherCalendar'
-      });
 
       // Notificar a n8n sobre la cancelación
       try {
@@ -348,15 +330,6 @@ export default function BookingCard({
   const handleConfirmPayment = async () => {
     try {
       await accionReserva('pago', { booking_id: booking.id, estado: 'paid' });
-      await avisoEnServidor({
-        user_id: booking.student_id,
-        user_email: booking.student_email,
-        type: 'payment_confirmed',
-        title: 'Pago confirmado',
-        message: `${booking.teacher_name} ha confirmado que recibió tu pago de ${booking.price}€ por la clase de ${booking.subject_name}.`,
-        related_id: booking.id,
-        link_page: 'MyClasses'
-      });
       onRefresh?.();
     } catch (error) {
       console.error('Error confirming payment:', error);
@@ -366,15 +339,6 @@ export default function BookingCard({
   const handleRejectPayment = async () => {
     try {
       await accionReserva('pago', { booking_id: booking.id, estado: 'pending' });
-      await avisoEnServidor({
-        user_id: booking.student_id,
-        user_email: booking.student_email,
-        type: 'payment_rejected',
-        title: 'Pago no recibido',
-        message: `${booking.teacher_name} indica que no ha recibido el pago de ${booking.price}€ por la clase de ${booking.subject_name}. Por favor, vuelve a intentarlo.`,
-        related_id: booking.id,
-        link_page: 'MyClasses'
-      });
       onRefresh?.();
     } catch (error) {
       console.error('Error rejecting payment:', error);

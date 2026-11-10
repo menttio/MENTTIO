@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import {
   precioClase,
   daIndividual,
@@ -339,41 +339,12 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
       const queClase = esGrupo ? 'clase grupal' : 'clase';
 
       for (const alumno of alumnos) {
-        await avisoEnServidor({
-          user_id: alumno.id,
-          user_email: alumno.user_email,
-          type: 'booking_new',
-          title: esGrupo ? 'Clase grupal reservada' : 'Clase reservada',
-          message: `${teacher.full_name} ha reservado una ${queClase} de ${selectedSubject.subject_name} contigo para el ${bookingDate} a las ${selectedTime}`,
-          related_id: newBooking.id,
-          link_page: 'MyClasses'
-        });
       }
 
-      await avisoEnServidor({
-        user_id: teacher.id,
-        user_email: teacher.user_email,
-        type: 'booking_new',
-        title: esGrupo ? 'Clase grupal creada' : 'Clase creada',
-        message: esGrupo
-          ? `Has creado una clase grupal de ${selectedSubject.subject_name} con ${alumnos.length} alumnos para el ${bookingDate} a las ${selectedTime}`
-          : `Has creado una clase de ${selectedSubject.subject_name} con ${alumnos[0].full_name} para el ${bookingDate} a las ${selectedTime}`,
-        related_id: newBooking.id,
-        link_page: 'TeacherCalendar'
-      });
 
       // Send push notification to students
       for (const alumno of alumnos) {
         try {
-          await avisoEnServidor({
-            userEmail: alumno.user_email,
-            title: esGrupo ? 'Nueva clase grupal reservada' : 'Nueva clase reservada',
-            body: `${teacher.full_name} ha reservado una ${queClase} de ${selectedSubject.subject_name} contigo para el ${bookingDate} a las ${selectedTime}`,
-            data: {
-              booking_id: newBooking.id,
-              page: 'MyClasses'
-            }
-          });
         } catch (pushError) {
           console.error('Error enviando push notification:', pushError);
         }

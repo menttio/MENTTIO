@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import {
   Dialog,
   DialogContent,
@@ -249,25 +249,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
 
       // Create notifications for both student and teacher
       const newDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-      await avisoEnServidor({
-        user_id: booking.student_id,
-        user_email: booking.student_email,
-        type: 'booking_modified',
-        title: 'Clase reprogramada',
-        message: `Tu clase de ${booking.subject_name} con ${booking.teacher_name} se ha cambiado a ${newDate} a las ${selectedTime}`,
-        related_id: booking.id,
-        link_page: 'MyClasses'
-      });
 
-      await avisoEnServidor({
-        user_id: booking.teacher_id,
-        user_email: booking.teacher_email,
-        type: 'booking_modified',
-        title: 'Clase reprogramada',
-        message: `La clase de ${booking.subject_name} con ${booking.student_name} se ha cambiado a ${newDate} a las ${selectedTime}`,
-        related_id: booking.id,
-        link_page: 'TeacherCalendar'
-      });
 
       // Sync with Google Calendar — pass new date/time to avoid race condition
       try {

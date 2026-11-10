@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import { 
   ChevronRight, 
   ChevronLeft,
@@ -487,37 +487,10 @@ export default function BookClass() {
       // Create notifications
       const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
 
-      await avisoEnServidor({
-        user_id: student.id,
-        user_email: user.email,
-        type: 'booking_new',
-        title: 'Clase reservada',
-        message: `Has reservado una clase de ${subjectName} con ${selectedTeacher.full_name} para el ${bookingDate} a las ${selectedTime}. Recuerda pagar después de la clase.`,
-        related_id: newBooking.id,
-        link_page: 'MyClasses'
-      });
 
-      await avisoEnServidor({
-        user_id: selectedTeacher.id,
-        user_email: selectedTeacher.user_email,
-        type: 'booking_new',
-        title: 'Nueva reserva de clase',
-        message: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
-        related_id: newBooking.id,
-        link_page: 'TeacherCalendar'
-      });
 
       // Send push notification to teacher
       try {
-        await avisoEnServidor({
-          userEmail: selectedTeacher.user_email,
-          title: 'Nueva reserva de clase',
-          body: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
-          data: {
-            booking_id: newBooking.id,
-            page: 'TeacherCalendar'
-          }
-        });
       } catch (pushError) {
         console.error('Error enviando push notification:', pushError);
       }

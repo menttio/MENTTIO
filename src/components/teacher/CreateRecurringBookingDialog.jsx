@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva, avisoEnServidor } from '@/lib/reservas';
+import { accionReserva } from '@/lib/reservas';
 import {
   precioClase,
   daIndividual,
@@ -355,15 +355,6 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
 
       // Un solo aviso por alumno resumiendo toda la serie
       for (const alumno of alumnos) {
-        await avisoEnServidor({
-          user_id: alumno.id,
-          user_email: alumno.user_email,
-          type: 'booking_new',
-          title: esGrupo ? 'Clases grupales recurrentes creadas' : 'Clases recurrentes creadas',
-          message: `${teacher.full_name} ha programado ${createdBookings.length} clases recurrentes${esGrupo ? ' grupales' : ''} de ${selectedSubject.subject_name} contigo`,
-          related_id: createdBookings[0]?.id,
-          link_page: 'MyClasses'
-        });
       }
 
       // Sync Google Calendar for teacher
