@@ -92,8 +92,11 @@ export default async function(req) {
       },
       bizum: {
         disponible: !esComision,
-        telefono: esComision ? '' : (booking.teacher_phone || teacher.phone || ''),
-        titular: esComision ? '' : (booking.teacher_name || teacher.full_name || 'Tu profesor'),
+        // P13 (lote E, 10/11/2026): el telefono y el titular salen SOLO de la ficha del profesor.
+        // Antes se leian primero de la reserva, que el alumno puede editar: podia poner su propio
+        // telefono y que el Bizum de otro alumno fuera a el.
+        telefono: esComision ? '' : (teacher.phone || ''),
+        titular: esComision ? '' : (teacher.full_name || 'Tu profesor'),
         cobra_menttio: false,
         motivo_no_disponible: esComision
           ? 'En el plan sin cuota las clases se pagan con tarjeta'
