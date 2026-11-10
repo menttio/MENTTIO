@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
+import { chatAccion } from '@/lib/chat';
 import { Send, Loader2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,24 +43,12 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
       
       setMessages(sortedMessages);
       
-      // Mark messages as read
+      // Marcar como leidos: lo hace el servidor (lote F).
       const unreadMessages = sortedMessages.filter(
         m => !m.is_read && m.sender_type !== userRole
       );
-      
-      for (const msg of unreadMessages) {
-        await base44.entities.Message.update(msg.id, { is_read: true });
-      }
-      
-      // Update conversation unread count
       if (unreadMessages.length > 0) {
-        const unreadField = userRole === 'student' 
-          ? 'unread_count_student' 
-          : 'unread_count_teacher';
-        
-        await base44.entities.Conversation.update(conversation.id, {
-          [unreadField]: 0
-        });
+        await chatAccion('leido', { conversation_id: conversation.id });
       }
     } catch (error) {
       console.error(error);
@@ -74,35 +63,10 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
 
     setSending(true);
     try {
-      const userName = userRole === 'student' 
-        ? conversation.student_name 
-        : conversation.teacher_name;
-
-      await base44.entities.Message.create({
-        conversation_id: conversation.id,
-        // Participantes: son los que dan acceso al mensaje (nadie más puede leerlo).
-        student_email: conversation.student_email,
-        teacher_email: conversation.teacher_email,
-        sender_type: userRole,
-        sender_id: userId,
-        sender_name: userName,
-        content: newMessage.trim(),
-        is_read: false
-      });
-
-      // Update conversation
-      const otherUnreadField = userRole === 'student' 
-        ? 'unread_count_teacher' 
-        : 'unread_count_student';
-      
-      const currentUnread = conversation[otherUnreadField] || 0;
-
-      await base44.entities.Conversation.update(conversation.id, {
-        last_message: newMessage.trim(),
-        last_message_date: new Date().toISOString(),
-        last_message_by: userRole,
-        [otherUnreadField]: currentUnread + 1
-      });
+      // Lote F: el servidor crea el mensaje (con remitente y destinatario de la conversacion
+      // guardada) y actualiza la conversacion.
+      void userId;
+      await chatAccion('mensaje', { conversation_id: conversation.id, content: newMessage.trim() });
 
       setNewMessage('');
       await loadMessages();
