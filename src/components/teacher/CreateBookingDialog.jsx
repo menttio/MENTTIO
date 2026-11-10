@@ -365,7 +365,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
       // Send push notification to students
       for (const alumno of alumnos) {
         try {
-          await base44.functions.invoke('sendPushNotification', {
+          await avisoEnServidor({
             userEmail: alumno.user_email,
             title: esGrupo ? 'Nueva clase grupal reservada' : 'Nueva clase reservada',
             body: `${teacher.full_name} ha reservado una ${queClase} de ${selectedSubject.subject_name} contigo para el ${bookingDate} a las ${selectedTime}`,

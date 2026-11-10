@@ -509,7 +509,7 @@ export default function BookClass() {
 
       // Send push notification to teacher
       try {
-        await base44.functions.invoke('sendPushNotification', {
+        await avisoEnServidor({
           userEmail: selectedTeacher.user_email,
           title: 'Nueva reserva de clase',
           body: `${student.full_name} ha reservado una clase de ${subjectName} para el ${bookingDate} a las ${selectedTime}`,
