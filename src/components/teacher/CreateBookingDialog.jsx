@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import {
   precioClase,
   daIndividual,
@@ -339,7 +339,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
       const queClase = esGrupo ? 'clase grupal' : 'clase';
 
       for (const alumno of alumnos) {
-        await base44.entities.Notification.create({
+        await avisoEnServidor({
           user_id: alumno.id,
           user_email: alumno.user_email,
           type: 'booking_new',
@@ -350,7 +350,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
         });
       }
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: teacher.id,
         user_email: teacher.user_email,
         type: 'booking_new',

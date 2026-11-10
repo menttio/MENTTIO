@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import { CreditCard, Smartphone, Loader2, CheckCircle, Copy, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -68,7 +68,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
     try {
       await accionReserva('pago_enviado', { booking_id: booking.id });
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.teacher_id,
         user_email: booking.teacher_email,
         type: 'payment_pending_confirmation',

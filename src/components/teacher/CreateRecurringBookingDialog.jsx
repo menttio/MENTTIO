@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import {
   precioClase,
   daIndividual,
@@ -355,7 +355,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
 
       // Un solo aviso por alumno resumiendo toda la serie
       for (const alumno of alumnos) {
-        await base44.entities.Notification.create({
+        await avisoEnServidor({
           user_id: alumno.id,
           user_email: alumno.user_email,
           type: 'booking_new',

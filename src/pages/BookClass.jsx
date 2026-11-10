@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import { 
   ChevronRight, 
   ChevronLeft,
@@ -487,7 +487,7 @@ export default function BookClass() {
       // Create notifications
       const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: student.id,
         user_email: user.email,
         type: 'booking_new',
@@ -497,7 +497,7 @@ export default function BookClass() {
         link_page: 'MyClasses'
       });
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: selectedTeacher.id,
         user_email: selectedTeacher.user_email,
         type: 'booking_new',

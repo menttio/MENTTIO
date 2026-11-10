@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import {
   Dialog,
   DialogContent,
@@ -249,7 +249,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
 
       // Create notifications for both student and teacher
       const newDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.student_id,
         user_email: booking.student_email,
         type: 'booking_modified',
@@ -259,7 +259,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
         link_page: 'MyClasses'
       });
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.teacher_id,
         user_email: booking.teacher_email,
         type: 'booking_modified',

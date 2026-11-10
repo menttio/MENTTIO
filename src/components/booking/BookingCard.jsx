@@ -43,7 +43,7 @@ import {
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
-import { accionReserva } from '@/lib/reservas';
+import { accionReserva, avisoEnServidor } from '@/lib/reservas';
 import PaymentDialog from './PaymentDialog';
 import { plazasReserva } from '@/lib/asignaturas';
 
@@ -293,7 +293,7 @@ export default function BookingCard({
       await accionReserva('cancelar', { booking_id: booking.id });
 
       // Create notifications for both student and teacher
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.student_id,
         user_email: booking.student_email,
         type: 'booking_cancelled',
@@ -303,7 +303,7 @@ export default function BookingCard({
         link_page: 'MyClasses'
       });
 
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.teacher_id,
         user_email: booking.teacher_email,
         type: 'booking_cancelled',
@@ -348,7 +348,7 @@ export default function BookingCard({
   const handleConfirmPayment = async () => {
     try {
       await accionReserva('pago', { booking_id: booking.id, estado: 'paid' });
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.student_id,
         user_email: booking.student_email,
         type: 'payment_confirmed',
@@ -366,7 +366,7 @@ export default function BookingCard({
   const handleRejectPayment = async () => {
     try {
       await accionReserva('pago', { booking_id: booking.id, estado: 'pending' });
-      await base44.entities.Notification.create({
+      await avisoEnServidor({
         user_id: booking.student_id,
         user_email: booking.student_email,
         type: 'payment_rejected',
