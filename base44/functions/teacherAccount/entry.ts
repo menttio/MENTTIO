@@ -56,6 +56,12 @@ Deno.serve(async (req) => {
         const teacher = await db.entities.Teacher.update(actual.id, limpio);
         return Response.json({ teacher, ya_existia: true, ignorados });
       }
+      // Lote G (10/11/2026): un correo, un papel. El inicio de sesion es unico y la app elige
+      // primero la ficha de profesor: con las dos, la persona ya no podria entrar como alumno.
+      const comoAlumno = await db.entities.Student.filter({ user_email: correo }).catch(() => []);
+      if (comoAlumno.length > 0) {
+        return err('Este correo ya está registrado como alumno en Menttio. Para darte de alta como profesor usa otro correo.', 409);
+      }
       const plan = ['basic', 'premium', 'commission'].includes(body.plan) ? body.plan : 'basic';
       let facturacion: Record<string, unknown>;
       if (plan === 'commission') {
