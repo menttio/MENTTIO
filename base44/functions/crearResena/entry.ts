@@ -201,13 +201,7 @@ Deno.serve(async (req) => {
         related_id: resena.id,
         link_page: 'ReviewsHistory',
       });
-
-      await db.functions.invoke('sendPushNotification', {
-        userEmail: profesor.user_email,
-        title: 'Nueva valoracion',
-        body: `${nombreMostrado} te ha dado ${rating} ${rating === 1 ? 'estrella' : 'estrellas'}`,
-        data: { page: 'ReviewsHistory' },
-      });
+      // Fase 3 (10/11/2026): sin aviso push (desactivadas por el gasto de creditos de Base44).
     } catch (error) {
       console.error('crearResena: no se pudo avisar al profesor', error);
     }
