@@ -70,8 +70,8 @@ export default function BetaChat() {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#404040]" translate="no">
-              Men<span className="text-[#41f2c0]">π</span>io
+            <h1 className="text-xl font-bold text-[#404040]" translate="no" aria-label="Menttio">
+              <span aria-hidden="true">Men<span className="text-[#41f2c0]">π</span>io</span>
             </h1>
             <p className="text-xs text-gray-500 leading-tight">Resuelve tus dudas sobre Menttio</p>
           </div>
