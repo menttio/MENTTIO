@@ -48,7 +48,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-[#41f2c0] rounded-xl flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">π</span>
+                <span className="text-2xl font-bold text-white" aria-hidden="true">π</span>
               </div>
               <h3 className="text-xl font-bold" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">π</span>io</span></h3>
             </div>

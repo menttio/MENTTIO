@@ -44,9 +44,9 @@ export default function TermsOfService() {
         >
           {/* Introduction */}
           <section>
-            <h2 className="text-2xl font-bold text-[#404040] mb-4">Bienvenido a Menπio</h2>
+            <h2 className="text-2xl font-bold text-[#404040] mb-4">Bienvenido a Menttio</h2>
             <p className="text-gray-600 leading-relaxed">
-              Estos Términos de Uso rigen el acceso y uso de la plataforma Menπio. Al registrarte y utilizar 
+              Estos Términos de Uso rigen el acceso y uso de la plataforma Menttio. Al registrarte y utilizar 
               nuestros servicios, aceptas estos términos en su totalidad. Por favor, léelos cuidadosamente.
             </p>
           </section>
@@ -60,7 +60,7 @@ export default function TermsOfService() {
               <h3 className="text-xl font-bold text-[#404040]">1. Aceptación de los Términos</h3>
             </div>
             <p className="text-gray-600 leading-relaxed ml-11">
-              Al crear una cuenta en Menπio, confirmas que tienes al menos 18 años o cuentas con el 
+              Al crear una cuenta en Menttio, confirmas que tienes al menos 18 años o cuentas con el 
               consentimiento de tus padres o tutores legales. Te comprometes a proporcionar información 
               veraz y actualizada durante el registro.
             </p>
@@ -76,7 +76,7 @@ export default function TermsOfService() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                Menπio es una plataforma que conecta profesores con alumnos para la impartición de clases 
+                Menttio es una plataforma que conecta profesores con alumnos para la impartición de clases 
                 particulares online. Proporcionamos:
               </p>
               <ul className="space-y-2 text-gray-600">
@@ -134,7 +134,7 @@ export default function TermsOfService() {
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
                 Los pagos entre alumnos y profesores se procesan de forma segura a través de nuestra 
-                plataforma. Menπio no cobra comisiones por las clases. Los profesores establecen sus 
+                plataforma. Menttio no cobra comisiones por las clases. Los profesores establecen sus 
                 propias tarifas.
               </p>
               <p className="text-gray-600 leading-relaxed">
@@ -154,7 +154,7 @@ export default function TermsOfService() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                Te comprometes a utilizar Menπio de manera responsable y ética. Está prohibido:
+                Te comprometes a utilizar Menttio de manera responsable y ética. Está prohibido:
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -186,7 +186,7 @@ export default function TermsOfService() {
               <h3 className="text-xl font-bold text-[#404040]">6. Propiedad Intelectual</h3>
             </div>
             <p className="text-gray-600 leading-relaxed ml-11">
-              Todo el contenido de la plataforma Menπio, incluyendo diseño, logotipos, textos y software, 
+              Todo el contenido de la plataforma Menttio, incluyendo diseño, logotipos, textos y software, 
               está protegido por derechos de autor y otras leyes de propiedad intelectual. Las grabaciones 
               de clases y materiales son propiedad de sus respectivos creadores.
             </p>
@@ -201,7 +201,7 @@ export default function TermsOfService() {
               <h3 className="text-xl font-bold text-[#404040]">7. Limitación de Responsabilidad</h3>
             </div>
             <p className="text-gray-600 leading-relaxed ml-11">
-              Menπio actúa como intermediario entre profesores y alumnos. No somos responsables de la 
+              Menttio actúa como intermediario entre profesores y alumnos. No somos responsables de la 
               calidad de las clases, ni de las disputas que puedan surgir entre usuarios. Sin embargo, 
               nos esforzamos por proporcionar un servicio de calidad y mediar en caso de conflictos.
             </p>

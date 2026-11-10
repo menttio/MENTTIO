@@ -91,7 +91,7 @@ export default function Hero() {
             </button>
             
             <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-xl md:text-2xl font-bold text-[#41f2c0]">π</span>
+              <span className="text-xl md:text-2xl font-bold text-[#41f2c0]" aria-hidden="true">π</span>
             </div>
             {/* Era un segundo h1: la página tenía dos títulos de primer nivel y un lector de
                 pantalla no podía saber cuál era el de verdad. El logo no es el título. */}
