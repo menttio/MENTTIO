@@ -318,27 +318,21 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
         ...camposComision,
       };
 
-      const newBooking = await base44.entities.Booking.create(esGrupo
-        ? {
-            ...comun,
-            class_type: 'group',
-            max_students: topeGrupo,
-            group_unlimited: topeGrupo === null,
-            enrolled_students: alumnos.map(a => ({
-              student_id: a.id,
-              student_name: a.full_name,
-              student_email: a.user_email,
-              payment_status: 'pending',
-            })),
-          }
-        : {
-            ...comun,
-            class_type: 'individual',
-            student_id: alumnos[0].id,
-            student_name: alumnos[0].full_name,
-            student_email: alumnos[0].user_email,
-            student_phone: alumnos[0].phone || '',
-          });
+      // Lote E2: la reserva la crea el servidor con los datos del profesor y de sus alumnos
+      // (comprueba que son suyos y calcula la comision). `comun` queda solo como referencia.
+      void comun;
+      const { booking: newBooking } = await accionReserva('crear', {
+        teacher_id: teacher.id,
+        subject_id: selectedSubject.subject_id,
+        date: fechaStr,
+        start_time: selectedTime,
+        duration_minutes: duration,
+        price: precio,
+        class_type: esGrupo ? 'group' : 'individual',
+        max_students: topeGrupo,
+        group_unlimited: esGrupo && topeGrupo === null,
+        student_ids: alumnos.map(a => a.id),
+      });
 
       // Create notifications
       const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
