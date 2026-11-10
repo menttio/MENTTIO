@@ -19,7 +19,8 @@
         "message_new",
         "reminder_24h",
         "payment_pending_confirmation",
-        "payment_confirmed"
+        "payment_confirmed",
+        "payment_rejected"
       ],
       "description": "Tipo de notificaci\u00f3n"
     },
