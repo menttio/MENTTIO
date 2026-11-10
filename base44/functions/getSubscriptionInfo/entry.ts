@@ -193,7 +193,7 @@ Deno.serve(async (req) => {
 
       if (Object.keys(updates).length > 0) {
         console.log('💾 Actualizando Teacher en BD con:', updates);
-        await base44.entities.Teacher.update(teacher.id, updates);
+        await base44.asServiceRole.entities.Teacher.update(teacher.id, updates);
         console.log('✅ Teacher sincronizado con Stripe');
       } else {
         console.log('ℹ️ No hay cambios que sincronizar en Teacher');

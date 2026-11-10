@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
     const students = await base44.entities.Student.filter({ user_email: user.email });
 
     if (teachers.length > 0) {
-      await base44.entities.Teacher.update(teachers[0].id, {
+      await base44.asServiceRole.entities.Teacher.update(teachers[0].id, {
         google_calendar_connected: connect
       });
     } else if (students.length > 0) {

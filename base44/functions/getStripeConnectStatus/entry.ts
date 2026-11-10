@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
 
     // Sync enabled status to our DB if changed
     if (enabled !== teacher.stripe_connect_enabled) {
-      await base44.entities.Teacher.update(teacher.id, {
+      await base44.asServiceRole.entities.Teacher.update(teacher.id, {
         stripe_connect_enabled: enabled,
       });
     }
