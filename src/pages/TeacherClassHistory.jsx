@@ -170,6 +170,7 @@ export default function TeacherClassHistory() {
     if (!window.confirm(`¿Eliminar ${toDelete.length} clase${toDelete.length > 1 ? 's' : ''}? Esta acción no se puede deshacer.`)) return;
 
     setDeleting(true);
+    const noBorradas = [];
     try {
       // Phase 1: delete Calendar events + bookings in parallel (no delay needed)
       await Promise.all(toDelete.map(async (booking) => {
@@ -184,8 +185,15 @@ export default function TeacherClassHistory() {
             console.error('Error eliminando evento de Google Calendar:', booking.id, e);
           }
         }
-        await base44.entities.Booking.delete(booking.id);
+        // Lote E2: lo borra el servidor. Las clases cobradas con tarjeta no se borran (son el
+        // registro del cobro): se avisa al final.
+        try {
+          await accionReserva('borrar', { booking_id: booking.id });
+        } catch (e) {
+          noBorradas.push(e.message);
+        }
       }));
+      if (noBorradas.length) alert(`${noBorradas.length} clase(s) no se han borrado: ${noBorradas[0]}`);
 
       setSelectedIds(new Set());
       setSelectionMode(false);
