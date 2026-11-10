@@ -243,11 +243,8 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
       const newDateStr = format(selectedDate, 'yyyy-MM-dd');
       const newEndTime = calculateEndTime(selectedTime, booking.duration_minutes || 60);
       
-      await base44.entities.Booking.update(booking.id, {
-        date: newDateStr,
-        start_time: selectedTime,
-        end_time: newEndTime
-      });
+      // Lote E2: lo guarda el servidor (comprueba quien lo pide y el plazo de 24 horas).
+      await accionReserva('reprogramar', { booking_id: booking.id, date: newDateStr, start_time: selectedTime });
 
       // Create notifications for both student and teacher
       const newDate = format(selectedDate, "d 'de' MMMM", { locale: es });
