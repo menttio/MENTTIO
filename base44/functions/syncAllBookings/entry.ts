@@ -4,6 +4,18 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
+    // Lote G (10/11/2026): respondia 200 sin ninguna credencial. Cualquiera podia lanzarla y
+    // recorrer todas las reservas llamando a Google Calendar por cada una (gasto de creditos y de
+    // cuota de Google). Mismo patron que markCompletedClasses: la tarea programada o un admin.
+    const cronSecret = Deno.env.get('CRON_SECRET');
+    const isCron = cronSecret && req.headers.get('x-cron-secret') === cronSecret;
+    if (!isCron) {
+      const user = await base44.auth.me().catch(() => null);
+      if (user?.role !== 'admin') {
+        return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+      }
+    }
+
     // Get all scheduled bookings
     const scheduledBookings = await base44.asServiceRole.entities.Booking.filter({ 
       status: 'scheduled' 
