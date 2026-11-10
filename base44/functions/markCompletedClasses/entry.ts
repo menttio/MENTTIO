@@ -89,28 +89,29 @@ Deno.serve(async (req) => {
             });
           }
 
-          // Un solo aviso al móvil por clase y alumno: dos seguidos se perciben como spam y
-          // se acaban desactivando los dos.
-          if (pagoPendiente || puedeValorar) {
-            try {
-              await base44.asServiceRole.functions.invoke('sendPushNotification', {
-                userEmail: alumno.email,
-                title: 'Clase completada',
-                body: pagoPendiente && puedeValorar
-                  ? 'Recuerda pagar tu clase y cuéntanos cómo ha ido'
-                  : pagoPendiente
-                    ? 'Recuerda pagar tu clase'
-                    : `¿Cómo ha ido tu clase de ${booking.subject_name}? Valórala`,
-                data: {
-                  booking_id: booking.id,
-                  page: 'MyClasses'
-                }
-              });
-            } catch (pushError) {
-              console.error('Error enviando push notification:', pushError);
-            }
-          }
+          // Fase 3 (10/11/2026): aqui se enviaba ademas un aviso push por clase y alumno. Las push
+          // estan desactivadas (gastaban creditos de Base44) y cada llamada era una invocacion de
+          // funcion mas. Se quita; el aviso dentro de la app de arriba se mantiene.
+          void pagoPendiente; void puedeValorar;
         }
+      }
+    }
+
+    // Fase 3 (10/11/2026): el numero de clases de cada profesor (ficha y "Mis profesores") es el
+    // real de Menttio. Se recalcula solo cuando cambia algo.
+    if (updatedCount > 0) {
+      try {
+        const db = base44.asServiceRole;
+        const completadas = await db.entities.Booking.filter({ status: 'completed' }, '-date', 5000);
+        const cuenta = new Map();
+        for (const b of completadas) if (b.teacher_id) cuenta.set(String(b.teacher_id), (cuenta.get(String(b.teacher_id)) || 0) + 1);
+        const profesores = await db.entities.Teacher.list('-created_date', 500);
+        for (const t of profesores) {
+          const real = cuenta.get(String(t.id)) || 0;
+          if (t.total_classes !== real) await db.entities.Teacher.update(t.id, { total_classes: real });
+        }
+      } catch (e) {
+        console.error('Recuento de clases:', e.message);
       }
     }
 
