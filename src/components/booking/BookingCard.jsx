@@ -292,8 +292,7 @@ export default function BookingCard({
       // Lote E2: la clase queda cancelada en vez de borrarse, para no perder el registro del pago.
       await accionReserva('cancelar', { booking_id: booking.id });
 
-      // Create notifications for both student and teacher
-
+      // Los avisos de cancelacion los crea bookingActions en el servidor (lote F).
 
       // Notificar a n8n sobre la cancelación
       try {

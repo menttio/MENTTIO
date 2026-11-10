@@ -353,9 +353,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
         console.error('Error notifying n8n bulk:', e);
       }
 
-      // Un solo aviso por alumno resumiendo toda la serie
-      for (const alumno of alumnos) {
-      }
+      // El aviso por alumno resumiendo la serie lo crea bookingActions en el servidor (lote F).
 
       // Sync Google Calendar for teacher
       if (teacher.google_calendar_connected) {

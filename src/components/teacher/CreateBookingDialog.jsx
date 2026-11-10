@@ -334,21 +334,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
         student_ids: alumnos.map(a => a.id),
       });
 
-      // Create notifications
-      const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-      const queClase = esGrupo ? 'clase grupal' : 'clase';
-
-      for (const alumno of alumnos) {
-      }
-
-
-      // Send push notification to students
-      for (const alumno of alumnos) {
-        try {
-        } catch (pushError) {
-          console.error('Error enviando push notification:', pushError);
-        }
-      }
+      // Los avisos a los alumnos y al profesor los crea bookingActions en el servidor (lote F).
 
       // Sync with Google Calendar.
       //

@@ -484,16 +484,7 @@ export default function BookClass() {
         }));
       }
 
-      // Create notifications
-      const bookingDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-
-
-
-      // Send push notification to teacher
-      try {
-      } catch (pushError) {
-        console.error('Error enviando push notification:', pushError);
-      }
+      // Los avisos al alumno y al profesor los crea bookingActions en el servidor (lote F).
 
       // Sync with Google Calendar for both teacher and student
       try {

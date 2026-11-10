@@ -247,9 +247,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
       // Lote E2: lo guarda el servidor (comprueba quien lo pide y el plazo de 24 horas).
       await accionReserva('reprogramar', { booking_id: booking.id, date: newDateStr, start_time: selectedTime });
 
-      // Create notifications for both student and teacher
-      const newDate = format(selectedDate, "d 'de' MMMM", { locale: es });
-
+      // Los avisos de cambio de hora los crea bookingActions en el servidor (lote F).
 
       // Sync with Google Calendar — pass new date/time to avoid race condition
       try {
