@@ -17,7 +17,16 @@ import assert from 'node:assert/strict';
 const APP = '694471e9c204eb0088437b85';
 const BASE = `https://menttio.com/api/apps/${APP}`;
 const WORKER = 'https://menttio-automations.raul2000plgr.workers.dev';
-const TOKEN = process.env.MENTTIO_TEST_TOKEN || '';
+// El token tambien se puede dejar en ~/.menttio-test-token (una sola linea): asi no aparece en
+// ningun comando ni en el historial.
+let TOKEN = process.env.MENTTIO_TEST_TOKEN || '';
+if (!TOKEN) {
+  try {
+    const { readFileSync } = await import('node:fs');
+    const { homedir } = await import('node:os');
+    TOKEN = readFileSync(`${homedir()}/.menttio-test-token`, 'utf8').trim().replace(/^"|"$/g, '');
+  } catch { /* sin token: se omiten las pruebas con sesion */ }
+}
 const SESION = TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {};
 
 async function llamar(metodo, url, { body, headers = {} } = {}) {
