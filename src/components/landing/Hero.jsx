@@ -95,7 +95,7 @@ export default function Hero() {
             </div>
             {/* Era un segundo h1: la página tenía dos títulos de primer nivel y un lector de
                 pantalla no podía saber cuál era el de verdad. El logo no es el título. */}
-            <span className="text-xl md:text-2xl font-bold text-white" translate="no" role="img" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#404040]">π</span>io</span></span>
+            <span className="text-xl md:text-2xl font-bold text-white" translate="no" role="img" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#404040]">tt</span>io</span></span>
           </div>
           
           {/* Desktop Menu */}
