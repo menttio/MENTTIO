@@ -60,7 +60,7 @@ export default function LegalNotice() {
                   <Building className="text-[#41f2c0] mt-1" size={18} />
                   <div>
                     <p className="font-semibold text-[#404040]">Denominación social:</p>
-                    <p className="text-gray-600">Menπio S.L.</p>
+                    <p className="text-gray-600">Menttio S.L.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -99,7 +99,7 @@ export default function LegalNotice() {
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
                 El presente Aviso Legal regula el uso del sitio web www.menttio.com (en adelante, 
-                "el Sitio Web") del que es titular Menπio S.L.
+                "el Sitio Web") del que es titular Menttio S.L.
               </p>
               <p className="text-gray-600 leading-relaxed">
                 La navegación por el Sitio Web atribuye la condición de usuario del mismo e implica la 
@@ -125,7 +125,7 @@ export default function LegalNotice() {
               </p>
               <p className="text-gray-600 leading-relaxed">
                 El usuario se compromete a hacer un uso adecuado de los contenidos y servicios que 
-                Menπio ofrece a través de su Sitio Web y a no emplearlos para:
+                Menttio ofrece a través de su Sitio Web y a no emplearlos para:
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start gap-2">
@@ -138,7 +138,7 @@ export default function LegalNotice() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">✕</span>
-                  <span>Provocar daños en los sistemas físicos y lógicos de Menπio, de sus proveedores o de terceras personas</span>
+                  <span>Provocar daños en los sistemas físicos y lógicos de Menttio, de sus proveedores o de terceras personas</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 mt-1">✕</span>
@@ -158,7 +158,7 @@ export default function LegalNotice() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                Menπio es titular de todos los derechos de propiedad intelectual e industrial del Sitio 
+                Menttio es titular de todos los derechos de propiedad intelectual e industrial del Sitio 
                 Web, así como de los elementos contenidos en el mismo (a título enunciativo, imágenes, 
                 sonido, audio, vídeo, software o textos; marcas o logotipos, combinaciones de colores, 
                 estructura y diseño, selección de materiales usados, programas de ordenador necesarios 
@@ -170,7 +170,7 @@ export default function LegalNotice() {
                 reproducción, la distribución y la comunicación pública, incluida su modalidad de puesta 
                 a disposición, de la totalidad o parte de los contenidos de esta página web, con fines 
                 comerciales, en cualquier soporte y por cualquier medio técnico, sin la autorización de 
-                Menπio.
+                Menttio.
               </p>
             </div>
           </section>
@@ -185,7 +185,7 @@ export default function LegalNotice() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                Menπio no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier 
+                Menttio no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier 
                 naturaleza que pudieran ocasionar, a título enunciativo: errores u omisiones en los 
                 contenidos, falta de disponibilidad del portal o la transmisión de virus o programas 
                 maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas 
@@ -205,8 +205,8 @@ export default function LegalNotice() {
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
                 En el caso de que en el Sitio Web se dispusiesen enlaces o hipervínculos hacia otros 
-                sitios de Internet, Menπio no ejercerá ningún tipo de control sobre dichos sitios y 
-                contenidos. En ningún caso Menπio asumirá responsabilidad alguna por los contenidos de 
+                sitios de Internet, Menttio no ejercerá ningún tipo de control sobre dichos sitios y 
+                contenidos. En ningún caso Menttio asumirá responsabilidad alguna por los contenidos de 
                 algún enlace perteneciente a un sitio web ajeno.
               </p>
             </div>
@@ -222,7 +222,7 @@ export default function LegalNotice() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                Menπio se reserva el derecho de efectuar sin previo aviso las modificaciones que 
+                Menttio se reserva el derecho de efectuar sin previo aviso las modificaciones que 
                 considere oportunas en su portal, pudiendo cambiar, suprimir o añadir tanto los 
                 contenidos y servicios que se presten a través de la misma como la forma en la que 
                 éstos aparezcan presentados o localizados en su portal.
@@ -240,7 +240,7 @@ export default function LegalNotice() {
             </div>
             <div className="ml-11 space-y-3">
               <p className="text-gray-600 leading-relaxed">
-                La relación entre Menπio y el usuario se regirá por la normativa española vigente y 
+                La relación entre Menttio y el usuario se regirá por la normativa española vigente y 
                 cualquier controversia se someterá a los Juzgados y Tribunales de la ciudad de Madrid.
               </p>
             </div>

@@ -870,7 +870,7 @@ export default function TeacherSignup() {
                     <h4 className="font-semibold text-[#404040] mb-3">Términos y Condiciones</h4>
                     <div className="text-sm text-gray-600 space-y-2">
                       <p><strong>1. Aceptación de los términos</strong></p>
-                      <p>Al registrarte como profesor en Menπio, aceptas cumplir con estos términos y condiciones.</p>
+                      <p>Al registrarte como profesor en Menttio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
                       <p>- La suscripción tiene un coste de 12,99€/mes (Plan Esencial) o 29,99€/mes (plan Completo)</p>
@@ -895,7 +895,7 @@ export default function TeacherSignup() {
                       
                       <p><strong>6. Pagos y comisiones</strong></p>
                       <p>- Los pagos de los alumnos se procesan directamente entre profesor y alumno</p>
-                      <p>- Menπio no gestiona los pagos de las clases, solo la suscripción mensual</p>
+                      <p>- Menttio no gestiona los pagos de las clases, solo la suscripción mensual</p>
                       
                       <p><strong>7. Suspensión y terminación</strong></p>
                       <p>- Nos reservamos el derecho de suspender cuentas que incumplan estos términos</p>
@@ -915,7 +915,7 @@ export default function TeacherSignup() {
                       className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#41f2c0]"
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
-                      He leído y acepto los términos y condiciones, así como la política de privacidad de Menπio
+                      He leído y acepto los términos y condiciones, así como la política de privacidad de Menttio
                     </label>
                   </div>
 

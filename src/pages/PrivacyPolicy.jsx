@@ -46,7 +46,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-2xl font-bold text-[#404040] mb-4">Tu privacidad es importante</h2>
             <p className="text-gray-600 leading-relaxed">
-              En Menπio nos tomamos muy en serio la protección de tus datos personales. Esta Política de 
+              En Menttio nos tomamos muy en serio la protección de tus datos personales. Esta Política de 
               Privacidad explica qué información recopilamos, cómo la utilizamos, y tus derechos respecto 
               a tus datos personales.
             </p>

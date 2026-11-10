@@ -50,7 +50,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-[#41f2c0] rounded-xl flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">π</span>
               </div>
-              <h3 className="text-xl font-bold">Men<span className="text-[#41f2c0]">π</span>io</h3>
+              <h3 className="text-xl font-bold" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">π</span>io</span></h3>
             </div>
             {/* CAMBIO: descripción de marca más concisa y orientada al profesor como usuario */}
             <p className="text-gray-300 text-sm leading-relaxed">

@@ -26,7 +26,7 @@ export default function AboutUs() {
           className="text-center mb-16"
         >
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#404040] mb-6">
-            Sobre <span className="text-[#41f2c0]">Men<span className="text-[#404040]">π</span>io</span>
+            Sobre <span className="text-[#41f2c0]">Menttio</span>
           </h1>
           <p className="text-base md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Estamos transformando la forma en que profesores y alumnos se conectan, 

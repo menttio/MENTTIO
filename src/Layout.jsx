@@ -540,7 +540,7 @@ export default function Layout({ children, currentPageName }) {
               {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-          <h1 className="text-lg font-semibold text-[#404040]" translate="no">Men<span className="text-[#41f2c0]">π</span>io</h1>
+          <h1 className="text-lg font-semibold text-[#404040]" translate="no" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">π</span>io</span></h1>
           <div className="flex items-center gap-2">
             {profile?.profile_photo ? (
               <img 

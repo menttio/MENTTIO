@@ -67,7 +67,7 @@ export default function SelectRole() {
             <ArrowLeft size={22} />
           </button>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            ¡Bienvenido a <span className="text-[#404040]">Men<span className="text-[#41f2c0]">π</span>io</span>!
+            ¡Bienvenido a <span className="text-[#404040]">Menttio</span>!
           </h1>
           <p className="text-sm md:text-base text-gray-500 mb-8 md:mb-12">¿Cómo quieres usar la plataforma?</p>
 
