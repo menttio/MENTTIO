@@ -11,6 +11,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import confetti from 'canvas-confetti';
 
 const TOUR_STEPS = [
@@ -132,7 +133,7 @@ export default function CalendarTour({ teacherId, onComplete }) {
     });
 
     try {
-      await base44.entities.Teacher.update(teacherId, { calendar_tour_completed: true });
+      await actualizarProfesor(teacherId, { calendar_tour_completed: true });
       onComplete();
     } catch (error) {
       console.error('Error completing tour:', error);
@@ -141,7 +142,7 @@ export default function CalendarTour({ teacherId, onComplete }) {
 
   const handleSkip = async () => {
     try {
-      await base44.entities.Teacher.update(teacherId, { calendar_tour_completed: true });
+      await actualizarProfesor(teacherId, { calendar_tour_completed: true });
       onComplete();
     } catch (error) {
       console.error('Error skipping tour:', error);

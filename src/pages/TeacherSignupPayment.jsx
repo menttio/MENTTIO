@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -94,7 +95,7 @@ export default function TeacherSignupPayment() {
           tour_completed: false
         };
 
-        await base44.entities.Teacher.create(teacherData);
+        await crearProfesor(teacherData);
 
         try {
           await base44.integrations.Core.SendEmail({

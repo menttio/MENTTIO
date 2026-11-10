@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { Button } from '@/components/ui/button';
 import { User, Star, BookOpen, Award, Languages, Pencil, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -124,7 +125,7 @@ export default function ProfileTour({ teacherId, onComplete }) {
     });
 
     try {
-      await base44.entities.Teacher.update(teacherId, {
+      await actualizarProfesor(teacherId, {
         profile_tour_completed: true
       });
     } catch (error) {

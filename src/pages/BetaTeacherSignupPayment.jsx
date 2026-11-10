@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -73,9 +74,9 @@ export default function BetaTeacherSignupPayment() {
         };
 
         if (existingTeachers.length > 0) {
-          await base44.entities.Teacher.update(existingTeachers[0].id, teacherData);
+          await actualizarProfesor(existingTeachers[0].id, teacherData);
         } else {
-          await base44.entities.Teacher.create(teacherData);
+          await crearProfesor(teacherData);
         }
 
         // Enviar email de notificación

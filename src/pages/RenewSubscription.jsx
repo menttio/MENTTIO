@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { AlertCircle, Check, Loader2, Video, X } from 'lucide-react';
 import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
@@ -40,7 +41,7 @@ export default function RenewSubscription() {
     try {
       if (selectedPlan === 'commission') {
         // Commission plan: no Stripe, just update the teacher record
-        await base44.entities.Teacher.update(teacher.id, {
+        await actualizarProfesor(teacher.id, {
           subscription_plan: 'commission',
           subscription_active: true,
           subscription_expires: null,

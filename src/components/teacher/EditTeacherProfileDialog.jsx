@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import {
   Dialog,
   DialogContent,
@@ -52,7 +53,7 @@ export default function EditTeacherProfileDialog({ teacher, open, onClose, onSav
   const handleSave = async () => {
     setSaving(true);
     try {
-      await base44.entities.Teacher.update(teacher.id, formData);
+      await actualizarProfesor(teacher.id, formData);
       onSave();
       onClose();
     } catch (error) {

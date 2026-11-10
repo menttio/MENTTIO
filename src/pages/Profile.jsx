@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { 
   User, 
   Mail, 
@@ -127,7 +128,7 @@ export default function Profile() {
       const secureUrl = await uploadProfilePhoto(file);
 
       if (userRole === 'teacher') {
-        await base44.entities.Teacher.update(profile.id, { profile_photo: secureUrl });
+        await actualizarProfesor(profile.id, { profile_photo: secureUrl });
       } else if (userRole === 'student') {
         await base44.entities.Student.update(profile.id, { profile_photo: secureUrl });
       }
@@ -156,7 +157,7 @@ export default function Profile() {
       };
 
       if (userRole === 'teacher') {
-        await base44.entities.Teacher.update(profile.id, profileUpdate);
+        await actualizarProfesor(profile.id, profileUpdate);
       } else if (userRole === 'student') {
         await base44.entities.Student.update(profile.id, profileUpdate);
       }
@@ -360,7 +361,7 @@ export default function Profile() {
                   try {
                     const profesores = await base44.entities.Teacher.filter({ user_email: user?.email });
                     if (profesores[0]) {
-                      await base44.entities.Teacher.update(profesores[0].id, { tour_completed: false });
+                      await actualizarProfesor(profesores[0].id, { tour_completed: false });
                     }
                   } catch (e) {
                     console.error('No se pudo reiniciar el tutorial:', e);

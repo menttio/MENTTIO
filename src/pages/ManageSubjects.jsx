@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -213,7 +214,7 @@ export default function ManageSubjects() {
         finalSubjects = [...baseSubjects, entry];
       }
 
-      await base44.entities.Teacher.update(freshTeacher.id, { subjects: finalSubjects });
+      await actualizarProfesor(freshTeacher.id, { subjects: finalSubjects });
 
       // Update local state immediately
       setTeacher(prev => ({ ...prev, subjects: finalSubjects }));
@@ -244,7 +245,7 @@ export default function ManageSubjects() {
       const updatedSubjects = (teacher.subjects || []).filter(s =>
         !(s.level === level && (subjectId ? s.subject_id === subjectId : s.subject_name === subjectName))
       );
-      await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+      await actualizarProfesor(teacher.id, { subjects: updatedSubjects });
 
       // Remove this subject from all students that have this teacher assigned
       const studentsRes = await base44.functions.invoke('studentsOfTeacher', {});

@@ -19,6 +19,7 @@ import {
   Bell
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 
 // Tres pasos, y en el orden en que hay que hacerlos.
 //
@@ -156,7 +157,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
 
   const handleComplete = async () => {
     try {
-      await base44.entities.Teacher.update(teacherId, { tour_completed: true });
+      await actualizarProfesor(teacherId, { tour_completed: true });
       onComplete();
       // Redirect to availability page
       navigate(createPageUrl('ManageAvailability'));
@@ -167,7 +168,7 @@ export default function InteractiveTour({ teacherId, teacherName, onComplete }) 
 
   const handleSkip = async () => {
     try {
-      await base44.entities.Teacher.update(teacherId, { tour_completed: true });
+      await actualizarProfesor(teacherId, { tour_completed: true });
       onComplete();
     } catch (error) {
       console.error('Error skipping tour:', error);

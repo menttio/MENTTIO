@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import {
   Calendar,
   Search,
@@ -154,7 +155,7 @@ export default function Layout({ children, currentPageName }) {
           if (!teachers[0]?.subscription_active) {
             const expDate = new Date();
             expDate.setMonth(expDate.getMonth() + 1);
-            await base44.entities.Teacher.update(teachers[0].id, {
+            await actualizarProfesor(teachers[0].id, {
               subscription_active: true,
               subscription_expires: expDate.toISOString().split('T')[0],
               trial_active: false
@@ -184,7 +185,7 @@ export default function Layout({ children, currentPageName }) {
             if (trialEndDate < now) {
               console.log('⏰ Período de prueba expirado');
               // Mark trial as inactive
-              await base44.entities.Teacher.update(teacher.id, {
+              await actualizarProfesor(teacher.id, {
                 trial_active: false,
                 trial_used: true,
                 subscription_active: false

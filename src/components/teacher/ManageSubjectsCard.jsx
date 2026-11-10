@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { textoPrecio } from '@/lib/asignaturas';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -112,7 +113,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
         ];
       }
 
-      await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+      await actualizarProfesor(teacher.id, { subjects: updatedSubjects });
       onUpdate();
       setShowDialog(false);
     } catch (error) {
@@ -127,7 +128,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
       const updatedSubjects = (teacher.subjects || []).filter(
         s => !(s.subject_id === subjectId && s.level === level)
       );
-      await base44.entities.Teacher.update(teacher.id, { subjects: updatedSubjects });
+      await actualizarProfesor(teacher.id, { subjects: updatedSubjects });
       onUpdate();
     } catch (error) {
       console.error(error);

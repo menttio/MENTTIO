@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
+import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
 import { Loader2 } from 'lucide-react';
 
 export default function TeacherSignupComplete() {
@@ -98,7 +99,7 @@ export default function TeacherSignupComplete() {
         console.log('✅ Llamando a base44.entities.Teacher.create...');
         console.log('⏳ ESPERANDO RESPUESTA DEL SERVIDOR...');
         
-        const teacher = await base44.entities.Teacher.create(teacherData);
+        const teacher = await crearProfesor(teacherData);
         
         console.log('═══════════════════════════════════════════════════════');
         console.log('✅✅✅ PROFESOR CREADO EXITOSAMENTE ✅✅✅');
