@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { chatAccion } from '@/lib/chat';
 import { 
   MessageCircle, 
   Plus, 
@@ -152,7 +153,10 @@ export default function Messages() {
         };
       }
 
-      const newConversation = await base44.entities.Conversation.create(conversationData);
+      // Lote F: la crea el servidor (un profesor solo puede abrir chat con sus alumnos).
+      void conversationData;
+      const { conversation: newConversation } = await chatAccion('iniciar',
+        userRole === 'student' ? { teacher_id: contact.id } : { student_id: contact.id });
       
       setShowNewChat(false);
       setSelectedContact('');
