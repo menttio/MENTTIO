@@ -21,6 +21,15 @@ export default function StudentSignupComplete() {
         }
 
         const data = JSON.parse(signupData);
+
+        // Lote G (10/11/2026): un correo, un papel. El inicio de sesion es unico y la app elige
+        // primero la ficha de profesor, asi que con las dos fichas nunca se entraria como alumno.
+        const comoProfesor = await base44.entities.Teacher.filter({ user_email: user.email }).catch(() => []);
+        if (comoProfesor.length > 0) {
+          sessionStorage.removeItem('student_signup_data');
+          setError('Este correo ya está registrado como profesor en Menttio. Para darte de alta como alumno usa otro correo.');
+          return;
+        }
         
         const info = esMenorDeEdadDigital(data.birth_date);
         const esMenor = info?.esMenor ?? false;
