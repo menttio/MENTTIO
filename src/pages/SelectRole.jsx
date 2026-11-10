@@ -46,7 +46,7 @@ export default function SelectRole() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pt-16 lg:pt-4">
       {/* Mobile Back Button - Fixed Position */}
-      <button
+      <button aria-label="Volver"
         onClick={() => navigate(createPageUrl('Home'))}
         className="fixed top-4 left-4 z-50 lg:hidden p-2.5 rounded-lg bg-white hover:shadow-md transition-all shadow-sm inline-flex items-center justify-center"
       >
@@ -60,7 +60,7 @@ export default function SelectRole() {
       >
         <div className="text-center">
           {/* Desktop Back Button */}
-          <button
+          <button aria-label="Volver"
             onClick={() => navigate(createPageUrl('Home'))}
             className="mb-6 p-2.5 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex mx-auto"
           >

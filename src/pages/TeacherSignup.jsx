@@ -6,7 +6,7 @@ import { Users, User, Check, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Info 
 import { asignaturaCompleta } from '@/lib/asignaturas';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -377,7 +377,7 @@ export default function TeacherSignup() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
       {/* Mobile Back Button - Fixed Position */}
-      <button
+      <button aria-label="Volver"
         onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
         className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
       >
@@ -390,7 +390,7 @@ export default function TeacherSignup() {
         className="w-full max-w-4xl"
       >
         {/* Desktop Back Button */}
-        <button
+        <button aria-label="Volver"
           onClick={() => step === 1 ? navigate(createPageUrl('SelectRole')) : setStep(step - 1)}
           className="mb-4 p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex"
         >

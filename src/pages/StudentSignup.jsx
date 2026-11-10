@@ -92,7 +92,7 @@ export default function StudentSignup() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#f2f2f2] to-white">
       {/* Mobile Back Button - Fixed Position */}
-      <button
+      <button aria-label="Volver"
         onClick={() => navigate(createPageUrl('SelectRole'))}
         className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
       >
@@ -129,7 +129,7 @@ export default function StudentSignup() {
         ) : (
           <>
             {/* Desktop Back Button */}
-            <button
+            <button aria-label="Volver"
               onClick={() => navigate(createPageUrl('SelectRole'))}
               className="mb-6 p-2 rounded-lg hover:bg-white hover:shadow-md transition-all text-[#404040] inline-flex items-center justify-center hidden lg:inline-flex"
             >
