@@ -156,6 +156,10 @@
       "minimum": 1,
       "maximum": 5
     },
+    "homework_done": {
+      "type": "boolean",
+      "description": "Si el alumno hizo los deberes (nota de progreso)"
+    },
     "payment_status": {
       "type": "string",
       "enum": [
@@ -230,33 +234,20 @@
         }
       ]
     },
-    "create": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "update": {
-      "$or": [
-        {
-          "data.student_email": "{{user.email}}"
-        },
-        {
-          "data.teacher_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
-      "$or": [
-        {
-          "data.teacher_email": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     }
   }
 }
