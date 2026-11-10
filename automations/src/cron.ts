@@ -145,8 +145,11 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
   // El evento se sigue creando en el mismo calendario de siempre: el de menttio@menttio.com,
   // que es del que academia@ era alias.
   const token = await getAccessToken(env, SCOPES.calendar);
+  // Consentimiento y duracion real de la clase, de Base44 (una sola llamada).
+  const info = await datosClase(env, b.booking_id);
   const startISO = b.start_datetime!;
-  const endISO = new Date(new Date(startISO).getTime() + 60 * 60000).toISOString();
+  // P27 (lote F, 10/11/2026): el evento dura lo que la clase. Antes era siempre 60 minutos.
+  const endISO = new Date(new Date(startISO).getTime() + (info.duracion ?? 60) * 60000).toISOString();
 
   // Título que termina en _{bk_id}: la grabación de Meet hereda este nombre y así luego
   // se empareja con la reserva por el bk_id (igual que en n8n).
@@ -233,7 +236,7 @@ async function crearVideollamada(env: Env, b: Booking): Promise<void> {
   // Lote C (09/11/2026): solo se graba si TODOS los alumnos de la clase lo autorizan. Antes se
   // grababa segun el plan del profesor, sin mirar el consentimiento. Sin consentimiento tampoco
   // se hace coanfitrion al profesor: es lo que le permite grabar con una cuenta de fuera.
-  const consentida = tienePlanConGrabacion ? await claseConsentida(env, b.booking_id) : false;
+  const consentida = tienePlanConGrabacion && info.consentida;
   if (tienePlanConGrabacion && !consentida) console.log(`grabacion ${b.booking_id}: NO (sin consentimiento de todos los alumnos)`);
 
   let puedeGrabar = false;
@@ -381,20 +384,25 @@ async function guardarGrabacionEnMenttio(
 
 // Pregunta a Menttio si todos los alumnos de la clase autorizan la grabacion. Ante cualquier
 // fallo responde que no: es preferible perder una grabacion que grabar a alguien sin permiso.
-async function claseConsentida(env: Env, bookingId: string): Promise<boolean> {
-  if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) return false;
+async function datosClase(env: Env, bookingId: string): Promise<{ consentida: boolean; duracion: number | null }> {
+  const nada = { consentida: false, duracion: null };
+  if (!env.BASE44_FUNCTIONS_URL || !env.AUTOMATION_SECRET) return nada;
   try {
     const res = await fetch(`${env.BASE44_FUNCTIONS_URL}/consentimientoClase`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-automation-key": env.AUTOMATION_SECRET },
       body: JSON.stringify({ booking_id: bookingId }),
     });
-    if (!res.ok) return false;
+    if (!res.ok) return nada;
     const d = (await res.json()) as any;
-    return d?.consentimiento === true;
+    const min = Number(d?.duracion_minutos);
+    return {
+      consentida: d?.consentimiento === true,
+      duracion: Number.isFinite(min) && min >= 15 && min <= 480 ? min : null,
+    };
   } catch (e) {
     console.error("consentimientoClase:", (e as Error).message);
-    return false;
+    return nada;
   }
 }
 

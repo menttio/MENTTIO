@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
     const b = await db.entities.Booking.get(id).catch(() => null);
     if (!b) return Response.json({ consentimiento: false, motivo: 'no_encontrada' });
     const r = await claseConsentida(db, b, new Map());
-    return Response.json({ consentimiento: r.ok, motivo: r.motivo });
+    // Lote F (P27): el worker usa la duracion para que el evento de Calendar dure lo que la clase.
+    return Response.json({ consentimiento: r.ok, motivo: r.motivo, duracion_minutos: Number(b.duration_minutes) || null });
   } catch (e) {
     console.error('consentimientoClase:', (e as Error)?.message);
     return Response.json({ consentimiento: false, motivo: 'error' }, { status: 500 });

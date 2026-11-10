@@ -105,6 +105,29 @@ Deno.serve(async (req) => {
       return Response.json({ teacher, ignorados });
     }
 
+    // Lote F (P18): horario semanal del profesor. Antes cualquiera podia crear huecos de
+    // disponibilidad a nombre de cualquier profesor (la regla de Availability no lo impedia).
+    if (accion === 'disponibilidad') {
+      const HORA = /^([01]\d|2[0-3]):[0-5]\d$/;
+      const dias = Array.isArray(body.horario) ? body.horario.slice(0, 7) : null;
+      if (!dias) return err('Horario no valido');
+      const limpio = [];
+      for (const d of dias) {
+        const dia = Number(d?.day_of_week);
+        const tramos = (Array.isArray(d?.time_slots) ? d.time_slots : []).slice(0, 24)
+          .filter((t: any) => HORA.test(String(t?.start_time)) && HORA.test(String(t?.end_time)) && t.start_time < t.end_time)
+          .map((t: any) => ({ start_time: t.start_time, end_time: t.end_time }));
+        if (!Number.isInteger(dia) || dia < 0 || dia > 6) return err('Dia no valido');
+        if (tramos.length) limpio.push({ day_of_week: dia, time_slots: tramos });
+      }
+      const actuales = await db.entities.Availability.filter({ teacher_id: actual.id, type: 'regular' }).catch(() => []);
+      for (const a of actuales) await db.entities.Availability.delete(a.id);
+      for (const d of limpio) {
+        await db.entities.Availability.create({ teacher_id: actual.id, type: 'regular', ...d });
+      }
+      return Response.json({ ok: true, dias: limpio.length });
+    }
+
     if (accion === 'elegir_comision') {
       if (actual.subscription_exempt) return err('Tu cuenta esta exenta: no necesitas cambiar de plan', 409);
       if (actual.stripe_subscription_id && actual.subscription_active && !actual.trial_active) {
