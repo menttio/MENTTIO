@@ -104,11 +104,25 @@ async function crear(db: any, yo: string, esAdmin: boolean, body: any) {
   if (comoProfesor) {
     const ids = lista(body.student_ids).map(String).filter(Boolean);
     if (ids.length === 0 || (!esGrupo && ids.length !== 1) || ids.length > 50) return err('Alumnos no validos');
+    // Solo alumnos del profesor, con el mismo criterio que studentsOfTeacher (la lista que ve el
+    // profesor): asignados, con alguna clase previa o con conversacion. Si no, cualquier
+    // profesor podria meter en una clase (y escribir) a cualquier alumno de Menttio.
+    const relacion = new Set<string>();
+    if (!esAdmin) {
+      const [previas, charlas] = await Promise.all([
+        db.entities.Booking.filter({ teacher_id: teacher.id }, '-date', 1000).catch(() => []),
+        db.entities.Conversation.filter({ teacher_id: teacher.id }, '-created_date', 500).catch(() => []),
+      ]);
+      for (const p of previas) {
+        if (p.student_id) relacion.add(String(p.student_id));
+        for (const s of lista(p.enrolled_students)) if (s?.student_id) relacion.add(String(s.student_id));
+      }
+      for (const c of charlas) if (c.student_id) relacion.add(String(c.student_id));
+    }
     for (const id of [...new Set(ids)]) {
       const s = await db.entities.Student.get(id).catch(() => null);
-      // Solo alumnos del profesor: si no, cualquier profesor podria meter en una clase (y
-      // escribir) a cualquier alumno de Menttio.
-      if (!s || (!esAdmin && !esAlumnoDe(s, teacher.id))) return err('Ese alumno no es tuyo', 403);
+      const suyo = s && (esAdmin || relacion.has(String(s.id)) || esAlumnoDe(s, teacher.id));
+      if (!suyo) return err('Ese alumno no es tuyo', 403);
       alumnos.push(s);
     }
   } else {
