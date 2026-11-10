@@ -110,16 +110,10 @@ export default function TeacherSignupPayment() {
         sessionStorage.removeItem('billing_period');
         sessionStorage.removeItem('teacher_signup_in_progress');
 
-        // Plan commission: no Stripe needed, go directly to dashboard
-        if (subscription_plan === 'commission') {
-          window.location.href = createPageUrl('TeacherDashboard');
-          return;
-        }
-
-        const billing_period = sessionStorage.getItem('billing_period') || 'mensual';
-        const response = await base44.functions.invoke('subscriptionCheckout', { subscription_plan, billing_period });
-        if (response.data.error) throw new Error(response.data.error);
-        window.location.replace(response.data.url);
+        // Fase 3 (10/11/2026, decision del titular): el gancho es "empieza gratis 30 dias".
+        // Todos van directos a su panel; ya no se pasa por la pagina de pago de Stripe al
+        // registrarse. Al terminar la prueba, Layout lo lleva a RenewSubscription para elegir plan.
+        window.location.href = createPageUrl('TeacherDashboard');
 
       } catch (error) {
         console.error('═══════════════════════════════════════════════════════');
