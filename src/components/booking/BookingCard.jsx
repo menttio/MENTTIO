@@ -43,6 +43,7 @@ import {
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { base44 } from '@/api/base44Client';
+import { accionReserva } from '@/lib/reservas';
 import PaymentDialog from './PaymentDialog';
 import { plazasReserva } from '@/lib/asignaturas';
 
@@ -197,16 +198,8 @@ export default function BookingCard({
       // Se relee la clase justo antes de escribir. Si no, dos personas subiendo a la misma
       // clase (o el mismo alumno subiendo dos veces seguidas) se borran los archivos del
       // otro, porque cada uno guarda su propia copia de la lista.
-      let base = localFiles;
-      try {
-        const actual = await base44.entities.Booking.get(booking.id);
-        if (Array.isArray(actual?.files)) base = actual.files;
-      } catch (_e) {
-        // En las grupales el alumno no puede leer la reserva: se sigue con la copia local.
-      }
-
-      const updatedFiles = [...base, ...subidos];
-      await base44.entities.Booking.update(booking.id, { files: updatedFiles });
+      // El servidor anade los archivos a la lista que tiene guardada (lote E2).
+      const { files: updatedFiles } = await accionReserva('archivos_anadir', { booking_id: booking.id, files: subidos });
 
       // Solo se pinta despues de que la escritura haya ido bien. Antes se pintaba antes, asi
       // que un fallo al guardar dejaba al alumno viendo archivos que no existian.
@@ -254,9 +247,10 @@ export default function BookingCard({
   const handleDeleteFile = async (fileIndex) => {
     const previos = localFiles;
     try {
-      const updatedFiles = localFiles.filter((_, idx) => idx !== fileIndex);
-      setLocalFiles(updatedFiles);
-      await base44.entities.Booking.update(booking.id, { files: updatedFiles });
+      const url = localFiles[fileIndex]?.url;
+      setLocalFiles(localFiles.filter((_, idx) => idx !== fileIndex));
+      const { files } = await accionReserva('archivo_quitar', { booking_id: booking.id, url });
+      if (Array.isArray(files)) setLocalFiles(files);
       onRefresh?.();
     } catch (error) {
       console.error('Error deleting file:', error);
@@ -270,14 +264,8 @@ export default function BookingCard({
     try {
       // For group bookings where student is cancelling: just remove from enrolled list
       if (isGroup && userRole === 'student') {
-        const filtered = (booking.enrolled_students || []).filter(s => s.student_email !== currentUserEmail);
-
-        if (filtered.length === 0) {
-          // Last student leaving — delete the booking
-          await base44.entities.Booking.delete(booking.id);
-        } else {
-          await base44.entities.Booking.update(booking.id, { enrolled_students: filtered });
-        }
+        // El servidor lo saca de la lista (y cancela la clase si era el ultimo).
+        await accionReserva('cancelar', { booking_id: booking.id });
         onRefresh?.();
         setShowCancelDialog(false);
         setCancelling(false);
@@ -304,8 +292,8 @@ export default function BookingCard({
         console.error('Error deleting from Google Calendar:', deleteError);
       }
 
-      // Delete booking directly instead of marking as cancelled
-      await base44.entities.Booking.delete(booking.id);
+      // Lote E2: la clase queda cancelada en vez de borrarse, para no perder el registro del pago.
+      await accionReserva('cancelar', { booking_id: booking.id });
 
       // Create notifications for both student and teacher
       await base44.entities.Notification.create({
@@ -362,7 +350,7 @@ export default function BookingCard({
 
   const handleConfirmPayment = async () => {
     try {
-      await base44.entities.Booking.update(booking.id, { payment_status: 'paid' });
+      await accionReserva('pago', { booking_id: booking.id, estado: 'paid' });
       await base44.entities.Notification.create({
         user_id: booking.student_id,
         user_email: booking.student_email,
@@ -380,7 +368,7 @@ export default function BookingCard({
 
   const handleRejectPayment = async () => {
     try {
-      await base44.entities.Booking.update(booking.id, { payment_status: 'pending' });
+      await accionReserva('pago', { booking_id: booking.id, estado: 'pending' });
       await base44.entities.Notification.create({
         user_id: booking.student_id,
         user_email: booking.student_email,
@@ -500,7 +488,11 @@ export default function BookingCard({
                       )}
                       {booking.payment_status !== 'paid' && booking.payment_status !== 'pending_confirmation' && (
                         <DropdownMenuItem onClick={async () => {
-                          await base44.entities.Booking.update(booking.id, { payment_status: 'paid' });
+                          try {
+                            await accionReserva('pago', { booking_id: booking.id, estado: 'paid' });
+                          } catch (e) {
+                            alert(e.message);
+                          }
                           onRefresh?.();
                         }}>
                           <CreditCard size={14} className="mr-2" />
@@ -509,7 +501,11 @@ export default function BookingCard({
                       )}
                       {booking.payment_status === 'paid' && (
                         <DropdownMenuItem onClick={async () => {
-                          await base44.entities.Booking.update(booking.id, { payment_status: 'pending' });
+                          try {
+                            await accionReserva('pago', { booking_id: booking.id, estado: 'pending' });
+                          } catch (e) {
+                            alert(e.message);
+                          }
                           onRefresh?.();
                         }}>
                           <AlertCircle size={14} className="mr-2" />
