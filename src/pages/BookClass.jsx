@@ -457,58 +457,31 @@ export default function BookClass() {
         newBooking = joinRes.data.booking;
       } else if (classType === 'group') {
         // Create new group booking
-        newBooking = await base44.entities.Booking.create({
+        // Lote E2: la crea el servidor (precio de las tarifas del profesor, hueco libre, alumno
+        // = quien llama). El tope sale de la asignatura del profesor.
+        void commissionFields;
+        ({ booking: newBooking } = await accionReserva('crear', {
           teacher_id: selectedTeacher.id,
-          teacher_name: selectedTeacher.full_name,
-          teacher_email: selectedTeacher.user_email,
-          teacher_phone: selectedTeacher.phone || '',
           subject_id: selectedSubject,
-          subject_name: subjectName,
           date: format(selectedDate, 'yyyy-MM-dd'),
           start_time: selectedTime,
-          end_time: calculateEndTime(selectedTime, duration),
           duration_minutes: duration,
           price,
-          status: 'scheduled',
-          payment_status: 'pending',
           class_type: 'group',
-          // El tope sale de la asignatura del profesor. Antes iba un 4 fijo, asi que un profesor
-          // que habia puesto "hasta 2" acababa con cuatro alumnos en la clase.
           max_students: topeGrupo,
           group_unlimited: topeGrupo === null,
-          enrolled_students: [{
-            student_id: student.id,
-            student_name: student.full_name,
-            student_email: user.email,
-            payment_status: 'pending'
-          }],
-          files: [],
-          ...commissionFields
-        });
+        }));
       } else {
         // Individual booking (existing logic)
-        newBooking = await base44.entities.Booking.create({
-          student_id: student.id,
-          student_name: student.full_name,
-          student_email: user.email,
-          student_phone: student.phone || '',
+        ({ booking: newBooking } = await accionReserva('crear', {
           teacher_id: selectedTeacher.id,
-          teacher_name: selectedTeacher.full_name,
-          teacher_email: selectedTeacher.user_email,
-          teacher_phone: selectedTeacher.phone || '',
           subject_id: selectedSubject,
-          subject_name: subjectName,
           date: format(selectedDate, 'yyyy-MM-dd'),
           start_time: selectedTime,
-          end_time: calculateEndTime(selectedTime, duration),
           duration_minutes: duration,
           price,
-          status: 'scheduled',
-          payment_status: 'pending',
           class_type: 'individual',
-          files: [],
-          ...commissionFields
-        });
+        }));
       }
 
       // Create notifications
