@@ -12,10 +12,3 @@ export async function accionReserva(accion, datos = {}) {
     throw new Error(e?.response?.data?.error || e?.message || 'No se ha podido guardar el cambio');
   }
 }
-
-// Lote F (P17): los avisos dentro de la app los crea bookingActions en el servidor. Las
-// pantallas siguen llamando aqui con los mismos datos, pero ya no se escribe nada desde el
-// navegador (la regla de Notification solo deja crear al servidor).
-export async function avisoEnServidor() {
-  return null;
-}
