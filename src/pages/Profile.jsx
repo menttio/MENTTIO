@@ -369,6 +369,7 @@ export default function Profile() {
                   window.location.href = createPageUrl('TeacherDashboard');
                 } else {
                   resetStudentOnboarding();
+                  sessionStorage.setItem('menttio_ver_tutorial', '1');
                   window.location.href = createPageUrl('StudentDashboard');
                 }
               }}

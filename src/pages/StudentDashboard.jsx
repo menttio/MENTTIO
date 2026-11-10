@@ -21,7 +21,7 @@ import { format, parseISO, isAfter, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
-import StudentOnboardingTour, { shouldShowStudentOnboarding } from '../components/student/OnboardingTour';
+import StudentOnboardingTour from '../components/student/OnboardingTour';
 
 
 
@@ -42,7 +42,12 @@ export default function StudentDashboard() {
       const students = await base44.entities.Student.filter({ user_email: currentUser.email });
       if (students.length > 0) {
         setStudent(students[0]);
-        if (shouldShowStudentOnboarding()) setShowOnboarding(true);
+        // Fase 3 (10/11/2026, decision del titular): el tutorial ya no sale solo en la primera
+        // visita (5 pantallas sobre un panel vacio). Solo si el alumno lo pide desde su perfil.
+        if (sessionStorage.getItem('menttio_ver_tutorial') === '1') {
+          sessionStorage.removeItem('menttio_ver_tutorial');
+          setShowOnboarding(true);
+        }
 
         const [scheduledBookings, completedBookings] = await Promise.all([
           base44.entities.Booking.filter({ student_email: currentUser.email, status: 'scheduled' }, 'date', 50),
