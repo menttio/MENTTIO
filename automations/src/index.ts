@@ -6,6 +6,7 @@ import { importarGrabaciones } from "./importar-grabaciones";
 import * as db from "./lib/supabase";
 import { getAccessToken, SCOPES } from "./lib/google-auth";
 import { crearEspacio } from "./coanfitrion";
+import { anonimizarBaja } from "./baja";
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
@@ -271,6 +272,18 @@ export default {
       return json(id
         ? await llamar("consentimientoClase", { booking_id: id })
         : await llamar("recordingActions", { modo: "pendientes", limite: 10 }));
+    }
+
+    // Lote F (P23): baja de una cuenta. Lo llama closeAccount (Base44) con la clave compartida.
+    if (req.method === "POST" && url.pathname === "/baja") {
+      const provided = req.headers.get("x-automation-key") ?? "";
+      if (!env.AUTOMATION_SECRET || !(await mismaClave(provided, env.AUTOMATION_SECRET))) {
+        return json({ error: "Unauthorized" }, 401);
+      }
+      const body = (await req.json().catch(() => ({}))) as { email?: string };
+      const email = String(body.email ?? "").trim().toLowerCase();
+      if (!email.includes("@")) return json({ error: "Falta el correo" }, 400);
+      return json(await anonimizarBaja(env, email));
     }
 
     // Mantenimiento de permisos de las grabaciones (acceso nominal en lugar de enlace público).
