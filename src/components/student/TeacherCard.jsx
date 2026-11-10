@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { base44 } from '@/api/base44Client';
+import { chatAccion } from '@/lib/chat';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -87,16 +88,8 @@ export default function TeacherCard({
       }
 
       // Create new conversation
-      await base44.entities.Conversation.create({
-        student_id: student.id,
-        student_name: student.full_name,
-        student_email: student.user_email,
-        teacher_id: teacher.id,
-        teacher_name: teacher.full_name,
-        teacher_email: teacher.user_email,
-        unread_count_student: 0,
-        unread_count_teacher: 0
-      });
+      // Lote F: la crea el servidor.
+      await chatAccion('iniciar', { teacher_id: teacher.id });
 
       // Navigate to messages
       navigate(createPageUrl('Messages'));
