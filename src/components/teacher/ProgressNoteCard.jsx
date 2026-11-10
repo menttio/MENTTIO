@@ -49,7 +49,8 @@ export default function ProgressNoteCard({ booking, onUpdate }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await base44.entities.Booking.update(booking.id, {
+      await accionReserva('progreso', {
+        booking_id: booking.id,
         progress_note: note,
         progress_rating: rating,
         homework_done: homeworkDone
