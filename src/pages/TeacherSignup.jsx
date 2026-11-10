@@ -172,12 +172,8 @@ export default function TeacherSignup() {
       newErrors.phone = 'Introduce un teléfono español válido (ej: +34 600 000 000)';
     }
     
-    if (!formData.education.trim()) {
-      newErrors.education = 'Los estudios son obligatorios';
-    } else if (formData.education.trim().length < 5) {
-      newErrors.education = 'Describe tus estudios (mínimo 5 caracteres)';
-    }
-    
+    // Fase 3 (10/11/2026, decision del titular): estudios y experiencia son opcionales. Menttio
+    // es una herramienta de gestion, no un escaparate: pedirlos era friccion en el alta.
     if (formData.experience_years < 0) {
       newErrors.experience_years = 'Los años de experiencia no pueden ser negativos';
     }
@@ -186,7 +182,7 @@ export default function TeacherSignup() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.education && formData.experience_years >= 0;
+  const canContinueStep1 = formData.nombre && formData.apellidos && formData.email_personal && formData.phone && formData.experience_years >= 0;
   // Con "otra" hay que haber escrito el nombre; con una de la lista basta con haberla elegido.
   // El precio lo valida asignaturaCompleta segun el tipo de clase marcado: un profesor que solo
   // da grupales no tiene precio individual que rellenar.
@@ -517,7 +513,7 @@ export default function TeacherSignup() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#404040] mb-2">
-                      Estudios *
+                      Estudios <span className="text-gray-400 font-normal">(opcional)</span>
                     </label>
                     <Input
                       value={formData.education}
@@ -535,7 +531,7 @@ export default function TeacherSignup() {
 
                   <div>
                     <label className="block text-sm font-medium text-[#404040] mb-2">
-                      Años de Experiencia *
+                      Años de experiencia <span className="text-gray-400 font-normal">(opcional)</span>
                     </label>
                     <Input
                       type="number"
@@ -550,16 +546,15 @@ export default function TeacherSignup() {
                     />
                   </div>
 
-                  <div className="space-y-3 mt-6">
-                    <label className="block text-sm font-medium text-[#404040] mb-3">
-                      Selecciona tu plan *
-                    </label>
-                    <PlanSelector
-                      selected={formData.subscription_plan}
-                      onChange={(plan) => setFormData({ ...formData, subscription_plan: plan })}
-                      periodo={formData.billing_period}
-                      onPeriodoChange={(p) => setFormData({ ...formData, billing_period: p })}
-                    />
+                  {/* Fase 3 (10/11/2026, decision del titular): el gancho es la prueba gratis. No se
+                      elige plan al registrarse: se prueba todo (grabacion incluida) 30 dias y el plan
+                      se elige al terminar, en RenewSubscription. */}
+                  <div className="mt-6 rounded-xl border border-[#41f2c0]/40 bg-[#41f2c0]/10 p-4 text-sm text-[#404040]">
+                    <p className="font-semibold">30 días gratis con todo incluido</p>
+                    <p className="mt-1 text-gray-600">
+                      Sin tarjeta. Pruebas todas las funciones, también la grabación de clases. Al terminar eliges
+                      el plan que te encaje, desde 0 € de cuota.
+                    </p>
                   </div>
 
                   <Button
