@@ -299,7 +299,7 @@ export default function Hero() {
             </h1>
             
             {/* CAMBIO: subtítulo más orientado al problema resuelto, no a features */}
-            <p className="text-base md:text-xl text-white/90 mb-8 leading-relaxed">
+            <p className="text-base md:text-xl text-[#404040] mb-8 leading-relaxed">
               La videollamada se crea sola, la clase queda grabada para que tu alumno la repase, los apuntes
               quedan guardados y el pago entra sin que persigas a nadie. Pensado para quien da clases
               particulares online, de la asignatura que sea.
