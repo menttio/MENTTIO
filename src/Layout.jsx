@@ -150,18 +150,9 @@ export default function Layout({ children, currentPageName }) {
             teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
             if (teachers[0]?.subscription_active) break;
           }
-          // Si aún no tiene suscripción activa, forzarla manualmente 
-          // (el webhook puede haber tardado o fallado)
-          if (!teachers[0]?.subscription_active) {
-            const expDate = new Date();
-            expDate.setMonth(expDate.getMonth() + 1);
-            await actualizarProfesor(teachers[0].id, {
-              subscription_active: true,
-              subscription_expires: expDate.toISOString().split('T')[0],
-              trial_active: false
-            });
-            teachers = await base44.entities.Teacher.filter({ user_email: currentUser.email });
-          }
+          // Lote E3 (P5): antes, si el webhook no habia llegado, aqui se activaba la suscripcion
+          // a mano un mes. Bastaba con abrir /TeacherDashboard?setup=success para tener un mes
+          // gratis. Ahora la suscripcion solo la activa Stripe (stripeInbox).
         }
         
         console.log('📋 Profesores encontrados:', teachers.length);
@@ -184,12 +175,8 @@ export default function Layout({ children, currentPageName }) {
             
             if (trialEndDate < now) {
               console.log('⏰ Período de prueba expirado');
-              // Mark trial as inactive
-              await actualizarProfesor(teacher.id, {
-                trial_active: false,
-                trial_used: true,
-                subscription_active: false
-              });
+              // La ficha la marca el servidor (expireStaleTrials / getSubscriptionInfo): desde el
+              // navegador ya no se pueden tocar los campos de la prueba (lote E3).
               setUserRole('expired_teacher');
               if (currentPageName !== 'RenewSubscription') {
                 console.log('➡️ Redirigiendo a renovación por trial expirado...');
