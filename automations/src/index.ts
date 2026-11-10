@@ -255,6 +255,31 @@ export default {
       return json({ hechos, errores });
     }
 
+    // Solo lectura (lote G): comprueba que una baja quedo anonimizada en Supabase. Devuelve solo
+    // recuentos y si/no, nunca datos personales.
+    if (req.method === "GET" && url.pathname === "/admin/comprobar-baja") {
+      const provided = req.headers.get("x-admin-key") ?? "";
+      if (!env.ADMIN_KEY || !(await mismaClave(provided, env.ADMIN_KEY))) return json({ error: "Unauthorized" }, 401);
+      const email = (url.searchParams.get("email") ?? "").trim().toLowerCase();
+      const id = url.searchParams.get("booking_id") ?? "";
+      const out: Record<string, unknown> = {};
+      if (email) {
+        out.filas_con_correo_alumno = (await db.select(env, "bookings_ledger", { student_email: `eq.${email}` }, { select: "booking_id" })).length;
+        out.filas_con_correo_profesor = (await db.select(env, "bookings_ledger", { teacher_email: `eq.${email}` }, { select: "booking_id" })).length;
+      }
+      if (id) {
+        const filas = await db.select<Record<string, unknown>>(env, "bookings_ledger", { booking_id: `eq.${id}` },
+          { select: "status,student_first_name,student_email,student_phone" });
+        out.reserva = filas.map((f) => ({
+          status: f.status,
+          nombre_anonimizado: f.student_first_name === "Usuario dado de baja",
+          sin_correo: f.student_email === null,
+          sin_telefono: f.student_phone === null,
+        }));
+      }
+      return json(out);
+    }
+
     // Solo lectura: que responde Menttio sobre el consentimiento de una clase y que haria la
     // conservacion (sin ejecutar nada). Para comprobar el lote C sin tocar Drive.
     if (req.method === "GET" && url.pathname === "/admin/consentimiento") {
