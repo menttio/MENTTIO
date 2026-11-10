@@ -151,7 +151,11 @@ Deno.serve(async (req) => {
       const stripeStatus = subscription.status; // trialing, active, past_due, canceled, etc.
 
       const isTrial = stripeStatus === 'trialing'; // SOLO si Stripe dice explícitamente que está en trial
-      const isActive = stripeStatus === 'active' || stripeStatus === 'trialing';
+      // P15 (lote E, 10/11/2026): past_due conserva el acceso, igual que en stripeInbox. Mientras
+      // Stripe reintenta el cobro el profesor sigue trabajando; se corta cuando Stripe la da por
+      // perdida (unpaid / canceled). Antes esta funcion lo cortaba y el webhook lo volvia a dar.
+      const isActive = stripeStatus === 'active' || stripeStatus === 'trialing' || stripeStatus === 'past_due';
+      result.pago_atrasado = stripeStatus === 'past_due';
       // trial_end solo es relevante si realmente está en estado trialing
       const trialEnd = isTrial ? subscription.trial_end : null;
       const periodEnd = subscription.current_period_end;
