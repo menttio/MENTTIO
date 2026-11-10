@@ -55,11 +55,22 @@ async function catalogo(db) {
   return mapa;
 }
 
-function planDesdePrecio(mapa, priceId, importeCentimos, intervalo) {
+// A6 (lote E, 10/11/2026): el plan sale SOLO del id de precio. Antes, si el precio no estaba en
+// el catalogo, se deducia del importe (>= 20 EUR al mes -> premium), asi que un precio
+// desconocido podia dar premium. Ahora devuelve null y planSeguro conserva el plan que el
+// profesor ya tenia (o basic), y deja aviso en los registros.
+function planDesdePrecio(mapa, priceId) {
   if (priceId && (priceId === mapa.stripe_price_grabacion_mensual || priceId === mapa.stripe_price_grabacion_anual)) return 'premium';
   if (priceId && (priceId === mapa.stripe_price_esencial_mensual || priceId === mapa.stripe_price_esencial_anual)) return 'basic';
-  const umbral = intervalo === 'year' ? 20000 : 2000;
-  return Number(importeCentimos) >= umbral ? 'premium' : 'basic';
+  return null;
+}
+
+function planSeguro(mapa, priceId, teacher) {
+  const plan = planDesdePrecio(mapa, priceId);
+  if (plan) return plan;
+  console.error(`Precio desconocido ${priceId}: se conserva el plan del profesor ${teacher?.id}`);
+  const actual = teacher?.subscription_plan;
+  return actual === 'premium' || actual === 'basic' ? actual : 'basic';
 }
 
 /** El id de la suscripcion cambio de sitio en las versiones nuevas de la API. */
@@ -103,6 +114,78 @@ async function profesorDeCliente(db, customerId) {
   return null;
 }
 
+// --- Cobros de clase (lote E, 10/11/2026: P14 y P16) ---
+
+const ADMIN_AVISOS = 'menttio@menttio.com';
+
+// Lo que no se puede resolver solo (importe raro, cuenta equivocada, cobro doble, reembolso
+// parcial, disputa) se avisa por correo en vez de tocar la reserva.
+async function avisarAdmin(db, asunto, texto) {
+  console.error(`AVISO: ${asunto} | ${texto}`);
+  try {
+    await db.integrations.Core.SendEmail({
+      to: ADMIN_AVISOS,
+      subject: `[Menttio pagos] ${asunto}`,
+      from_name: 'Menttio',
+      body: `<p>${texto}</p><p>Revisalo en el panel de Stripe (cuenta del profesor) y en la reserva.</p>`,
+    });
+  } catch (e) {
+    console.error('No se pudo enviar el aviso:', e.message);
+  }
+}
+
+// Los reembolsos y disputas no traen la reserva: se saca de los metadatos del PaymentIntent,
+// que classPayment rellena al crear el cobro en la cuenta del profesor.
+async function reservaDePago(db, paymentIntentId, cuenta) {
+  let meta = {};
+  if (paymentIntentId) {
+    try {
+      const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {}, cuenta ? { stripeAccount: cuenta } : undefined);
+      meta = pi?.metadata || {};
+    } catch (e) {
+      console.error('PaymentIntent', paymentIntentId, e.message);
+    }
+  }
+  const id = meta.booking_id || meta.bookingId;
+  const booking = id ? await db.entities.Booking.get(String(id)).catch(() => null) : null;
+  return { booking, meta, bookingId: id || null };
+}
+
+// Apunta el estado de pago de un alumno. En las clases de grupo cada alumno tiene el suyo
+// (P16): antes el primer pago marcaba la reserva entera como pagada y los demas ya no podian
+// pagar. La reserva solo pasa a 'paid' cuando han pagado todos.
+// Devuelve 'ok', 'ya' (ya estaba asi: reintento de Stripe), 'otro_pago' o 'no_alumno'.
+async function registrarPago(db, booking, correo, estado, piId) {
+  if (booking.class_type === 'group') {
+    const lista = Array.isArray(booking.enrolled_students) ? booking.enrolled_students : [];
+    const i = lista.findIndex((s) => String(s?.student_email || '').toLowerCase() === correo);
+    if (i < 0) return 'no_alumno';
+    if (lista[i].payment_status === estado) return estado === 'paid' ? 'otro_pago' : 'ya';
+    const nueva = lista.map((s, j) => (j === i ? { ...s, payment_status: estado } : s));
+    const todos = nueva.length > 0 && nueva.every((s) => s?.payment_status === 'paid');
+    await db.entities.Booking.update(booking.id, {
+      enrolled_students: nueva,
+      payment_method: 'stripe',
+      payment_status: todos ? 'paid' : 'pending',
+    });
+    return 'ok';
+  }
+  if (booking.payment_status === estado) {
+    return booking.stripe_payment_id === piId ? 'ya' : 'otro_pago';
+  }
+  await db.entities.Booking.update(booking.id, {
+    payment_status: estado,
+    payment_method: 'stripe',
+    stripe_payment_id: piId,
+  });
+  return 'ok';
+}
+
+// Eventos que se aceptan de una cuenta conectada (la del profesor). Las suscripciones y
+// facturas solo valen si vienen de la cuenta de Menttio: si un profesor tiene sus propios
+// clientes o suscripciones en su cuenta de Stripe, no deben tocar ninguna ficha.
+const EVENTOS_DE_CUENTA_CONECTADA = ['checkout.session.completed', 'charge.refunded', 'charge.dispute.created'];
+
 export default async function(req) {
   if (req.method !== 'POST') {
     return Response.json({ error: 'Method not allowed' }, { status: 405 });
@@ -124,6 +207,11 @@ export default async function(req) {
   // distingue el cobro de una clase (cuenta del profesor) de una suscripcion (cuenta Menttio).
   console.log(`Evento ${event.type} (API ${event.api_version || 'sin version'})${event.account ? ` de la cuenta ${event.account}` : ''}`);
 
+  if (event.account && !EVENTOS_DE_CUENTA_CONECTADA.includes(event.type)) {
+    console.log(`Ignorado: ${event.type} de una cuenta conectada`);
+    return Response.json({ received: true }, { status: 200 });
+  }
+
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -137,12 +225,38 @@ export default async function(req) {
           console.warn('checkout.session.completed sin identificador de reserva');
           break;
         }
-        await db.entities.Booking.update(bookingId, {
-          payment_status: 'paid',
-          payment_method: 'stripe',
-          stripe_payment_id: session.payment_intent || session.id,
-        });
-        console.log(`Reserva ${bookingId} marcada como pagada`);
+        // P14: antes se marcaba como pagada sin mirar nada mas. Ahora se comprueba que el
+        // cobro se hizo de verdad, en la cuenta del profesor de esa reserva y por su importe.
+        if (session.payment_status !== 'paid') {
+          console.warn(`Sesion ${session.id} completada sin cobro (${session.payment_status})`);
+          break;
+        }
+        const piId = session.payment_intent || session.id;
+        const booking = await db.entities.Booking.get(String(bookingId)).catch(() => null);
+        if (!booking) {
+          await avisarAdmin(db, 'Cobro sin reserva', `Stripe cobro la sesion ${session.id} (pago ${piId}, cuenta ${event.account || 'Menttio'}) para la reserva ${bookingId}, que no existe. Probablemente hay que reembolsarlo.`);
+          break;
+        }
+        const teacher = await db.entities.Teacher.get(String(booking.teacher_id)).catch(() => null);
+        const cuenta = teacher?.stripe_connect_account_id || null;
+        if (!event.account || event.account !== cuenta) {
+          await avisarAdmin(db, 'Cobro en otra cuenta', `La reserva ${booking.id} se cobro en la cuenta ${event.account || 'de Menttio'} y la del profesor es ${cuenta || 'ninguna'}. No se ha marcado como pagada.`);
+          break;
+        }
+        const esperado = Math.round(Number(booking.price) * 100);
+        if (String(session.currency || '').toLowerCase() !== 'eur' || Number(session.amount_total) !== esperado) {
+          await avisarAdmin(db, 'Importe distinto', `La reserva ${booking.id} cuesta ${esperado / 100} EUR y se cobraron ${Number(session.amount_total) / 100} ${session.currency} (pago ${piId}). No se ha marcado como pagada.`);
+          break;
+        }
+        const correo = String(session.metadata?.student_email || session.customer_details?.email || '').toLowerCase();
+        const r = await registrarPago(db, booking, correo, 'paid', piId);
+        if (r === 'ok') console.log(`Reserva ${booking.id} pagada por ${correo || 'el alumno'}`);
+        else if (r === 'ya') console.log(`Reserva ${booking.id}: pago ${piId} ya registrado (reintento)`);
+        else if (r === 'otro_pago') await avisarAdmin(db, 'Posible cobro doble', `La reserva ${booking.id} ya estaba pagada por ${correo || 'el alumno'} y ha entrado otro cobro (${piId}). Si es doble, reembolsa uno en Stripe.`);
+        else await avisarAdmin(db, 'Pago de alguien que no esta en la clase', `${correo} pago la clase de grupo ${booking.id} (pago ${piId}) pero no figura entre los alumnos.`);
+        if (booking.status === 'cancelled') {
+          await avisarAdmin(db, 'Pago de una clase cancelada', `La reserva ${booking.id} estaba cancelada y se ha cobrado (pago ${piId}). Seguramente hay que reembolsarlo.`);
+        }
         break;
       }
 
@@ -157,7 +271,6 @@ export default async function(req) {
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
         const item = subscription.items?.data?.[0];
         const mapa = await catalogo(db);
-        const plan = planDesdePrecio(mapa, item?.price?.id, item?.price?.unit_amount, item?.price?.recurring?.interval);
         const expira = aFecha(finDePeriodo(subscription));
 
         const teacher = await profesorDeCliente(db, invoice.customer);
@@ -165,6 +278,7 @@ export default async function(req) {
           console.warn(`Sin profesor para el cliente ${invoice.customer}`);
           break;
         }
+        const plan = planSeguro(mapa, item?.price?.id, teacher);
         await db.entities.Teacher.update(teacher.id, {
           subscription_active: true,
           subscription_plan: plan,
@@ -179,7 +293,9 @@ export default async function(req) {
 
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
-        const subscription = event.data.object;
+        // Se relee de Stripe: los avisos pueden llegar desordenados y el del evento podria
+        // ser una foto antigua (p. ej. un 'updated' viejo despues de la cancelacion).
+        const subscription = await stripe.subscriptions.retrieve(event.data.object.id).catch(() => event.data.object);
 
         // Antes esto solo miraba el estado 'trialing' y se iba en cualquier otro caso. Con lo
         // cual, cuando una prueba terminaba sin pagar, Menttio no se enteraba nunca: el
@@ -195,12 +311,12 @@ export default async function(req) {
 
         const item = subscription.items?.data?.[0];
         const mapa = await catalogo(db);
-        const plan = planDesdePrecio(mapa, item?.price?.id, item?.price?.unit_amount, item?.price?.recurring?.interval);
         const finPrueba = aFecha(subscription.trial_end);
         const expira = aFecha(finDePeriodo(subscription)) || finPrueba;
 
         const teacher = await profesorDeCliente(db, subscription.customer);
         if (!teacher) break;
+        const plan = planSeguro(mapa, item?.price?.id, teacher);
 
         await db.entities.Teacher.update(teacher.id, {
           subscription_active: activa,
@@ -289,6 +405,34 @@ export default async function(req) {
           stripe_subscription_id: null,
         });
         console.log(`Suscripcion desactivada para ${teacher.id}`);
+        break;
+      }
+
+      // Reembolsos y disputas de cobros de clase (cuenta del profesor). Para que lleguen, el
+      // destino de cuentas conectadas tiene que escuchar charge.refunded y charge.dispute.created.
+      case 'charge.refunded': {
+        if (!event.account) break; // reembolsos de la cuenta de Menttio (suscripciones): nada que hacer
+        const charge = event.data.object;
+        const { booking, meta, bookingId } = await reservaDePago(db, charge.payment_intent, event.account);
+        if (!booking) {
+          await avisarAdmin(db, 'Reembolso sin reserva', `Reembolso del pago ${charge.payment_intent} (cuenta ${event.account}); reserva ${bookingId || 'desconocida'} no encontrada.`);
+          break;
+        }
+        if (Number(charge.amount_refunded) < Number(charge.amount)) {
+          await avisarAdmin(db, 'Reembolso parcial', `Reserva ${booking.id}: reembolsados ${Number(charge.amount_refunded) / 100} de ${Number(charge.amount) / 100} EUR. La reserva sigue como pagada.`);
+          break;
+        }
+        const correo = String(meta.student_email || '').toLowerCase();
+        const r = await registrarPago(db, booking, correo, 'refunded', charge.payment_intent);
+        console.log(`Reembolso total de la reserva ${booking.id} (${correo}): ${r}`);
+        break;
+      }
+
+      case 'charge.dispute.created': {
+        if (!event.account) break;
+        const dispute = event.data.object;
+        const { booking, bookingId } = await reservaDePago(db, dispute.payment_intent, event.account);
+        await avisarAdmin(db, 'Disputa de un pago', `El alumno ha abierto una disputa (${dispute.reason || 'sin motivo'}) por ${Number(dispute.amount) / 100} EUR del pago ${dispute.payment_intent}, reserva ${booking?.id || bookingId || 'desconocida'}, cuenta ${event.account}. Hay que responder en Stripe antes de la fecha limite.`);
         break;
       }
 
