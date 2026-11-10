@@ -114,20 +114,12 @@ export default function ManageAvailability() {
   const saveRegularSchedule = async () => {
     setSaving(true);
     try {
-      const existingRegular = availabilities.filter(a => a.type === 'regular');
-      for (const a of existingRegular) {
-        await base44.entities.Availability.delete(a.id);
-      }
-      for (const [dayValue, config] of Object.entries(regularSchedule)) {
-        if (config.enabled && config.slots?.length > 0) {
-          await base44.entities.Availability.create({
-            teacher_id: teacher.id,
-            type: 'regular',
-            day_of_week: parseInt(dayValue),
-            time_slots: config.slots
-          });
-        }
-      }
+      // Lote F: el horario lo guarda el servidor (teacherAccount), solo para el propio profesor.
+      const horario = Object.entries(regularSchedule)
+        .filter(([, config]) => config.enabled && config.slots?.length > 0)
+        .map(([dayValue, config]) => ({ day_of_week: parseInt(dayValue), time_slots: config.slots }));
+      const res = await base44.functions.invoke('teacherAccount', { accion: 'disponibilidad', horario });
+      if (res?.data?.error) throw new Error(res.data.error);
       await loadData();
     } catch (error) {
       console.error(error);
