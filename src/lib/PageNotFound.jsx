@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
@@ -6,6 +7,21 @@ import { useQuery } from '@tanstack/react-query';
 export default function PageNotFound({}) {
     const location = useLocation();
     const pageName = location.pathname.substring(1);
+
+    // Fase 3 (10/11/2026): las direcciones que no existen responden 200, porque la web es una
+    // aplicacion de una sola pagina, y Google las indexaba como "soft 404". Sin poder cambiar el
+    // codigo HTTP, al menos se les marca como no indexables.
+    useEffect(() => {
+        let meta = document.querySelector('meta[name="robots"]');
+        const previo = meta ? meta.getAttribute('content') : null;
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'robots');
+            document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', 'noindex, nofollow');
+        return () => { if (previo !== null) meta.setAttribute('content', previo); else meta.remove(); };
+    }, []);
 
     const { data: authData, isFetched } = useQuery({
         queryKey: ['user'],
