@@ -7,7 +7,6 @@ import {
   Phone,
   BookOpen,
   Calendar,
-  Clock,
   Loader2,
   ChevronDown,
   ChevronUp,
@@ -26,7 +25,6 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import StudentsTour from '../components/teacher/StudentsTour';
 import InviteStudentsCard from '../components/teacher/InviteStudentsCard';
 import FamilyReportDialog from '@/components/teacher/FamilyReportDialog';
 

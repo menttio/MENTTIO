@@ -11,11 +11,7 @@ import {
   Search,
   Plus,
   User,
-  Trash2,
   Star,
-  DollarSign,
-  Play,
-  ExternalLink,
   Video
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,14 +22,8 @@ import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import StudentOnboardingTour, { shouldShowStudentOnboarding } from '../components/student/OnboardingTour';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+
+
 
 export default function StudentDashboard() {
   const [student, setStudent] = useState(null);

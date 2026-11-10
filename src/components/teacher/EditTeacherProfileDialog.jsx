@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 import {
   Dialog,
   DialogContent,

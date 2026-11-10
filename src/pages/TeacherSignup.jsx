@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { Users, User, Check, CreditCard, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Minus, Info, X } from 'lucide-react';
+import { Users, User, Check, Loader2, ArrowLeft, ArrowRight, Plus, Trash2, Info } from 'lucide-react';
 import { asignaturaCompleta } from '@/lib/asignaturas';
 import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Select,

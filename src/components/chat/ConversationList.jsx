@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Circle } from 'lucide-react';
+import { User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';

@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor, elegirPlanComision } from '@/lib/profesor';
-import { AlertCircle, Check, Loader2, Video, X } from 'lucide-react';
+import { elegirPlanComision } from '@/lib/profesor';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import PlanSelector from '../components/plans/PlanSelector';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 
 export default function RenewSubscription() {

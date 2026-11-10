@@ -9,7 +9,6 @@ import {
   Calendar, 
   Users, 
   Clock, 
-  TrendingUp, 
   ChevronRight,
   BookOpen,
   DollarSign,

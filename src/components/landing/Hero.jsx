@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Sparkles, Video, Calendar, Users, User, Settings, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
+import { ArrowRight, Sparkles, Video, Calendar, Users, User, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPageUrl } from '../../utils';

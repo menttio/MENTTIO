@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Send, X, Maximize2, Loader2, MessageCircle } from 'lucide-react';
+import { Send, X, Maximize2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const WELCOME_MESSAGE = {

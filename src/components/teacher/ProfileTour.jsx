@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 import { Button } from '@/components/ui/button';
-import { User, Star, BookOpen, Award, Languages, Pencil, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
+import { User, Star, BookOpen, Award, Pencil, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 

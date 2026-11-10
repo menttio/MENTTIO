@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '../utils';
 import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { crearProfesor } from '@/lib/profesor';
 import { Loader2 } from 'lucide-react';
 
 export default function TeacherSignupComplete() {

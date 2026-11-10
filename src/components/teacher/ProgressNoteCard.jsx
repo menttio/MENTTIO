@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { accionReserva } from '@/lib/reservas';
 import { Star, Save, X, Pencil, TrendingUp, CheckSquare, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';

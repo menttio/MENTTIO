@@ -8,8 +8,7 @@ import {
   Calendar as CalendarIcon,
   Clock,
   User,
-  BookOpen,
-  Filter
+  BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -28,11 +27,10 @@ import {
   getDay
 } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';
-import CalendarTour from '../components/teacher/CalendarTour';
 import GoogleCalendarSync from '../components/calendar/GoogleCalendarSync';
 
 export default function TeacherCalendar() {

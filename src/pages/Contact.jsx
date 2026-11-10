@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Mail, Send, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 export default function Contact() {

@@ -10,8 +10,7 @@ import {
   Grid3x3,
   DollarSign
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 import confetti from 'canvas-confetti';
 
 const TOUR_STEPS = [

@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { 
   Calendar, 
-  Filter, 
   Search,
-  ChevronDown,
   Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { parseISO, isAfter, isBefore, startOfDay } from 'date-fns';
+import { isBefore } from 'date-fns';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
 import EditBookingDialog from '../components/booking/EditBookingDialog';

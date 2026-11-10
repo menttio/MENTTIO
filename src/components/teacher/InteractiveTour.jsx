@@ -9,17 +9,9 @@ import {
   ChevronLeft,
   Calendar,
   Clock,
-  BookOpen,
-  Users,
-  DollarSign,
-  Star,
-  MessageCircle,
-  User,
-  BarChart3,
-  Bell
+  BookOpen
 } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 
 // Tres pasos, y en el orden en que hay que hacerlos.
 //

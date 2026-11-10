@@ -25,8 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar, Clock, User, Users, BookOpen, Loader2, Check } from 'lucide-react';
-import { format, addDays, getDay, parseISO, isBefore } from 'date-fns';
+import { Clock, User, Users, BookOpen, Loader2, Check } from 'lucide-react';
+import { format, addDays, parseISO, isBefore } from 'date-fns';
 import { es } from 'date-fns/locale';
 import BookingCalendar from '../booking/BookingCalendar';
 import { cn } from '@/lib/utils';

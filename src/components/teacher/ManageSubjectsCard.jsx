@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 import { textoPrecio } from '@/lib/asignaturas';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

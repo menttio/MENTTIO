@@ -2,9 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { textoPrecio, preciosIndividuales } from '@/lib/asignaturas';
 import { 
-  Search, 
-  Filter, 
-  SlidersHorizontal,
+  Search,
   X,
   Loader2,
   UserPlus,
@@ -12,7 +10,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
@@ -20,13 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+
+
 import {
   Dialog,
   DialogContent,

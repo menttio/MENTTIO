@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { actualizarProfesor, crearProfesor } from '@/lib/profesor';
+import { actualizarProfesor } from '@/lib/profesor';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,10 +20,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, ChevronDown, ChevronUp, Users, User } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, Users, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
-import SubjectsTour from '../components/teacher/SubjectsTour';
 import { idAsignaturaPropia } from './TeacherSignup';
 import { daIndividual, daGrupal, grupoIndefinido } from '@/lib/asignaturas';
 

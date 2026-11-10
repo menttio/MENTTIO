@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { User, Users, BookOpen, Loader2, Check, Plus, X, Repeat, Calendar, AlertTriangle } from 'lucide-react';
-import { format, addDays, addWeeks, getDay, nextDay } from 'date-fns';
+import { format, addDays, addWeeks, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 

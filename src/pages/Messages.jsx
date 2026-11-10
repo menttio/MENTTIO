@@ -5,7 +5,6 @@ import {
   MessageCircle, 
   Plus, 
   Loader2,
-  User,
   Search
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { motion } from 'framer-motion';
 import ConversationList from '../components/chat/ConversationList';
 import ChatWindow from '../components/chat/ChatWindow';
 

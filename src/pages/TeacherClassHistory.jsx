@@ -3,9 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { accionReserva } from '@/lib/reservas';
 import { 
   Calendar, 
-  Filter, 
   Search,
-  ChevronDown,
   Loader2,
   User,
   Plus,
@@ -31,7 +29,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar as CalendarPicker } from '@/components/ui/calendar';
-import { parseISO, isAfter, isBefore, startOfDay, format } from 'date-fns';
+import { parseISO, isBefore, startOfDay, format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import BookingCard from '../components/booking/BookingCard';
