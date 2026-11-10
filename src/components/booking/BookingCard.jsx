@@ -195,9 +195,6 @@ export default function BookingCard({
         }
       }
 
-      // Se relee la clase justo antes de escribir. Si no, dos personas subiendo a la misma
-      // clase (o el mismo alumno subiendo dos veces seguidas) se borran los archivos del
-      // otro, porque cada uno guarda su propia copia de la lista.
       // El servidor anade los archivos a la lista que tiene guardada (lote E2).
       const { files: updatedFiles } = await accionReserva('archivos_anadir', { booking_id: booking.id, files: subidos });
 
