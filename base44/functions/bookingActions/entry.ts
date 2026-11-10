@@ -72,6 +72,27 @@ async function avisarAdmin(db: any, asunto: string, texto: string) {
   }
 }
 
+// Avisos dentro de la app (lote F, P17). Antes los creaba el navegador y la regla de
+// Notification dejaba a cualquiera crear avisos para cualquiera (phishing a menores). Ahora los
+// crea solo el servidor, con texto fijo, a las partes de la reserva.
+const fechaTexto = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+const eur = (n: unknown) => `${Number(n || 0).toLocaleString('es-ES', { maximumFractionDigits: 2 })} €`;
+
+function alumnosDe(b: any) {
+  if (b.class_type === 'group') {
+    return lista(b.enrolled_students).map((s) => ({ id: s?.student_id, email: s?.student_email, nombre: s?.student_name }));
+  }
+  return [{ id: b.student_id, email: b.student_email, nombre: b.student_name }];
+}
+
+async function avisar(db: any, avisos: any[]) {
+  for (const a of avisos) {
+    if (!a?.user_email) continue;
+    await db.entities.Notification.create(a).catch((e: Error) => console.error('Aviso no creado:', e.message));
+  }
+}
+
 // ---------------------------------------------------------------- crear
 async function crear(db: any, yo: string, esAdmin: boolean, body: any) {
   const teacher = await db.entities.Teacher.get(String(body.teacher_id || '')).catch(() => null);
@@ -192,6 +213,43 @@ async function crear(db: any, yo: string, esAdmin: boolean, body: any) {
     }
     creadas.push(await db.entities.Booking.create(datos));
   }
+
+  const b0 = creadas[0];
+  const cuando = `el ${fechaTexto(b0.date)} a las ${b0.start_time}`;
+  const avisos: any[] = [];
+  if (comoProfesor) {
+    const serie = creadas.length > 1;
+    for (const a of alumnos) {
+      avisos.push({
+        user_id: a.id, user_email: a.user_email, type: 'booking_new', related_id: b0.id, link_page: 'MyClasses',
+        title: serie ? (esGrupo ? 'Clases grupales recurrentes creadas' : 'Clases recurrentes creadas') : (esGrupo ? 'Clase grupal reservada' : 'Clase reservada'),
+        message: serie
+          ? `${teacher.full_name} ha programado ${creadas.length} clases recurrentes${esGrupo ? ' grupales' : ''} de ${subjectName} contigo`
+          : `${teacher.full_name} ha reservado una ${esGrupo ? 'clase grupal' : 'clase'} de ${subjectName} contigo para ${cuando}`,
+      });
+    }
+    if (!serie) {
+      avisos.push({
+        user_id: teacher.id, user_email: teacher.user_email, type: 'booking_new', related_id: b0.id, link_page: 'TeacherCalendar',
+        title: esGrupo ? 'Clase grupal creada' : 'Clase creada',
+        message: esGrupo
+          ? `Has creado una clase grupal de ${subjectName} con ${alumnos.length} alumnos para ${cuando}`
+          : `Has creado una clase de ${subjectName} con ${alumnos[0].full_name} para ${cuando}`,
+      });
+    }
+  } else {
+    const a = alumnos[0];
+    avisos.push({
+      user_id: a.id, user_email: a.user_email, type: 'booking_new', related_id: b0.id, link_page: 'MyClasses',
+      title: 'Clase reservada',
+      message: `Has reservado una clase de ${subjectName} con ${teacher.full_name} para ${cuando}. Recuerda pagar después de la clase.`,
+    }, {
+      user_id: teacher.id, user_email: teacher.user_email, type: 'booking_new', related_id: b0.id, link_page: 'TeacherCalendar',
+      title: 'Nueva reserva de clase',
+      message: `${a.full_name} ha reservado una clase de ${subjectName} para ${cuando}`,
+    });
+  }
+  await avisar(db, avisos);
   return Response.json({ booking: creadas[0], bookings: creadas });
 }
 
@@ -231,7 +289,20 @@ Deno.serve(async (req) => {
         const start = String(body.start_time || '');
         if (!FECHA.test(date) || !HORA.test(start)) return err('Fecha u hora no valida');
         if (!esProfesor && instante(date, start).getTime() < Date.now()) return err('No se puede mover al pasado');
-        return await actualizar({ date, start_time: start, end_time: finDe(start, Number(b.duration_minutes) || 60) });
+        const movida = await db.entities.Booking.update(b.id, { date, start_time: start, end_time: finDe(start, Number(b.duration_minutes) || 60) });
+        const nuevo = `${fechaTexto(date)} a las ${start}`;
+        const alumnosM = alumnosDe(b);
+        await avisar(db, [
+          ...alumnosM.map((a) => ({
+            user_id: a.id, user_email: a.email, type: 'booking_modified', title: 'Clase reprogramada', related_id: b.id, link_page: 'MyClasses',
+            message: `Tu clase de ${b.subject_name} con ${b.teacher_name} se ha cambiado a ${nuevo}`,
+          })),
+          {
+            user_id: b.teacher_id, user_email: b.teacher_email, type: 'booking_modified', title: 'Clase reprogramada', related_id: b.id, link_page: 'TeacherCalendar',
+            message: `La clase de ${b.subject_name} con ${esGrupo ? 'el grupo' : b.student_name} se ha cambiado a ${nuevo}`,
+          },
+        ]);
+        return Response.json({ booking: movida });
       }
 
       case 'cancelar': {
@@ -247,7 +318,19 @@ Deno.serve(async (req) => {
           await avisarAdmin(db, 'Clase pagada con tarjeta cancelada',
             `${yo} ha cancelado la clase ${b.id} (${b.subject_name}, ${b.date} ${b.start_time}), cobrada con tarjeta (${b.stripe_payment_id || 'pago de grupo'}). Decide si hay que reembolsarla en Stripe.`);
         }
-        return await actualizar({ status: 'cancelled' });
+        const cancelada = await db.entities.Booking.update(b.id, { status: 'cancelled' });
+        const del = `del ${fechaTexto(String(b.date))}`;
+        await avisar(db, [
+          ...alumnosDe(b).map((a) => ({
+            user_id: a.id, user_email: a.email, type: 'booking_cancelled', title: 'Clase cancelada', related_id: b.id, link_page: 'MyClasses',
+            message: `Tu clase de ${b.subject_name} con ${b.teacher_name} ${del} ha sido cancelada`,
+          })),
+          {
+            user_id: b.teacher_id, user_email: b.teacher_email, type: 'booking_cancelled', title: 'Clase cancelada', related_id: b.id, link_page: 'TeacherCalendar',
+            message: `La clase de ${b.subject_name} con ${esGrupo ? 'el grupo' : b.student_name} ${del} ha sido cancelada`,
+          },
+        ]);
+        return Response.json({ booking: cancelada });
       }
 
       case 'borrar': {
@@ -281,7 +364,20 @@ Deno.serve(async (req) => {
           const conTarjeta = (s: any) => b.payment_method === 'stripe' && s?.payment_status === 'paid';
           campos.enrolled_students = enrolled.map((s) => (conTarjeta(s) ? s : { ...s, payment_status: estado }));
         }
-        return await actualizar(campos);
+        const pagoGuardado = await db.entities.Booking.update(b.id, campos);
+        // Solo se avisa al alumno cuando el profesor responde a su "he hecho el Bizum".
+        if (b.payment_status === 'pending_confirmation') {
+          await avisar(db, alumnosDe(b).map((a) => (estado === 'paid'
+            ? {
+              user_id: a.id, user_email: a.email, type: 'payment_confirmed', title: 'Pago confirmado', related_id: b.id, link_page: 'MyClasses',
+              message: `${b.teacher_name} ha confirmado que recibió tu pago de ${eur(b.price)} por la clase de ${b.subject_name}.`,
+            }
+            : {
+              user_id: a.id, user_email: a.email, type: 'payment_rejected', title: 'Pago no recibido', related_id: b.id, link_page: 'MyClasses',
+              message: `${b.teacher_name} indica que no ha recibido el pago de ${eur(b.price)} por la clase de ${b.subject_name}. Por favor, vuelve a intentarlo.`,
+            })));
+        }
+        return Response.json({ booking: pagoGuardado });
       }
 
       case 'pago_enviado': {
@@ -295,7 +391,13 @@ Deno.serve(async (req) => {
           });
         }
         if (b.payment_status !== 'pending') return err('Esta clase no esta pendiente de pago', 409);
-        return await actualizar({ payment_status: 'pending_confirmation', payment_method: 'bizum' });
+        const enviado = await db.entities.Booking.update(b.id, { payment_status: 'pending_confirmation', payment_method: 'bizum' });
+        await avisar(db, [{
+          user_id: b.teacher_id, user_email: b.teacher_email, type: 'payment_pending_confirmation', title: 'Confirma el pago de una clase',
+          related_id: b.id, link_page: 'TeacherCalendar',
+          message: `${b.student_name} dice haber enviado ${eur(b.price)} por Bizum por la clase de ${b.subject_name}. Confirma si lo has recibido.`,
+        }]);
+        return Response.json({ booking: enviado });
       }
 
       case 'progreso': {
