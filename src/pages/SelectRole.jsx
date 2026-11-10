@@ -82,7 +82,7 @@ export default function SelectRole() {
                 <GraduationCap className="text-[#41f2c0]" size={32} />
               </div>
               <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Alumno</h2>
-              <p className="text-sm md:text-base text-gray-500 mb-6">Quiero reservar clases particulares con profesores</p>
+              <p className="text-sm md:text-base text-gray-500 mb-6">Mi profesor usa Menttio para nuestras clases</p>
 
               <div className="space-y-3">
                 <Button
@@ -112,9 +112,9 @@ export default function SelectRole() {
                 <BookOpen className="text-[#41f2c0]" size={32} />
               </div>
               <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
-              <p className="text-sm md:text-base text-gray-500 mb-2">Quiero ofrecer clases particulares a alumnos</p>
+              <p className="text-sm md:text-base text-gray-500 mb-2">Quiero organizar las clases con mis alumnos</p>
               <p className="text-xs text-[#41f2c0] mb-4 md:mb-6 font-medium">
-                Requiere suscripción mensual
+                30 días gratis, sin tarjeta
               </p>
 
               <div className="space-y-3">
