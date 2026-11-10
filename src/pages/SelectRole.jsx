@@ -113,7 +113,7 @@ export default function SelectRole() {
               </div>
               <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
               <p className="text-sm md:text-base text-gray-500 mb-2">Quiero organizar las clases con mis alumnos</p>
-              <p className="text-xs text-[#41f2c0] mb-4 md:mb-6 font-medium">
+              <p className="text-xs text-[#0d7a5f] mb-4 md:mb-6 font-semibold">
                 30 días gratis, sin tarjeta
               </p>
 
