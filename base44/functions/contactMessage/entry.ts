@@ -25,10 +25,15 @@ function clientIp(req) {
   return req.headers.get('cf-connecting-ip') || req.headers.get('x-real-ip') || '';
 }
 
+// P26 (lote F, 10/11/2026): HMAC con una clave secreta. Antes era SHA-256 con una sal fija que
+// esta en el codigo: con las ~4.000 millones de IPv4 posibles, la IP se recuperaba del hash.
 async function hashIp(ip) {
-  const data = new TextEncoder().encode('menttio:' + ip);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  const clave = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode('ip-hash:' + (Deno.env.get('AUTOMATION_SECRET') || '')),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  );
+  const firma = await crypto.subtle.sign('HMAC', clave, new TextEncoder().encode(ip));
+  return Array.from(new Uint8Array(firma)).map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 export default async function(req) {
