@@ -268,7 +268,7 @@ export default function Invitacion() {
                       <label
                         key={valor}
                         className={`flex items-center gap-3 rounded-xl border p-3 cursor-pointer transition-colors ${
-                          marcada ? 'border-[#41f2c0] bg-[#41f2c0]/10' : 'border-gray-200 hover:border-gray-300'
+                          marcada ? 'border-[#1fa37e] bg-[#41f2c0]/10' : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
                         <input

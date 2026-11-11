@@ -607,14 +607,14 @@ export default function BookClass() {
               onClick={() => s.num < step && setStep(s.num)}
               disabled={s.num > step}
               className={`flex items-center gap-1 md:gap-2 flex-shrink-0 ${
-                s.num <= step ? 'text-[#41f2c0]' : 'text-gray-300'
+                s.num <= step ? 'text-[#0d7a5f]' : 'text-gray-300'
               }`}
             >
               <div className={`w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-semibold ${
                 s.num < step 
                   ? 'bg-[#41f2c0] text-[#404040]'
                   : s.num === step
-                    ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
+                    ? 'border-2 border-[#41f2c0] text-[#404040]'
                     : 'border-2 border-gray-200 text-gray-300'
               }`}>
                 {s.num < step ? <Check size={14} /> : s.num}
@@ -661,7 +661,7 @@ export default function BookClass() {
                       }}
                       className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#1fa37e] hover:shadow-md ${
                         selectedSubject === subject.id 
-                          ? 'border-[#41f2c0] bg-[#41f2c0]/5' 
+                          ? 'border-[#1fa37e] bg-[#41f2c0]/5' 
                           : 'border-gray-100'
                       }`}
                     >

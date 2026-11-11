@@ -56,7 +56,7 @@ for (const file of files('src')) {
           const collect = n => {
             if (!n) return;
             if (n.type === 'StringLiteral') lits.push({ start: n.start + 1, end: n.end - 1, value: n.value });
-            else if (n.type === 'TemplateLiteral') n.quasis.forEach(q => lits.push({ start: q.start, end: q.end, value: q.value.raw }));
+            else if (n.type === 'TemplateLiteral') { n.quasis.forEach(q => lits.push({ start: q.start, end: q.end, value: q.value.raw })); n.expressions.forEach(collect); }
             else for (const k of Object.keys(n)) { const v = n[k]; if (k === 'loc' || k === 'leadingComments' || k === 'trailingComments') continue; if (v && typeof v === 'object') { if (Array.isArray(v)) v.forEach(x => x && typeof x.type === 'string' && collect(x)); else if (typeof v.type === 'string') collect(v); } }
           };
           collect(attr.value);

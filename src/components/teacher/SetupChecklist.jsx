@@ -158,7 +158,7 @@ export default function SetupChecklist({ teacher }) {
                       ? 'border-transparent bg-gray-50'
                       : t.bloquea
                         ? 'border-2 border-[#b45309] bg-[#fffbeb] hover:bg-[#fef3c7]'
-                        : 'border-gray-200 hover:border-[#41f2c0] hover:bg-[#41f2c0]/5'
+                        : 'border-gray-200 hover:border-[#1fa37e] hover:bg-[#41f2c0]/5'
                   }`}
                 >
                   <span

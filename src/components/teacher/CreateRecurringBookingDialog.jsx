@@ -420,13 +420,13 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     <button
                       onClick={() => num < step && setStep(num)}
                       disabled={num > step}
-                      className={`flex items-center gap-1.5 ${num <= step ? 'text-[#41f2c0]' : 'text-gray-300'}`}
+                      className={`flex items-center gap-1.5 ${num <= step ? 'text-[#0d7a5f]' : 'text-gray-300'}`}
                     >
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 ${
                         num < step
                           ? 'bg-[#41f2c0] text-[#404040]'
                           : num === step
-                            ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
+                            ? 'border-2 border-[#41f2c0] text-[#404040]'
                             : 'border-2 border-gray-200 text-gray-300'
                       }`}>
                         {num < step ? <Check size={12} /> : num}

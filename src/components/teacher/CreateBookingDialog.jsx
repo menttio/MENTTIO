@@ -427,14 +427,14 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                     onClick={() => s.num < step && setStep(s.num)}
                     disabled={s.num > step}
                     className={`flex items-center gap-2 flex-shrink-0 ${
-                      s.num <= step ? 'text-[#41f2c0]' : 'text-gray-300'
+                      s.num <= step ? 'text-[#0d7a5f]' : 'text-gray-300'
                     }`}
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                       s.num < step
                         ? 'bg-[#41f2c0] text-[#404040]'
                         : s.num === step
-                          ? 'border-2 border-[#41f2c0] text-[#41f2c0]'
+                          ? 'border-2 border-[#41f2c0] text-[#404040]'
                           : 'border-2 border-gray-200 text-gray-300'
                     }`}>
                       {s.num < step ? <Check size={14} /> : s.num}

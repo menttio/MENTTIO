@@ -89,7 +89,7 @@ export default function TeacherAvailability({ teacherId }) {
                     }`}
                   >
                     <div className={`w-12 text-center font-medium text-sm ${
-                      isAvailable ? 'text-[#41f2c0]' : 'text-gray-400'
+                      isAvailable ? 'text-[#0d7a5f]' : 'text-gray-400'
                     }`}>
                       {day.name}
                     </div>

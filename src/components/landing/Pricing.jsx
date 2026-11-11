@@ -21,7 +21,7 @@ const teacherPlans = [
     textColor: 'text-gray-700',
     mutedColor: 'text-gray-500',
     checkBg: 'bg-[#41f2c0]/20',
-    checkColor: 'text-[#41f2c0]',
+    checkColor: 'text-[#0d7a5f]',
     ctaClass: 'bg-[#404040] hover:bg-[#303030] text-white',
     ctaLabel: 'Empezar sin cuota',
     features: [
@@ -54,7 +54,7 @@ const teacherPlans = [
     textColor: 'text-gray-700',
     mutedColor: 'text-gray-500',
     checkBg: 'bg-[#41f2c0]/20',
-    checkColor: 'text-[#41f2c0]',
+    checkColor: 'text-[#0d7a5f]',
     ctaClass: 'bg-[#404040] hover:bg-[#303030] text-white',
     ctaLabel: 'Empezar 30 días gratis',
     features: [
