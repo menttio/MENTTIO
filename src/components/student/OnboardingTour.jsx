@@ -10,7 +10,7 @@ const STEPS = [
     icon: Home,
     title: '¡Bienvenido a tu portal de clases!',
     description: 'Este es tu dashboard. Aquí verás un resumen de tus clases, profesores asignados y las próximas sesiones programadas.',
-    color: '#41f2c0',
+    color: '#0d7a5f',
   },
   {
     icon: Search,
@@ -22,7 +22,7 @@ const STEPS = [
     icon: Calendar,
     title: 'Reserva una clase',
     description: 'En "Reservar Clase" elige profesor, asignatura, fecha y hora. El profesor confirmará la reserva y recibirás el enlace de Google Meet.',
-    color: '#41f2c0',
+    color: '#0d7a5f',
   },
   {
     icon: BookOpen,
@@ -34,7 +34,7 @@ const STEPS = [
     icon: Library,
     title: 'Biblioteca de grabaciones',
     description: 'En "Biblioteca" encontrarás las grabaciones de todas tus clases (si tu profesor tiene la grabación activada). Puedes repasar las sesiones cuando quieras.',
-    color: '#41f2c0',
+    color: '#0d7a5f',
   },
 ];
 
