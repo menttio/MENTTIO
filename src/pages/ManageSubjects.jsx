@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { BookOpen, Plus, Edit, Trash2, Loader2, DollarSign, Info, Users, User } from 'lucide-react';
+import { BookOpen, Plus, Edit, Trash2, Loader2, Info, Users, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { idAsignaturaPropia } from './TeacherSignup';

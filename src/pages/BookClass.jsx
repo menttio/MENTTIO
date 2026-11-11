@@ -10,7 +10,6 @@ import {
   User, 
   Users,
   Clock, 
-  DollarSign,
   Check,
   Loader2,
   AlertCircle,
