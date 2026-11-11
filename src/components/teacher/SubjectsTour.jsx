@@ -8,7 +8,7 @@ import {
   BookOpen,
   Plus,
   Grid3x3,
-  DollarSign
+  Euro
 } from 'lucide-react';
 import { actualizarProfesor } from '@/lib/profesor';
 import confetti from 'canvas-confetti';
@@ -32,7 +32,7 @@ const TOUR_STEPS = [
     target: '.subject-card-price',
     title: 'Precio por hora',
     content: 'Este es el precio que cobrarás por cada hora de clase. Puedes modificarlo en cualquier momento editando la asignatura.',
-    icon: DollarSign,
+    icon: Euro,
     position: 'bottom'
   },
   {
