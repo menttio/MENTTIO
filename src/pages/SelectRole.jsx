@@ -38,7 +38,7 @@ export default function SelectRole() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -79,7 +79,7 @@ export default function SelectRole() {
               className="bg-white p-8 rounded-2xl shadow-lg transition-all border-2 border-gray-100"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
-                <GraduationCap className="text-[#41f2c0]" size={32} />
+                <GraduationCap className="text-[#0d7a5f]" size={32} />
               </div>
               <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Alumno</h2>
               <p className="text-sm md:text-base text-gray-500 mb-6">Mi profesor usa Menttio para nuestras clases</p>
@@ -94,7 +94,7 @@ export default function SelectRole() {
                 <Button
                   onClick={() => handleRoleSelect('student', 'register')}
                   variant="outline"
-                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#404040] hover:text-white"
+                  className="w-full border-[#1fa37e] text-[#0d7a5f] hover:bg-[#404040] hover:text-white"
                 >
                   Registrarme
                 </Button>
@@ -109,7 +109,7 @@ export default function SelectRole() {
               className="bg-white p-8 rounded-2xl shadow-lg transition-all border-2 border-gray-100"
             >
               <div className="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
-                <BookOpen className="text-[#41f2c0]" size={32} />
+                <BookOpen className="text-[#0d7a5f]" size={32} />
               </div>
               <h2 className="text-xl md:text-2xl font-semibold text-[#404040] mb-2">Soy Profesor</h2>
               <p className="text-sm md:text-base text-gray-500 mb-2">Quiero organizar las clases con mis alumnos</p>
@@ -127,7 +127,7 @@ export default function SelectRole() {
                 <Button
                   onClick={() => handleRoleSelect('teacher', 'register')}
                   variant="outline"
-                  className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#404040] hover:text-white"
+                  className="w-full border-[#1fa37e] text-[#0d7a5f] hover:bg-[#404040] hover:text-white"
                 >
                   Registrarme
                 </Button>

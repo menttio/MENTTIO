@@ -63,7 +63,7 @@ export default function PaymentSuccess() {
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-md w-full"
       >
-        <Card className="border-2 border-[#41f2c0]">
+        <Card className="border-2 border-[#1fa37e]">
           <CardContent className="p-8 text-center">
             <motion.div
               initial={{ scale: 0 }}
@@ -71,7 +71,7 @@ export default function PaymentSuccess() {
               transition={{ delay: 0.2, type: "spring" }}
               className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#41f2c0] flex items-center justify-center"
             >
-              <CheckCircle className="text-white" size={48} />
+              <CheckCircle className="text-[#404040]" size={48} />
             </motion.div>
 
             <h1 className="text-2xl font-bold text-[#404040] mb-2">

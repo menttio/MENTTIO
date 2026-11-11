@@ -277,7 +277,7 @@ export default function ManageSubjects() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -342,7 +342,7 @@ export default function ManageSubjects() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center">
-                        <BookOpen className="text-[#41f2c0]" size={24} />
+                        <BookOpen className="text-[#0d7a5f]" size={24} />
                       </div>
                       <div>
                         <h3 className="font-semibold text-[#404040]">{subject.subject_name}</h3>
@@ -371,9 +371,9 @@ export default function ManageSubjects() {
 
                   {daIndividual(subject) && (
                     <div className={`flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg ${idx === 0 ? 'subject-card-price' : ''}`}>
-                      <DollarSign className="text-[#41f2c0]" size={20} />
+                      <DollarSign className="text-[#0d7a5f]" size={20} />
                       <div>
-                        <p className="text-2xl font-bold text-[#41f2c0]">{subject.price_per_hour}€</p>
+                        <p className="text-2xl font-bold text-[#0d7a5f]">{subject.price_per_hour}€</p>
                         <p className="text-xs text-gray-600">por hora (individual)</p>
                       </div>
                     </div>
@@ -518,7 +518,7 @@ export default function ManageSubjects() {
                     onCheckedChange={(v) => setDaIndiv(v === true)}
                     aria-label="Clases individuales"
                   />
-                  <User size={14} className="text-[#41f2c0]" />
+                  <User size={14} className="text-[#0d7a5f]" />
                   <span className="text-sm font-medium text-[#404040]">Clases individuales</span>
                 </label>
                 {daIndiv && (

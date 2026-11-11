@@ -137,7 +137,7 @@ export default function StudentSignup() {
             </button>
 
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#41f2c0]/10 flex items-center justify-center">
-              <GraduationCap className="text-[#41f2c0]" size={32} />
+              <GraduationCap className="text-[#0d7a5f]" size={32} />
             </div>
 
             <h2 className="text-2xl font-bold text-[#404040] mb-2 text-center">

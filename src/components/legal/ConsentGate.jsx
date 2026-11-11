@@ -111,7 +111,7 @@ export default function ConsentGate() {
     >
       <div className="my-8 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#41f2c0]/10">
-          <ShieldCheck className="text-[#41f2c0]" size={26} />
+          <ShieldCheck className="text-[#0d7a5f]" size={26} />
         </div>
         <h2 id="consent-title" className="text-center text-xl font-bold text-[#404040]">
           Un paso rápido sobre tus datos

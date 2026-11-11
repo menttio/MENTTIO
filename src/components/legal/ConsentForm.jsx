@@ -43,7 +43,7 @@ export default function ConsentForm({ value, onChange }) {
       </div>
 
       {esMenor && (
-        <div className="space-y-4 rounded-xl border border-[#41f2c0]/50 bg-[#41f2c0]/5 p-4">
+        <div className="space-y-4 rounded-xl border border-[#1fa37e] bg-[#41f2c0]/5 p-4">
           <p className="text-sm font-semibold text-[#404040]">Datos del padre, madre o tutor legal</p>
           <div>
             <Label htmlFor="guardian_name">

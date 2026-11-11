@@ -114,7 +114,7 @@ export default function FamilyReportDialog({ student, open, onOpenChange }) {
 
         {cargando && (
           <div className="flex justify-center py-8">
-            <Loader2 className="animate-spin text-[#41f2c0]" />
+            <Loader2 className="animate-spin text-[#0d7a5f]" />
           </div>
         )}
 

@@ -540,7 +540,7 @@ export default function Layout({ children, currentPageName }) {
               {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-          <h1 className="text-lg font-semibold text-[#404040]" translate="no" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">tt</span>io</span></h1>
+          <h1 className="text-lg font-semibold text-[#404040]" translate="no" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span></h1>
           <div className="flex items-center gap-2">
             {profile?.profile_photo ? (
               <img 
@@ -550,7 +550,7 @@ export default function Layout({ children, currentPageName }) {
               />
             ) : (
               <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                <span className="text-white font-medium">
+                <span className="text-[#404040] font-medium">
                   {user?.full_name?.charAt(0) || 'U'}
                 </span>
               </div>
@@ -578,7 +578,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
             <h1 className="text-2xl font-bold text-[#404040]" translate="no" aria-label="Menttio">
-              <span aria-hidden="true">Men<span className="text-[#41f2c0]">tt</span>io</span>
+              <span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span>
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               {(userRole === 'teacher' || userRole === 'expired_teacher') ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : userRole === 'student' ? 'Portal del Alumno' : 'Menttio'}
@@ -621,7 +621,7 @@ export default function Layout({ children, currentPageName }) {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                  <span className="text-white font-medium">
+                  <span className="text-[#404040] font-medium">
                     {user?.full_name?.charAt(0) || 'U'}
                   </span>
                 </div>

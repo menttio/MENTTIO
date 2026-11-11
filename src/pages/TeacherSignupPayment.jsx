@@ -145,7 +145,7 @@ export default function TeacherSignupPayment() {
           animate={{ opacity: 1 }}
           className="text-center"
         >
-          <Loader2 className="animate-spin mx-auto mb-4 text-[#41f2c0]" size={48} />
+          <Loader2 className="animate-spin mx-auto mb-4 text-[#0d7a5f]" size={48} />
           <h2 className="text-xl font-semibold text-[#404040] mb-2">
             Creando tu perfil de profesor...
           </h2>

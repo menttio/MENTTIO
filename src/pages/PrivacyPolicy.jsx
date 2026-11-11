@@ -7,12 +7,12 @@ export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-white py-16">
+      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-[#404040] py-16">
         <div className="max-w-4xl mx-auto px-6">
           <a href="/Home">
             <Button
               variant="ghost"
-              className="mb-6 text-white hover:text-white hover:bg-white/20"
+              className="mb-6 text-[#404040] hover:text-white hover:bg-white/20"
             >
               <ArrowLeft size={18} className="mr-2" />
               Volver al inicio
@@ -29,7 +29,7 @@ export default function PrivacyPolicy() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Política de Privacidad</h1>
-              <p className="text-white/90">Última actualización: 22 de enero de 2026</p>
+              <p className="text-[#404040]/80">Última actualización: 22 de enero de 2026</p>
             </div>
           </motion.div>
         </div>
@@ -56,7 +56,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Database className="text-[#41f2c0]" size={20} />
+                <Database className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">1. Información que Recopilamos</h3>
             </div>
@@ -131,7 +131,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Eye className="text-[#41f2c0]" size={20} />
+                <Eye className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">2. Cómo Utilizamos tu Información</h3>
             </div>
@@ -172,7 +172,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">3. Compartir Información</h3>
             </div>
@@ -205,7 +205,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Lock className="text-[#41f2c0]" size={20} />
+                <Lock className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">4. Seguridad de los Datos</h3>
             </div>
@@ -238,7 +238,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">Menores de edad</h3>
             </div>
@@ -274,7 +274,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">5. Tus Derechos</h3>
             </div>
@@ -315,7 +315,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Database className="text-[#41f2c0]" size={20} />
+                <Database className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">6. Cookies y Tecnologías Similares</h3>
             </div>
@@ -361,7 +361,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">7. Retención de Datos</h3>
             </div>
@@ -407,7 +407,7 @@ export default function PrivacyPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">8. Cambios a esta Política</h3>
             </div>

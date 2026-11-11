@@ -156,7 +156,7 @@ export default function StudentSignupComplete() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <Loader2 className="animate-spin text-[#41f2c0] mx-auto mb-4" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f] mx-auto mb-4" size={40} />
         <p className="text-gray-600">Completando tu registro...</p>
       </div>
     </div>

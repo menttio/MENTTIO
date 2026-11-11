@@ -145,7 +145,7 @@ export default function AuthRedirect() {
   return (
     <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
       <div className="text-center">
-        <Loader2 className="animate-spin text-[#41f2c0] mx-auto mb-4" size={48} />
+        <Loader2 className="animate-spin text-[#0d7a5f] mx-auto mb-4" size={48} />
         <p className="text-[#404040] text-lg">Redirigiendo...</p>
       </div>
     </div>

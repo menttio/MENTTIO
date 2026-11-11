@@ -92,7 +92,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -107,7 +107,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
       <div className="p-4 border-b border-gray-100 bg-white">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center">
-            <User className="text-white" size={20} />
+            <User className="text-[#404040]" size={20} />
           </div>
           <div>
             <h3 className="font-semibold text-[#404040]">{otherPersonName}</h3>
@@ -146,7 +146,7 @@ export default function ChatWindow({ conversation, userRole, userId, onMessageSe
                   </p>
                   <p className={cn(
                     "text-xs mt-1",
-                    isOwnMessage ? "text-white/70" : "text-gray-400"
+                    isOwnMessage ? "text-[#404040]/80" : "text-gray-400"
                   )}>
                     {format(new Date(message.created_date), "HH:mm", { locale: es })}
                   </p>

@@ -120,7 +120,7 @@ export default function SetupChecklist({ teacher }) {
   if (completadas === necesarias.length) return null;
 
   return (
-    <Card className="mb-8 border-2 border-[#41f2c0]">
+    <Card className="mb-8 border-2 border-[#1fa37e]">
       <CardContent className="p-5 sm:p-6">
         <div className="flex items-baseline justify-between gap-4 mb-1">
           <h2 className="font-bold text-[#404040] text-lg">Te falta poco para tu primera clase</h2>

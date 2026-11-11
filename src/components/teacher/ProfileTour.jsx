@@ -207,7 +207,7 @@ export default function ProfileTour({ teacherId, onComplete }) {
 
             {/* Icon */}
             <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center mb-4">
-              <Icon className="text-[#41f2c0]" size={24} />
+              <Icon className="text-[#0d7a5f]" size={24} />
             </div>
 
             {/* Content */}

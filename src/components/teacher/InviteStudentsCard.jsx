@@ -41,7 +41,7 @@ export default function InviteStudentsCard({ teacher }) {
   };
 
   return (
-    <Card className="mb-6 border-2 border-[#41f2c0]">
+    <Card className="mb-6 border-2 border-[#1fa37e]">
       <CardContent className="p-5 sm:p-6">
         <div className="flex items-center gap-3 mb-2">
           <span className="w-9 h-9 rounded-full bg-[#41f2c0]/25 flex items-center justify-center flex-shrink-0" aria-hidden="true">

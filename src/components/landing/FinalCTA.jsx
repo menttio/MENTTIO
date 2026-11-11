@@ -27,10 +27,10 @@ export default function FinalCTA() {
         viewport={{ once: true }}
         className="max-w-3xl mx-auto px-6 text-center"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#404040] mb-4">
           Da tu próxima clase con todo resuelto
         </h2>
-        <p className="text-lg text-white/90 mb-8">
+        <p className="text-lg text-[#404040]/80 mb-8">
           Configura tus asignaturas y tu disponibilidad una vez. La videollamada, la grabación,
           los apuntes y el cobro dejan de ser cosa tuya.
         </p>
@@ -46,7 +46,7 @@ export default function FinalCTA() {
 
         <ul className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
           {tranquilizadores.map((texto) => (
-            <li key={texto} className="flex items-center gap-2 text-white">
+            <li key={texto} className="flex items-center gap-2 text-[#404040]">
               <Check size={18} className="text-[#404040] flex-shrink-0" />
               <span className="text-sm font-medium">{texto}</span>
             </li>

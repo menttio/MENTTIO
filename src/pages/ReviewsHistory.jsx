@@ -70,7 +70,7 @@ export default function ReviewsHistory() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -112,7 +112,7 @@ export default function ReviewsHistory() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <MessageSquare className="text-[#41f2c0]" size={24} />
+                <MessageSquare className="text-[#0d7a5f]" size={24} />
               </div>
               <p className="text-4xl font-bold text-[#404040]">{reviews.length}</p>
               <p className="text-sm text-gray-500">Total valoraciones</p>
@@ -146,7 +146,7 @@ export default function ReviewsHistory() {
           Un profesor que acaba de entrar tiene años de alumnos y cero reseñas aquí, y no se
           le deja escribirlas él: solo las crea el backend cuando quien escribe es un alumno
           con cuenta. Este enlace es la forma de que esos alumnos las dejen de verdad. */}
-      <Card className="mb-8 border-[#41f2c0]/50">
+      <Card className="mb-8 border-[#1fa37e]">
         <CardContent className="p-6">
           <div className="flex items-start gap-3 mb-3">
             <ShieldCheck className="text-[#0d7a5f] mt-0.5 shrink-0" size={20} />
@@ -194,7 +194,7 @@ export default function ReviewsHistory() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-[#41f2c0]/10 flex items-center justify-center">
-                        <User className="text-[#41f2c0]" size={20} />
+                        <User className="text-[#0d7a5f]" size={20} />
                       </div>
                       <div>
                         <p className="font-semibold text-[#404040]">{review.student_name}</p>

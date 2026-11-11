@@ -184,7 +184,7 @@ export default function TeacherCalendar() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -320,7 +320,7 @@ export default function TeacherCalendar() {
                       <span className={cn(
                         "w-7 h-7 flex items-center justify-center rounded-full text-sm",
                         isSelected && "bg-[#41f2c0] text-[#404040]",
-                        isToday(day) && !isSelected && "border-2 border-[#41f2c0] text-[#41f2c0]"
+                        isToday(day) && !isSelected && "border-2 border-[#41f2c0] text-[#404040]"
                       )}>
                         {format(day, 'd')}
                       </span>
@@ -370,7 +370,7 @@ export default function TeacherCalendar() {
           <Card>
             <CardContent className="p-4">
               <h3 className="font-semibold text-[#404040] mb-4 flex items-center gap-2">
-                <CalendarIcon className="text-[#41f2c0]" size={18} />
+                <CalendarIcon className="text-[#0d7a5f]" size={18} />
                 <span className="capitalize">
                   {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
                 </span>
@@ -431,7 +431,7 @@ export default function TeacherCalendar() {
                         onClick={() => setEditingBooking(booking)}
                       >
                         <div className="flex items-center gap-2 mb-2">
-                          <Clock className={isGroup ? "text-purple-500" : "text-[#41f2c0]"} size={14} />
+                          <Clock className={isGroup ? "text-purple-500" : "text-[#0d7a5f]"} size={14} />
                           <span className="font-medium text-sm">{booking.start_time} - {booking.end_time}</span>
                           <Badge className={cn("ml-auto text-xs whitespace-nowrap shrink-0", isGroup ? "bg-purple-500 text-[#404040]" : "bg-[#41f2c0] text-[#404040]")}>
                             {isGroup

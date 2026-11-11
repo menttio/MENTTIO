@@ -212,7 +212,7 @@ export default function TeacherWorkload() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -263,7 +263,7 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <Calendar className="text-[#41f2c0]" size={24} />
+                <Calendar className="text-[#0d7a5f]" size={24} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalClasses}</p>
               <p className="text-sm text-gray-500">Clases totales</p>
@@ -275,8 +275,8 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <Clock className="text-[#41f2c0]" size={24} />
-                <Badge className="bg-[#41f2c0]/10 text-[#41f2c0]">{stats.scheduledClasses} prog.</Badge>
+                <Clock className="text-[#0d7a5f]" size={24} />
+                <Badge className="bg-[#41f2c0]/10 text-[#0d7a5f]">{stats.scheduledClasses} prog.</Badge>
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalHours.toFixed(1)}h</p>
               <p className="text-sm text-gray-500">Horas de clase</p>
@@ -288,8 +288,8 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <DollarSign className="text-[#41f2c0]" size={24} />
-                <TrendingUp className="text-[#41f2c0]" size={20} />
+                <DollarSign className="text-[#0d7a5f]" size={24} />
+                <TrendingUp className="text-[#0d7a5f]" size={20} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalEarnings.toFixed(2)}€</p>
               <p className="text-sm text-gray-500">Ingresos</p>
@@ -301,7 +301,7 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <Users className="text-[#41f2c0]" size={24} />
+                <Users className="text-[#0d7a5f]" size={24} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{Object.keys(stats.studentStats).length}</p>
               <p className="text-sm text-gray-500">Alumnos distintos</p>
@@ -315,7 +315,7 @@ export default function TeacherWorkload() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <BookOpen className="text-[#41f2c0]" size={24} />
+              <BookOpen className="text-[#0d7a5f]" size={24} />
               <h3 className="font-semibold text-[#404040]">Clases por Asignatura</h3>
             </div>
             <div className="space-y-3">
@@ -357,7 +357,7 @@ export default function TeacherWorkload() {
                       <p className="text-xs text-gray-500">{data.count} clases</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-[#41f2c0]">{data.earnings.toFixed(2)}€</p>
+                      <p className="font-semibold text-[#0d7a5f]">{data.earnings.toFixed(2)}€</p>
                     </div>
                   </div>
                 ))}
@@ -393,7 +393,7 @@ export default function TeacherWorkload() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-6">
-                  <BarChart3 className="text-[#41f2c0]" size={24} />
+                  <BarChart3 className="text-[#0d7a5f]" size={24} />
                   <h3 className="font-semibold text-[#404040]">Ingresos Mensuales - {selectedYear}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={400}>
@@ -420,7 +420,7 @@ export default function TeacherWorkload() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-2">
-                    <Euro className="text-[#41f2c0]" size={20} />
+                    <Euro className="text-[#0d7a5f]" size={20} />
                     <p className="text-sm text-gray-500">Ingresos Totales</p>
                   </div>
                   <p className="text-3xl font-bold text-[#404040]">
@@ -467,7 +467,7 @@ export default function TeacherWorkload() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <PieChart className="text-[#41f2c0]" size={24} />
+                    <PieChart className="text-[#0d7a5f]" size={24} />
                     <h3 className="font-semibold text-[#404040]">Ingresos por Asignatura</h3>
                   </div>
                   <ResponsiveContainer width="100%" height={300}>
@@ -528,7 +528,7 @@ export default function TeacherWorkload() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <BookOpen className="text-[#41f2c0]" size={24} />
+                  <BookOpen className="text-[#0d7a5f]" size={24} />
                   <h3 className="font-semibold text-[#404040]">Asignaturas con Mayores Ingresos</h3>
                 </div>
                 <div className="space-y-3">
@@ -536,7 +536,7 @@ export default function TeacherWorkload() {
                     <div key={subject.name}>
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm text-gray-600">{subject.name}</span>
-                        <span className="text-sm font-semibold text-[#41f2c0]">{subject.value.toFixed(2)}€</span>
+                        <span className="text-sm font-semibold text-[#0d7a5f]">{subject.value.toFixed(2)}€</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div

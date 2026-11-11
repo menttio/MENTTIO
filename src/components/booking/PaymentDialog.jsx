@@ -142,14 +142,14 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
 
         {cargando ? (
           <div className="py-10 flex justify-center">
-            <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+            <Loader2 className="animate-spin text-[#0d7a5f]" size={32} />
           </div>
         ) : !selectedMethod ? (
           <div className="space-y-3 py-4">
             {tarjetaDisponible ? (
               <button
                 onClick={() => setSelectedMethod('stripe')}
-                className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#41f2c0] transition-all text-left"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#1fa37e] transition-all text-left"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
@@ -179,7 +179,7 @@ export default function PaymentDialog({ booking, open, onOpenChange, onSuccess }
 
             <button
               onClick={() => setSelectedMethod('bizum')}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#41f2c0] transition-all text-left"
+              className="w-full p-4 border-2 border-gray-200 rounded-xl hover:border-[#1fa37e] transition-all text-left"
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">

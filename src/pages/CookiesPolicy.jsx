@@ -7,12 +7,12 @@ export default function CookiesPolicy() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-white py-16">
+      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-[#404040] py-16">
         <div className="max-w-4xl mx-auto px-6">
           <a href="/Home">
             <Button
               variant="ghost"
-              className="mb-6 text-white hover:text-white hover:bg-white/20"
+              className="mb-6 text-[#404040] hover:text-white hover:bg-white/20"
             >
               <ArrowLeft size={18} className="mr-2" />
               Volver al inicio
@@ -29,7 +29,7 @@ export default function CookiesPolicy() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Política de Cookies</h1>
-              <p className="text-white/90">Última actualización: 22 de enero de 2026</p>
+              <p className="text-[#404040]/80">Última actualización: 22 de enero de 2026</p>
             </div>
           </motion.div>
         </div>
@@ -56,7 +56,7 @@ export default function CookiesPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Cookie className="text-[#41f2c0]" size={20} />
+                <Cookie className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">1. Cookies que Utilizamos</h3>
             </div>
@@ -144,7 +144,7 @@ export default function CookiesPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Eye className="text-[#41f2c0]" size={20} />
+                <Eye className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">2. Duración de las Cookies</h3>
             </div>
@@ -170,7 +170,7 @@ export default function CookiesPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Settings className="text-[#41f2c0]" size={20} />
+                <Settings className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">3. Cómo Gestionar las Cookies</h3>
             </div>
@@ -246,7 +246,7 @@ export default function CookiesPolicy() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Cookie className="text-[#41f2c0]" size={20} />
+                <Cookie className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">4. Actualizaciones de esta Política</h3>
             </div>

@@ -116,7 +116,7 @@ export default function BetaTeacherSignupPayment() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
           <p className="text-red-500 mb-4">Error: {error}</p>
-          <a href={createPageUrl('BetaTeacherSignup') + '?token=beta2024menttio'} className="text-[#41f2c0] underline">
+          <a href={createPageUrl('BetaTeacherSignup') + '?token=beta2024menttio'} className="text-[#0d7a5f] underline">
             Volver al registro
           </a>
         </div>
@@ -127,7 +127,7 @@ export default function BetaTeacherSignupPayment() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white flex items-center justify-center p-4">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
-        <Loader2 className="animate-spin mx-auto mb-4 text-[#41f2c0]" size={48} />
+        <Loader2 className="animate-spin mx-auto mb-4 text-[#0d7a5f]" size={48} />
         <h2 className="text-xl font-semibold text-[#404040] mb-2">Creando tu perfil de profesor...</h2>
         <p className="text-gray-600">Por favor espera un momento</p>
       </motion.div>

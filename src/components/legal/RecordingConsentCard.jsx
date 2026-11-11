@@ -50,7 +50,7 @@ export default function RecordingConsentCard({ student, onChange }) {
     <div className="rounded-2xl border bg-white p-6">
       <div className="flex items-start gap-3">
         {autoriza ? (
-          <Video className="mt-1 text-[#41f2c0]" size={22} />
+          <Video className="mt-1 text-[#0d7a5f]" size={22} />
         ) : (
           <VideoOff className="mt-1 text-gray-400" size={22} />
         )}

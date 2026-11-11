@@ -322,7 +322,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+            <Loader2 className="animate-spin text-[#0d7a5f]" size={32} />
           </div>
         ) : (
           <>
@@ -330,13 +330,13 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
               <p className="text-sm text-gray-500 mb-1">Clase actual:</p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="text-[#41f2c0]" size={16} />
+                  <Calendar className="text-[#0d7a5f]" size={16} />
                   <span className="font-medium capitalize">
                     {format(parseISO(booking.date), "d 'de' MMMM", { locale: es })}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="text-[#41f2c0]" size={16} />
+                  <Clock className="text-[#0d7a5f]" size={16} />
                   <span>{booking.start_time} - {booking.end_time}</span>
                 </div>
               </div>
@@ -357,7 +357,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-4">
-                      <Clock size={18} className="text-[#41f2c0]" />
+                      <Clock size={18} className="text-[#0d7a5f]" />
                       <h4 className="font-medium text-[#404040]">Horarios Disponibles</h4>
                     </div>
                     
@@ -406,13 +406,13 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
                 <p className="text-sm text-gray-500 mb-1">Nueva fecha:</p>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <Calendar className="text-[#41f2c0]" size={16} />
+                    <Calendar className="text-[#0d7a5f]" size={16} />
                     <span className="font-semibold capitalize">
                       {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="text-[#41f2c0]" size={16} />
+                    <Clock className="text-[#0d7a5f]" size={16} />
                     <span className="font-semibold">{selectedTime}</span>
                   </div>
                 </div>

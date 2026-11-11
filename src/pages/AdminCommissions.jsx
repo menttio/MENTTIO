@@ -127,7 +127,7 @@ function BizumsPendientes() {
       </CardHeader>
       <CardContent>
         {cargando ? (
-          <div className="py-6 flex justify-center"><Loader2 className="animate-spin text-[#41f2c0]" /></div>
+          <div className="py-6 flex justify-center"><Loader2 className="animate-spin text-[#0d7a5f]" /></div>
         ) : lista.length === 0 ? (
           <p className="text-gray-500 text-sm py-2">
             Nada pendiente. Aquí aparecen los Bizums que los alumnos dicen haberte enviado, para
@@ -228,7 +228,7 @@ export default function AdminCommissions() {
 
   if (loading) return (
     <div className="flex items-center justify-center min-h-[60vh]">
-      <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+      <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
     </div>
   );
 

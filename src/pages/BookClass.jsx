@@ -562,7 +562,7 @@ export default function BookClass() {
   if (loading || !subjects.length) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -659,7 +659,7 @@ export default function BookClass() {
                         setClassType(null);
                         setStep(2);
                       }}
-                      className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md ${
+                      className={`p-4 rounded-xl border-2 text-left transition-all hover:border-[#1fa37e] hover:shadow-md ${
                         selectedSubject === subject.id 
                           ? 'border-[#41f2c0] bg-[#41f2c0]/5' 
                           : 'border-gray-100'
@@ -667,7 +667,7 @@ export default function BookClass() {
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-                          <BookOpen className="text-[#41f2c0]" size={20} />
+                          <BookOpen className="text-[#0d7a5f]" size={20} />
                         </div>
                         <span className="font-medium text-[#404040]">{subject.name}</span>
                       </div>
@@ -762,11 +762,11 @@ export default function BookClass() {
                   {tiposDisponibles.individual && (
                   <button
                     onClick={() => { setClassType('individual'); setStep(4); }}
-                    className="p-5 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] hover:shadow-md border-gray-100"
+                    className="p-5 rounded-xl border-2 text-left transition-all hover:border-[#1fa37e] hover:shadow-md border-gray-100"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                        <User className="text-[#41f2c0]" size={24} />
+                        <User className="text-[#0d7a5f]" size={24} />
                       </div>
                       <div>
                         <p className="font-semibold text-[#404040] text-lg">Clase Individual</p>
@@ -858,7 +858,7 @@ export default function BookClass() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-4">
-                      <Clock size={18} className="text-[#41f2c0]" />
+                      <Clock size={18} className="text-[#0d7a5f]" />
                       <h4 className="font-medium text-[#404040]">Horarios Disponibles</h4>
                     </div>
                     
@@ -1003,7 +1003,7 @@ export default function BookClass() {
                   )}
 
                   <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                    <BookOpen className="text-[#41f2c0]" size={24} />
+                    <BookOpen className="text-[#0d7a5f]" size={24} />
                     <div>
                       <p className="text-sm text-gray-500">Asignatura</p>
                       <p className="font-semibold text-[#404040]">{availableSubjects.find(s => s.id === selectedSubject)?.name}</p>
@@ -1011,7 +1011,7 @@ export default function BookClass() {
                   </div>
 
                   <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                    <User className="text-[#41f2c0]" size={24} />
+                    <User className="text-[#0d7a5f]" size={24} />
                     <div>
                       <p className="text-sm text-gray-500">Profesor</p>
                       <p className="font-semibold text-[#404040]">{selectedTeacher?.full_name}</p>
@@ -1019,7 +1019,7 @@ export default function BookClass() {
                   </div>
 
                   <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                    <Clock className="text-[#41f2c0]" size={24} />
+                    <Clock className="text-[#0d7a5f]" size={24} />
                     <div>
                       <p className="text-sm text-gray-500">Fecha y Hora</p>
                       <p className="font-semibold text-[#404040] capitalize">
@@ -1030,10 +1030,10 @@ export default function BookClass() {
                   </div>
 
                   <div className={cn("flex items-center gap-3 p-4 rounded-xl", classType === 'group' ? "bg-purple-50" : "bg-[#41f2c0]/10")}>
-                    <DollarSign className={classType === 'group' ? "text-purple-500" : "text-[#41f2c0]"} size={24} />
+                    <DollarSign className={classType === 'group' ? "text-purple-500" : "text-[#0d7a5f]"} size={24} />
                     <div>
                       <p className="text-sm text-gray-500">Precio estimado</p>
-                      <p className={cn("font-bold text-2xl", classType === 'group' ? "text-purple-600" : "text-[#41f2c0]")}>
+                      <p className={cn("font-bold text-2xl", classType === 'group' ? "text-purple-600" : "text-[#0d7a5f]")}>
                         {calculatePrice().toFixed(2)}€
                       </p>
                       {classType === 'group' && (

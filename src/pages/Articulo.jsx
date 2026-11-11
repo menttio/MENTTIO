@@ -153,7 +153,7 @@ export default function Articulo({ slug: slugProp }) {
                 <Link
                   key={a.slug}
                   to={createPageUrl(a.ruta)}
-                  className="block rounded-xl border border-gray-200 p-5 hover:border-[#41f2c0] transition-colors"
+                  className="block rounded-xl border border-gray-200 p-5 hover:border-[#1fa37e] transition-colors"
                 >
                   <p className="text-xs font-semibold text-[#0d7a5f] mb-1">{a.category}</p>
                   <p className="font-semibold text-[#404040]">{a.title}</p>

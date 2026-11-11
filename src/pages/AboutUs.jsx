@@ -26,7 +26,7 @@ export default function AboutUs() {
           className="text-center mb-16"
         >
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#404040] mb-6">
-            Sobre <span className="text-[#41f2c0]">Menttio</span>
+            Sobre <span className="text-[#0d7a5f]">Menttio</span>
           </h1>
           <p className="text-base md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Estamos transformando la forma en que profesores y alumnos se conectan, 
@@ -43,7 +43,7 @@ export default function AboutUs() {
         >
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 bg-[#41f2c0]/10 rounded-2xl flex items-center justify-center">
-              <Target className="text-[#41f2c0]" size={32} />
+              <Target className="text-[#0d7a5f]" size={32} />
             </div>
             <h2 className="text-3xl font-bold text-[#404040]">Nuestra Misión</h2>
           </div>
@@ -79,7 +79,7 @@ export default function AboutUs() {
             className="bg-white rounded-2xl shadow-lg p-8"
           >
             <div className="w-14 h-14 bg-[#41f2c0]/10 rounded-xl flex items-center justify-center mb-6">
-              <Zap className="text-[#41f2c0]" size={28} />
+              <Zap className="text-[#0d7a5f]" size={28} />
             </div>
             <h3 className="text-xl font-bold text-[#404040] mb-3">Innovación constante</h3>
             <p className="text-gray-600">
@@ -110,7 +110,7 @@ export default function AboutUs() {
           transition={{ delay: 0.5 }}
           className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] rounded-3xl shadow-2xl p-12"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-white text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#404040] text-center mb-12">
             ¿Qué ofrecemos?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -118,7 +118,7 @@ export default function TeacherCard({
               className="w-full h-full object-cover"
             />
           ) : (
-            <User className="text-white" size={28} />
+            <User className="text-[#404040]" size={28} />
           )}
         </div>
 
@@ -168,7 +168,7 @@ export default function TeacherCard({
                 </div>
               </TooltipTrigger>
               <TooltipContent 
-                className="max-w-xs bg-white border-2 border-[#41f2c0] shadow-xl rounded-xl p-4" 
+                className="max-w-xs bg-white border-2 border-[#1fa37e] shadow-xl rounded-xl p-4" 
                 side="top"
                 sideOffset={8}
               >
@@ -229,7 +229,7 @@ export default function TeacherCard({
         <div className="flex flex-wrap items-center gap-2 md:gap-3">
           {priceDisplay && (
             <div className="flex items-center gap-1 text-[#404040]">
-              <DollarSign size={18} className="text-[#41f2c0]" />
+              <DollarSign size={18} className="text-[#0d7a5f]" />
               <span className="font-semibold text-lg">{priceDisplay}</span>
               <span className="text-gray-500 text-sm">/hora</span>
             </div>
@@ -244,7 +244,7 @@ export default function TeacherCard({
               variant="outline"
               onClick={handleStartChat}
               disabled={startingChat}
-              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040] flex-1 md:flex-initial"
+              className="border-[#1fa37e] text-[#0d7a5f] hover:bg-[#41f2c0] hover:text-[#404040] flex-1 md:flex-initial"
             >
               <MessageCircle size={16} className="mr-1" />
               {startingChat ? 'Abriendo...' : 'Chatear'}
@@ -283,14 +283,14 @@ export default function TeacherCard({
             {teacher.subjects?.map((subject, idx) => (
               <div 
                 key={idx}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-[#41f2c0] transition-colors"
+                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-[#1fa37e] transition-colors"
               >
                 <div className="flex-1">
                   <p className="font-medium text-[#404040]">{subject.subject_name}</p>
                   <p className="text-xs text-gray-500 mt-1">{subject.level}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-[#41f2c0]">{textoPrecio(subject) || 'Consultar'}</p>
+                  <p className="font-semibold text-[#0d7a5f]">{textoPrecio(subject) || 'Consultar'}</p>
                   <p className="text-xs text-gray-500">
                     {daIndividual(subject) && daGrupal(subject) ? 'individual y en grupo'
                       : daGrupal(subject) ? 'solo en grupo' : 'por hora'}

@@ -43,7 +43,7 @@ export default function GroupPricingInfo({ asignatura, durationHours = 1 }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1 text-xs text-[#41f2c0] hover:text-[#0d7a5f] underline underline-offset-2"
+        className="inline-flex items-center gap-1 text-xs text-[#0d7a5f] hover:text-[#0d7a5f] underline underline-offset-2"
       >
         <Info size={13} />
         Ver precios grupales
@@ -53,7 +53,7 @@ export default function GroupPricingInfo({ asignatura, durationHours = 1 }) {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Users size={18} className="text-[#41f2c0]" />
+              <Users size={18} className="text-[#0d7a5f]" />
               Precios de clases grupales
             </DialogTitle>
           </DialogHeader>
@@ -66,7 +66,7 @@ export default function GroupPricingInfo({ asignatura, durationHours = 1 }) {
                 </p>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100">
                   <span className="text-sm font-medium text-[#404040]">Por alumno</span>
-                  <span className="font-bold text-[#41f2c0]">
+                  <span className="font-bold text-[#0d7a5f]">
                     {(precioUnico * durationHours).toFixed(0)}€
                   </span>
                 </div>
@@ -86,13 +86,13 @@ export default function GroupPricingInfo({ asignatura, durationHours = 1 }) {
                         <div className="flex gap-0.5">
                           {Array.from({ length: n }).map((_, i) => (
                             <div key={i} className="w-5 h-5 rounded-full bg-[#41f2c0]/20 flex items-center justify-center">
-                              <span className="text-[8px] text-[#41f2c0]">👤</span>
+                              <span className="text-[8px] text-[#0d7a5f]">👤</span>
                             </div>
                           ))}
                         </div>
                         <span className="text-sm font-medium text-[#404040]">{n} alumnos</span>
                       </div>
-                      <span className="font-bold text-[#41f2c0]">
+                      <span className="font-bold text-[#0d7a5f]">
                         {(precio * durationHours).toFixed(0)}€/alumno
                       </span>
                     </div>

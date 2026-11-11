@@ -87,37 +87,37 @@ export default function Hero() {
               aria-expanded={mobileMenuOpen}
               className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
             >
-              {mobileMenuOpen ? <X className="text-white" size={24} aria-hidden="true" /> : <Menu className="text-white" size={24} aria-hidden="true" />}
+              {mobileMenuOpen ? <X className="text-[#404040]" size={24} aria-hidden="true" /> : <Menu className="text-[#404040]" size={24} aria-hidden="true" />}
             </button>
             
             <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-xl md:text-2xl font-bold text-[#41f2c0]" aria-hidden="true">π</span>
+              <span className="text-xl md:text-2xl font-bold text-[#0d7a5f]" aria-hidden="true">π</span>
             </div>
             {/* Era un segundo h1: la página tenía dos títulos de primer nivel y un lector de
                 pantalla no podía saber cuál era el de verdad. El logo no es el título. */}
-            <span className="text-xl md:text-2xl font-bold text-white" translate="no" role="img" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#404040]">tt</span>io</span></span>
+            <span className="text-xl md:text-2xl font-bold text-[#404040]" translate="no" role="img" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#404040]">tt</span>io</span></span>
           </div>
           
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
+            <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               Características
             </button>
-            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               ¿Cómo funciona?
             </button>
-            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
+            <button onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })} className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               Precios
             </button>
             {/* Se quita "Testimonios" del menú: lleva a una sección que dice, con razón, que
                 todavía no hay opiniones. No hace falta invitar a nadie a ir a verla. */}
-            <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-white hover:text-[#404040] font-medium transition-colors">
+            <button onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })} className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               Preguntas frecuentes
             </button>
-            <a href="/AboutUs" className="text-white hover:text-[#404040] font-medium transition-colors">
+            <a href="/AboutUs" className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               Sobre nosotros
             </a>
-            <a href="/Blog" className="text-white hover:text-[#404040] font-medium transition-colors">
+            <a href="/Blog" className="text-[#404040] hover:text-[#404040] font-medium transition-colors">
               Blog
             </a>
             <a href="/Contact">
@@ -293,7 +293,7 @@ export default function Hero() {
             </div>
             
             {/* CAMBIO: titular usando el gancho elegido, con más punch */}
-            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-[#404040] mb-6 leading-tight">
               Da tu clase.
               <span className="block text-[#404040]">Menttio hace el resto.</span>
             </h1>
@@ -318,7 +318,7 @@ export default function Hero() {
               <Button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 size="lg"
-                className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl transition-all w-full sm:w-auto"
+                className="bg-transparent border-2 border-[#404040] text-[#404040] hover:bg-white/10 px-6 md:px-8 py-5 md:py-6 text-base md:text-lg rounded-xl transition-all w-full sm:w-auto"
               >
                 Ver precios
               </Button>
@@ -327,15 +327,15 @@ export default function Hero() {
             {/* CAMBIO: los 3 bloques ahora describen resultados, no features */}
             <div className="grid grid-cols-3 gap-3 md:gap-6">
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
-                <Calendar className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <Calendar className="text-[#0d7a5f] mb-2 mx-auto" size={24} />
                 <div className="text-xs md:text-sm text-[#404040] font-medium">Videollamada creada sola</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
-                <Video className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <Video className="text-[#0d7a5f] mb-2 mx-auto" size={24} />
                 <div className="text-xs md:text-sm text-[#404040] font-medium">Clase grabada para repasar</div>
               </div>
               <div className="bg-white rounded-xl p-3 md:p-4 text-center shadow-lg">
-                <Users className="text-[#41f2c0] mb-2 mx-auto" size={24} />
+                <Users className="text-[#0d7a5f] mb-2 mx-auto" size={24} />
                 <div className="text-xs md:text-sm text-[#404040] font-medium">Cobro y seguimiento al día</div>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function Hero() {
               <div className="bg-white rounded-3xl shadow-2xl p-8 relative z-10">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-[#41f2c0] rounded-xl flex items-center justify-center">
-                    <Calendar className="text-white" size={24} />
+                    <Calendar className="text-[#404040]" size={24} />
                   </div>
                   <div>
                     {/* CAMBIO: copy de la card más realista */}
@@ -363,12 +363,12 @@ export default function Hero() {
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <Users className="text-[#41f2c0]" size={20} />
+                    <Users className="text-[#0d7a5f]" size={20} />
                     {/* CAMBIO: más concreto */}
                     <span className="text-sm text-gray-600">Reservada por el alumno automáticamente</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <Video className="text-[#41f2c0]" size={20} />
+                    <Video className="text-[#0d7a5f]" size={20} />
                     <span className="text-sm text-gray-600">Grabación y materiales listos para compartir</span>
                   </div>
                 </div>

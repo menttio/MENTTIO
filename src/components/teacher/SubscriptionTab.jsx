@@ -57,7 +57,7 @@ export default function SubscriptionTab({ profile }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={36} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={36} />
       </div>
     );
   }
@@ -112,7 +112,7 @@ export default function SubscriptionTab({ profile }) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
-              {plan === 'premium' ? <Crown className="text-yellow-500" size={20} /> : isCommission ? <Zap className="text-purple-500" size={20} /> : <Zap className="text-[#41f2c0]" size={20} />}
+              {plan === 'premium' ? <Crown className="text-yellow-500" size={20} /> : isCommission ? <Zap className="text-purple-500" size={20} /> : <Zap className="text-[#0d7a5f]" size={20} />}
               Plan {plan === 'premium' ? 'Premium' : isCommission ? 'Comisión' : 'Básico'}
             </CardTitle>
             <Badge className={status.color}>{status.label}</Badge>

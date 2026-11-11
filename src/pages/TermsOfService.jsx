@@ -7,12 +7,12 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-white py-16">
+      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-[#404040] py-16">
         <div className="max-w-4xl mx-auto px-6">
           <a href="/Home">
             <Button
               variant="ghost"
-              className="mb-6 text-white hover:text-white hover:bg-white/20"
+              className="mb-6 text-[#404040] hover:text-white hover:bg-white/20"
             >
               <ArrowLeft size={18} className="mr-2" />
               Volver al inicio
@@ -29,7 +29,7 @@ export default function TermsOfService() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Términos de Uso</h1>
-              <p className="text-white/90">Última actualización: 17 de marzo de 2026</p>
+              <p className="text-[#404040]/80">Última actualización: 17 de marzo de 2026</p>
             </div>
           </motion.div>
         </div>
@@ -55,7 +55,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">1. Aceptación de los Términos</h3>
             </div>
@@ -70,7 +70,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">2. Descripción del Servicio</h3>
             </div>
@@ -104,7 +104,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">3. Cuentas de Usuario</h3>
             </div>
@@ -127,7 +127,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">4. Pagos y Tarifas</h3>
             </div>
@@ -148,7 +148,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Shield className="text-[#41f2c0]" size={20} />
+                <Shield className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">5. Conducta del Usuario</h3>
             </div>
@@ -181,7 +181,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">6. Propiedad Intelectual</h3>
             </div>
@@ -196,7 +196,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">7. Limitación de Responsabilidad</h3>
             </div>
@@ -211,7 +211,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">8. Modificaciones</h3>
             </div>
@@ -226,7 +226,7 @@ export default function TermsOfService() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <CheckCircle className="text-[#41f2c0]" size={20} />
+                <CheckCircle className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">9. Terminación</h3>
             </div>

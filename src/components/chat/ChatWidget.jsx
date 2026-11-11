@@ -201,7 +201,7 @@ export default function ChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder="Escribe tu pregunta..."
                 rows={1}
-                className="flex-1 resize-none border border-gray-200 rounded-xl px-3 py-2 text-sm text-[#404040] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#41f2c0] focus:border-transparent max-h-24 overflow-y-auto"
+                className="flex-1 resize-none border border-gray-200 rounded-xl px-3 py-2 text-sm text-[#404040] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1fa37e] focus:border-transparent max-h-24 overflow-y-auto"
                 style={{ lineHeight: '1.4' }}
               />
               <button
@@ -210,9 +210,9 @@ export default function ChatWidget() {
                 className="w-8 h-8 rounded-full bg-[#41f2c0] hover:bg-[#35d4a7] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors flex-shrink-0"
               >
                 {isTyping ? (
-                  <Loader2 size={14} className="text-white animate-spin" />
+                  <Loader2 size={14} className="text-[#404040] animate-spin" />
                 ) : (
-                  <Send size={14} className="text-white" />
+                  <Send size={14} className="text-[#404040]" />
                 )}
               </button>
             </div>

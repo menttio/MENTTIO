@@ -62,7 +62,7 @@ export default function TeacherProfile() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -107,7 +107,7 @@ export default function TeacherProfile() {
                   className="w-full h-full object-cover rounded-2xl"
                 />
               ) : (
-                <span className="text-3xl md:text-5xl text-white font-bold">
+                <span className="text-3xl md:text-5xl text-[#404040] font-bold">
                   {teacher.full_name?.charAt(0)}
                 </span>
               )}
@@ -190,10 +190,10 @@ export default function TeacherProfile() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <Briefcase className="text-[#41f2c0]" size={24} />
+                  <Briefcase className="text-[#0d7a5f]" size={24} />
                   <h3 className="font-semibold text-[#404040]">Experiencia</h3>
                 </div>
-                <p className="text-2xl font-bold text-[#41f2c0] mb-2">
+                <p className="text-2xl font-bold text-[#0d7a5f] mb-2">
                   {teacher.experience_years || 0} años
                 </p>
                 {teacher.education && (
@@ -207,7 +207,7 @@ export default function TeacherProfile() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <BookOpen className="text-[#41f2c0]" size={24} />
+                    <BookOpen className="text-[#0d7a5f]" size={24} />
                     <h3 className="font-semibold text-[#404040]">Métodos de Enseñanza</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -226,7 +226,7 @@ export default function TeacherProfile() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <Award className="text-[#41f2c0]" size={24} />
+                    <Award className="text-[#0d7a5f]" size={24} />
                     <h3 className="font-semibold text-[#404040]">Especializaciones</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -245,7 +245,7 @@ export default function TeacherProfile() {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <Languages className="text-[#41f2c0]" size={24} />
+                    <Languages className="text-[#0d7a5f]" size={24} />
                     <h3 className="font-semibold text-[#404040]">Idiomas</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -264,7 +264,7 @@ export default function TeacherProfile() {
               <Card className="md:col-span-2">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <GraduationCap className="text-[#41f2c0]" size={24} />
+                    <GraduationCap className="text-[#0d7a5f]" size={24} />
                     <h3 className="font-semibold text-[#404040]">Certificaciones y Títulos</h3>
                   </div>
                   <ul className="space-y-2">

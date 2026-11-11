@@ -168,7 +168,7 @@ export default function ClassRecordings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -321,7 +321,7 @@ export default function ClassRecordings() {
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-                <BookOpen className="text-[#41f2c0]" size={20} />
+                <BookOpen className="text-[#0d7a5f]" size={20} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-[#404040]">{bookings.length}</p>
@@ -382,7 +382,7 @@ export default function ClassRecordings() {
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] flex items-center justify-center flex-shrink-0">
-                        <BookOpen className="text-white" size={24} />
+                        <BookOpen className="text-[#404040]" size={24} />
                       </div>
                       
                       <div className="flex-1 min-w-0 w-full">

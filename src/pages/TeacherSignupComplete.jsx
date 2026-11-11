@@ -203,7 +203,7 @@ export default function TeacherSignupComplete() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f2f2f2] to-white">
       <div className="text-center">
-        <Loader2 className="animate-spin text-[#41f2c0] mx-auto mb-4" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f] mx-auto mb-4" size={40} />
         <p className="text-gray-600">Completando tu registro como profesor...</p>
       </div>
     </div>

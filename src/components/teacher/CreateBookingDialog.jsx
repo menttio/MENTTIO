@@ -415,7 +415,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
 
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+            <Loader2 className="animate-spin text-[#0d7a5f]" size={32} />
           </div>
         ) : (
           <div className="space-y-6">
@@ -510,11 +510,11 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                   {tiposAsignatura.individual && (
                     <button
                       onClick={() => { setClassType('individual'); setSelectedStudentIds([]); setStep(3); }}
-                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] border-gray-100"
+                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-[#1fa37e] border-gray-100"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                          <User className="text-[#41f2c0]" size={20} />
+                          <User className="text-[#0d7a5f]" size={20} />
                         </div>
                         <div>
                           <p className="font-semibold text-[#404040]">Clase individual</p>
@@ -666,7 +666,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
 
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Clock size={18} className="text-[#41f2c0]" />
+                      <Clock size={18} className="text-[#0d7a5f]" />
                       <h4 className="font-medium">Horarios Disponibles</h4>
                     </div>
 
@@ -727,7 +727,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                 <h3 className="font-medium mb-4">Confirmar Reserva</h3>
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <BookOpen className="text-[#41f2c0]" size={20} />
+                    <BookOpen className="text-[#0d7a5f]" size={20} />
                     <div>
                       <p className="text-xs text-gray-500">Asignatura</p>
                       <p className="font-medium">
@@ -740,7 +740,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     {classType === 'group'
                       ? <Users className="text-purple-500" size={20} />
-                      : <User className="text-[#41f2c0]" size={20} />}
+                      : <User className="text-[#0d7a5f]" size={20} />}
                     <div>
                       <p className="text-xs text-gray-500">
                         {classType === 'group' ? `Clase grupal · ${alumnosElegidos.length} alumnos` : 'Clase individual'}
@@ -752,7 +752,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                   </div>
 
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Clock className="text-[#41f2c0]" size={20} />
+                    <Clock className="text-[#0d7a5f]" size={20} />
                     <div>
                       <p className="text-xs text-gray-500">Fecha y Hora</p>
                       <p className="font-medium capitalize">
@@ -764,12 +764,12 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                   </div>
 
                   <div className="flex items-center gap-3 p-3 bg-[#41f2c0]/10 rounded-lg">
-                    <div className="text-[#41f2c0] font-bold text-xl">€</div>
+                    <div className="text-[#0d7a5f] font-bold text-xl">€</div>
                     <div>
                       <p className="text-xs text-gray-500">
                         {classType === 'group' ? 'Precio por alumno' : 'Precio'}
                       </p>
-                      <p className="font-bold text-[#41f2c0]">
+                      <p className="font-bold text-[#0d7a5f]">
                         {calculatePrice().toFixed(2)}€
                         {classType === 'group' && alumnosElegidos.length > 1 && (
                           <span className="text-sm font-normal text-gray-500">

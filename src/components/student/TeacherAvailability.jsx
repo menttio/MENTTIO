@@ -67,13 +67,13 @@ export default function TeacherAvailability({ teacherId }) {
       <PopoverContent className="w-80 p-4" align="start">
         <div className="space-y-3">
           <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-            <Calendar className="text-[#41f2c0]" size={18} />
+            <Calendar className="text-[#0d7a5f]" size={18} />
             <h4 className="font-semibold text-[#404040]">Disponibilidad Semanal</h4>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="animate-spin text-[#41f2c0]" size={24} />
+              <Loader2 className="animate-spin text-[#0d7a5f]" size={24} />
             </div>
           ) : (
             <div className="space-y-2">

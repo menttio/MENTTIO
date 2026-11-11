@@ -7,12 +7,12 @@ export default function LegalNotice() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f2f2f2] to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-white py-16">
+      <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] text-[#404040] py-16">
         <div className="max-w-4xl mx-auto px-6">
           <a href="/Home">
             <Button
               variant="ghost"
-              className="mb-6 text-white hover:text-white hover:bg-white/20"
+              className="mb-6 text-[#404040] hover:text-white hover:bg-white/20"
             >
               <ArrowLeft size={18} className="mr-2" />
               Volver al inicio
@@ -29,7 +29,7 @@ export default function LegalNotice() {
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-2">Aviso Legal</h1>
-              <p className="text-white/90">Última actualización: 22 de enero de 2026</p>
+              <p className="text-[#404040]/80">Última actualización: 22 de enero de 2026</p>
             </div>
           </motion.div>
         </div>
@@ -46,7 +46,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Building className="text-[#41f2c0]" size={20} />
+                <Building className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">1. Datos Identificativos</h3>
             </div>
@@ -57,28 +57,28 @@ export default function LegalNotice() {
               </p>
               <div className="bg-gray-50 rounded-xl p-6 space-y-3">
                 <div className="flex items-start gap-3">
-                  <Building className="text-[#41f2c0] mt-1" size={18} />
+                  <Building className="text-[#0d7a5f] mt-1" size={18} />
                   <div>
                     <p className="font-semibold text-[#404040]">Denominación social:</p>
                     <p className="text-gray-600">Menttio S.L.</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <MapPin className="text-[#41f2c0] mt-1" size={18} />
+                  <MapPin className="text-[#0d7a5f] mt-1" size={18} />
                   <div>
                     <p className="font-semibold text-[#404040]">Domicilio social:</p>
                     <p className="text-gray-600">Calle Innovación 123, 28001 Madrid, España</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Mail className="text-[#41f2c0] mt-1" size={18} />
+                  <Mail className="text-[#0d7a5f] mt-1" size={18} />
                   <div>
                     <p className="font-semibold text-[#404040]">Email de contacto:</p>
                     <p className="text-gray-600">menttio@menttio.com</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Building className="text-[#41f2c0] mt-1" size={18} />
+                  <Building className="text-[#0d7a5f] mt-1" size={18} />
                   <div>
                     <p className="font-semibold text-[#404040]">CIF:</p>
                     <p className="text-gray-600">B-12345678</p>
@@ -92,7 +92,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">2. Objeto y Ámbito de Aplicación</h3>
             </div>
@@ -113,7 +113,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">3. Condiciones de Uso</h3>
             </div>
@@ -152,7 +152,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">4. Propiedad Intelectual e Industrial</h3>
             </div>
@@ -179,7 +179,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">5. Exclusión de Garantías y Responsabilidad</h3>
             </div>
@@ -198,7 +198,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">6. Enlaces</h3>
             </div>
@@ -216,7 +216,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">7. Modificaciones</h3>
             </div>
@@ -234,7 +234,7 @@ export default function LegalNotice() {
           <section>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-[#41f2c0]/10 rounded-lg flex items-center justify-center">
-                <Scale className="text-[#41f2c0]" size={20} />
+                <Scale className="text-[#0d7a5f]" size={20} />
               </div>
               <h3 className="text-xl font-bold text-[#404040]">8. Legislación Aplicable y Jurisdicción</h3>
             </div>

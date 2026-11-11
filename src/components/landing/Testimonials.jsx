@@ -77,7 +77,7 @@ export default function Testimonials() {
               { icon: Star, dato: '0 €', texto: 'para los alumnos: pagan solo sus clases' },
             ].map((item) => (
               <div key={item.texto} className="rounded-2xl bg-gray-50 p-6 text-center">
-                <item.icon className="mx-auto text-[#41f2c0]" size={28} />
+                <item.icon className="mx-auto text-[#0d7a5f]" size={28} />
                 <p className="mt-3 text-3xl font-bold text-[#404040]">{item.dato}</p>
                 <p className="mt-1 text-sm text-gray-600">{item.texto}</p>
               </div>
@@ -128,10 +128,10 @@ export default function Testimonials() {
               transition={{ delay: index * 0.1 }}
               className="bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-all relative"
             >
-              <Quote className="absolute top-6 right-6 text-[#41f2c0]/45" size={36} />
+              <Quote className="absolute top-6 right-6 text-[#0d7a5f]" size={36} />
               <div className="flex gap-1 mb-4">
                 {[...Array(Math.round(review.rating || 0))].map((_, i) => (
-                  <Star key={i} size={16} className="fill-[#41f2c0] text-[#41f2c0]" />
+                  <Star key={i} size={16} className="fill-[#0d7a5f] text-[#0d7a5f]" />
                 ))}
               </div>
               <p className="text-gray-600 leading-relaxed">“{review.comment}”</p>

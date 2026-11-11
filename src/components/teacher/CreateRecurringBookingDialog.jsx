@@ -397,7 +397,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Repeat className="text-[#41f2c0]" size={20} />
+            <Repeat className="text-[#0d7a5f]" size={20} />
             Crear Clases Recurrentes
           </DialogTitle>
           <DialogDescription>
@@ -407,7 +407,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
 
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+            <Loader2 className="animate-spin text-[#0d7a5f]" size={32} />
           </div>
         ) : (
           <div className="space-y-6 py-2">
@@ -498,11 +498,11 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                   {tiposAsignatura.individual && (
                     <button
                       onClick={() => { setClassType('individual'); setSelectedStudentIds([]); setStep(3); }}
-                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-[#41f2c0] border-gray-100"
+                      className="p-4 rounded-xl border-2 text-left transition-all hover:border-[#1fa37e] border-gray-100"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                          <User className="text-[#41f2c0]" size={18} />
+                          <User className="text-[#0d7a5f]" size={18} />
                         </div>
                         <div>
                           <p className="font-semibold text-[#404040] text-sm">Clase individual</p>
@@ -759,7 +759,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     <p className="text-xs text-gray-500">
                       {classType === 'group' ? 'Precio por alumno y clase' : 'Precio por clase'}
                     </p>
-                    <p className="font-medium text-sm text-[#41f2c0]">{calculatePrice().toFixed(2)}€</p>
+                    <p className="font-medium text-sm text-[#0d7a5f]">{calculatePrice().toFixed(2)}€</p>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <p className="text-xs text-gray-500">Clases a crear</p>
@@ -782,7 +782,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                     {validBookings.map((b, idx) => (
                       <div key={idx} className="flex items-center justify-between px-3 py-2 bg-[#41f2c0]/5 rounded-lg text-sm">
                         <div className="flex items-center gap-2">
-                          <Calendar size={13} className="text-[#41f2c0]" />
+                          <Calendar size={13} className="text-[#0d7a5f]" />
                           <span className="capitalize font-medium">
                             {format(b.date, "EEEE d MMM", { locale: es })}
                           </span>

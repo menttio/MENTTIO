@@ -358,7 +358,7 @@ export default function BookingCard({
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isGroup ? 'bg-purple-100' : 'bg-[#41f2c0]/10'}`}>
-              {isGroup ? <Users className="text-purple-500" size={24} /> : <BookOpen className="text-[#41f2c0]" size={24} />}
+              {isGroup ? <Users className="text-purple-500" size={24} /> : <BookOpen className="text-[#0d7a5f]" size={24} />}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -489,13 +489,13 @@ export default function BookingCard({
         {/* Date & Time */}
         <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 mb-4">
           <div className="flex items-center gap-2 text-sm">
-            <Calendar size={16} className="text-[#41f2c0]" />
+            <Calendar size={16} className="text-[#0d7a5f]" />
             <span className="text-[#404040] font-medium capitalize">
               {format(bookingDate, "EEEE, d 'de' MMMM", { locale: es })}
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <Clock size={16} className="text-[#41f2c0]" />
+            <Clock size={16} className="text-[#0d7a5f]" />
             <span className="text-[#404040]">
               {booking.start_time} - {booking.end_time}
             </span>
@@ -521,7 +521,7 @@ export default function BookingCard({
         {/* Price & Payment Status */}
         {displayPrice && (
           <div className="flex items-center justify-between mb-4">
-            <div className="text-lg font-semibold text-[#41f2c0]">
+            <div className="text-lg font-semibold text-[#0d7a5f]">
               {displayPrice}€
               {isGroup && userRole === 'student' && <span className="text-xs text-gray-400 font-normal ml-1">/ alumno</span>}
               {isGroup && userRole === 'teacher' && <span className="text-xs text-gray-400 font-normal ml-1">total ({enrolledCount} alumnos)</span>}
@@ -610,10 +610,10 @@ export default function BookingCard({
                         download={isBase64 ? file.name : undefined}
                         target={isBase64 ? undefined : '_blank'}
                         rel={isBase64 ? undefined : 'noopener noreferrer'}
-                        className="flex items-center gap-2 hover:text-[#41f2c0] transition-colors flex-1 min-w-0"
+                        className="flex items-center gap-2 hover:text-[#0d7a5f] transition-colors flex-1 min-w-0"
                         title={isBase64 ? `Descargar ${file.name}` : `Abrir ${file.name}`}
                       >
-                        <FileText size={14} className="text-[#41f2c0] flex-shrink-0" />
+                        <FileText size={14} className="text-[#0d7a5f] flex-shrink-0" />
                         <span className="truncate">{file.name}</span>
                         <ExternalLink size={12} className="text-gray-400 flex-shrink-0" />
                       </a>
@@ -696,7 +696,7 @@ export default function BookingCard({
                 variant="outline"
                 size="sm"
                 onClick={() => onReview(booking)}
-                className="w-full border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040]"
+                className="w-full border-[#1fa37e] text-[#0d7a5f] hover:bg-[#41f2c0] hover:text-[#404040]"
               >
                 <Star size={14} className="mr-2" />
                 Dejar una reseña
@@ -747,7 +747,7 @@ export default function BookingCard({
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#41f2c0] transition-colors">
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-[#1fa37e] transition-colors">
               <input 
                 type="file" 
                 className="hidden" 
@@ -757,7 +757,7 @@ export default function BookingCard({
               />
               {uploading ? (
                 <>
-                  <Loader2 className="animate-spin text-[#41f2c0]" size={32} />
+                  <Loader2 className="animate-spin text-[#0d7a5f]" size={32} />
                   <span className="text-sm text-gray-600 mt-2 px-4 text-center truncate max-w-full">
                     {uploadProgress
                       ? `Subiendo ${uploadProgress.hecho + 1} de ${uploadProgress.total}: ${uploadProgress.nombre}`

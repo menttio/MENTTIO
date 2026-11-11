@@ -250,7 +250,7 @@ export default function TeacherSignup() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -359,7 +359,7 @@ export default function TeacherSignup() {
           className="text-center"
         >
           <div className="w-24 h-24 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-6">
-            <Loader2 className="animate-spin text-[#41f2c0]" size={48} />
+            <Loader2 className="animate-spin text-[#0d7a5f]" size={48} />
           </div>
           <h2 className="text-2xl font-bold text-[#404040] mb-2">
             Creando tu perfil...
@@ -400,7 +400,7 @@ export default function TeacherSignup() {
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="w-20 h-20 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-4">
-              <Users className="text-[#41f2c0]" size={40} />
+              <Users className="text-[#0d7a5f]" size={40} />
             </div>
             <h1 className="text-3xl font-bold text-[#404040]">
               Únete como Profesor
@@ -684,7 +684,7 @@ export default function TeacherSignup() {
                                 onCheckedChange={(v) => updateSubject(idx, 'offers_individual', v === true)}
                                 aria-label="Clases individuales"
                               />
-                              <User size={14} className="text-[#41f2c0]" />
+                              <User size={14} className="text-[#0d7a5f]" />
                               <span className="text-sm font-medium text-[#404040]">Clases individuales</span>
                             </label>
                             {ts.offers_individual !== false && (
@@ -821,7 +821,7 @@ export default function TeacherSignup() {
                   ) : formData.subscription_plan === 'basic' ? (
                       <>
                         <p className="text-sm text-gray-500 mb-1">Plan Esencial</p>
-                        <div className="text-5xl font-bold text-[#41f2c0] mb-1">30 días gratis</div>
+                        <div className="text-5xl font-bold text-[#0d7a5f] mb-1">30 días gratis</div>
                         <p className="text-sm text-gray-500">Prueba gratuita sin compromiso</p>
                         <p className="text-gray-500 mt-3 text-base">
                           Después: <span className="font-bold text-[#404040]">12,99€/mes</span>
@@ -912,7 +912,7 @@ export default function TeacherSignup() {
                       id="terms"
                       checked={acceptedTerms}
                       onCheckedChange={setAcceptedTerms}
-                      className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#41f2c0]"
+                      className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#1fa37e]"
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                       He leído y acepto los términos y condiciones, así como la política de privacidad de Menttio

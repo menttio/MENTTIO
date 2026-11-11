@@ -156,7 +156,7 @@ export default function Contact() {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Cuéntanos más sobre tu consulta..."
-                    className="w-full p-3 border rounded-lg resize-none h-32 focus:ring-2 focus:ring-[#41f2c0] focus:border-transparent outline-none"
+                    className="w-full p-3 border rounded-lg resize-none h-32 focus:ring-2 focus:ring-[#1fa37e] focus:border-transparent outline-none"
                     required
                   />
                 </div>

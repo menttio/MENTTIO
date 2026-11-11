@@ -25,7 +25,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
                 className="w-full h-full object-cover rounded-2xl"
               />
             ) : (
-              <User className="text-white" size={36} />
+              <User className="text-[#404040]" size={36} />
             )}
           </div>
           
@@ -79,7 +79,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
                   </div>
                 </TooltipTrigger>
                 <TooltipContent 
-                  className="max-w-xs bg-white border-2 border-[#41f2c0] shadow-xl rounded-xl p-4" 
+                  className="max-w-xs bg-white border-2 border-[#1fa37e] shadow-xl rounded-xl p-4" 
                   side="top"
                   sideOffset={8}
                 >
@@ -119,7 +119,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
         <div className="grid grid-cols-1 gap-3 mb-4 text-sm">
           {teacher.education && (
             <div className="flex items-start gap-3">
-              <GraduationCap className="text-[#41f2c0] flex-shrink-0 mt-0.5" size={18} />
+              <GraduationCap className="text-[#0d7a5f] flex-shrink-0 mt-0.5" size={18} />
               <div>
                 <p className="text-xs text-gray-500">Formación</p>
                 <p className="text-sm text-[#404040] font-medium">{teacher.education}</p>
@@ -129,7 +129,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
 
           {teacher.experience_years !== undefined && (
             <div className="flex items-start gap-3">
-              <Award className="text-[#41f2c0] flex-shrink-0 mt-0.5" size={18} />
+              <Award className="text-[#0d7a5f] flex-shrink-0 mt-0.5" size={18} />
               <div>
                 <p className="text-xs text-gray-500">Experiencia</p>
                 <p className="text-sm text-[#404040] font-medium">
@@ -141,7 +141,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
 
           {teacher.phone && (
             <div className="flex items-start gap-3">
-              <Phone className="text-[#41f2c0] flex-shrink-0 mt-0.5" size={18} />
+              <Phone className="text-[#0d7a5f] flex-shrink-0 mt-0.5" size={18} />
               <div>
                 <p className="text-xs text-gray-500">Teléfono</p>
                 <p className="text-sm text-[#404040] font-medium">{teacher.phone}</p>
@@ -151,7 +151,7 @@ export default function MyTeacherCard({ teacher, assignedSubjects, onRemove }) {
 
           {teacher.user_email && (
             <div className="flex items-start gap-3">
-              <Mail className="text-[#41f2c0] flex-shrink-0 mt-0.5" size={18} />
+              <Mail className="text-[#0d7a5f] flex-shrink-0 mt-0.5" size={18} />
               <div className="min-w-0">
                 <p className="text-xs text-gray-500">Email</p>
                 <p className="text-sm text-[#404040] font-medium break-words">{teacher.user_email}</p>

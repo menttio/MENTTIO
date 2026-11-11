@@ -151,7 +151,7 @@ export default function BetaTeacherSignup() {
   if (!authorized || loading) {
     return (
       <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -201,7 +201,7 @@ export default function BetaTeacherSignup() {
         </button>
 
         {/* Beta banner */}
-        <div className="mb-4 bg-[#41f2c0]/20 border border-[#41f2c0] rounded-xl px-5 py-3 text-center">
+        <div className="mb-4 bg-[#41f2c0]/20 border border-[#1fa37e] rounded-xl px-5 py-3 text-center">
           <p className="text-[#404040] font-semibold text-sm">
             🧪 Acceso Beta — 30 días de prueba gratuita, después 12,99€/mes. Cancela cuando quieras.
           </p>
@@ -210,7 +210,7 @@ export default function BetaTeacherSignup() {
         <Card className="shadow-xl">
           <CardHeader className="text-center pb-4">
             <div className="w-20 h-20 rounded-full bg-[#41f2c0]/10 flex items-center justify-center mx-auto mb-4">
-              <Users className="text-[#41f2c0]" size={40} />
+              <Users className="text-[#0d7a5f]" size={40} />
             </div>
             <CardTitle className="text-3xl font-bold text-[#404040]">Únete como Profesor Beta</CardTitle>
             <p className="text-gray-500 mt-2">
@@ -263,21 +263,21 @@ export default function BetaTeacherSignup() {
                   </div>
 
                   {/* Plan fijo: Basic */}
-                  <div className="bg-[#41f2c0]/10 border-2 border-[#41f2c0] rounded-xl p-4 mt-2">
+                  <div className="bg-[#41f2c0]/10 border-2 border-[#1fa37e] rounded-xl p-4 mt-2">
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <h4 className="font-semibold text-[#404040]">📚 Esencial</h4>
                         <p className="text-2xl font-bold text-[#404040] mt-1">12,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
-                        <p className="text-sm text-[#41f2c0] font-semibold mt-1">✨ 30 días gratis de prueba</p>
+                        <p className="text-sm text-[#0d7a5f] font-semibold mt-1">✨ 30 días gratis de prueba</p>
                       </div>
                       <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
-                        <Check className="text-white" size={16} />
+                        <Check className="text-[#404040]" size={16} />
                       </div>
                     </div>
                     <ul className="text-sm text-gray-600 space-y-1">
-                      <li className="flex items-center gap-2"><Check size={14} className="text-[#41f2c0]" />Gestión de clases y calendario</li>
-                      <li className="flex items-center gap-2"><Check size={14} className="text-[#41f2c0]" />Chat con alumnos</li>
-                      <li className="flex items-center gap-2"><Check size={14} className="text-[#41f2c0]" />Gestión de disponibilidad</li>
+                      <li className="flex items-center gap-2"><Check size={14} className="text-[#0d7a5f]" />Gestión de clases y calendario</li>
+                      <li className="flex items-center gap-2"><Check size={14} className="text-[#0d7a5f]" />Chat con alumnos</li>
+                      <li className="flex items-center gap-2"><Check size={14} className="text-[#0d7a5f]" />Gestión de disponibilidad</li>
                       <li className="flex items-center gap-2 text-gray-400"><X size={14} />Sin grabación de clases</li>
                     </ul>
                   </div>
@@ -412,7 +412,7 @@ export default function BetaTeacherSignup() {
                   </div>
 
                   <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
-                    <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={setAcceptedTerms} className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#41f2c0]" />
+                    <Checkbox id="terms" checked={acceptedTerms} onCheckedChange={setAcceptedTerms} className="mt-0.5 data-[state=checked]:bg-[#41f2c0] data-[state=checked]:border-[#1fa37e]" />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
                       He leído y acepto los términos y condiciones, así como la política de privacidad de Menttio
                     </label>

@@ -14,10 +14,10 @@ export default function Footer() {
       <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] py-16">
         <div className="max-w-4xl mx-auto px-6 text-center">
           {/* CAMBIO: titular orientado al dolor, no a la aspiración genérica */}
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl lg:text-4xl font-bold text-[#404040] mb-4">
             Empieza hoy. En 5 minutos tienes todo listo.
           </h2>
-          <p className="text-xl text-white/90 mb-8">
+          <p className="text-xl text-[#404040]/80 mb-8">
             Sin instalaciones, sin configuraciones complicadas. Crea tu perfil y empieza a recibir reservas.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center">
@@ -48,7 +48,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-[#41f2c0] rounded-xl flex items-center justify-center">
-                <span className="text-2xl font-bold text-white" aria-hidden="true">π</span>
+                <span className="text-2xl font-bold text-[#404040]" aria-hidden="true">π</span>
               </div>
               <h3 className="text-xl font-bold" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">tt</span>io</span></h3>
             </div>

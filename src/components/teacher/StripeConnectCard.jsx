@@ -64,7 +64,7 @@ export default function StripeConnectCard({ plan }) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-10">
-          <Loader2 className="animate-spin text-[#41f2c0]" size={28} />
+          <Loader2 className="animate-spin text-[#0d7a5f]" size={28} />
         </CardContent>
       </Card>
     );
@@ -79,7 +79,7 @@ export default function StripeConnectCard({ plan }) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <Banknote className="text-[#41f2c0]" size={20} />
+            <Banknote className="text-[#0d7a5f]" size={20} />
             Cobros de clases
           </CardTitle>
           {isConnected && (

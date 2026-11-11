@@ -186,7 +186,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
           }}
           className="w-[500px] max-w-[calc(100vw-2rem)]"
         >
-          <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#41f2c0] overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl border-4 border-[#1fa37e] overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#41f2c0] to-[#35d4a7] p-4">
               <div className="flex items-center justify-between">
@@ -195,8 +195,8 @@ export default function StudentsTour({ teacherId, onComplete }) {
                     <Icon className="text-white" size={20} />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">{step.title}</h3>
-                    <p className="text-white/80 text-xs">
+                    <h3 className="text-[#404040] font-semibold">{step.title}</h3>
+                    <p className="text-[#404040]/80 text-xs">
                       Paso {currentStep + 1} de {TOUR_STEPS.length}
                     </p>
                   </div>
@@ -205,7 +205,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
                   variant="ghost"
                   size="icon"
                   onClick={handleSkip}
-                  className="text-white hover:bg-white/20 h-8 w-8"
+                  className="text-[#404040] hover:bg-white/20 h-8 w-8"
                 >
                   <X size={18} />
                 </Button>
@@ -264,7 +264,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
           {/* Arrow pointer */}
           {tooltipPosition.position === 'bottom' && (
             <div className="absolute left-1/2 -translate-x-1/2 -top-3">
-              <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#41f2c0]" />
+              <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-transparent border-b-[12px] border-b-[#1fa37e]" />
             </div>
           )}
           {tooltipPosition.position === 'top' && (
@@ -274,7 +274,7 @@ export default function StudentsTour({ teacherId, onComplete }) {
           )}
           {tooltipPosition.position === 'right' && (
             <div className="absolute top-1/2 -translate-y-1/2 -left-3">
-              <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-transparent border-r-[12px] border-r-[#41f2c0]" />
+              <div className="w-0 h-0 border-t-[12px] border-b-[12px] border-transparent border-r-[12px] border-r-[#1fa37e]" />
             </div>
           )}
           {tooltipPosition.position === 'left' && (

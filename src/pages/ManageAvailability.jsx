@@ -131,7 +131,7 @@ export default function ManageAvailability() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -147,7 +147,7 @@ export default function ManageAvailability() {
         <CardHeader>
           <CardTitle className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <span className="flex items-center gap-2">
-              <Clock size={20} className="text-[#41f2c0]" />
+              <Clock size={20} className="text-[#0d7a5f]" />
               Horario Semanal
             </span>
             <Button
@@ -178,7 +178,7 @@ export default function ManageAvailability() {
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(
                   "p-4 rounded-xl border transition-all",
-                  isEnabled ? "border-[#41f2c0] bg-[#41f2c0]/5" : "border-gray-100"
+                  isEnabled ? "border-[#1fa37e] bg-[#41f2c0]/5" : "border-gray-100"
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -191,7 +191,7 @@ export default function ManageAvailability() {
                       variant="ghost"
                       size="sm"
                       onClick={() => addSlotToDay(day.value)}
-                      className="text-[#41f2c0]"
+                      className="text-[#0d7a5f]"
                     >
                       <Plus size={16} className="mr-1" />
                       Añadir franja

@@ -198,7 +198,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -230,7 +230,7 @@ export default function Profile() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User className="text-white" size={40} />
+                  <User className="text-[#404040]" size={40} />
                 )}
               </div>
               <input
@@ -373,7 +373,7 @@ export default function Profile() {
                   window.location.href = createPageUrl('StudentDashboard');
                 }
               }}
-              className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0]/10"
+              className="border-[#1fa37e] text-[#0d7a5f] hover:bg-[#41f2c0]/10"
             >
               Reiniciar
             </Button>

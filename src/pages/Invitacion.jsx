@@ -146,7 +146,7 @@ export default function Invitacion() {
 
   const Marco = ({ children }) => (
     <div className="min-h-screen bg-[#f2f2f2] flex items-center justify-center px-4 py-10">
-      <Card className="w-full max-w-lg border-2 border-[#41f2c0]">
+      <Card className="w-full max-w-lg border-2 border-[#1fa37e]">
         <CardContent className="p-6 sm:p-8">{children}</CardContent>
       </Card>
     </div>

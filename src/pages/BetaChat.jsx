@@ -71,7 +71,7 @@ export default function BetaChat() {
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-[#404040]" translate="no" aria-label="Menttio">
-              <span aria-hidden="true">Men<span className="text-[#41f2c0]">tt</span>io</span>
+              <span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span>
             </h1>
             <p className="text-xs text-gray-500 leading-tight">Resuelve tus dudas sobre Menttio</p>
           </div>
@@ -166,7 +166,7 @@ export default function BetaChat() {
             onKeyDown={handleKeyDown}
             placeholder="Escribe tu pregunta..."
             rows={1}
-            className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-[#404040] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#41f2c0] focus:border-transparent max-h-32 overflow-y-auto"
+            className="flex-1 resize-none border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-[#404040] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1fa37e] focus:border-transparent max-h-32 overflow-y-auto"
             style={{ lineHeight: '1.5' }}
           />
           <button
@@ -175,9 +175,9 @@ export default function BetaChat() {
             className="w-10 h-10 rounded-full bg-[#41f2c0] hover:bg-[#35d4a7] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-colors flex-shrink-0"
           >
             {isTyping ? (
-              <Loader2 size={18} className="text-white animate-spin" />
+              <Loader2 size={18} className="text-[#404040] animate-spin" />
             ) : (
-              <Send size={18} className="text-white" />
+              <Send size={18} className="text-[#404040]" />
             )}
           </button>
         </div>

@@ -126,10 +126,10 @@ export default function StudentDashboard() {
           transition={{ delay: 0.1 }}
         >
           <Link to={createPageUrl('BookClass')}>
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#41f2c0] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Plus className="text-white" size={24} />
+                  <Plus className="text-[#404040]" size={24} />
                 </div>
                 <h3 className="font-semibold text-[#404040]">Reservar Clase</h3>
                 <p className="text-sm text-gray-500 mt-1">Programa tu próxima sesión</p>
@@ -144,7 +144,7 @@ export default function StudentDashboard() {
           transition={{ delay: 0.2 }}
         >
           <Link to={createPageUrl('MyClasses')}>
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#404040] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Calendar className="text-white" size={24} />
@@ -162,7 +162,7 @@ export default function StudentDashboard() {
           transition={{ delay: 0.3 }}
         >
           <Link to={createPageUrl('SearchTeachers')}>
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Search className="text-[#404040]" size={24} />
@@ -180,7 +180,7 @@ export default function StudentDashboard() {
           transition={{ delay: 0.4 }}
         >
           <Link to={createPageUrl('MyTeachers')}>
-            <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white hover:shadow-lg transition-all cursor-pointer">
+            <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-[#404040] hover:shadow-lg transition-all cursor-pointer">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <TrendingUp size={24} />
@@ -204,7 +204,7 @@ export default function StudentDashboard() {
           <Card>
             <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
               <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                <BookOpen className="text-[#41f2c0]" size={18} />
+                <BookOpen className="text-[#0d7a5f]" size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{totalClasses}</p>
@@ -222,7 +222,7 @@ export default function StudentDashboard() {
           <Card>
             <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
               <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                <Clock className="text-[#41f2c0]" size={18} />
+                <Clock className="text-[#0d7a5f]" size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{completedClasses}</p>
@@ -240,7 +240,7 @@ export default function StudentDashboard() {
           <Card>
             <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center sm:items-center gap-2 sm:gap-4">
               <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center flex-shrink-0">
-                <Calendar className="text-[#41f2c0]" size={18} />
+                <Calendar className="text-[#0d7a5f]" size={18} />
               </div>
               <div className="min-w-0">
                 <p className="text-xl sm:text-2xl font-bold text-[#404040] text-center sm:text-left">{scheduledClasses}</p>
@@ -263,7 +263,7 @@ export default function StudentDashboard() {
             <h2 className="text-xl font-semibold text-[#404040]">Mis Profesores</h2>
             <Link 
               to={createPageUrl('MyTeachers')}
-              className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
+              className="text-[#0d7a5f] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
             >
               Ver todos <ChevronRight size={16} />
             </Link>
@@ -292,7 +292,7 @@ export default function StudentDashboard() {
                                 className="w-full h-full object-cover rounded-xl"
                               />
                             ) : (
-                              <User className="text-white" size={24} />
+                              <User className="text-[#404040]" size={24} />
                             )}
                           </div>
                           
@@ -316,7 +316,7 @@ export default function StudentDashboard() {
                             </div>
                           </div>
                           
-                          <ChevronRight className="text-gray-400 group-hover:text-[#41f2c0] transition-colors" size={20} />
+                          <ChevronRight className="text-gray-400 group-hover:text-[#0d7a5f] transition-colors" size={20} />
                         </div>
 
                         <div className="flex flex-wrap gap-2">
@@ -355,7 +355,7 @@ export default function StudentDashboard() {
           <h2 className="text-xl font-semibold text-[#404040]">Próximas Clases</h2>
           <Link 
             to={createPageUrl('MyClasses')}
-            className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
+            className="text-[#0d7a5f] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
           >
             Ver todas <ChevronRight size={16} />
           </Link>

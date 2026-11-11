@@ -152,7 +152,7 @@ export default function TeacherDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-white stats-earnings">
+          <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-[#404040] stats-earnings">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <DollarSign size={24} />
@@ -172,7 +172,7 @@ export default function TeacherDashboard() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <div className="w-9 h-9 rounded-lg bg-[#41f2c0]/15 flex items-center justify-center">
-                  <Users className="text-[#41f2c0]" size={18} />
+                  <Users className="text-[#0d7a5f]" size={18} />
                 </div>
               </div>
               <p className="text-3xl font-bold text-[#404040]">{studentsCount}</p>
@@ -190,7 +190,7 @@ export default function TeacherDashboard() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
                 <div className="w-9 h-9 rounded-lg bg-[#41f2c0]/15 flex items-center justify-center">
-                  <BookOpen className="text-[#41f2c0]" size={18} />
+                  <BookOpen className="text-[#0d7a5f]" size={18} />
                 </div>
               </div>
               <p className="text-3xl font-bold text-[#404040]">{totalClasses}</p>
@@ -240,10 +240,10 @@ export default function TeacherDashboard() {
           transition={{ delay: 0.6 }}
         >
           <Link to={createPageUrl('TeacherCalendar')} className="action-calendar">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#41f2c0] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Calendar className="text-white" size={24} />
+                  <Calendar className="text-[#404040]" size={24} />
                 </div>
                 <h3 className="font-semibold text-[#404040]">Mi Calendario</h3>
                 <p className="text-sm text-gray-500 mt-1">Ver todas tus clases programadas</p>
@@ -258,7 +258,7 @@ export default function TeacherDashboard() {
           transition={{ delay: 0.7 }}
         >
           <Link to={createPageUrl('ManageAvailability')} className="action-availability">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#404040] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <Clock className="text-white" size={24} />
@@ -276,10 +276,10 @@ export default function TeacherDashboard() {
           transition={{ delay: 0.8 }}
         >
           <Link to={createPageUrl('MyStudents')} className="action-students">
-            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#41f2c0] group h-full">
+            <Card className="hover:shadow-lg transition-all cursor-pointer border-2 border-transparent hover:border-[#1fa37e] group h-full">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-[#41f2c0]/15 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Users className="text-[#41f2c0]" size={24} />
+                  <Users className="text-[#0d7a5f]" size={24} />
                 </div>
                 <h3 className="font-semibold text-[#404040]">Mis Alumnos</h3>
                 <p className="text-sm text-gray-500 mt-1">Ver información de alumnos</p>
@@ -310,7 +310,7 @@ export default function TeacherDashboard() {
             </Button>
             <Link 
               to={createPageUrl('TeacherCalendar')}
-              className="text-[#41f2c0] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
+              className="text-[#0d7a5f] hover:text-[#0d7a5f] flex items-center gap-1 text-sm font-medium"
             >
               Ver calendario <ChevronRight size={16} />
             </Link>

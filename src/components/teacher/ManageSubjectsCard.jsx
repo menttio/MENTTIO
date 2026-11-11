@@ -144,7 +144,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <BookOpen className="text-[#41f2c0]" size={24} />
+              <BookOpen className="text-[#0d7a5f]" size={24} />
               <h3 className="font-semibold text-[#404040]">Mis Asignaturas</h3>
             </div>
             <Button
@@ -159,7 +159,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
 
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="animate-spin text-[#41f2c0]" size={24} />
+              <Loader2 className="animate-spin text-[#0d7a5f]" size={24} />
             </div>
           ) : teacher.subjects?.length > 0 ? (
             <div className="space-y-2">
@@ -173,7 +173,7 @@ export default function ManageSubjectsCard({ teacher, onUpdate }) {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-                      <BookOpen className="text-[#41f2c0]" size={18} />
+                      <BookOpen className="text-[#0d7a5f]" size={18} />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">

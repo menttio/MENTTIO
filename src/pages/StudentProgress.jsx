@@ -62,7 +62,7 @@ export default function StudentProgress() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -109,11 +109,11 @@ export default function StudentProgress() {
               type="month"
               value={reportMonth}
               onChange={e => setReportMonth(e.target.value)}
-              className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#41f2c0]"
+              className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#1fa37e]"
             />
             <button
               onClick={() => downloadReport({ studentName: student?.full_name || 'Alumno', month: reportMonth, bookings })}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#41f2c0] text-[#41f2c0] text-sm font-medium hover:bg-[#41f2c0] hover:text-[#404040] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#1fa37e] text-[#0d7a5f] text-sm font-medium hover:bg-[#41f2c0] hover:text-[#404040] transition-colors"
             >
               <Download size={14} />
               Descargar informe
@@ -142,7 +142,7 @@ export default function StudentProgress() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base flex items-center gap-2">
-                    <TrendingUp size={18} className="text-[#41f2c0]" />
+                    <TrendingUp size={18} className="text-[#0d7a5f]" />
                     Evolución de valoraciones
                   </CardTitle>
                 </CardHeader>
@@ -195,7 +195,7 @@ export default function StudentProgress() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <CardTitle className="flex items-center gap-2 text-base">
-                        <BookOpen size={16} className="text-[#41f2c0]" />
+                        <BookOpen size={16} className="text-[#0d7a5f]" />
                         {subject}
                       </CardTitle>
                       <div className="flex items-center gap-3 flex-wrap">

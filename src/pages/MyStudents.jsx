@@ -181,7 +181,7 @@ export default function MyStudents() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="animate-spin text-[#41f2c0]" size={40} />
+        <Loader2 className="animate-spin text-[#0d7a5f]" size={40} />
       </div>
     );
   }
@@ -218,7 +218,7 @@ export default function MyStudents() {
                type="month"
                value={sendMonth}
                onChange={e => { setSendMonth(e.target.value); setSentCount(null); }}
-               className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#41f2c0]"
+               className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#1fa37e]"
              />
              <Button
                onClick={handleSendReports}
@@ -257,7 +257,7 @@ export default function MyStudents() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-              <User className="text-[#41f2c0]" size={20} />
+              <User className="text-[#0d7a5f]" size={20} />
             </div>
             <div>
               <p className="text-2xl font-bold text-[#404040]">{students.length}</p>
@@ -269,7 +269,7 @@ export default function MyStudents() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-              <BookOpen className="text-[#41f2c0]" size={20} />
+              <BookOpen className="text-[#0d7a5f]" size={20} />
             </div>
             <div>
               <p className="text-2xl font-bold text-[#404040]">
@@ -283,7 +283,7 @@ export default function MyStudents() {
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#41f2c0]/10 flex items-center justify-center">
-              <Calendar className="text-[#41f2c0]" size={20} />
+              <Calendar className="text-[#0d7a5f]" size={20} />
             </div>
             <div>
               <p className="text-2xl font-bold text-[#404040]">
@@ -312,7 +312,7 @@ export default function MyStudents() {
               >
                 <Card className={cn(
                   "transition-all",
-                  isExpanded && "ring-2 ring-[#41f2c0]"
+                  isExpanded && "ring-2 ring-[#1fa37e]"
                 )}>
                   <CardContent className="p-0">
                     {/* Main Info */}
@@ -329,7 +329,7 @@ export default function MyStudents() {
                               className="w-full h-full object-cover rounded-xl"
                             />
                           ) : (
-                            <span className="text-white text-xl font-semibold">
+                            <span className="text-[#404040] text-xl font-semibold">
                               {student.full_name?.charAt(0) || 'A'}
                             </span>
                           )}
@@ -377,7 +377,7 @@ export default function MyStudents() {
                       <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
                       <div className="text-right">
                         <p className="text-xs md:text-sm text-gray-500">{stats.totalClasses} clases</p>
-                        <p className="text-sm md:text-base font-semibold text-[#41f2c0]">{stats.totalSpent.toFixed(0)}€</p>
+                        <p className="text-sm md:text-base font-semibold text-[#0d7a5f]">{stats.totalSpent.toFixed(0)}€</p>
                       </div>
                         {isExpanded ? (
                           <ChevronUp className="text-gray-400" size={20} />
@@ -408,7 +408,7 @@ export default function MyStudents() {
                                 <p className="text-xs text-gray-500">Próximas</p>
                               </div>
                               <div className="p-3 rounded-lg bg-gray-50">
-                                <p className="text-xl font-bold text-[#41f2c0]">{stats.totalSpent.toFixed(0)}€</p>
+                                <p className="text-xl font-bold text-[#0d7a5f]">{stats.totalSpent.toFixed(0)}€</p>
                                 <p className="text-xs text-gray-500">Total</p>
                               </div>
                               <div className="p-3 rounded-lg bg-gray-50">
@@ -451,7 +451,7 @@ export default function MyStudents() {
                                     className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
                                   >
                                     <div className="flex items-center gap-3">
-                                      <BookOpen className="text-[#41f2c0]" size={16} />
+                                      <BookOpen className="text-[#0d7a5f]" size={16} />
                                       <div>
                                         <p className="text-sm font-medium text-[#404040]">
                                           {booking.subject_name}
@@ -523,12 +523,12 @@ export default function MyStudents() {
                                 type="month"
                                 value={reportMonths[student.id] || currentMonth}
                                 onChange={e => setReportMonths(prev => ({ ...prev, [student.id]: e.target.value }))}
-                                className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-[#41f2c0]"
+                                className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-[#1fa37e]"
                               />
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="border-[#41f2c0] text-[#41f2c0] hover:bg-[#41f2c0] hover:text-[#404040] h-8 text-xs"
+                                className="border-[#1fa37e] text-[#0d7a5f] hover:bg-[#41f2c0] hover:text-[#404040] h-8 text-xs"
                                 onClick={() => {
                                   const month = reportMonths[student.id] || currentMonth;
                                   const studentBookings = bookings.filter(b => b.student_id === student.id);
