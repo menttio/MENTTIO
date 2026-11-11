@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MenttioLogo from '@/components/brand/MenttioLogo';
+import MenttioLogo, { MenttioMark } from '@/components/brand/MenttioLogo';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -99,7 +99,7 @@ export default function BetaChat() {
               >
                 {msg.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full overflow-hidden mr-2 mt-1 flex-shrink-0">
-                    <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
+                    <MenttioMark size="100%" className="w-full h-full" />
                   </div>
                 )}
                 <div
@@ -123,7 +123,7 @@ export default function BetaChat() {
                 className="flex justify-start"
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden mr-2 flex-shrink-0">
-                  <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
+                  <MenttioMark size="100%" className="w-full h-full" />
                 </div>
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                   <div className="flex gap-1 items-center h-4">

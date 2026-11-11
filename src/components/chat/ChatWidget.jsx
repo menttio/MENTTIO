@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { MenttioMark } from '@/components/brand/MenttioLogo';
 import { base44 } from '@/api/base44Client';
 import { Send, X, Maximize2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -115,7 +116,7 @@ export default function ChatWidget() {
             {/* Header */}
             <div className="bg-[#404040] px-4 py-3 flex items-center gap-3 flex-shrink-0">
               <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
+                <MenttioMark size="100%" className="w-full h-full" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-white text-sm leading-tight">Asistente Menttio</p>
@@ -149,7 +150,7 @@ export default function ChatWidget() {
                   >
                     {msg.role === 'assistant' && (
                       <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0 mb-0.5">
-                        <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
+                        <MenttioMark size="100%" className="w-full h-full" />
                       </div>
                     )}
                     <div
@@ -173,7 +174,7 @@ export default function ChatWidget() {
                     className="flex justify-start items-end gap-1.5"
                   >
                     <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-                      <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover" />
+                      <MenttioMark size="100%" className="w-full h-full" />
                     </div>
                     <div className="bg-white rounded-2xl rounded-tl-sm px-3 py-2.5 shadow-sm">
                       <div className="flex gap-1 items-center h-3">
@@ -258,7 +259,7 @@ export default function ChatWidget() {
             </motion.div>
           ) : (
             <motion.div key="open" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} transition={{ duration: 0.15 }} className="w-full h-full">
-              <img src="https://media.base44.com/images/public/694471e9c204eb0088437b85/3fbbdcae9_logo1.png" alt="Menttio" className="w-full h-full object-cover rounded-full" />
+              <MenttioMark size="100%" className="w-full h-full" />
             </motion.div>
           )}
         </AnimatePresence>
