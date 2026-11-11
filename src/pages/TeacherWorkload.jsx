@@ -4,7 +4,6 @@ import {
   Calendar,
   Clock,
   TrendingUp,
-  DollarSign,
   Users,
   BookOpen,
   Loader2,

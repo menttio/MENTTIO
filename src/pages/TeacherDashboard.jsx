@@ -10,7 +10,7 @@ import {
   Clock, 
   ChevronRight,
   BookOpen,
-  DollarSign,
+  Euro,
   Star,
   Repeat
 } from 'lucide-react';
