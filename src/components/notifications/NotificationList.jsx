@@ -27,7 +27,7 @@ const notificationIcons = {
 };
 
 const notificationColors = {
-  booking_new: 'text-[#41f2c0]',
+  booking_new: 'text-[#0d7a5f]',
   booking_modified: 'text-blue-500',
   booking_cancelled: 'text-red-500',
   message_new: 'text-purple-500',
