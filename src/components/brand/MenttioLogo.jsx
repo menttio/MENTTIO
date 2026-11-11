@@ -33,8 +33,8 @@ export function PiGlyph({ className = '' }) {
 }
 
 /**
- * Icono: π menta con un anillo de planeta (menta → azul) que pasa por delante,
- * sobre gris oscuro. Basado en el logo original de Menttio.
+ * Icono: π menta con volumen (luz arriba, sombra abajo y sombra proyectada) y un anillo
+ * de planeta azul que pasa por delante, sobre gris oscuro. Basado en el logo original.
  */
 export function MenttioMark({ size = 40, className = '' }) {
   const id = useId().replace(/:/g, '');
@@ -49,9 +49,13 @@ export function MenttioMark({ size = 40, className = '' }) {
     >
       <defs>
         <linearGradient id={`anillo-${id}`} x1="4" y1="44" x2="60" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#41f2c0" />
-          <stop offset="0.55" stopColor="#45c8e8" />
+          <stop offset="0" stopColor="#45c8e8" />
           <stop offset="1" stopColor="#4f8ff7" />
+        </linearGradient>
+        <linearGradient id={`pi-${id}`} x1="0" y1="18" x2="0" y2="42" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#7ff7d6" />
+          <stop offset="0.45" stopColor="#41f2c0" />
+          <stop offset="1" stopColor="#1fa37e" />
         </linearGradient>
       </defs>
       <rect width="64" height="64" rx="15" fill="#404040" />
@@ -59,8 +63,14 @@ export function MenttioMark({ size = 40, className = '' }) {
         {/* mitad trasera del anillo (por detrás de la π) */}
         <path d="M5.5 35A26.5 9.5 0 0 1 58.5 35" fill="none" stroke={`url(#anillo-${id})`} strokeWidth="2.6" strokeLinecap="round" opacity="0.55" />
       </g>
-      {/* π */}
-      <g transform="translate(15 15.5) scale(0.57)" fill="none" stroke="#41f2c0" strokeWidth="9.5" strokeLinecap="round" strokeLinejoin="round">
+      {/* sombra proyectada de la π */}
+      <g transform="translate(1.2 1.6)" opacity="0.55">
+        <g transform="translate(15 15.5) scale(0.57)" fill="none" stroke="#2a2a2a" strokeWidth="9.5" strokeLinecap="round" strokeLinejoin="round">
+          {PI_PATHS.map(d => <path key={d} d={d} />)}
+        </g>
+      </g>
+      {/* π con luz arriba y sombra abajo */}
+      <g transform="translate(15 15.5) scale(0.57)" fill="none" stroke={`url(#pi-${id})`} strokeWidth="9.5" strokeLinecap="round" strokeLinejoin="round">
         {PI_PATHS.map(d => <path key={d} d={d} />)}
       </g>
       <g transform="rotate(-24 32 35)">
