@@ -229,7 +229,6 @@ export default function TeacherCard({
         <div className="flex flex-wrap items-center gap-2 md:gap-3">
           {priceDisplay && (
             <div className="flex items-center gap-1 text-[#404040]">
-              <DollarSign size={18} className="text-[#0d7a5f]" />
               <span className="font-semibold text-lg">{priceDisplay}</span>
               <span className="text-gray-500 text-sm">/hora</span>
             </div>

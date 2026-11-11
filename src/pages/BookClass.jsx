@@ -1030,7 +1030,6 @@ export default function BookClass() {
                   </div>
 
                   <div className={cn("flex items-center gap-3 p-4 rounded-xl", classType === 'group' ? "bg-purple-50" : "bg-[#41f2c0]/10")}>
-                    <DollarSign className={classType === 'group' ? "text-purple-500" : "text-[#0d7a5f]"} size={24} />
                     <div>
                       <p className="text-sm text-gray-500">Precio estimado</p>
                       <p className={cn("font-bold text-2xl", classType === 'group' ? "text-purple-600" : "text-[#0d7a5f]")}>

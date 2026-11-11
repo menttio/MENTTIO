@@ -371,7 +371,6 @@ export default function ManageSubjects() {
 
                   {daIndividual(subject) && (
                     <div className={`flex items-center gap-2 p-3 bg-[#41f2c0]/10 rounded-lg ${idx === 0 ? 'subject-card-price' : ''}`}>
-                      <DollarSign className="text-[#0d7a5f]" size={20} />
                       <div>
                         <p className="text-2xl font-bold text-[#0d7a5f]">{subject.price_per_hour}€</p>
                         <p className="text-xs text-gray-600">por hora (individual)</p>
