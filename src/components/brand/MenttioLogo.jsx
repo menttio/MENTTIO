@@ -1,40 +1,75 @@
-import React from 'react';
+import React, { useId } from 'react';
 
-// π dibujada a mano para que se lea como las dos "t" de Menttio:
-// barra superior con un pequeño gancho a la izquierda, pata izquierda recta
-// y pata derecha que remata hacia la derecha, como una t minúscula.
-export function PiGlyph({ className = '', strokeWidth = 3.2, style }) {
+// Trazo de la π, el mismo en el icono y en la palabra: barra con gancho a la izquierda,
+// pata izquierda que se curva hacia fuera y pata derecha rematada como una "t".
+// Dibujada en una caja de 60×50 (50 = altura de las minúsculas).
+const PI_PATHS = [
+  'M5 16C6.5 9 11.5 6 18 6H56',
+  'M23.5 6C23.5 23 20.5 35 12.5 44',
+  'M40.5 6V35.5C40.5 42.5 45 45 52.5 41.5',
+];
+
+/**
+ * π dentro del texto. Ocupa la altura de las minúsculas y se apoya en la línea base,
+ * con el grosor del Fraunces en negrita, para que "Men π io" se lea como una sola palabra.
+ */
+export function PiGlyph({ className = '' }) {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox="0 0 60 50"
       fill="none"
       stroke="currentColor"
-      strokeWidth={strokeWidth}
+      strokeWidth={8.5}
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
-      style={style}
+      style={{ width: '0.6em', height: '0.5em', display: 'inline-block', margin: '0 0.025em', overflow: 'visible' }}
       aria-hidden="true"
       focusable="false"
     >
-      <path d="M3 8.2c0-2.3 1.4-3.4 3.6-3.4H21" />
-      <path d="M9.4 4.8 8.6 20" />
-      <path d="M15.6 4.8v11.6c0 2.3 1.2 3.6 3.6 3.6" />
+      {PI_PATHS.map(d => <path key={d} d={d} />)}
     </svg>
   );
 }
 
-// Icono cuadrado: π menta sobre gris oscuro (contraste 7:1, se ve igual sobre blanco,
-// sobre menta y sobre fondo oscuro).
+/**
+ * Icono: π menta con un anillo de planeta (menta → azul) que pasa por delante,
+ * sobre gris oscuro. Basado en el logo original de Menttio.
+ */
 export function MenttioMark({ size = 40, className = '' }) {
+  const id = useId().replace(/:/g, '');
   return (
-    <span
-      className={`inline-flex items-center justify-center rounded-xl bg-[#404040] text-[#41f2c0] shadow-sm ring-1 ring-black/5 flex-shrink-0 ${className}`}
-      style={{ width: size, height: size }}
+    <svg
+      viewBox="0 0 64 64"
+      width={size}
+      height={size}
+      className={`flex-shrink-0 ${className}`}
       aria-hidden="true"
+      focusable="false"
     >
-      <PiGlyph style={{ width: size * 0.62, height: size * 0.62 }} />
-    </span>
+      <defs>
+        <linearGradient id={`anillo-${id}`} x1="4" y1="44" x2="60" y2="20" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#41f2c0" />
+          <stop offset="0.55" stopColor="#45c8e8" />
+          <stop offset="1" stopColor="#4f8ff7" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="15" fill="#404040" />
+      <g transform="rotate(-24 32 35)">
+        {/* mitad trasera del anillo (por detrás de la π) */}
+        <path d="M5.5 35A26.5 9.5 0 0 1 58.5 35" fill="none" stroke={`url(#anillo-${id})`} strokeWidth="2.6" strokeLinecap="round" opacity="0.55" />
+      </g>
+      {/* π */}
+      <g transform="translate(15 15.5) scale(0.57)" fill="none" stroke="#41f2c0" strokeWidth="9.5" strokeLinecap="round" strokeLinejoin="round">
+        {PI_PATHS.map(d => <path key={d} d={d} />)}
+      </g>
+      <g transform="rotate(-24 32 35)">
+        {/* mitad delantera: un trazo del color del fondo abre hueco sobre la π */}
+        <path d="M5.5 35A26.5 9.5 0 0 0 58.5 35" fill="none" stroke="#404040" strokeWidth="6.5" strokeLinecap="round" />
+        <path d="M5.5 35A26.5 9.5 0 0 0 58.5 35" fill="none" stroke={`url(#anillo-${id})`} strokeWidth="3.2" strokeLinecap="round" />
+        <path d="M10 38.5A22.5 7 0 0 0 54 36.5" fill="none" stroke={`url(#anillo-${id})`} strokeWidth="1.1" strokeLinecap="round" opacity="0.7" />
+      </g>
+    </svg>
   );
 }
 
@@ -45,8 +80,8 @@ const TONOS = {
 };
 
 /**
- * Logo de Menttio: "Men" + π + "io" (la π hace de "tt").
- * as: etiqueta (h1, span…); tone: light | dark | mint; mark: mostrar el icono cuadrado.
+ * Logo de Menttio: icono + "Men π io" (la π hace de "tt").
+ * as: etiqueta (h1, span…); tone: light | dark | mint; mark: mostrar el icono.
  */
 export default function MenttioLogo({
   as: Tag = 'span',
@@ -60,10 +95,12 @@ export default function MenttioLogo({
   return (
     <Tag className={`inline-flex items-center gap-2.5 ${className}`} translate="no" aria-label="Menttio">
       {mark && <MenttioMark size={markSize} />}
-      <span aria-hidden="true" className={`font-bold tracking-tight leading-none inline-flex items-baseline ${t.texto} ${textClassName}`}>
-        Men
-        <PiGlyph className={`${t.pi} inline-block self-center`} strokeWidth={3.4} style={{ width: '0.95em', height: '0.95em', margin: '0 0.01em', transform: 'translateY(0.04em)' }} />
-        io
+      <span
+        aria-hidden="true"
+        className={`font-bold leading-none whitespace-nowrap ${t.texto} ${textClassName}`}
+        style={{ fontFamily: "'Fraunces', serif", letterSpacing: '-0.015em' }}
+      >
+        Men<PiGlyph className={t.pi} />io
       </span>
     </Tag>
   );
