@@ -426,7 +426,7 @@ export default function CreateRecurringBookingDialog({ open, onOpenChange, teach
                         num < step
                           ? 'bg-[#41f2c0] text-[#404040]'
                           : num === step
-                            ? 'border-2 border-[#41f2c0] text-[#404040]'
+                            ? 'border-2 border-[#1fa37e] text-[#0d7a5f]'
                             : 'border-2 border-gray-200 text-gray-300'
                       }`}>
                         {num < step ? <Check size={12} /> : num}

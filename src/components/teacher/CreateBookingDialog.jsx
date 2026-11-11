@@ -434,7 +434,7 @@ export default function CreateBookingDialog({ open, onOpenChange, teacher, onSuc
                       s.num < step
                         ? 'bg-[#41f2c0] text-[#404040]'
                         : s.num === step
-                          ? 'border-2 border-[#41f2c0] text-[#404040]'
+                          ? 'border-2 border-[#1fa37e] text-[#0d7a5f]'
                           : 'border-2 border-gray-200 text-gray-300'
                     }`}>
                       {s.num < step ? <Check size={14} /> : s.num}
