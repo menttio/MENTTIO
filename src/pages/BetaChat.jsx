@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import MenttioLogo from '@/components/brand/MenttioLogo';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -70,9 +71,7 @@ export default function BetaChat() {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#404040]" translate="no" aria-label="Menttio">
-              <span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span>
-            </h1>
+            <MenttioLogo as="h1" mark markSize={30} textClassName="text-xl" />
             <p className="text-xs text-gray-500 leading-tight">Resuelve tus dudas sobre Menttio</p>
           </div>
           <a

@@ -1,4 +1,5 @@
 import React from 'react';
+import MenttioLogo from '@/components/brand/MenttioLogo';
 import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -47,10 +48,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-[#41f2c0] rounded-xl flex items-center justify-center">
-                <span className="text-2xl font-bold text-[#404040]" aria-hidden="true">π</span>
-              </div>
-              <h3 className="text-xl font-bold" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#41f2c0]">tt</span>io</span></h3>
+              <MenttioLogo as="h3" tone="dark" mark markSize={40} textClassName="text-xl" />
             </div>
             {/* CAMBIO: descripción de marca más concisa y orientada al profesor como usuario */}
             <p className="text-gray-300 text-sm leading-relaxed">

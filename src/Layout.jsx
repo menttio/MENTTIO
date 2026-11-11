@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MenttioLogo from '@/components/brand/MenttioLogo';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { base44 } from '@/api/base44Client';
@@ -540,7 +541,7 @@ export default function Layout({ children, currentPageName }) {
               {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-          <h1 className="text-lg font-semibold text-[#404040]" translate="no" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span></h1>
+          <MenttioLogo as="h1" mark markSize={30} textClassName="text-lg" />
           <div className="flex items-center gap-2">
             {profile?.profile_photo ? (
               <img 
@@ -577,9 +578,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
-            <h1 className="text-2xl font-bold text-[#404040]" translate="no" aria-label="Menttio">
-              <span aria-hidden="true">Men<span className="text-[#0d7a5f]">tt</span>io</span>
-            </h1>
+            <MenttioLogo as="h1" mark markSize={38} textClassName="text-2xl" />
             <p className="text-sm text-gray-500 mt-1">
               {(userRole === 'teacher' || userRole === 'expired_teacher') ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : userRole === 'student' ? 'Portal del Alumno' : 'Menttio'}
             </p>

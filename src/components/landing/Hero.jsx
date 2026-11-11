@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MenttioLogo from '@/components/brand/MenttioLogo';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Video, Calendar, Users, User, LogOut, LayoutDashboard, Menu, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -90,12 +91,9 @@ export default function Hero() {
               {mobileMenuOpen ? <X className="text-[#404040]" size={24} aria-hidden="true" /> : <Menu className="text-[#404040]" size={24} aria-hidden="true" />}
             </button>
             
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-xl md:text-2xl font-bold text-[#0d7a5f]" aria-hidden="true">π</span>
-            </div>
             {/* Era un segundo h1: la página tenía dos títulos de primer nivel y un lector de
                 pantalla no podía saber cuál era el de verdad. El logo no es el título. */}
-            <span className="text-xl md:text-2xl font-bold text-[#404040]" translate="no" role="img" aria-label="Menttio"><span aria-hidden="true">Men<span className="text-[#404040]">tt</span>io</span></span>
+            <MenttioLogo tone="mint" mark markSize={36} textClassName="text-xl md:text-2xl" />
           </div>
           
           {/* Desktop Menu */}
