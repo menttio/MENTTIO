@@ -155,7 +155,7 @@ export default function TeacherDashboard() {
           <Card className="bg-gradient-to-br from-[#41f2c0] to-[#35d4a7] text-[#404040] stats-earnings">
             <CardContent className="p-5">
               <div className="flex items-center justify-between mb-2">
-                <DollarSign size={24} />
+                <Euro size={24} />
               </div>
               <p className="text-3xl font-bold">{thisMonthEarnings.toFixed(0)}€</p>
               <p className="text-sm opacity-80">Ingresos este mes</p>

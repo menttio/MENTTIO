@@ -288,7 +288,7 @@ export default function TeacherWorkload() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <DollarSign className="text-[#0d7a5f]" size={24} />
+                <Euro className="text-[#0d7a5f]" size={24} />
                 <TrendingUp className="text-[#0d7a5f]" size={20} />
               </div>
               <p className="text-2xl font-bold text-[#404040]">{stats.totalEarnings.toFixed(2)}€</p>
@@ -599,7 +599,7 @@ export default function TeacherWorkload() {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-                      <DollarSign className="text-green-600" size={24} />
+                      <Euro className="text-green-600" size={24} />
                     </div>
                     <div>
                       <p className="text-sm text-green-600 font-medium">Clases Pagadas</p>
