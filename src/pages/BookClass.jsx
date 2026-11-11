@@ -885,7 +885,7 @@ export default function BookClass() {
                                       ? classType === 'group' ? "bg-purple-500 hover:bg-purple-600 border-purple-500" : "bg-[#41f2c0] hover:bg-[#35d4a7] border-[#41f2c0]"
                                       : groupForSlot
                                         ? "border-purple-300 text-purple-700 hover:border-purple-500 hover:bg-purple-50"
-                                        : "hover:border-[#41f2c0] hover:text-[#41f2c0]"
+                                        : "hover:border-[#1fa37e] hover:text-[#0d7a5f]"
                                   )}
                                 >
                                   <span>{slot}</span>

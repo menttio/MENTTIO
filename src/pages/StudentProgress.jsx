@@ -11,7 +11,7 @@ import {
   Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
-const SUBJECT_COLORS = ['#41f2c0', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#10b981'];
+const SUBJECT_COLORS = ['#16946f', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#10b981'];
 
 function StarDisplay({ value }) {
   return (

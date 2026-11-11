@@ -207,7 +207,7 @@ export default function TeacherWorkload() {
     return Array.from(years).sort((a, b) => b - a);
   }, [bookings]);
 
-  const COLORS = ['#41f2c0', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#10b981'];
+  const COLORS = ['#16946f', '#3b82f6', '#8b5cf6', '#f59e0b', '#ef4444', '#10b981'];
 
   if (loading) {
     return (
@@ -409,7 +409,7 @@ export default function TeacherWorkload() {
                       }}
                       formatter={(value) => [`${value.toFixed(2)}€`, 'Ingresos']}
                     />
-                    <Bar dataKey="ingresos" fill="#41f2c0" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="ingresos" fill="#16946f" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>

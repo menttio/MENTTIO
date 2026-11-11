@@ -378,7 +378,7 @@ export default function EditBookingDialog({ booking, open, onClose, onSave, user
                                   "w-full justify-center transition-all",
                                   selectedTime === slot
                                     ? "bg-[#41f2c0] hover:bg-[#35d4a7] border-[#41f2c0]"
-                                    : "hover:border-[#41f2c0] hover:text-[#41f2c0]"
+                                    : "hover:border-[#1fa37e] hover:text-[#0d7a5f]"
                                 )}
                               >
                                 {slot}
