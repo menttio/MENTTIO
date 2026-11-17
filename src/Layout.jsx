@@ -572,12 +572,15 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0",
+        // En el movil el menu empieza debajo de la cabecera (top-16) y la lista hace scroll: antes
+        // ocupaba toda la altura, la cabecera tapaba el principio y "Cerrar sesion" quedaba por
+        // debajo del borde de la pantalla, sin forma de llegar a el.
+        "fixed top-16 bottom-0 lg:top-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-6 border-b border-gray-100">
+          {/* Logo (en el movil ya sale en la cabecera) */}
+          <div className="hidden lg:block p-6 border-b border-gray-100">
             <MenttioLogo as="h1" mark markSize={38} textClassName="text-2xl" />
             <p className="text-sm text-gray-500 mt-1">
               {(userRole === 'teacher' || userRole === 'expired_teacher') ? 'Portal del Profesor' : userRole === 'admin' ? 'Administración' : userRole === 'student' ? 'Portal del Alumno' : 'Menttio'}
@@ -585,7 +588,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 min-h-0 overflow-y-auto p-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.page}
@@ -609,8 +612,8 @@ export default function Layout({ children, currentPageName }) {
             ))}
           </nav>
 
-          {/* User Section */}
-          <div className="p-6 border-t border-gray-100">
+          {/* User Section: siempre visible al pie, tambien en pantallas bajas */}
+          <div className="shrink-0 p-4 lg:p-6 border-t border-gray-100" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
             <div className="flex items-center gap-3 mb-4">
               {profile?.profile_photo ? (
                 <img 
