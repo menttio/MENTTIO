@@ -824,14 +824,14 @@ export default function TeacherSignup() {
                         <div className="text-5xl font-bold text-[#0d7a5f] mb-1">30 días gratis</div>
                         <p className="text-sm text-gray-500">Prueba gratuita sin compromiso</p>
                         <p className="text-gray-500 mt-3 text-base">
-                          Después: <span className="font-bold text-[#404040]">12,99€/mes</span>
+                          Después: <span className="font-bold text-[#404040]">9,99€/mes</span>
                         </p>
                       </>
                     ) : (
                       <>
                         <p className="text-sm text-gray-500 mb-2">Suscripción mensual</p>
                         <div className="flex items-baseline justify-center gap-2">
-                          <span className="text-5xl font-bold text-[#404040]">29,99€</span>
+                          <span className="text-5xl font-bold text-[#404040]">19,99€</span>
                           <span className="text-gray-500">/mes</span>
                         </div>
                         <p className="text-sm text-gray-600 mt-2">plan Completo (incluye la grabación de las clases)</p>
@@ -854,7 +854,7 @@ export default function TeacherSignup() {
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
-                               <span><strong>Después de 30 días:</strong> Se procederá al cobro mensual de 12,99€ automáticamente mediante el método de pago que registres.</span>
+                               <span><strong>Después de 30 días:</strong> Se procederá al cobro mensual de 9,99€ automáticamente mediante el método de pago que registres.</span>
                              </p>
                              <p className="flex items-start gap-2">
                                <span className="text-green-600 mt-0.5">•</span>
@@ -873,7 +873,7 @@ export default function TeacherSignup() {
                       <p>Al registrarte como profesor en Menttio, aceptas cumplir con estos términos y condiciones.</p>
                       
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 12,99€/mes (Plan Esencial) o 29,99€/mes (plan Completo)</p>
+                      <p>- La suscripción tiene un coste de 9,99€/mes (Plan Esencial) o 19,99€/mes (plan Completo)</p>
                       <p>- Se cobrará de forma automática cada mes</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>

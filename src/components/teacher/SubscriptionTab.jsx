@@ -66,7 +66,7 @@ export default function SubscriptionTab({ profile }) {
   const isTrial = data?.trial_active;
   const plan = data?.subscription_plan || profile?.subscription_plan || 'basic';
   const isCommission = plan === 'commission';
-  const planPrice = plan === 'premium' ? '29,99€' : plan === 'commission' ? 'Sin cuota' : '12,99€';
+  const planPrice = plan === 'premium' ? '19,99€' : plan === 'commission' ? 'Sin cuota' : '9,99€';
   const details = data?.subscription_details;
 
   // Dates

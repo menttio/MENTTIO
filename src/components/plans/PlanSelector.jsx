@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
- * El pago anual se anunciaba en la letra pequeña ("130€ al año si pagas anual") pero no había
+ * El pago anual se anunciaba en la letra pequeña ("99€ al año si pagas anual") pero no había
  * forma de contratarlo: el servidor aceptaba `billing_period`, y nadie se lo enviaba nunca.
  * Aquí está el interruptor que faltaba.
  *
@@ -15,9 +15,9 @@ const plans = [
   {
     id: 'basic',
     name: 'Esencial',
-    mensual: '12,99€/mes',
-    anual: '130€/año',
-    ahorroAnual: 'Ahorras 25,88€',
+    mensual: '9,99€/mes',
+    anual: '99€/año',
+    ahorroAnual: 'Ahorras 20,88€',
     trial: '30 días gratis',
     description: 'Todo salvo la grabación',
     features: ['Reservas y calendario', 'Materiales y mensajes', 'Seguimiento e informes a familias'],
@@ -27,9 +27,9 @@ const plans = [
   {
     id: 'premium',
     name: 'Completo',
-    mensual: '29,99€/mes',
-    anual: '300€/año',
-    ahorroAnual: 'Ahorras 59,88€',
+    mensual: '19,99€/mes',
+    anual: '199€/año',
+    ahorroAnual: 'Ahorras 40,88€',
     trial: '30 días gratis',
     description: 'La clase se graba y tu alumno la repasa',
     features: ['Todo lo del plan Esencial', 'Grabación de las clases', 'Soporte prioritario'],

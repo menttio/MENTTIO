@@ -203,7 +203,7 @@ export default function BetaTeacherSignup() {
         {/* Beta banner */}
         <div className="mb-4 bg-[#41f2c0]/20 border border-[#1fa37e] rounded-xl px-5 py-3 text-center">
           <p className="text-[#404040] font-semibold text-sm">
-            🧪 Acceso Beta — 30 días de prueba gratuita, después 12,99€/mes. Cancela cuando quieras.
+            🧪 Acceso Beta — 30 días de prueba gratuita, después 9,99€/mes. Cancela cuando quieras.
           </p>
         </div>
 
@@ -267,7 +267,7 @@ export default function BetaTeacherSignup() {
                     <div className="flex items-start justify-between mb-2">
                       <div>
                         <h4 className="font-semibold text-[#404040]">📚 Esencial</h4>
-                        <p className="text-2xl font-bold text-[#404040] mt-1">12,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
+                        <p className="text-2xl font-bold text-[#404040] mt-1">9,99€<span className="text-sm font-normal text-gray-500">/mes</span></p>
                         <p className="text-sm text-[#0d7a5f] font-semibold mt-1">✨ 30 días gratis de prueba</p>
                       </div>
                       <div className="w-6 h-6 rounded-full bg-[#41f2c0] flex items-center justify-center">
@@ -369,7 +369,7 @@ export default function BetaTeacherSignup() {
                   <div className="bg-[#41f2c0]/10 rounded-2xl p-6 text-center mb-2">
                     <p className="text-sm text-gray-500 mb-1">Suscripción mensual — Esencial</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-[#404040]">12,99€</span>
+                      <span className="text-5xl font-bold text-[#404040]">9,99€</span>
                       <span className="text-gray-500">/mes</span>
                     </div>
                   </div>
@@ -384,7 +384,7 @@ export default function BetaTeacherSignup() {
                         <h4 className="font-semibold text-[#404040] mb-2">✨ Prueba gratuita de 30 días</h4>
                         <div className="text-sm text-gray-700 space-y-1">
                           <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Los primeros 30 días son completamente gratis</strong>, sin ningún cargo.</span></p>
-                          <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Después de 30 días:</strong> cobro automático de 12,99€/mes.</span></p>
+                          <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Después de 30 días:</strong> cobro automático de 9,99€/mes.</span></p>
                           <p className="flex items-start gap-2"><span className="text-green-600 mt-0.5">•</span><span><strong>Cancela cuando quieras</strong> antes o después del período de prueba.</span></p>
                         </div>
                       </div>
@@ -397,7 +397,7 @@ export default function BetaTeacherSignup() {
                       <p><strong>1. Aceptación de los términos</strong></p>
                       <p>Al registrarte como profesor en Menttio, aceptas cumplir con estos términos y condiciones.</p>
                       <p><strong>2. Suscripción y pago</strong></p>
-                      <p>- La suscripción tiene un coste de 12,99€/mes (plan Esencial)</p>
+                      <p>- La suscripción tiene un coste de 9,99€/mes (plan Esencial)</p>
                       <p>- Se cobrará de forma automática cada mes tras los 30 días de prueba gratuita</p>
                       <p>- Puedes cancelar tu suscripción en cualquier momento</p>
                       <p>- No hay reembolsos por periodos parciales</p>
