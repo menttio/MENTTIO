@@ -90,6 +90,30 @@ export default async function(req) {
       for (const p of item.precios) {
         try {
           const yaHay = await stripe.prices.list({ lookup_keys: [p.lookup_key], limit: 1 });
+          const anterior = yaHay.data[0];
+          // 17/11/2026: precios del plan de marketing. Un precio de Stripe no se puede cambiar de
+          // importe: se crea otro, se le pasa el lookup_key y el viejo se archiva. Las
+          // suscripciones que ya existan siguen con su precio; stripeInbox los sigue reconociendo.
+          if (anterior && anterior.unit_amount !== p.importe) {
+            if (!aplicar) {
+              salida.precios[p.clave] = `se cambiará: ${(anterior.unit_amount / 100).toFixed(2)} € → ${(p.importe / 100).toFixed(2)} € cada ${p.intervalo === 'year' ? 'año' : 'mes'}`;
+              continue;
+            }
+            const nuevo = await stripe.prices.create({
+              product: typeof anterior.product === 'string' ? anterior.product : anterior.product.id,
+              currency: 'eur',
+              unit_amount: p.importe,
+              recurring: { interval: p.intervalo },
+              lookup_key: p.lookup_key,
+              transfer_lookup_key: true,
+              metadata: { menttio_plan: item.plan },
+            });
+            await stripe.prices.update(anterior.id, { active: false });
+            salida.precios[p.clave] = nuevo.id;
+            salida.creados.push(`precio ${p.lookup_key} (${(p.importe / 100).toFixed(2)} €; archivado ${anterior.id})`);
+            await guardar(db, p.clave, nuevo.id, `${item.producto} — ${(p.importe / 100).toFixed(2)} €/${p.intervalo}`);
+            continue;
+          }
           if (yaHay.data.length > 0) {
             salida.precios[p.clave] = yaHay.data[0].id;
             salida.existentes.push(`precio ${p.lookup_key}`);
