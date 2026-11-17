@@ -59,9 +59,19 @@ async function catalogo(db) {
 // el catalogo, se deducia del importe (>= 20 EUR al mes -> premium), asi que un precio
 // desconocido podia dar premium. Ahora devuelve null y planSeguro conserva el plan que el
 // profesor ya tenia (o basic), y deja aviso en los registros.
+// Precios anteriores (12,99/130 y 29,99/300), archivados el 17/11/2026. Se siguen reconociendo
+// por si alguna suscripcion se creo con ellos.
+const PRECIOS_ANTIGUOS = {
+  price_1UImwTHZYiECTxiywGeSWisR: 'basic',
+  price_1UImwTHZYiECTxiygtqQyOWz: 'basic',
+  price_1UImwUHZYiECTxiyGz44YV8B: 'premium',
+  price_1UImwVHZYiECTxiyFKnzG6m0: 'premium',
+};
+
 function planDesdePrecio(mapa, priceId) {
   if (priceId && (priceId === mapa.stripe_price_grabacion_mensual || priceId === mapa.stripe_price_grabacion_anual)) return 'premium';
   if (priceId && (priceId === mapa.stripe_price_esencial_mensual || priceId === mapa.stripe_price_esencial_anual)) return 'basic';
+  if (priceId && PRECIOS_ANTIGUOS[priceId]) return PRECIOS_ANTIGUOS[priceId];
   return null;
 }
 
