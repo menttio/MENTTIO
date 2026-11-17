@@ -12,8 +12,8 @@ const CATALOGO = [
     producto: 'Menttio Esencial',
     descripcion: 'Agenda, cobros, apuntes e informe mensual para la familia.',
     precios: [
-      { clave: 'stripe_price_esencial_mensual', lookup_key: 'menttio_esencial_mensual', importe: 1299, intervalo: 'month' },
-      { clave: 'stripe_price_esencial_anual', lookup_key: 'menttio_esencial_anual', importe: 13000, intervalo: 'year' },
+      { clave: 'stripe_price_esencial_mensual', lookup_key: 'menttio_esencial_mensual', importe: 999, intervalo: 'month' },
+      { clave: 'stripe_price_esencial_anual', lookup_key: 'menttio_esencial_anual', importe: 9900, intervalo: 'year' },
     ],
   },
   {
@@ -21,8 +21,8 @@ const CATALOGO = [
     producto: 'Menttio Completo',
     descripcion: 'Todo lo de Esencial y además la videollamada se graba sola para que el alumno la repase.',
     precios: [
-      { clave: 'stripe_price_grabacion_mensual', lookup_key: 'menttio_grabacion_mensual', importe: 2999, intervalo: 'month' },
-      { clave: 'stripe_price_grabacion_anual', lookup_key: 'menttio_grabacion_anual', importe: 30000, intervalo: 'year' },
+      { clave: 'stripe_price_grabacion_mensual', lookup_key: 'menttio_grabacion_mensual', importe: 1999, intervalo: 'month' },
+      { clave: 'stripe_price_grabacion_anual', lookup_key: 'menttio_grabacion_anual', importe: 19900, intervalo: 'year' },
     ],
   },
 ];
