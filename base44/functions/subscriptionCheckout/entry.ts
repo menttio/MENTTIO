@@ -11,10 +11,10 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'), {
 const DIAS_PRUEBA = 30;
 
 const POR_DEFECTO = {
-  stripe_price_esencial_mensual: 'price_1UImwTHZYiECTxiywGeSWisR',
-  stripe_price_esencial_anual: 'price_1UImwTHZYiECTxiygtqQyOWz',
-  stripe_price_grabacion_mensual: 'price_1UImwUHZYiECTxiyGz44YV8B',
-  stripe_price_grabacion_anual: 'price_1UImwVHZYiECTxiyFKnzG6m0',
+  stripe_price_esencial_mensual: 'price_1Uck5PHZYiECTxiyu6NY4lzJ',
+  stripe_price_esencial_anual: 'price_1Uck5QHZYiECTxiys4voC2qD',
+  stripe_price_grabacion_mensual: 'price_1Uck5RHZYiECTxiyyQg83bKC',
+  stripe_price_grabacion_anual: 'price_1Uck5RHZYiECTxiyA7Pz7HFq',
 };
 
 async function precio(db, clave) {
